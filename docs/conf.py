@@ -17,9 +17,9 @@
 
 # -- Project information -----------------------------------------------------
 
-project = 'pyboilerplate'
-copyright = '2020, ctgk'
-author = 'ctgk'
+project = 'imutils'
+copyright = '2021, JacobARose'
+author = 'JacobARose'
 
 # The full version, including alpha/beta/rc tags
 release = '0.0.1'

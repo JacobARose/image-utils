@@ -1,6 +1,6 @@
+import imutils
 import pytest
 
-import imutils
 
 
 def test_imutils():

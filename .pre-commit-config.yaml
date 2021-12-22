@@ -1,0 +1,37 @@
+# See https://pre-commit.com for more information
+# See https://pre-commit.com/hooks.html for more hooks
+repos:
+-   repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v3.2.0
+    hooks:
+    -   id: trailing-whitespace
+    -   id: end-of-file-fixer
+    -   id: check-yaml
+    -   id: check-ast
+    -   id: check-added-large-files
+    -   id: mixed-line-ending
+        args: ['--fix', 'lf']
+    -   id: no-commit-to-branch
+        args: ['--branch', 'main']
+-   repo: local
+    hooks:
+    -   id: flake8
+        name: Check Python format
+        entry: flake8 --count --show-source --statistics
+        language: system
+        types: [python]
+    -   id: assert_ascii
+        language: system
+        name: Check file encoding
+        entry: bash -c 'for file in "$@"; do file --mime-encoding $file | grep -q "ascii\|binary"; if [ $? != 0 ]; then echo $file; exit 1; fi; done' --
+        types: [text]
+    -   id: unittest
+        name: Run Python unittests
+        language: python
+        entry: pytest --doctest-modules
+        pass_filenames: false
+    -   id: documentation
+        name: Generate document
+        language: system
+        entry: bash -c 'sphinx-apidoc ./pyboilerplate -o ./docs/api --force; sphinx-build ./docs ./build/html -b html -W'
+        pass_filenames: false

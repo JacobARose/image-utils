@@ -1,4 +1,6 @@
-"""imutils package."""
+"""
+imutils package.
+"""
 
 from imutils._imutils import imutils
 

@@ -1,10 +1,10 @@
-pyboilerplate package
+imutils package
 =====================
 
 Module contents
 ---------------
 
-.. automodule:: pyboilerplate
+.. automodule:: imutils
    :members:
    :undoc-members:
    :show-inheritance:

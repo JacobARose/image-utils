@@ -1,9 +1,9 @@
-"""pyboilerplate package."""
+"""imutils package."""
 
-from pyboilerplate._pyboilerplate import pyboilerplate
+from imutils._imutils import imutils
 
 __version__ = '0.0.1'
 
 __all__ = [
-    'pyboilerplate',
+    'imutils',
 ]

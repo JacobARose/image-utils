@@ -7,5 +7,4 @@ https://github.com/pypa/sampleproject/blob/main/setup.py
 
 from setuptools import setup
 
-
 setup()

@@ -1,4 +1,4 @@
-pyboilerplate
+imutils
 =============
 
 .. toctree::

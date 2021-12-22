@@ -11,4 +11,4 @@ def imutils() -> str:
     >>> imutils()
     'imutils'
     """
-    return 'imutils'
+    return "imutils"

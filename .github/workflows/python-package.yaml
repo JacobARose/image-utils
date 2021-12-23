@@ -34,7 +34,7 @@ jobs:
     - name: Install repo develop branch
       run: pip install -e .[develop]
     - name: precommit
-      run: SKIP=no-commit-to-branch pre-commit run -a
+      run: pre-commit run -a
 
     - name: Lint with flake8
       run: |

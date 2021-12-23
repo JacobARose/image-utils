@@ -9,8 +9,6 @@ repos:
    - id: check-yaml
    - id: check-ast
    - id: check-added-large-files
-   - id: mixed-line-ending
-     args: ['--fix', 'lf']
    - id: no-commit-to-branch
      args: ['--branch', 'main']
         
@@ -21,23 +19,26 @@ repos:
         
  - repo: local
    hooks:
-   - id: flake8
-   name: Check Python format
-   entry: flake8 --count --show-source --statistics
-   language: system
-   types: [python]
-   - id: assert_ascii
-   language: system
-   name: Check file encoding
-   entry: bash -c 'for file in "$@"; do file --mime-encoding $file | grep -q "ascii\|binary"; if [ $? != 0 ]; then echo $file; exit 1; fi; done' --
-   types: [text]
-   - id: unittest
-   name: Run Python unittests
-   language: python
-   entry: pytest --doctest-modules
-   pass_filenames: false
-   - id: documentation
-   name: Generate document
-   language: system
-   entry: bash -c 'sphinx-apidoc ./imutils -o ./docs/api --force; sphinx-build ./docs ./build/html -b html -W'
-   pass_filenames: false
+     - id: flake8
+       name: Check Python format
+       entry: flake8 --count --show-source --statistics
+       language: system
+       types: [python]
+       
+     - id: assert_ascii
+       language: system
+       name: Check file encoding
+       entry: bash -c 'for file in "$@"; do file --mime-encoding $file | grep -q "ascii\|binary"; if [ $? != 0 ]; then echo $file; exit 1; fi; done' --
+       types: [text]
+       
+     - id: unittest
+       name: Run Python unittests
+       language: python
+       entry: pytest --doctest-modules
+       pass_filenames: false
+       
+     - id: documentation
+       name: Generate document
+       language: system
+       entry: bash -c 'sphinx-apidoc ./imutils -o ./docs/api --force; sphinx-build ./docs ./build/html -b html -W'
+       pass_filenames: false

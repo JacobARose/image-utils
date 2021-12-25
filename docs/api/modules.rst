@@ -1,5 +1,5 @@
 imutils
-=============
+=======
 
 .. toctree::
    :maxdepth: 4

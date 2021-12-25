@@ -9,8 +9,8 @@ repos:
    - id: check-yaml
    - id: check-ast
    - id: check-added-large-files
-   - id: no-commit-to-branch
-     args: ['--branch', 'main']
+#    - id: no-commit-to-branch
+#      args: ['--branch', 'main']
 
  - repo: https://github.com/pycqa/isort
    rev: 5.10.1

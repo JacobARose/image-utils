@@ -34,7 +34,7 @@ level = logging.INFO
 log = logging.getLogger(__name__)
 ch = logging.StreamHandler()
 ch.setLevel(level)
-formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
 ch.setFormatter(formatter)
 log.addHandler(ch)
 
@@ -47,12 +47,14 @@ class RobustImageDuplicator:
     Automatically checks for and attempts to repair corrupted images due to interupted processes.
     """
 
-    def __init__(self,
-                 data: pd.DataFrame,
-                 source_col: str = "source_path",
-                 target_col: str = "target_path",
-                 log_every: int = 200,
-                 use_swifter: bool = True):
+    def __init__(
+        self,
+        data: pd.DataFrame,
+        source_col: str = "source_path",
+        target_col: str = "target_path",
+        log_every: int = 200,
+        use_swifter: bool = True,
+    ):
         self.data = data
         self.source_col = source_col
         self.target_col = target_col
@@ -61,7 +63,7 @@ class RobustImageDuplicator:
 
         self.log_every = log_every
         self.use_swifter = use_swifter
-        tqdm.pandas(desc=f'copying {self.data.shape[0]} files')
+        tqdm.pandas(desc=f"copying {self.data.shape[0]} files")
 
     def step(self, row: pd.Series) -> bool:
         if self.imcopy(row[self.source_col], row[self.target_col]):
@@ -70,11 +72,10 @@ class RobustImageDuplicator:
 
     def run(self):
         if self.use_swifter:
-            results = (
-                self.data.swifter.progress_bar(
-                    enable=True, desc=f"duplicating {self.data.shape[0]} records",
-                        ).apply(self.step, axis=1)
-                      )
+            results = self.data.swifter.progress_bar(
+                enable=True,
+                desc=f"duplicating {self.data.shape[0]} records",
+            ).apply(self.step, axis=1)
         else:
             results = self.data.progress_apply(self.step, axis=1)
 
@@ -105,25 +106,22 @@ class RobustImageDuplicator:
                 # Check if image at target_path can be loaded without error, skip shutil copy execution if true. O/w, Perform the copy operation if a corrupted target image is detected.
                 return True
             else:
-                log.info(f"Found corrupted target file, attempting to perform original copy operation.")
+                log.info(
+                    f"Found corrupted target file, attempting to perform original copy operation."
+                )
         shutil.copy2(source_path, target_path)
-        return (not self.iscorrupted(target_path))
-
+        return not self.iscorrupted(target_path)
 
 
 if __name__ == "__main__":
 
-    local_catalog = (
-        pd.DataFrame.from_records([
-            {"source_path":"",
-            "target_path":""},
-            {"source_path":"",
-            "target_path":""},
-        ])
-                    )
-    image_duplicator = RobustImageDuplicator(data=local_catalog,
-                                             log_every=1,
-                                             use_swifter=True)
+    local_catalog = pd.DataFrame.from_records(
+        [
+            {"source_path": "", "target_path": ""},
+            {"source_path": "", "target_path": ""},
+        ]
+    )
+    image_duplicator = RobustImageDuplicator(data=local_catalog, log_every=1, use_swifter=True)
 
     correct, incorrect = image_duplicator.run()
 

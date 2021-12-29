@@ -19,6 +19,7 @@ from imutils.robust_image_duplicator import RobustImageDuplicator
 def sample_image_paths():
     return SAMPLE_IMAGE_PATHS
 
+
 @pytest.fixture
 def sample_catalog(sample_image_paths, tmpdir):
     assert len(sample_image_paths) == 2
@@ -26,8 +27,14 @@ def sample_catalog(sample_image_paths, tmpdir):
     print(f"tmpdir: {tmpdir}")
     return pd.DataFrame.from_records(
         [
-            {"source_path": str(sample_image_paths[0]), "target_path": Path(tmpdir) / sample_image_paths[0].name},
-            {"source_path": str(sample_image_paths[1]), "target_path": Path(tmpdir) / sample_image_paths[1].name},
+            {
+                "source_path": str(sample_image_paths[0]),
+                "target_path": Path(tmpdir) / sample_image_paths[0].name,
+            },
+            {
+                "source_path": str(sample_image_paths[1]),
+                "target_path": Path(tmpdir) / sample_image_paths[1].name,
+            },
         ]
     )
 

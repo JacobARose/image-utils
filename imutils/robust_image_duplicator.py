@@ -25,7 +25,11 @@ from typing import Union
 import pandas as pd
 import PIL
 import PIL.Image
-import swifter
+
+try:
+    import swifter
+except ImportError:
+    pass
 from tqdm.auto import tqdm
 
 ##############################################

@@ -7,4 +7,7 @@ https://github.com/pypa/sampleproject/blob/main/setup.py
 
 from setuptools import setup
 
-setup()
+setup(
+    # setup_requires=['pytest-runner'],
+    # tests_require=['pytest'],
+)

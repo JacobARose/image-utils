@@ -1,7 +1,9 @@
 """
 
-imutils/tests/unit/test_robust_image_duplicator.py
+image-utils/tests/unit/test_robust_image_duplicator.py
 
+Created by: Jacob A Rose
+Created on: Wednesday Dec 29th, 2021
 
 """
 
@@ -39,7 +41,7 @@ def test_sample_catalog(sample_catalog):
     print(sample_catalog)
 
 
-def test_RobustImageDuplicator_init(sample_catalog):
+def test_RobustImageDuplicator_run(sample_catalog):
 
     image_duplicator = RobustImageDuplicator(data=sample_catalog, log_every=1, use_swifter=False)
     correct, incorrect = image_duplicator.run()

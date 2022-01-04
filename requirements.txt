@@ -5,6 +5,8 @@ opencv-python
 pandas
 Pillow
 torch>=1.7
+torchdata
+torchvision
 rich
 swifter
 tqdm

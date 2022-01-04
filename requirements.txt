@@ -4,6 +4,7 @@ numpy
 opencv-python
 pandas
 Pillow
+pytorch>=1.7
 rich
 swifter
 tqdm

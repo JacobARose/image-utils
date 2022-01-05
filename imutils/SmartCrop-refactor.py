@@ -33,7 +33,7 @@ from functools import partial
 import modin.pandas as pd
 import ray
 import torchvision
-from lightning_hydra_classifiers.utils.ResizeRight.resize_right import (
+from imutils.ResizeRight.resize_right import (
     interp_methods,
     resize_right,
 )
@@ -56,9 +56,30 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 sns.set(style="white")
-
-
 import json
+
+
+
+from typing import *
+
+import dask
+import dask.array as da
+import dask.dataframe as dd
+from dask import delayed
+from lightning_hydra_classifiers.utils.dataset_management_utils import (
+    Extract as ExtractBase,
+)
+from lightning_hydra_classifiers.utils.dataset_management_utils import (
+    DatasetFilePathParser,
+    parse_df_catalog_from_image_directory,
+)
+####################################
+####################################
+from skimage import io
+from skimage.io import imread
+from skimage.io.collection import alphanumeric_key
+from munch import Munch
+
 
 totensor: Callable = torchvision.transforms.ToTensor()
 
@@ -260,28 +281,6 @@ def split_df_into_chunks(data_df: pd.DataFrame, num_chunks: int) -> List[pd.Data
     return df_chunks
 
 
-from typing import *
-
-import dask
-import dask.array as da
-import dask.dataframe as dd
-from dask import delayed
-from lightning_hydra_classifiers.utils.dataset_management_utils import (
-    DatasetFilePathParser,
-)
-from lightning_hydra_classifiers.utils.dataset_management_utils import (
-    Extract as ExtractBase,
-)
-from lightning_hydra_classifiers.utils.dataset_management_utils import (
-    parse_df_catalog_from_image_directory,
-)
-from skimage import io
-
-####################################
-####################################
-from skimage.io import imread
-from skimage.io.collection import alphanumeric_key
-
 
 # @dask.delayed
 def open_image(row: List[Dict[str, Any]]) -> np.ndarray:
@@ -334,9 +333,6 @@ def batch_ETL(batch_records, target_shape: Tuple[int]):
     print(f"Computing {len(imgs)} images, Skipping {len(batch_records) - len(imgs)}")
     return imgs
 
-
-from munch import Munch
-
 # root_dir = "/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_0/images"
 # print(f'Initiating conversion of images to new image shape = {(3, config.resolution, config.resolution)}')
 clever_crop = CleverCrop()  # target_shape=target_config.target_shape)
@@ -344,10 +340,10 @@ clever_crop = CleverCrop()  # target_shape=target_config.target_shape)
 
 # ### Query catalog
 
-from lightning_hydra_classifiers.data.utils.catalog_registry import *
-from lightning_hydra_classifiers.utils.dataset_management_utils import (
-    Extract,  # as ExtractBase
-)
+# from lightning_hydra_classifiers.data.utils.catalog_registry import *
+# from lightning_hydra_classifiers.utils.dataset_management_utils import (
+#     Extract,  # as ExtractBase
+# )
 
 #     tag = available_datasets.query_tags(dataset_name=config.dataset_name,
 #                                         y_col=config.y_col,
@@ -411,7 +407,6 @@ import dask.bag as db
 
 
 def process_data_records(data_df: pd.DataFrame, config, target_config):
-
     clever_crop = CleverCrop(target_shape=target_config.target_shape)
 
     records = data_df.to_dict("records")  # [:500]
@@ -492,11 +487,8 @@ def cmdline_args():
 def main(args):
 
     config, target_config = setup_configs(args)
-
     data_df = query_and_preprocess_catalog(config, target_config)
-
     client = launch_dask_client(config)
-
     results = process_data_records(data_df, config, target_config)
 
 

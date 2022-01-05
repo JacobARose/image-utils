@@ -78,13 +78,13 @@ from functools import partial
 from typing import *
 
 import torchvision
-from lightning_hydra_classifiers.data.utils.catalog_registry import *
+from imutils.catalog_registry import *
 from lightning_hydra_classifiers.utils.dataset_management_utils import (
     DatasetFilePathParser,
     diff_dataset_catalogs,
     parse_df_catalog_from_image_directory,
 )
-from lightning_hydra_classifiers.utils.ResizeRight.resize_right import (
+from imutils.ResizeRight.resize_right import (
     interp_methods,
     resize_right,
 )

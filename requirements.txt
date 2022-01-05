@@ -7,6 +7,9 @@ opencv-python
 pandarallel
 pandas
 Pillow
+plumbum
+ray
+seaborn
 torch>=1.7
 # torchdataset
 git+https://github.com/szymonmaszke/torchdatasets.git@v0.2.0#

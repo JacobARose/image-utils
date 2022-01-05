@@ -9,6 +9,8 @@ pandas
 Pillow
 plumbum
 ray
+scikit-learn
+scikit-image
 seaborn
 torch>=1.7
 # torchdataset
@@ -17,3 +19,4 @@ torchvision
 rich
 swifter
 tqdm
+wandb

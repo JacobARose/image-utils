@@ -59,7 +59,6 @@ sns.set(style="white")
 import json
 
 
-
 from typing import *
 
 import dask
@@ -73,6 +72,7 @@ from lightning_hydra_classifiers.utils.dataset_management_utils import (
     DatasetFilePathParser,
     parse_df_catalog_from_image_directory,
 )
+
 ####################################
 ####################################
 from skimage import io
@@ -281,7 +281,6 @@ def split_df_into_chunks(data_df: pd.DataFrame, num_chunks: int) -> List[pd.Data
     return df_chunks
 
 
-
 # @dask.delayed
 def open_image(row: List[Dict[str, Any]]) -> np.ndarray:
     return io.imread(row["path"])
@@ -332,6 +331,7 @@ def batch_ETL(batch_records, target_shape: Tuple[int]):
 
     print(f"Computing {len(imgs)} images, Skipping {len(batch_records) - len(imgs)}")
     return imgs
+
 
 # root_dir = "/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_0/images"
 # print(f'Initiating conversion of images to new image shape = {(3, config.resolution, config.resolution)}')

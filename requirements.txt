@@ -1,5 +1,5 @@
 icecream
-git+git@github.com:JacobARose/lightning-hydra-classifiers.git
+git+https://github.com/JacobARose/lightning-hydra-classifiers.git
 matplotlib
 modin
 numpy

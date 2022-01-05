@@ -1,5 +1,22 @@
+icecream
+git+https://github.com/JacobARose/lightning-hydra-classifiers.git
+matplotlib
+modin
 numpy
+opencv-python
+pandarallel
 pandas
 Pillow
+plumbum
+ray
+scikit-learn
+scikit-image
+seaborn
+torch>=1.7
+# torchdataset
+git+https://github.com/szymonmaszke/torchdatasets.git@v0.2.0#
+torchvision
+rich
 swifter
 tqdm
+wandb

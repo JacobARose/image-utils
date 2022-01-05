@@ -1,11 +1,14 @@
 icecream
 matplotlib
+modin
 numpy
 opencv-python
+pandarallel
 pandas
 Pillow
 torch>=1.7
-torchdata
+# torchdataset
+git+https://github.com/szymonmaszke/torchdatasets.git@v0.2.0#
 torchvision
 rich
 swifter

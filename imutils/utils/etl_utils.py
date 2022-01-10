@@ -29,6 +29,7 @@ def save_config(config: DictConfig, config_path: str):
     with open(config_path, "w") as f:
         f.write(OmegaConf.to_yaml(config, resolve=True))
 
+
 def load_config(config_path: str) -> DictConfig:
     with open(config_path, "r") as f:
         loaded = OmegaConf.load(f)
@@ -37,12 +38,9 @@ def load_config(config_path: str) -> DictConfig:
 
 class Extract:
 
-
     valid_splits: Tuple[str] = ("train", "val", "test")
 
-    data_file_ext_maps = {"df":".csv",
-                          "encoder":".json",
-                          "config":".yaml"}
+    data_file_ext_maps = {"df": ".csv", "encoder": ".json", "config": ".yaml"}
 
     @classmethod
     def get_split_subdir_stems(cls, dataset_dir: str) -> List[str]:
@@ -55,9 +53,9 @@ class Extract:
         return stems
 
     @classmethod
-    def locate_files(cls,
-                     dataset_dir: Union[str, List[str]],
-                     select_subset: Optional[str]=None) -> Dict[str, torchdata.datasets.Dataset]:
+    def locate_files(
+        cls, dataset_dir: Union[str, List[str]], select_subset: Optional[str] = None
+    ) -> Dict[str, torchdata.datasets.Dataset]:
 
         files = {}
         if isinstance(dataset_dir, list):
@@ -65,7 +63,7 @@ class Extract:
             assert np.all([os.path.isdir(d) for d in dataset_dir])
             files["all"] = []
             for data_dir in dataset_dir:
-                files["all"].extend(cls.locate_files(data_dir)['all'])
+                files["all"].extend(cls.locate_files(data_dir)["all"])
             return files
         splits = cls.get_split_subdir_stems(dataset_dir=dataset_dir)
 
@@ -76,7 +74,9 @@ class Extract:
             #     /test
             #     ....
             for subdir in splits:
-                files[subdir] = torchdata.datasets.Files.from_folder(Path(dataset_dir, subdir), regex="*/*.jpg").files
+                files[subdir] = torchdata.datasets.Files.from_folder(
+                    Path(dataset_dir, subdir), regex="*/*.jpg"
+                ).files
             files["all"] = list(flatten([files[subdir] for subdir in splits]))
 
         elif len(os.listdir(dataset_dir)) > 1:
@@ -84,47 +84,43 @@ class Extract:
             #     /class_0
             #     /class_1
             #     ....
-            files["all"] = torchdata.datasets.Files.from_folder(Path(dataset_dir), regex="*/*.jpg").files
+            files["all"] = torchdata.datasets.Files.from_folder(
+                Path(dataset_dir), regex="*/*.jpg"
+            ).files
         else:
-            raise Exception(f"# of valid subdirs = {len(os.listdir(dataset_dir))} is invalid for locating files.")
+            raise Exception(
+                f"# of valid subdirs = {len(os.listdir(dataset_dir))} is invalid for locating"
+                " files."
+            )
 
         if isinstance(select_subset, str):
             files = {select_subset: files[select_subset]}
         return files
 
     @classmethod
-    def df_from_dir(cls,
-                    root_dir: Union[str, Path],
-                    select_subset: Optional[str]=None) -> pd.DataFrame:
-        files = cls.locate_files(dataset_dir=root_dir,
-                                 select_subset=select_subset)
+    def df_from_dir(
+        cls, root_dir: Union[str, Path], select_subset: Optional[str] = None
+    ) -> pd.DataFrame:
+        files = cls.locate_files(dataset_dir=root_dir, select_subset=select_subset)
         for k in list(files.keys()):
-            files[k] = pd.DataFrame(files[k]).rename(columns={0:"path"}) #.samples)
+            files[k] = pd.DataFrame(files[k]).rename(columns={0: "path"})  # .samples)
         return files
 
     @classmethod
-    def df_from_csv(cls, path: Union[str, Path], index_col: int=None) -> pd.DataFrame:
+    def df_from_csv(cls, path: Union[str, Path], index_col: int = None) -> pd.DataFrame:
         return pd.read_csv(path, index_col=index_col)
 
     @classmethod
     def config_from_yaml(cls, path: Union[str, Path]) -> DictConfig:
         return load_config(config_path=path)
 
-
     @classmethod
-    def df2csv(cls,
-               df: pd.DataFrame,
-               path: Union[str, Path],
-               index: bool=False) -> None:
+    def df2csv(cls, df: pd.DataFrame, path: Union[str, Path], index: bool = False) -> None:
         df.to_csv(path, index=index)
 
     @classmethod
-    def config2yaml(cls,
-                    config: DictConfig,
-                    path: Union[str, Path]) -> None:
+    def config2yaml(cls, config: DictConfig, path: Union[str, Path]) -> None:
         save_config(config=config, config_path=path)
-
-
 
 
 # class Transform:

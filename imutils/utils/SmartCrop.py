@@ -72,7 +72,6 @@ from skimage.io.collection import alphanumeric_key
 # import dask
 
 
-
 __all__ = ["CleverCropConfig", "CleverCrop", "NormalizeImage"]
 
 totensor: Callable = torchvision.transforms.ToTensor()
@@ -320,6 +319,7 @@ def batch_ETL(batch_records, target_shape: Tuple[int]):
 
 
 clever_crop = CleverCrop()
+
 
 def query_and_preprocess_catalog(config, target_config):
     tag = available_datasets.query_tags(

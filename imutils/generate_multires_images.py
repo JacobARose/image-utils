@@ -94,6 +94,7 @@ tqdm.pandas()
 
 clever_crop = CleverCrop()
 
+
 def resize_and_resave_dataset(data, res: int = 512):
     num_samples = len(data)
     target_shape = (3, res, res)
@@ -105,7 +106,9 @@ def resize_and_resave_dataset(data, res: int = 512):
 
         resize_and_save_img(img=source_path, target_path=target_path, target_shape=(3, res, res))
 
+
 ##############################
+
 
 def resize_and_save_img(
     img: Union[str, Path, PIL.Image.Image], target_path: str, target_shape=None

@@ -1,22 +1,35 @@
 icecream
 git+https://github.com/JacobARose/lightning-hydra-classifiers.git
+hydra-core>=1.1
 matplotlib
 modin
-numpy
-opencv-python
+more_itertools
+munch
+numpy==1.19
+omegaconf
+# opencv-python
+opencv-python-headless
 pandarallel
 pandas
+# pathlib
 Pillow
 plumbum
-ray
+pytest
+flake8
+pre-commit
+Sphinx
+# ray
 scikit-learn
 scikit-image
 seaborn
-torch>=1.7
-# torchdataset
-git+https://github.com/szymonmaszke/torchdatasets.git@v0.2.0#
+
+#torch==1.7.1+cu101 -f https://download.pytorch.org/whl/torch_stable.html
+#torchvision==0.8.2+cu101 -f https://download.pytorch.org/whl/torch_stable.html
+torchdatasets #==0.2.0
+# git+https://github.com/szymonmaszke/torchdatasets.git@v0.2.0#
 torchvision
 rich
+seaborn
 swifter
 tqdm
 wandb

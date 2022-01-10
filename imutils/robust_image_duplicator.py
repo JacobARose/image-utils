@@ -17,11 +17,8 @@ __all__ = ["RobustImageDuplicator"]
 import logging
 import os
 import shutil
-
-# from pathlib import Path
 from typing import Union
 
-# import modin.pandas as pd
 import pandas as pd
 import PIL
 import PIL.Image
@@ -107,7 +104,9 @@ class RobustImageDuplicator:
     def imcopy(self, source_path: str, target_path: str) -> bool:
         if os.path.isfile(target_path):
             if not self.iscorrupted(target_path):
-                # Check if image at target_path can be loaded without error, skip shutil copy execution if true. O/w, Perform the copy operation if a corrupted target image is detected.
+                # Check if image at target_path can be loaded without error,
+                # skip shutil copy execution if true. O/w, Perform the copy
+                # operation if a corrupted target image is detected.
                 return True
             else:
                 log.info(

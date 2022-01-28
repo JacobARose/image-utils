@@ -10,6 +10,7 @@ import torch
 def test_cuda_is_available():
     assert torch.cuda.is_available()
 
+
 def _display_cuda_info():
 
     print(f"Is CUDA supported by this system? {torch.cuda.is_available()}")

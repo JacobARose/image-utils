@@ -35,7 +35,6 @@ from imutils.utils.SmartCrop import CleverCrop
 #     import torchdata
 
 
-
 __all__ = [
     "CleverCrop",
     "Extract",

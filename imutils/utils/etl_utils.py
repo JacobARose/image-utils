@@ -15,12 +15,16 @@ from typing import Any, Callable, Dict, List, Optional, Tuple, Union
 
 import numpy as np
 import pandas as pd
-import torchdatasets as torchdata
 
 # from lightning_hydra_classifiers.utils.common_utils import LabelEncoder
 from hydra.experimental import compose, initialize, initialize_config_dir
 from more_itertools import flatten
 from omegaconf import DictConfig, OmegaConf
+
+from imutils.utils import torchdata
+
+# import torchdatasets as torchdata
+
 
 __all__ = ["save_config", "load_config", "Extract"]
 

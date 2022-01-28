@@ -20,14 +20,21 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import seaborn as sns
-import torchdatasets as torchdata
 from more_itertools import collapse, flatten
 from omegaconf import DictConfig, OmegaConf
 from sklearn.model_selection import train_test_split
 from torchvision.datasets import ImageFolder
 
+from imutils.utils import torchdata
 from imutils.utils.etl_utils import Extract
 from imutils.utils.SmartCrop import CleverCrop
+
+# try:
+#     import torchdatasets as torchdata
+# except ModuleNotFoundError:
+#     import torchdata
+
+
 
 __all__ = [
     "CleverCrop",

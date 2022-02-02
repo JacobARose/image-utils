@@ -27,7 +27,7 @@ seaborn
 #torchvision==0.8.2+cu101 -f https://download.pytorch.org/whl/torch_stable.html
 
 # Corresponds to torchdatasets==0.2.0 except includes minor fix to allow torch<1.9
-pip install git+git://github.com/szymonmaszke/torchdatasets.git@0389feea2c23657440f9ba9a1af976f436aa3440 
+git+git://github.com/szymonmaszke/torchdatasets.git@0389feea2c23657440f9ba9a1af976f436aa3440 
 
 torchvision
 rich

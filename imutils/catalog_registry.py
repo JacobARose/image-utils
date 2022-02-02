@@ -538,9 +538,7 @@ leavesdbv1_0 = Leavesdbv1_0()
 leavesdbv1_1 = Leavesdbv1_1()
 
 
-import rich.repr
-
-
+# import rich.repr
 # @rich.repr.auto
 class AvailableDatasets:
     # class available_datasets:

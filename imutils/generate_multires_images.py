@@ -44,6 +44,7 @@ Note: When launching in parallel from the cmdline, be mindful of specifying low 
 # Created by: Jacob A Rose
 # Created on: Tuesday June 29th, 2021
 
+import argparse
 import logging
 import os
 import random
@@ -52,205 +53,43 @@ from pathlib import Path
 from typing import Callable, List, Optional, Tuple, Union
 
 import icecream as ic
-import matplotlib.pyplot as plt
+
+# import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import PIL
 import torch
+import torchvision
 from PIL import Image, ImageStat
 from rich import print as pp
+from torch import nn
+from torchvision import transforms, utils
 from torchvision.datasets import ImageFolder
 from tqdm.auto import tqdm, trange
 
+# import json
+# import sys
+# from dataclasses import asdict, dataclass
+# from typing import *
+
+
 seed = 334455
-
-
 random.seed(seed)
 np.random.seed(seed)
 pd.set_option("display.max_columns", 500)
 pd.set_option("display.max_colwidth", 200)
 
-import argparse
-import json
-import sys
-from dataclasses import asdict, dataclass
-from functools import partial
-from typing import *
+from pandarallel import pandarallel
 
-import torchvision
-from lightning_hydra_classifiers.data.utils.catalog_registry import *
-from lightning_hydra_classifiers.utils.dataset_management_utils import (
-    DatasetFilePathParser,
+from imutils.catalog_registry import available_datasets
+from imutils.utils.dataset_management_utils import (
+    CleverCrop,
     diff_dataset_catalogs,
     parse_df_catalog_from_image_directory,
 )
-from lightning_hydra_classifiers.utils.ResizeRight.resize_right import (
-    interp_methods,
-    resize_right,
-)
-from munch import Munch
-from pandarallel import pandarallel
-from torch import nn
-from torchvision import transforms, utils
 
 tqdm.pandas()
-
-plt.style.available
-plt.style.use("seaborn-pastel")
-
-
-# ### Image clever crop
-
-
-def plot_img_hist(img: torch.Tensor):
-    plt.hist(np.array(img).ravel(), bins=50, density=True)
-    plt.xlabel("pixel values")
-    plt.ylabel("relative frequency")
-    plt.title("distribution of pixels")
-
-
-def stats(img: torch.Tensor):
-    print(f"img.min(): {img.min():.3f}")
-    print(f"img.max(): {img.max():.3f}")
-    print(f"img.mean(): {img.mean():.3f}")
-    print(f"img.std(): {img.std():.3f}")
-
-    print(f"% pixels < 0.0: {(img[img<0.0].shape[0] / np.prod(img[:].shape)):.2%}")
-    print(f"% pixels >= 0.0: {(img[img>=0.0].shape[0] / np.prod(img[:].shape)):.2%}")
-
-
-#####################################
-
-
-class NormalizeImage(nn.Module):
-    @staticmethod
-    def channelwise_min(img: torch.Tensor) -> torch.Tensor:
-        return img.min(dim=1).values.min(dim=1).values
-
-    @staticmethod
-    def channelwise_max(img: torch.Tensor) -> torch.Tensor:
-        return img.max(dim=1).values.max(dim=1).values
-
-    @staticmethod
-    def normalize_image(img: torch.Tensor) -> torch.Tensor:
-        """Enforce pixel bounds to range [0.0, 1.0]"""
-        img_min = NormalizeImage.channelwise_min(img).view(-1, 1, 1)
-        img_max = NormalizeImage.channelwise_max(img).view(-1, 1, 1)
-        return (img - img_min) / (img_max - img_min)
-
-
-########################
-########################
-
-
-@dataclass
-class CleverCropConfig:
-
-    interp_method: Callable = interp_methods.cubic
-    antialiasing: bool = True
-    target_shape: Tuple[int] = (3, 128, 128)
-    max_aspect_ratio: float = 1.2
-    grayscale: bool = False
-    normalize: bool = True
-
-
-class CleverCrop:
-    def __init__(
-        self,
-        interp_method=interp_methods.cubic,
-        antialiasing=True,
-        target_shape: Tuple[int] = (3, 128, 128),
-        max_aspect_ratio: float = 1.2,
-        grayscale: bool = False,
-        normalize: bool = True,
-    ):
-        """[summary]
-
-        Args:
-            interp_method: Defaults to interp_methods.cubic.
-            antialiasing (bool): Defaults to True.
-            target_shape (Tuple[int], optional): [description]. Defaults to (3,128,128).
-            grayscale (bool, optional): [description]. Defaults to False.
-            max_aspect_ratio (float): Defaults to 1.2
-            normalize (bool): Defaults to True
-                If True, normalize final image tensor to the range [0.0, 1.0]
-
-        """
-
-        self.interp_method = interp_method
-        self.antialiasing = antialiasing
-        self.target_shape = target_shape
-        self.num_output_channels = self.target_shape[0]
-        self.max_aspect_ratio = max_aspect_ratio
-        self.grayscale = grayscale
-        self.normalize = normalize
-
-        self.resize = partial(
-            resize_right.resize, interp_method=self.interp_method, antialiasing=self.antialiasing
-        )
-        self.normalize_image = NormalizeImage.normalize_image
-
-    @staticmethod
-    def aspect_ratio(img: torch.Tensor):
-
-        minside = np.min(img.shape[1:])
-        maxside = np.max(img.shape[1:])
-
-        aspect_ratio = maxside / minside
-        return aspect_ratio
-
-    def __call__(
-        self, img: torch.Tensor, target_shape: Optional[Tuple[int]] = None
-    ) -> torch.Tensor:
-        """[summary]
-
-        Args:
-            img (torch.Tensor): [description]
-            target_shape: (Optional[Tuple[int]]): Optionally override this CleverCrop class instance's init value.
-
-        Returns:
-            torch.Tensor: [description]
-        """
-        target_shape = target_shape or self.target_shape
-
-        minside = np.min(img.shape[1:])  # + 1
-        maxside = np.max(img.shape[1:])  # + 1
-        new_img = img
-
-        aspect_ratio = maxside / minside
-        if aspect_ratio > self.max_aspect_ratio:
-            num_repeats = np.floor((maxside / minside))
-            min_dim = np.argmin(img.shape[1:]) + 1
-            for _ in range(int(num_repeats)):
-                new_img = torch.cat([new_img, img], dim=min_dim)
-        if maxside == img.shape[2]:
-            new_img = torch.rot90(new_img, k=1, dims=[1, 2])
-
-        new_img = self.resize(new_img, out_shape=target_shape)
-
-        if self.grayscale:
-            num_output_channels = self.target_shape[0]
-            new_img = torchvision.transforms.functional.rgb_to_grayscale(
-                img=new_img, num_output_channels=self.num_output_channels
-            )
-
-        if self.normalize:
-            new_img = self.normalize_image(new_img)
-
-        return new_img
-
-    def __repr__(self):
-        return json.dumps(
-            {
-                "interp_method": str(self.interp_method),
-                "antialiasing": self.antialiasing,
-                "target_shape": self.target_shape,
-                "num_output_channels": self.num_output_channels,
-                "max_aspect_ratio": self.max_aspect_ratio,
-                "grayscale": self.grayscale,
-                "normalize": self.normalize,
-            }
-        )
+# plt.style.use("seaborn-pastel")
 
 
 clever_crop = CleverCrop()

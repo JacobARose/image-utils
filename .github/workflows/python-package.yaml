@@ -1,59 +1,51 @@
+---
 # This workflow will install Python dependencies, run full checks defined in `.pre-commit-config.yaml` with a variety of Python versions
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
 
 name: Python package
 
 on:
-  push:
-    branches: [ main, develop ]
-  pull_request:
-    branches: [ main, develop ]
+    push:
+        branches: [main, develop]
+    pull_request:
+        branches: [main, develop]
 
 jobs:
-  build:
+    build:
 
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        python-version: [3.7, 3.8]
-    steps:
-    - uses: actions/checkout@v2
+        runs-on: ubuntu-latest
+        strategy:
+            fail-fast: false
+            matrix:
+                python-version: [3.7, 3.8]
+        steps:
+            - uses: actions/checkout@v2
 
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: conda-incubator/setup-miniconda@v2
-      with:
-        activate-environment: imutils
-        environment-file: environment.yml
-        python-version: ${{ matrix.python-version }}
+            - name: Set up Python ${{ matrix.python-version }}
+              uses: conda-incubator/setup-miniconda@v2
+              with:
+                  activate-environment: imutils
+                  environment-file: environment.yml
+                  python-version: ${{ matrix.python-version }}
 
-    - name: Install repo main branch
-      run: |
-        conda init bash
-        conda activate imutils
-        conda list
-        pip list
-        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-        pip install .
+            - name: Install repo main branch
+              run: |
+                  source build_conda.sh
+                  conda list
+                  pip list
+                  # if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+                  pip install .
 
-#     - name: Install repo develop branch
-#       run: |
-#         if [ -f requirements-dev.txt ]; then pip install -r requirements-dev.txt; fi
-#         pip install -e .[develop]
+            - name: precommit
+              run: pre-commit run -a
 
-    - name: precommit
-      run: pre-commit run -a
+            - name: Setup tmate session
+              if: ${{ failure() }}
+              uses: mxschmitt/action-tmate@v3
+              timeout-minutes: 15
 
-    - name: Setup tmate session
-      if: ${{ failure() }}
-      uses: mxschmitt/action-tmate@v3
-      timeout-minutes: 15
+            - name: Install plugin
+              run: pip install pytest-github-actions-annotate-failures
 
-    - name: Install plugin
-      run: pip install pytest-github-actions-annotate-failures
-
-    - name: Test with pytest
-      run: pytest
-
-    # - name: pytest docs
-    #   run: pytest --doctest-modules
+            - name: Test with pytest
+              run: pytest

@@ -1,11 +1,12 @@
+---
 channels:
-  - defaults
-  - pytorch
-  - conda-forge
+    - defaults
+    - pytorch
+    - conda-forge
 dependencies:
-  - cudatoolkit=10.1
-  - cudnn=7.6
-  - mpi4py=3.0
+    - cudatoolkit=10.1
+    - cudnn=7.6
+    - mpi4py=3.0
 #   - python=3.8
 #   - pytorch=1.7.1
 #   - torchvision

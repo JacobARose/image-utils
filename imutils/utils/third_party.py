@@ -18,4 +18,5 @@ except ModuleNotFoundError:
         import torchdata
     except:
         from types import SimpleNamespace
+
         torchdata = SimpleNamespace()

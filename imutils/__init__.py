@@ -11,7 +11,8 @@ __version__ = "0.0.1"
 
 __all__ = [
     "imutils",
-    "ResizeRightrobust_image_duplicator",
+    "ResizeRight",
+    "robust_image_duplicator",
     "ASSETS_DIR",
     "SAMPLE_IMAGE_PATHS",
     # "RobustImageDuplicator",

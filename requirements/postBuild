@@ -1,0 +1,9 @@
+
+
+jupyter labextension install --no-build @aquirdturtle/collapsible_headings
+jupyter labextension install --no-build @jupyterlab/latex
+# jupyter labextension install --no-build @jupyterlab/toc
+jupyter labextension install --no-build @kiteco/jupyterlab-kite
+jupyter labextension install --no-build jupyter-matplotlib
+
+jupyter lab build

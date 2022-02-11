@@ -37,8 +37,8 @@ def support_sz(sz):
 def cubic(x):
     fw, to_dtype, eps = set_framework_dependencies(x)
     absx = fw.abs(x)
-    absx2 = absx ** 2
-    absx3 = absx ** 3
+    absx2 = absx**2
+    absx3 = absx**3
     return (1.5 * absx3 - 2.5 * absx2 + 1.0) * to_dtype(absx <= 1.0) + (
         -0.5 * absx3 + 2.5 * absx2 - 4.0 * absx + 2.0
     ) * to_dtype((1.0 < absx) & (absx <= 2.0))
@@ -48,7 +48,7 @@ def cubic(x):
 def lanczos2(x):
     fw, to_dtype, eps = set_framework_dependencies(x)
     return (
-        (fw.sin(pi * x) * fw.sin(pi * x / 2) + eps) / ((pi ** 2 * x ** 2 / 2) + eps)
+        (fw.sin(pi * x) * fw.sin(pi * x / 2) + eps) / ((pi**2 * x**2 / 2) + eps)
     ) * to_dtype(abs(x) < 2)
 
 
@@ -56,7 +56,7 @@ def lanczos2(x):
 def lanczos3(x):
     fw, to_dtype, eps = set_framework_dependencies(x)
     return (
-        (fw.sin(pi * x) * fw.sin(pi * x / 3) + eps) / ((pi ** 2 * x ** 2 / 3) + eps)
+        (fw.sin(pi * x) * fw.sin(pi * x / 3) + eps) / ((pi**2 * x**2 / 3) + eps)
     ) * to_dtype(abs(x) < 3)
 
 

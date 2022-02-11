@@ -19,4 +19,3 @@ except ModuleNotFoundError:
     except:
         from types import SimpleNamespace
         torchdata = SimpleNamespace()
-

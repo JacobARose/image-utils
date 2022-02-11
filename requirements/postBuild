@@ -7,4 +7,3 @@ jupyter labextension install --no-build @kiteco/jupyterlab-kite
 jupyter labextension install --no-build jupyter-matplotlib
 
 jupyter lab build
-

@@ -14,4 +14,9 @@ __all__ = ["torchdata"]
 try:
     import torchdatasets as torchdata
 except ModuleNotFoundError:
-    import torchdata
+    try:
+        import torchdata
+    except:
+        from types import SimpleNamespace
+        torchdata = SimpleNamespace()
+

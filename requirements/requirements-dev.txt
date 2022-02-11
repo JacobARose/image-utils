@@ -1,4 +1,15 @@
 -r requirements.txt
+ipython
+ipykernel
+ipywidgets
+jupyter
+jupyterlab>=3
+jupyter-kite>=2.0.2
+jupyterlab-kite>=2.0.2
+jupyterlab_widgets
+jupyter-server
+jupyterlab-server
+jupyterlab-widgets
 flake8
 pre-commit
 Sphinx

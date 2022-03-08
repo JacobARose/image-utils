@@ -1,0 +1,160 @@
+"""
+
+models/lightning.py
+
+"""
+
+
+import torch
+import torch.nn as nn
+import torchvision.models as models
+# from conf import *
+
+def build_model():
+    if args.model_name == 'resnet50':
+        model = models.resnet50(pretrained=True)
+
+    elif args.model_name == 'resnet18':
+        model = models.resnet18(pretrained=True)
+
+    #Modify the classifier for agriculture data
+    num_ftrs = model.fc.in_features
+    model.fc = nn.Sequential(nn.Linear(num_ftrs,512),
+                            nn.ReLU(),
+                            nn.Dropout(p=0.3),
+                            nn.Linear(512,4))
+    
+    if args.channels_last:
+        model = model.to(args.device, memory_format=torch.channels_last)
+    else:
+        model = model.to(args.device)
+        
+    if args.distributed:
+        model = torch.nn.parallel.DistributedDataParallel(model,
+                                                      device_ids=[args.local_rank],
+                                                      output_device=args.local_rank)
+    return model
+
+
+
+
+import pytorch_lightning as pl
+import torch
+import torchmetrics
+
+
+class LoggedLitModule(pl.LightningModule):
+    """LightningModule plus wandb features and simple training/val steps.
+    By default, assumes that your training loop involves inputs (xs)
+    fed to .forward to produce outputs (y_hats)
+    that are compared to targets (ys)
+    by self.loss and by metrics,
+    where each batch == (xs, ys).
+    This loss is fed to self.optimizer.
+    If this is not true, overwrite _train_forward
+    and optionally _val_forward and _test_forward.
+    """
+
+    def __init__(self,
+                 criterion):
+        super().__init__()
+
+        self.loss = criterion
+        self.train_metrics = torch.nn.ModuleList([])
+        self.val_metrics = torch.nn.ModuleList([])
+        self.test_metrics = torch.nn.ModuleList([])
+
+    def training_step(self, xys, idx):
+        xs, ys = xys
+        y_hats = self._train_forward(xs)
+        loss = self.loss(y_hats, ys)
+
+        logging_scalars = {"loss": loss}
+        for metric in self.training_metrics:
+            self.log_metric(metric, logging_scalars, y_hats, ys)
+
+        self.do_logging(xs, ys, idx, y_hats, logging_scalars)
+
+        return {"loss": loss, "y_hats": y_hats}
+
+    def validation_step(self, xys, idx):
+        xs, ys = xys
+        y_hats = self._val_forward(xs)
+        loss = self.loss(y_hats, ys)
+
+        logging_scalars = {"loss": loss}
+        for metric in self.validation_metrics:
+            self.log_metric(metric, logging_scalars, y_hats, ys)
+
+        self.do_logging(xs, ys, idx, y_hats, logging_scalars, step="val")
+
+        return {"loss": loss, "y_hats": y_hats}
+
+    def test_step(self, xys, idx):
+        xs, ys = xys
+        y_hats = self._test_forward(xs)
+        loss = self.loss(y_hats, ys)
+
+        logging_scalars = {"loss": loss}
+        for metric in self.test_metrics:
+            self.log_metric(metric, logging_scalars, y_hats, ys)
+
+        self.do_logging(xs, ys, idx, y_hats, logging_scalars, step="test")
+
+        return {"loss": loss, "y_hats": y_hats}
+
+    def do_logging(self, xs, ys, idx, y_hats, scalars, step="train"):
+        self.log_dict(
+            {step + "/" + name: value for name, value in scalars.items()})
+
+    def on_pretrain_routine_start(self):
+        print(self)
+
+    def log_metric(self, metric, logging_scalars, y_hats, ys):
+        metric_str = metric.__class__.__name__.lower()
+        value = metric(y_hats, ys)
+        logging_scalars[metric_str] = value
+
+    def _train_forward(self, xs):
+        """Overwrite this method when module.forward doesn't produce y_hats."""
+        return self.forward(xs)
+
+    def _val_forward(self, xs):
+        """Overwrite this method when training and val forward differ."""
+        return self._train_forward(xs)
+
+    def _test_forward(self, xs):
+        """Overwrite this method when val and test forward differ."""
+        return self._val_forward(xs)
+
+    def configure_optimizers(self):
+        return self.optimizer(self.parameters(), **self.optimizer_params)
+
+    def optimizer(self, *args, **kwargs):
+        error_msg = ("To use LoggedLitModule, you must set self.optimizer to a torch-style Optimizer"
+                     + "and set self.optimizer_params to a dictionary of keyword arguments.")
+        raise NotImplementedError(error_msg)
+
+
+class LoggedImageClassifierModule(LoggedLitModule):
+    """LightningModule for image classification with Weights and Biases logging."""
+    def __init__(self):
+
+        super().__init__()
+
+        self.train_acc = torchmetrics.Accuracy()
+        self.valid_acc = torchmetrics.Accuracy()
+        self.test_acc = torchmetrics.Accuracy()
+
+        self.training_metrics.append(self.train_acc)
+        self.validation_metrics.append(self.valid_acc)
+        self.test_metrics.append(self.test_acc)
+
+    def log_metric(self, metric, logging_scalars, y_hats, ys):
+        metric_str = metric.__class__.__name__.lower()
+        if metric_str == "accuracy":
+            float_types = [torch.float32, torch.float16, torch.float64]
+            if ys.dtype in float_types:  # handle binary classification with MSELoss case
+                ys = ys.int()  # accuracy expects ints, MSELoss expects floats
+        value = metric(y_hats, ys)
+        logging_scalars[metric_str] = value

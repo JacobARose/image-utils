@@ -20,10 +20,9 @@ fi
 
 
 
-LD_LIBRARY_PATH=/media/data/conda/jrose3/envs/$ENV_NAME/lib:$LD_LIBRARY_PATH
-LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/media/data/anaconda/lib
+LD_LIBRARY_PATH="/media/data/conda/jrose3/envs/$ENV_NAME/lib:/media/data/anaconda/lib"
 
-conda create -y -n $ENV_NAME python=3.8 pkg-config numba compilers libjpeg-turbo nodejs cudatoolkit=10.1 cupy opencv libgcc-ng libgcc -c fastchan -c pytorch -c conda-forge
+conda create -y -n $ENV_NAME python=3.8 pkg-config numba compilers libjpeg-turbo nodejs cudatoolkit=10.1 cupy opencv libgcc-ng libgcc llvmdev -c fastchan -c pytorch -c conda-forge
 
 conda activate $ENV_NAME
 
@@ -55,6 +54,7 @@ fi
 #source requirements/postBuild # put jupyter labextension install commands here
 conda env export --no-builds > "requirements/$ENV_NAME_environment.yml"
 
+pip install -e .
 
 python -c "import cv2; print(f'cv2.__version__: {cv2.__version__}')"
 python -c "import torch; print('torch.cuda.is_available(): ', torch.cuda.is_available())"

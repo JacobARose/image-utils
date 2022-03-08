@@ -59,7 +59,7 @@ class Extract:
     @classmethod
     def locate_files(
         cls, dataset_dir: Union[str, List[str]], select_subset: Optional[str] = None
-    ) -> Dict[str, torchdata.datasets.Dataset]:
+    ) -> Dict[str, "torchdata.datasets.Dataset"]:
 
         files = {}
         if isinstance(dataset_dir, list):

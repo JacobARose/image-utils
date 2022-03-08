@@ -55,6 +55,7 @@ from typing import Dict, List, Optional, Tuple, Union
 import pandas as pd
 import rich
 from rich import print as pp
+import yaml
 
 __all__ = [
     "leavesdbv0_3",
@@ -545,10 +546,30 @@ class AvailableDatasets:
     # class AvailableDatasets:
 
     versions = {"v0_3": leavesdbv0_3, "v1_0": leavesdbv1_0, "v1_1": leavesdbv1_1}
-
+    extras = {}
+    
+    def display_all(self):
+        # return yaml.dump({**self.versions, "extras":self.extras})
+        # return {**self.versions, "extras":yaml.dump(self.extras)}
+        return {**self.versions, "extras":self.extras}
+    
     @property
     def db_versions(self):
         return self.versions
+    
+    
+    @classmethod
+    def add_dataset(cls, tag: str, root_dir: str) -> None:
+        try:
+            if tag in cls.extras:
+                root_dir = cls.extras[tag]
+            else:
+                root_dir = cls.get_latest(tag)
+            print(f"Attempted to add existing dataset with tag: {tag} at root_dir: {root_dir}. Continuing with existing entry.")
+        except KeyError:
+            cls.extras[tag] = root_dir
+            print(f"Added new dataset with tag: {tag} to root_dir: {root_dir}")
+    
 
     def __repr__(self):
         buffer = r"<" * 3 + r"-" * 10 + r">" * 3 + "\n"

@@ -1,8 +1,10 @@
 attrs
 icecream
-# opencv-python
+opencv-python
 # =======
 git+https://github.com/JacobARose/lightning-hydra-classifiers.git
+-e git+https://github.com/JacobARose/solo-learn.git@ffcv
+
 hydra-core>=1.1
 matplotlib
 modin
@@ -10,7 +12,7 @@ more_itertools
 munch
 numpy==1.19
 omegaconf
-opencv-python-headless
+#opencv-python-headless
 pandarallel
 pandas
 Pillow

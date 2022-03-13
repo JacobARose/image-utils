@@ -40,3 +40,4 @@ git+git://github.com/szymonmaszke/torchdatasets.git@0389feea2c23657440f9ba9a1af9
 swifter
 tqdm
 wandb
+webdataset

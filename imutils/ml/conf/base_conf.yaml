@@ -1,0 +1,157 @@
+
+# metadata specialised for each experiment
+core:
+  version: 0.0.1
+  tags:
+    - consulting
+
+# defaults:
+#  - override hydra/launcher: joblib
+
+data:
+	datamodule:
+		_target_: src.pl_data.datamodule.MyDataModule
+		val_proportion: 0.15
+		dataset_name: COR14  # Label for experiment
+		transform_recipe: SIMCLR_COR14
+		datasets:
+			herbarium2022:
+				train:
+					_target_: imutils.ml.data.datamodule.Herbarium2022Dataset
+					catalog_dir: "/media/data_cifs/projects/prj_fossils/data/raw_data/herbarium-2022-fgvc9_resize"
+					subset: "train"
+					label_col: "scientificName"
+					train_size: 0.7
+					shuffle: true
+					seed: 14
+					# image_reader: default_reader
+					# preprocess: none
+					# transform: none
+				val:
+					_target_: imutils.ml.data.datamodule.Herbarium2022Dataset
+					catalog_dir: "/media/data_cifs/projects/prj_fossils/data/raw_data/herbarium-2022-fgvc9_resize"
+					subset: "val"
+					label_col: "scientificName"
+					train_size: 0.7
+					shuffle: false
+					seed: 14
+					# image_reader: default_reader
+					# preprocess: none
+					# transform: none
+				test:
+					_target_: imutils.ml.data.datamodule.Herbarium2022Dataset
+					catalog_dir: "/media/data_cifs/projects/prj_fossils/data/raw_data/herbarium-2022-fgvc9_resize"
+					subset: "train"
+					label_col: "scientificName"
+					train_size: 0.7
+					shuffle: true
+					seed: 14
+					# image_reader: default_reader
+					# preprocess: none
+					# transform: none
+				
+		_target_: imutils.ml.data.datamodule.Herbarium2022DataModule
+		catalog_dir: "/media/data_cifs/projects/prj_fossils/data/raw_data/herbarium-2022-fgvc9_resize"
+		label_col: "scientificName"
+		train_size: 0.7
+		shuffle: true
+		seed: 14
+		batch_size: 128
+		num_workers: 4
+		pin_memory: true
+		transform_cfg: none
+		remove_transforms: false
+		# num_workers:
+		# 	train: 4
+		# 	val: 4
+		# 	test: 4
+		# batch_size:
+		# 	train: 256  # 240  # 128
+		# 	val: 256 # 240  # 128
+		# 	test: 256  # 128
+hydra:
+  run:
+    dir: ./experiments/${now:%Y-%m-%d}/${now:%H-%M-%S}
+
+  sweep:
+    dir: ./experiments/multirun/${now:%Y-%m-%d}/${now:%H-%M-%S}/
+    subdir: ${hydra.job.num}_${hydra.job.id}
+
+  job:
+    env_set:
+      WANDB_START_METHOD: thread
+
+  # launcher:
+  #   n_jobs: 4
+  #   batch_size: auto
+
+logging:
+  n_elements_to_log: 32
+  normalize_visualization: True
+
+  # log frequency
+  val_check_interval: 1.0
+  progress_bar_refresh_rate: 20
+
+  wandb:
+    project: herbarium2022
+    entity: jrose
+
+    watch:
+      log: 'all'
+      log_freq: 10
+
+  lr_monitor:
+    logging_interval: step
+    log_momentum: False
+model:
+  _target_: imutils.ml.models.pl.Litclassifier
+  name: resnet18
+  num_classes: 1
+  final_nl: False
+  self_supervised: True
+  loss: nt_xent_loss
+
+optim:
+  optimizer:
+    #  Adam-oriented deep learning
+    _target_: torch.optim.Adam
+    #  These are all default parameters for the Adam optimizer
+    lr: 1e-3  # 0.001
+    betas: [ 0.9, 0.999 ]
+    eps: 1e-08
+    weight_decay: 0.
+    exclude_bn_bias: True
+
+  use_lr_scheduler: True
+  lr_scheduler:
+    _target_: torch.optim.lr_scheduler.LambdaLR
+    warmup_steps: 2734  #  (70000 // 256) * 10
+    total_steps: 7000000  # 70000 * 100
+
+train:
+  # reproducibility
+  deterministic: False
+  random_seed: 42
+
+  # training
+
+  pl_trainer:
+    fast_dev_run: False # Enable this for debug purposes
+    gpus: 1
+    precision: 32
+    max_steps: ${optim.lr_scheduler.total_steps}
+    accumulate_grad_batches: 1
+    # num_sanity_val_steps: 2
+    gradient_clip_val: 10000000.0  # 10.
+
+  monitor_metric: 'val_loss'
+  monitor_metric_mode: 'min'
+
+  early_stopping:
+    patience: 42
+    verbose: False
+
+  model_checkpoints:
+    save_top_k: 2
+    verbose: True # False

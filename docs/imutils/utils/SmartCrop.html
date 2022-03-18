@@ -1,0 +1,933 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.10.0" />
+<title>imutils.utils.SmartCrop API documentation</title>
+<meta name="description" content="" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>imutils.utils.SmartCrop</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">#!/usr/bin/env python
+# coding: utf-8
+
+# # SmartCrop refactor - Actor model
+#
+#
+# Author: Jacob A Rose
+# Created on: Thursday August 19th, 2021
+
+
+import argparse
+import logging
+import os
+import random
+from pathlib import Path
+from typing import Callable, List, Optional, Tuple, Union
+
+import cv2
+import numpy as np
+import PIL
+import torch
+from PIL import Image, ImageStat
+from rich import print as pp
+from torchvision.datasets import ImageFolder
+from tqdm.auto import tqdm, trange
+
+seed = 334455
+random.seed(seed)
+np.random.seed(seed)
+# from ResizeRight.resize_right import resize_right, interp_methods
+from functools import partial
+
+import modin.pandas as pd
+
+# import ray
+import torchvision
+from modin.config import ProgressBar
+from torch import nn
+from torchvision import transforms, utils
+from tqdm import tqdm
+
+from imutils.utils.ResizeRight.resize_right import interp_methods, resize_right
+
+ProgressBar.enable()
+pd.set_option(&#34;display.max_columns&#34;, 500)
+pd.set_option(&#34;display.max_colwidth&#34;, 200)
+
+# from IPython.core.interactiveshell import InteractiveShell
+# InteractiveShell.cache_size = 0
+# InteractiveShell.ast_node_interactivity = &#34;all&#34;
+
+from dataclasses import asdict, dataclass
+
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+sns.set(style=&#34;white&#34;)
+import json
+from typing import *
+
+# import dask.array as da
+# import dask.dataframe as dd
+# from dask import delayed
+from munch import Munch
+
+####################################
+####################################
+from skimage import io
+from skimage.io import imread
+from skimage.io.collection import alphanumeric_key
+
+# import dask
+
+
+__all__ = [&#34;CleverCropConfig&#34;, &#34;CleverCrop&#34;, &#34;NormalizeImage&#34;]
+
+totensor: Callable = torchvision.transforms.ToTensor()
+
+
+def toPIL(img: torch.Tensor, mode=&#34;RGB&#34;) -&gt; Callable:
+    return torchvision.transforms.ToPILImage(mode)(img)
+
+
+class NormalizeImage(nn.Module):
+    @staticmethod
+    def channelwise_min(img: torch.Tensor) -&gt; torch.Tensor:
+        return img.min(dim=1).values.min(dim=1).values
+
+    @staticmethod
+    def channelwise_max(img: torch.Tensor) -&gt; torch.Tensor:
+        return img.max(dim=1).values.max(dim=1).values
+
+    @staticmethod
+    def normalize_image(img: torch.Tensor) -&gt; torch.Tensor:
+        &#34;&#34;&#34;Enforce pixel bounds to range [0.0, 1.0]&#34;&#34;&#34;
+        img_min = NormalizeImage.channelwise_min(img).view(-1, 1, 1)
+        img_max = NormalizeImage.channelwise_max(img).view(-1, 1, 1)
+        return (img - img_min) / (img_max - img_min)
+
+
+########################
+########################
+
+
+@dataclass
+class CleverCropConfig:
+
+    interp_method: Callable = interp_methods.cubic
+    antialiasing: bool = True
+    target_shape: Tuple[int] = (3, 128, 128)
+    max_aspect_ratio: float = 1.2
+    grayscale: bool = False
+    normalize: bool = True
+
+
+class CleverCrop:
+    def __init__(
+        self,
+        interp_method=interp_methods.cubic,
+        antialiasing=True,
+        target_shape: Tuple[int] = (3, 128, 128),
+        max_aspect_ratio: float = 1.2,
+        grayscale: bool = False,
+        normalize: bool = True,
+    ):
+        &#34;&#34;&#34;[summary]
+
+        Args:
+            interp_method: Defaults to interp_methods.cubic.
+            antialiasing (bool): Defaults to True.
+            target_shape (Tuple[int], optional): [description]. Defaults to (3,128,128).
+            grayscale (bool, optional): [description]. Defaults to False.
+            max_aspect_ratio (float): Defaults to 1.2
+            normalize (bool): Defaults to True
+                If True, normalize final image tensor to the range [0.0, 1.0]
+
+        &#34;&#34;&#34;
+
+        self.interp_method = interp_method
+        self.antialiasing = antialiasing
+        self.target_shape = target_shape
+        self.num_output_channels = self.target_shape[0]
+        self.max_aspect_ratio = max_aspect_ratio
+        self.grayscale = grayscale
+        self.normalize = normalize
+
+        self.resize = partial(
+            resize_right.resize,
+            #                               out_shape=self.target_shape,
+            interp_method=self.interp_method,
+            antialiasing=self.antialiasing,
+        )
+        self.normalize_image = NormalizeImage.normalize_image
+
+    @staticmethod
+    def aspect_ratio(img: torch.Tensor):
+
+        minside = np.min(img.shape[1:])
+        maxside = np.max(img.shape[1:])
+
+        aspect_ratio = maxside / minside
+        return aspect_ratio
+
+    def __call__(
+        self, img: torch.Tensor, target_shape: Optional[Tuple[int]] = None
+    ) -&gt; torch.Tensor:
+        &#34;&#34;&#34;[summary]
+
+        Args:
+            img (torch.Tensor): [description]
+            target_shape: (Optional[Tuple[int]]): Optionally override this CleverCrop class instance&#39;s init value.
+
+        Returns:
+            torch.Tensor: [description]
+        &#34;&#34;&#34;
+        target_shape = target_shape or self.target_shape
+
+        minside = np.min(img.shape[1:])  # + 1
+        maxside = np.max(img.shape[1:])  # + 1
+        new_img = img
+
+        aspect_ratio = maxside / minside
+        if aspect_ratio &gt; self.max_aspect_ratio:
+            num_repeats = np.floor((maxside / minside))
+            min_dim = np.argmin(img.shape[1:]) + 1
+            for _ in range(int(num_repeats)):
+                new_img = torch.cat([new_img, img], dim=min_dim)
+        if maxside == img.shape[2]:
+            new_img = torch.rot90(new_img, k=1, dims=[1, 2])
+
+        new_img = self.resize(new_img, out_shape=target_shape)
+
+        if self.grayscale:
+            num_output_channels = self.target_shape[0]
+            new_img = torchvision.transforms.functional.rgb_to_grayscale(
+                img=new_img, num_output_channels=self.num_output_channels
+            )
+
+        if self.normalize:
+            new_img = self.normalize_image(new_img)
+
+        return new_img
+
+    def __repr__(self):
+        return json.dumps(
+            {
+                &#34;interp_method&#34;: str(self.interp_method),
+                &#34;antialiasing&#34;: self.antialiasing,
+                &#34;target_shape&#34;: self.target_shape,
+                &#34;num_output_channels&#34;: self.num_output_channels,
+                &#34;max_aspect_ratio&#34;: self.max_aspect_ratio,
+                &#34;grayscale&#34;: self.grayscale,
+                &#34;normalize&#34;: self.normalize,
+            }
+        )
+
+
+os.environ[
+    &#34;TEST_IMAGES&#34;
+] = &#34;/media/data/jacob/GitHub/lightning-hydra-classifiers/tests/test_images/&#34;
+
+
+class test_CleverCrop:
+
+    test_data_dir: str = os.getenv(&#34;TEST_IMAGES&#34;)
+    tall_img_path: str = os.path.join(test_data_dir, &#34;tall_aspect_ratio_leaf_image.jpg&#34;)
+    wide_img_path: str = os.path.join(test_data_dir, &#34;wide_aspect_ratio_leaf_image.jpg&#34;)
+
+    def __init__(self, res=256):
+        self.seed = 333333
+        self.target_shape = (3, res, res)
+        self.tall_img = totensor(PIL.Image.open(self.tall_img_path))
+        self.wide_img = totensor(PIL.Image.open(self.wide_img_path))
+
+        self.config = CleverCropConfig(
+            interp_method=interp_methods.cubic,
+            antialiasing=True,
+            target_shape=self.target_shape,
+            max_aspect_ratio=1.2,
+            grayscale=False,
+            normalize=True,
+        )
+
+    def run(self):
+        transform = CleverCrop(**asdict(self.config))
+
+        tall_cropped = transform(self.tall_img)
+        wide_cropped = transform(self.wide_img)
+
+        print(&#34;Tall:&#34;)
+        print(f&#34;Input shape: {self.tall_img.shape}&#34;)
+        print(f&#34;Output shape: {tall_cropped.shape}&#34;)
+
+        print(&#34;Wide:&#34;)
+        print(f&#34;Input shape: {self.wide_img.shape}&#34;)
+        print(f&#34;Output shape: {wide_cropped.shape}&#34;)
+
+        fig, ax = plt.subplots(1, 2)
+        ax[0].imshow(self.tall_img.permute(1, 2, 0))
+        ax[1].imshow(tall_cropped.permute(1, 2, 0))
+
+        fig, ax = plt.subplots(1, 2)
+        ax[0].imshow(self.wide_img.permute(1, 2, 0))
+        ax[1].imshow(wide_cropped.permute(1, 2, 0))
+
+
+def split_df_into_chunks(data_df: pd.DataFrame, num_chunks: int) -&gt; List[pd.DataFrame]:
+    idx_chunks = [list(idx) for idx in more_itertools.divide(num_chunks, range(len(data_df)))]
+    df_chunks = [data_df.iloc[idx, :] for idx in idx_chunks]
+    return df_chunks
+
+
+# @dask.delayed
+def open_image(row: List[Dict[str, Any]]) -&gt; np.ndarray:
+    return io.imread(row[&#34;path&#34;])
+
+
+# @dask.delayed
+def transform(
+    img: np.ndarray, row: Dict[str, Any] = None, target_shape: Optional[Tuple[int]] = None
+) -&gt; np.ndarray:
+
+    img = totensor(img)
+    img = clever_crop(img, target_shape=target_shape)
+    img = (img * 255.0).to(torch.uint8).numpy()
+    img = np.moveaxis(img, 0, -1)
+    return img
+
+
+# @dask.delayed
+def write_jpeg(img: np.ndarray, row: Dict[str, Any]) -&gt; bool:
+
+    if os.path.isfile(row[&#34;target_path&#34;]):
+        return True
+    try:
+        io.imsave(row[&#34;target_path&#34;], img, quality=100)
+        out = os.path.isfile(row[&#34;target_path&#34;])
+    except Exception as e:
+        print(&#34;Write image error:&#34;, row[&#34;target_path&#34;], e)
+        out = False
+    return out
+
+
+# @dask.delayed
+def batch_ETL(batch_records, target_shape: Tuple[int]):
+
+    resize_transform = partial(transform, target_shape=target_shape)
+    imgs = []
+    for i, rec in enumerate(batch_records):
+        if os.path.isfile(rec[&#34;target_path&#34;]):
+            continue
+        img = open_image(row=rec)
+        img = resize_transform(img=img, row=rec)
+        img = write_jpeg(img=img, row=rec)
+        imgs.append(img)
+
+    print(f&#34;Computing {len(imgs)} images, Skipping {len(batch_records) - len(imgs)}&#34;)
+    return imgs
+
+
+clever_crop = CleverCrop()
+
+
+def query_and_preprocess_catalog(config, target_config):
+    tag = available_datasets.query_tags(
+        dataset_name=config.dataset_name,
+        y_col=config.y_col,
+        threshold=config.threshold,
+        resolution=config.resolution,
+    )
+    root_dir = available_datasets.get_latest(tag)
+    print(f&#34;Tag: {tag}&#34;)
+    print(f&#34;Root Dir: {root_dir}&#34;)
+    data_df = parse_df_catalog_from_image_directory(
+        root_dir=root_dir, dataset_name=config.dataset_name
+    )
+
+    target_dir = root_dir.replace(&#34;original&#34;, f&#34;{target_config.resolution}&#34;)
+    data_df = data_df.assign(
+        target_path=data_df.apply(
+            lambda x: str(Path(target_dir, x.family, Path(x.path).name)), axis=1
+        )
+    )
+    family_dirs = list(set(data_df.target_path.apply(lambda x: str(Path(x).parent))))
+    [os.makedirs(subdir, exist_ok=True) for subdir in family_dirs]
+
+    return data_df
+
+
+##################
+# ### Scratch
+##################
+
+
+# import dask.bag as db
+# ### Dask Cluster
+# from dask.distributed import Client, LocalCluster, progress
+
+
+# def launch_dask_client(config):
+#     cluster = LocalCluster(
+#         dashboard_address=8989,
+#         # scheduler_port=8989,
+#         threads_per_worker=config.threads_per_worker,
+#         n_workers=config.num_cpus,
+#     )
+#     client = Client(cluster)
+
+#     return client
+
+
+# def process_data_records(data_df: pd.DataFrame, config, target_config):
+#     clever_crop = CleverCrop(target_shape=target_config.target_shape)
+
+#     records = data_df.to_dict(&#34;records&#34;)  # [:500]
+#     record_bag = db.from_sequence(records, partition_size=config.chunksize)
+#     delayed_records = record_bag.to_delayed()
+#     pp(config)
+#     pp(target_config)
+#     delayed_results = []
+#     for i, rec in enumerate(delayed_records):
+#         delayed_results.append(
+#             dask.delayed(batch_ETL)(batch_records=rec, target_shape=target_config.target_shape)
+#         )
+
+#     results = dask.persist(*delayed_results)
+#     progress(delayed_results)
+#     print(&#34;success?&#34;)
+#     return dask.compute(*delayed_results)
+
+
+# def setup_configs(args):
+#     print(&#34;args:&#34;, vars(args))
+#     print(args.resolution)
+#     config = Munch(
+#         chunksize=args.chunksize,
+#         num_cpus=args.num_workers,
+#         threads_per_worker=args.threads_per_worker,
+#     )
+#     config.update(
+#         dict(dataset_name=args.dataset_name, y_col=&#34;family&#34;, threshold=0, resolution=&#34;original&#34;)
+#     )
+#     target_config = Munch(resolution=args.resolution, y_col=&#34;family&#34;, threshold=0)
+#     config.target_shape = (3, config.resolution, config.resolution)
+#     target_config.target_shape = (3, target_config.resolution, target_config.resolution)
+
+#     return config, target_config
+
+
+# def cmdline_args():
+#     p = argparse.ArgumentParser(
+#         description=(
+#             &#34;Resize datasets to a new resolution, using the clever crop resize function. Requires&#34;
+#             &#34; source images to exist in {root_dir}/original/jpg and be organized into 1 subdir&#34;
+#             &#34; per-class.&#34;
+#         )
+#     )
+#     p.add_argument(
+#         &#34;-r&#34;,
+#         &#34;--resolution&#34;,
+#         dest=&#34;resolution&#34;,
+#         type=int,
+#         help=&#34;target resolution, images resized to (3, res, res).&#34;,
+#     )
+#     p.add_argument(
+#         &#34;-n&#34;,
+#         &#34;--dataset_name&#34;,
+#         dest=&#34;dataset_name&#34;,
+#         type=str,
+#         default=&#34;Extant_Leaves&#34;,
+#         help=&#34;&#34;&#34;Base dataset_name to be used to query the source root_dir.&#34;&#34;&#34;,
+#     )
+#     p.add_argument(
+#         &#34;-a&#34;,
+#         &#34;--run-all&#34;,
+#         dest=&#34;run_all&#34;,
+#         action=&#34;store_true&#34;,
+#         help=(
+#             &#34;Flag for when user would like to run through all default threshold arguments on a&#34;
+#             &#34; given dataset. Currently includes resolutions = [512, 1024, 1536, 2048].&#34;
+#         ),
+#     )
+#     p.add_argument(&#34;--num_workers&#34;, dest=&#34;num_workers&#34;, type=int, default=8)
+#     #                    help=&#34;Number of parallel processes to be used by pandas to efficiently construct symlinks.&#34;)
+#     p.add_argument(&#34;--threads_per_worker&#34;, dest=&#34;threads_per_worker&#34;, type=int, default=8)
+#     p.add_argument(&#34;--chunksize&#34;, dest=&#34;chunksize&#34;, type=int, default=50)
+#     return p.parse_args()
+
+
+# def main(args):
+
+#     from imutils.utils.dataset_management_utils import (
+#         parse_df_catalog_from_image_directory,
+#     )
+
+#     config, target_config = setup_configs(args)
+#     data_df = query_and_preprocess_catalog(config, target_config)
+#     client = launch_dask_client(config)
+#     results = process_data_records(data_df, config, target_config)
+
+
+# if __name__ == &#34;__main__&#34;:
+
+#     args = cmdline_args()
+#     print(&#34;args:&#34;, args)
+
+#     if args.run_all:
+#         logging.info(
+#             &#34;[INITIATING] Creation of multiple dataset versions using smart-crop at the following&#34;
+#             f&#34; resolutions: {[512, 1024, 1536, 2048]}.&#34;
+#         )
+#         for resolution in [512, 1024, 1536, 2048]:
+#             args.resolution = resolution
+#             main(args)
+
+#     elif isinstance(args.resolution, int):
+#         main(args)
+
+#     print(&#34;Finished?&#34;)</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="imutils.utils.SmartCrop.CleverCrop"><code class="flex name class">
+<span>class <span class="ident">CleverCrop</span></span>
+<span>(</span><span>interp_method=&lt;function cubic&gt;, antialiasing=True, target_shape: Tuple[int] = (3, 128, 128), max_aspect_ratio: float = 1.2, grayscale: bool = False, normalize: bool = True)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>[summary]</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>interp_method</code></strong></dt>
+<dd>Defaults to interp_methods.cubic.</dd>
+<dt><strong><code>antialiasing</code></strong> :&ensp;<code>bool</code></dt>
+<dd>Defaults to True.</dd>
+<dt><strong><code>target_shape</code></strong> :&ensp;<code>Tuple[int]</code>, optional</dt>
+<dd>[description]. Defaults to (3,128,128).</dd>
+<dt><strong><code>grayscale</code></strong> :&ensp;<code>bool</code>, optional</dt>
+<dd>[description]. Defaults to False.</dd>
+<dt><strong><code>max_aspect_ratio</code></strong> :&ensp;<code>float</code></dt>
+<dd>Defaults to 1.2</dd>
+<dt><strong><code>normalize</code></strong> :&ensp;<code>bool</code></dt>
+<dd>Defaults to True
+If True, normalize final image tensor to the range [0.0, 1.0]</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class CleverCrop:
+    def __init__(
+        self,
+        interp_method=interp_methods.cubic,
+        antialiasing=True,
+        target_shape: Tuple[int] = (3, 128, 128),
+        max_aspect_ratio: float = 1.2,
+        grayscale: bool = False,
+        normalize: bool = True,
+    ):
+        &#34;&#34;&#34;[summary]
+
+        Args:
+            interp_method: Defaults to interp_methods.cubic.
+            antialiasing (bool): Defaults to True.
+            target_shape (Tuple[int], optional): [description]. Defaults to (3,128,128).
+            grayscale (bool, optional): [description]. Defaults to False.
+            max_aspect_ratio (float): Defaults to 1.2
+            normalize (bool): Defaults to True
+                If True, normalize final image tensor to the range [0.0, 1.0]
+
+        &#34;&#34;&#34;
+
+        self.interp_method = interp_method
+        self.antialiasing = antialiasing
+        self.target_shape = target_shape
+        self.num_output_channels = self.target_shape[0]
+        self.max_aspect_ratio = max_aspect_ratio
+        self.grayscale = grayscale
+        self.normalize = normalize
+
+        self.resize = partial(
+            resize_right.resize,
+            #                               out_shape=self.target_shape,
+            interp_method=self.interp_method,
+            antialiasing=self.antialiasing,
+        )
+        self.normalize_image = NormalizeImage.normalize_image
+
+    @staticmethod
+    def aspect_ratio(img: torch.Tensor):
+
+        minside = np.min(img.shape[1:])
+        maxside = np.max(img.shape[1:])
+
+        aspect_ratio = maxside / minside
+        return aspect_ratio
+
+    def __call__(
+        self, img: torch.Tensor, target_shape: Optional[Tuple[int]] = None
+    ) -&gt; torch.Tensor:
+        &#34;&#34;&#34;[summary]
+
+        Args:
+            img (torch.Tensor): [description]
+            target_shape: (Optional[Tuple[int]]): Optionally override this CleverCrop class instance&#39;s init value.
+
+        Returns:
+            torch.Tensor: [description]
+        &#34;&#34;&#34;
+        target_shape = target_shape or self.target_shape
+
+        minside = np.min(img.shape[1:])  # + 1
+        maxside = np.max(img.shape[1:])  # + 1
+        new_img = img
+
+        aspect_ratio = maxside / minside
+        if aspect_ratio &gt; self.max_aspect_ratio:
+            num_repeats = np.floor((maxside / minside))
+            min_dim = np.argmin(img.shape[1:]) + 1
+            for _ in range(int(num_repeats)):
+                new_img = torch.cat([new_img, img], dim=min_dim)
+        if maxside == img.shape[2]:
+            new_img = torch.rot90(new_img, k=1, dims=[1, 2])
+
+        new_img = self.resize(new_img, out_shape=target_shape)
+
+        if self.grayscale:
+            num_output_channels = self.target_shape[0]
+            new_img = torchvision.transforms.functional.rgb_to_grayscale(
+                img=new_img, num_output_channels=self.num_output_channels
+            )
+
+        if self.normalize:
+            new_img = self.normalize_image(new_img)
+
+        return new_img
+
+    def __repr__(self):
+        return json.dumps(
+            {
+                &#34;interp_method&#34;: str(self.interp_method),
+                &#34;antialiasing&#34;: self.antialiasing,
+                &#34;target_shape&#34;: self.target_shape,
+                &#34;num_output_channels&#34;: self.num_output_channels,
+                &#34;max_aspect_ratio&#34;: self.max_aspect_ratio,
+                &#34;grayscale&#34;: self.grayscale,
+                &#34;normalize&#34;: self.normalize,
+            }
+        )</code></pre>
+</details>
+<h3>Static methods</h3>
+<dl>
+<dt id="imutils.utils.SmartCrop.CleverCrop.aspect_ratio"><code class="name flex">
+<span>def <span class="ident">aspect_ratio</span></span>(<span>img: torch.Tensor)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def aspect_ratio(img: torch.Tensor):
+
+    minside = np.min(img.shape[1:])
+    maxside = np.max(img.shape[1:])
+
+    aspect_ratio = maxside / minside
+    return aspect_ratio</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="imutils.utils.SmartCrop.CleverCropConfig"><code class="flex name class">
+<span>class <span class="ident">CleverCropConfig</span></span>
+<span>(</span><span>interp_method: Callable = &lt;function cubic&gt;, antialiasing: bool = True, target_shape: Tuple[int] = (3, 128, 128), max_aspect_ratio: float = 1.2, grayscale: bool = False, normalize: bool = True)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>CleverCropConfig(interp_method: Callable = <function cubic at 0x7f1b196daca0>, antialiasing: bool = True, target_shape: Tuple[int] = (3, 128, 128), max_aspect_ratio: float = 1.2, grayscale: bool = False, normalize: bool = True)</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class CleverCropConfig:
+
+    interp_method: Callable = interp_methods.cubic
+    antialiasing: bool = True
+    target_shape: Tuple[int] = (3, 128, 128)
+    max_aspect_ratio: float = 1.2
+    grayscale: bool = False
+    normalize: bool = True</code></pre>
+</details>
+<h3>Class variables</h3>
+<dl>
+<dt id="imutils.utils.SmartCrop.CleverCropConfig.antialiasing"><code class="name">var <span class="ident">antialiasing</span> : bool</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="imutils.utils.SmartCrop.CleverCropConfig.grayscale"><code class="name">var <span class="ident">grayscale</span> : bool</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="imutils.utils.SmartCrop.CleverCropConfig.max_aspect_ratio"><code class="name">var <span class="ident">max_aspect_ratio</span> : float</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="imutils.utils.SmartCrop.CleverCropConfig.normalize"><code class="name">var <span class="ident">normalize</span> : bool</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="imutils.utils.SmartCrop.CleverCropConfig.target_shape"><code class="name">var <span class="ident">target_shape</span> : Tuple[int]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="imutils.utils.SmartCrop.CleverCropConfig.interp_method"><code class="name flex">
+<span>def <span class="ident">interp_method</span></span>(<span>x) ‑> Callable</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@support_sz(4)
+def cubic(x):
+    fw, to_dtype, eps = set_framework_dependencies(x)
+    absx = fw.abs(x)
+    absx2 = absx**2
+    absx3 = absx**3
+    return (1.5 * absx3 - 2.5 * absx2 + 1.0) * to_dtype(absx &lt;= 1.0) + (
+        -0.5 * absx3 + 2.5 * absx2 - 4.0 * absx + 2.0
+    ) * to_dtype((1.0 &lt; absx) &amp; (absx &lt;= 2.0))</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="imutils.utils.SmartCrop.NormalizeImage"><code class="flex name class">
+<span>class <span class="ident">NormalizeImage</span></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Base class for all neural network modules.</p>
+<p>Your models should also subclass this class.</p>
+<p>Modules can also contain other Modules, allowing to nest them in
+a tree structure. You can assign the submodules as regular attributes::</p>
+<pre><code>import torch.nn as nn
+import torch.nn.functional as F
+
+class Model(nn.Module):
+    def __init__(self):
+        super(Model, self).__init__()
+        self.conv1 = nn.Conv2d(1, 20, 5)
+        self.conv2 = nn.Conv2d(20, 20, 5)
+
+    def forward(self, x):
+        x = F.relu(self.conv1(x))
+        return F.relu(self.conv2(x))
+</code></pre>
+<p>Submodules assigned in this way will be registered, and will have their
+parameters converted too when you call :meth:<code>to</code>, etc.</p>
+<p>:ivar training: Boolean represents whether this module is in training or
+evaluation mode.
+:vartype training: bool</p>
+<p>Initializes internal Module state, shared by both nn.Module and ScriptModule.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class NormalizeImage(nn.Module):
+    @staticmethod
+    def channelwise_min(img: torch.Tensor) -&gt; torch.Tensor:
+        return img.min(dim=1).values.min(dim=1).values
+
+    @staticmethod
+    def channelwise_max(img: torch.Tensor) -&gt; torch.Tensor:
+        return img.max(dim=1).values.max(dim=1).values
+
+    @staticmethod
+    def normalize_image(img: torch.Tensor) -&gt; torch.Tensor:
+        &#34;&#34;&#34;Enforce pixel bounds to range [0.0, 1.0]&#34;&#34;&#34;
+        img_min = NormalizeImage.channelwise_min(img).view(-1, 1, 1)
+        img_max = NormalizeImage.channelwise_max(img).view(-1, 1, 1)
+        return (img - img_min) / (img_max - img_min)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>torch.nn.modules.module.Module</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="imutils.utils.SmartCrop.NormalizeImage.dump_patches"><code class="name">var <span class="ident">dump_patches</span> : bool</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="imutils.utils.SmartCrop.NormalizeImage.training"><code class="name">var <span class="ident">training</span> : bool</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Static methods</h3>
+<dl>
+<dt id="imutils.utils.SmartCrop.NormalizeImage.channelwise_max"><code class="name flex">
+<span>def <span class="ident">channelwise_max</span></span>(<span>img: torch.Tensor) ‑> torch.Tensor</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def channelwise_max(img: torch.Tensor) -&gt; torch.Tensor:
+    return img.max(dim=1).values.max(dim=1).values</code></pre>
+</details>
+</dd>
+<dt id="imutils.utils.SmartCrop.NormalizeImage.channelwise_min"><code class="name flex">
+<span>def <span class="ident">channelwise_min</span></span>(<span>img: torch.Tensor) ‑> torch.Tensor</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def channelwise_min(img: torch.Tensor) -&gt; torch.Tensor:
+    return img.min(dim=1).values.min(dim=1).values</code></pre>
+</details>
+</dd>
+<dt id="imutils.utils.SmartCrop.NormalizeImage.normalize_image"><code class="name flex">
+<span>def <span class="ident">normalize_image</span></span>(<span>img: torch.Tensor) ‑> torch.Tensor</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Enforce pixel bounds to range [0.0, 1.0]</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def normalize_image(img: torch.Tensor) -&gt; torch.Tensor:
+    &#34;&#34;&#34;Enforce pixel bounds to range [0.0, 1.0]&#34;&#34;&#34;
+    img_min = NormalizeImage.channelwise_min(img).view(-1, 1, 1)
+    img_max = NormalizeImage.channelwise_max(img).view(-1, 1, 1)
+    return (img - img_min) / (img_max - img_min)</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="imutils.utils.SmartCrop.NormalizeImage.forward"><code class="name flex">
+<span>def <span class="ident">forward</span></span>(<span>self, *input: Any) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Defines the computation performed at every call.</p>
+<p>Should be overridden by all subclasses.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Although the recipe for forward pass needs to be defined within
+this function, one should call the :class:<code>Module</code> instance afterwards
+instead of this since the former takes care of running the
+registered hooks while the latter silently ignores them.</p>
+</div></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def _forward_unimplemented(self, *input: Any) -&gt; None:
+    r&#34;&#34;&#34;Defines the computation performed at every call.
+
+    Should be overridden by all subclasses.
+
+    .. note::
+        Although the recipe for forward pass needs to be defined within
+        this function, one should call the :class:`Module` instance afterwards
+        instead of this since the former takes care of running the
+        registered hooks while the latter silently ignores them.
+    &#34;&#34;&#34;
+    raise NotImplementedError</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="imutils.utils" href="index.html">imutils.utils</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="imutils.utils.SmartCrop.CleverCrop" href="#imutils.utils.SmartCrop.CleverCrop">CleverCrop</a></code></h4>
+<ul class="">
+<li><code><a title="imutils.utils.SmartCrop.CleverCrop.aspect_ratio" href="#imutils.utils.SmartCrop.CleverCrop.aspect_ratio">aspect_ratio</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="imutils.utils.SmartCrop.CleverCropConfig" href="#imutils.utils.SmartCrop.CleverCropConfig">CleverCropConfig</a></code></h4>
+<ul class="two-column">
+<li><code><a title="imutils.utils.SmartCrop.CleverCropConfig.antialiasing" href="#imutils.utils.SmartCrop.CleverCropConfig.antialiasing">antialiasing</a></code></li>
+<li><code><a title="imutils.utils.SmartCrop.CleverCropConfig.grayscale" href="#imutils.utils.SmartCrop.CleverCropConfig.grayscale">grayscale</a></code></li>
+<li><code><a title="imutils.utils.SmartCrop.CleverCropConfig.interp_method" href="#imutils.utils.SmartCrop.CleverCropConfig.interp_method">interp_method</a></code></li>
+<li><code><a title="imutils.utils.SmartCrop.CleverCropConfig.max_aspect_ratio" href="#imutils.utils.SmartCrop.CleverCropConfig.max_aspect_ratio">max_aspect_ratio</a></code></li>
+<li><code><a title="imutils.utils.SmartCrop.CleverCropConfig.normalize" href="#imutils.utils.SmartCrop.CleverCropConfig.normalize">normalize</a></code></li>
+<li><code><a title="imutils.utils.SmartCrop.CleverCropConfig.target_shape" href="#imutils.utils.SmartCrop.CleverCropConfig.target_shape">target_shape</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="imutils.utils.SmartCrop.NormalizeImage" href="#imutils.utils.SmartCrop.NormalizeImage">NormalizeImage</a></code></h4>
+<ul class="two-column">
+<li><code><a title="imutils.utils.SmartCrop.NormalizeImage.channelwise_max" href="#imutils.utils.SmartCrop.NormalizeImage.channelwise_max">channelwise_max</a></code></li>
+<li><code><a title="imutils.utils.SmartCrop.NormalizeImage.channelwise_min" href="#imutils.utils.SmartCrop.NormalizeImage.channelwise_min">channelwise_min</a></code></li>
+<li><code><a title="imutils.utils.SmartCrop.NormalizeImage.dump_patches" href="#imutils.utils.SmartCrop.NormalizeImage.dump_patches">dump_patches</a></code></li>
+<li><code><a title="imutils.utils.SmartCrop.NormalizeImage.forward" href="#imutils.utils.SmartCrop.NormalizeImage.forward">forward</a></code></li>
+<li><code><a title="imutils.utils.SmartCrop.NormalizeImage.normalize_image" href="#imutils.utils.SmartCrop.NormalizeImage.normalize_image">normalize_image</a></code></li>
+<li><code><a title="imutils.utils.SmartCrop.NormalizeImage.training" href="#imutils.utils.SmartCrop.NormalizeImage.training">training</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+</footer>
+</body>
+</html>

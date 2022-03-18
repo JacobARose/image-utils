@@ -1,0 +1,600 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.10.0" />
+<title>imutils.utils.etl_utils API documentation</title>
+<meta name="description" content="image-utils/imutils/utils/etl_utils.py …" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>imutils.utils.etl_utils</code></h1>
+</header>
+<section id="section-intro">
+<p>image-utils/imutils/utils/etl_utils.py</p>
+<p>Created on: Tuesday, July 27th, 2021
+Author: Jacob A Rose</p>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">&#34;&#34;&#34;
+image-utils/imutils/utils/etl_utils.py
+
+
+Created on: Tuesday, July 27th, 2021
+Author: Jacob A Rose
+
+
+&#34;&#34;&#34;
+
+import os
+from dataclasses import is_dataclass
+from pathlib import Path
+from typing import Any, Callable, Dict, List, Optional, Tuple, Union
+
+import numpy as np
+import pandas as pd
+
+# from lightning_hydra_classifiers.utils.common_utils import LabelEncoder
+from hydra.experimental import compose, initialize, initialize_config_dir
+from more_itertools import flatten
+from omegaconf import DictConfig, OmegaConf
+
+from imutils.utils import torchdata
+
+# import torchdatasets as torchdata
+
+
+__all__ = [&#34;save_config&#34;, &#34;load_config&#34;, &#34;Extract&#34;]
+
+
+def save_config(config: DictConfig, config_path: str):
+    with open(config_path, &#34;w&#34;) as f:
+        f.write(OmegaConf.to_yaml(config, resolve=True))
+
+
+def load_config(config_path: str) -&gt; DictConfig:
+    with open(config_path, &#34;r&#34;) as f:
+        loaded = OmegaConf.load(f)
+    return loaded
+
+
+class Extract:
+
+    valid_splits: Tuple[str] = (&#34;train&#34;, &#34;val&#34;, &#34;test&#34;)
+
+    data_file_ext_maps = {&#34;df&#34;: &#34;.csv&#34;, &#34;encoder&#34;: &#34;.json&#34;, &#34;config&#34;: &#34;.yaml&#34;}
+
+    @classmethod
+    def get_split_subdir_stems(cls, dataset_dir: str) -&gt; List[str]:
+
+        subdirs = os.listdir(dataset_dir)
+        stems = []
+        for subdir in subdirs:
+            if subdir in cls.valid_splits:
+                stems.append(subdir)
+        return stems
+
+    @classmethod
+    def locate_files(
+        cls, dataset_dir: Union[str, List[str]], select_subset: Optional[str] = None
+    ) -&gt; Dict[str, &#34;torchdata.datasets.Dataset&#34;]:
+
+        files = {}
+        if isinstance(dataset_dir, list):
+            # If a list of data directories is provided, concatenate their results into the &#39;all&#39; key. e.g. When constructing the combined Florissant &amp; General Fossil datasets
+            assert np.all([os.path.isdir(d) for d in dataset_dir])
+            files[&#34;all&#34;] = []
+            for data_dir in dataset_dir:
+                files[&#34;all&#34;].extend(cls.locate_files(data_dir)[&#34;all&#34;])
+            return files
+        splits = cls.get_split_subdir_stems(dataset_dir=dataset_dir)
+
+        if len(splits) &gt; 1:
+            # root
+            #     /train
+            #          /class_0
+            #     /test
+            #     ....
+            for subdir in splits:
+                files[subdir] = torchdata.datasets.Files.from_folder(
+                    Path(dataset_dir, subdir), regex=&#34;*/*.jpg&#34;
+                ).files
+            files[&#34;all&#34;] = list(flatten([files[subdir] for subdir in splits]))
+
+        elif len(os.listdir(dataset_dir)) &gt; 1:
+            # root
+            #     /class_0
+            #     /class_1
+            #     ....
+            files[&#34;all&#34;] = torchdata.datasets.Files.from_folder(
+                Path(dataset_dir), regex=&#34;*/*.jpg&#34;
+            ).files
+        else:
+            raise Exception(
+                f&#34;# of valid subdirs = {len(os.listdir(dataset_dir))} is invalid for locating&#34;
+                &#34; files.&#34;
+            )
+
+        if isinstance(select_subset, str):
+            files = {select_subset: files[select_subset]}
+        return files
+
+    @classmethod
+    def df_from_dir(
+        cls, root_dir: Union[str, Path], select_subset: Optional[str] = None
+    ) -&gt; pd.DataFrame:
+        files = cls.locate_files(dataset_dir=root_dir, select_subset=select_subset)
+        for k in list(files.keys()):
+            files[k] = pd.DataFrame(files[k]).rename(columns={0: &#34;path&#34;})  # .samples)
+        return files
+
+    @classmethod
+    def df_from_csv(cls, path: Union[str, Path], index_col: int = None) -&gt; pd.DataFrame:
+        return pd.read_csv(path, index_col=index_col)
+
+    @classmethod
+    def config_from_yaml(cls, path: Union[str, Path]) -&gt; DictConfig:
+        return load_config(config_path=path)
+
+    @classmethod
+    def df2csv(cls, df: pd.DataFrame, path: Union[str, Path], index: bool = False) -&gt; None:
+        df.to_csv(path, index=index)
+
+    @classmethod
+    def config2yaml(cls, config: DictConfig, path: Union[str, Path]) -&gt; None:
+        save_config(config=config, config_path=path)
+
+
+# class Transform:
+
+#     @classmethod
+#     def config2dataclass(cls, config, dataclass_type: Callable):
+#         &#34;&#34;&#34;
+#         Recursively convert DictConfig to a Structured Config specified by the provided dataclass.
+
+#         Look at scripts in &#34;lightning_hydra_classifiers/experiments/configs&#34;
+#         &#34;&#34;&#34;
+#         kwargs = {}
+#         for k, field in dataclass_type.__dataclass_fields__.items():
+#             if is_dataclass(field.type):
+#                 kwargs[k] = cls.config2dataclass(config=config[k], dataclass_type=field.type)
+#             else:
+# #                 try:
+#                 if isinstance(config[k], Container):
+#                     try:
+#                         kwargs[k] = field.type(**OmegaConf.to_container(config[k]))
+#                     except TypeError:
+
+#                         kwargs[k] = tuple(OmegaConf.to_container(config[k]))
+#                     except ValueError:
+#                         if not isinstance(config[k], str):
+#                             kwargs[k] = field.type(**config[k])
+# #                     except TypeError as e:
+#                         else:
+#                             kwargs[k] = config[k]
+#         return dataclass_type(**kwargs)
+
+
+# class Load:
+
+#     @staticmethod
+#     def load_hydra_config(config_name: str = &#34;multitask_experiment_config&#34;,
+#                           config_path: Union[str, None] = None,
+#                           job_name: Union[str, None] = None,
+#                           overrides: Optional[List[str]] = None
+#                          ) -&gt; DictConfig:
+#         &#34;&#34;&#34;
+#         This is a helper unction for instantiating DictConfigs from on-disk yaml files, mostly during unit testing.
+
+#         User should opt for using ETL.init_structured_config instead.
+#         &#34;&#34;&#34;
+#         overrides = overrides or []
+
+#         if os.path.isabs(config_path):
+#             with initialize_config_dir(config_dir=config_path):
+# #                                        job_name=job_name):
+#                 cfg = compose(config_name=config_name, overrides=overrides)
+#         else:
+#             with initialize(config_path=config_path,
+#                             job_name=job_name):
+#                 cfg = compose(config_name=config_name, overrides=overrides)
+
+#         return cfg
+
+
+# class ETL(Load, Transform, Extract):
+
+#     @classmethod
+#     def init_structured_config(cls,
+#                                config_name: str = &#34;multitask_experiment_config&#34;,
+#                                config_path: Union[str, None] = None,
+#                                job_name: Union[str, None] = None,
+#                                dataclass_type: Optional = None,
+#                                overrides: Optional[List[str]] = None,
+#                                cfg: Optional[&#34;Config&#34;] = None
+#                               ) -&gt; Union[DictConfig, &#34;BaseExperimentConfig&#34;]:
+#         &#34;&#34;&#34;
+#         This is a helper function for instantiating StructuredConfigs as either an instance of a dataclass or a
+#         DictConfig from on-disk yaml files, mostly during unit testing.
+
+#         User should opt for using ETL.init_structured_config.
+#         &#34;&#34;&#34;
+#         if cfg is None:
+#             cfg = cls.load_hydra_config(config_name=config_name,
+#                                         config_path=config_path,
+#                                         job_name=job_name,
+#                                         overrides=overrides)
+
+#         if dataclass_type is not None:
+#             cfg = cls.config2dataclass(config=cfg, dataclass_type=dataclass_type)
+
+#         return cfg
+
+
+#################################################
+#################################################
+
+#################################################
+#################################################</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="imutils.utils.etl_utils.load_config"><code class="name flex">
+<span>def <span class="ident">load_config</span></span>(<span>config_path: str) ‑> omegaconf.dictconfig.DictConfig</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def load_config(config_path: str) -&gt; DictConfig:
+    with open(config_path, &#34;r&#34;) as f:
+        loaded = OmegaConf.load(f)
+    return loaded</code></pre>
+</details>
+</dd>
+<dt id="imutils.utils.etl_utils.save_config"><code class="name flex">
+<span>def <span class="ident">save_config</span></span>(<span>config: omegaconf.dictconfig.DictConfig, config_path: str)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def save_config(config: DictConfig, config_path: str):
+    with open(config_path, &#34;w&#34;) as f:
+        f.write(OmegaConf.to_yaml(config, resolve=True))</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="imutils.utils.etl_utils.Extract"><code class="flex name class">
+<span>class <span class="ident">Extract</span></span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Extract:
+
+    valid_splits: Tuple[str] = (&#34;train&#34;, &#34;val&#34;, &#34;test&#34;)
+
+    data_file_ext_maps = {&#34;df&#34;: &#34;.csv&#34;, &#34;encoder&#34;: &#34;.json&#34;, &#34;config&#34;: &#34;.yaml&#34;}
+
+    @classmethod
+    def get_split_subdir_stems(cls, dataset_dir: str) -&gt; List[str]:
+
+        subdirs = os.listdir(dataset_dir)
+        stems = []
+        for subdir in subdirs:
+            if subdir in cls.valid_splits:
+                stems.append(subdir)
+        return stems
+
+    @classmethod
+    def locate_files(
+        cls, dataset_dir: Union[str, List[str]], select_subset: Optional[str] = None
+    ) -&gt; Dict[str, &#34;torchdata.datasets.Dataset&#34;]:
+
+        files = {}
+        if isinstance(dataset_dir, list):
+            # If a list of data directories is provided, concatenate their results into the &#39;all&#39; key. e.g. When constructing the combined Florissant &amp; General Fossil datasets
+            assert np.all([os.path.isdir(d) for d in dataset_dir])
+            files[&#34;all&#34;] = []
+            for data_dir in dataset_dir:
+                files[&#34;all&#34;].extend(cls.locate_files(data_dir)[&#34;all&#34;])
+            return files
+        splits = cls.get_split_subdir_stems(dataset_dir=dataset_dir)
+
+        if len(splits) &gt; 1:
+            # root
+            #     /train
+            #          /class_0
+            #     /test
+            #     ....
+            for subdir in splits:
+                files[subdir] = torchdata.datasets.Files.from_folder(
+                    Path(dataset_dir, subdir), regex=&#34;*/*.jpg&#34;
+                ).files
+            files[&#34;all&#34;] = list(flatten([files[subdir] for subdir in splits]))
+
+        elif len(os.listdir(dataset_dir)) &gt; 1:
+            # root
+            #     /class_0
+            #     /class_1
+            #     ....
+            files[&#34;all&#34;] = torchdata.datasets.Files.from_folder(
+                Path(dataset_dir), regex=&#34;*/*.jpg&#34;
+            ).files
+        else:
+            raise Exception(
+                f&#34;# of valid subdirs = {len(os.listdir(dataset_dir))} is invalid for locating&#34;
+                &#34; files.&#34;
+            )
+
+        if isinstance(select_subset, str):
+            files = {select_subset: files[select_subset]}
+        return files
+
+    @classmethod
+    def df_from_dir(
+        cls, root_dir: Union[str, Path], select_subset: Optional[str] = None
+    ) -&gt; pd.DataFrame:
+        files = cls.locate_files(dataset_dir=root_dir, select_subset=select_subset)
+        for k in list(files.keys()):
+            files[k] = pd.DataFrame(files[k]).rename(columns={0: &#34;path&#34;})  # .samples)
+        return files
+
+    @classmethod
+    def df_from_csv(cls, path: Union[str, Path], index_col: int = None) -&gt; pd.DataFrame:
+        return pd.read_csv(path, index_col=index_col)
+
+    @classmethod
+    def config_from_yaml(cls, path: Union[str, Path]) -&gt; DictConfig:
+        return load_config(config_path=path)
+
+    @classmethod
+    def df2csv(cls, df: pd.DataFrame, path: Union[str, Path], index: bool = False) -&gt; None:
+        df.to_csv(path, index=index)
+
+    @classmethod
+    def config2yaml(cls, config: DictConfig, path: Union[str, Path]) -&gt; None:
+        save_config(config=config, config_path=path)</code></pre>
+</details>
+<h3>Class variables</h3>
+<dl>
+<dt id="imutils.utils.etl_utils.Extract.data_file_ext_maps"><code class="name">var <span class="ident">data_file_ext_maps</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="imutils.utils.etl_utils.Extract.valid_splits"><code class="name">var <span class="ident">valid_splits</span> : Tuple[str]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Static methods</h3>
+<dl>
+<dt id="imutils.utils.etl_utils.Extract.config2yaml"><code class="name flex">
+<span>def <span class="ident">config2yaml</span></span>(<span>config: omegaconf.dictconfig.DictConfig, path: Union[str, pathlib.Path]) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@classmethod
+def config2yaml(cls, config: DictConfig, path: Union[str, Path]) -&gt; None:
+    save_config(config=config, config_path=path)</code></pre>
+</details>
+</dd>
+<dt id="imutils.utils.etl_utils.Extract.config_from_yaml"><code class="name flex">
+<span>def <span class="ident">config_from_yaml</span></span>(<span>path: Union[str, pathlib.Path]) ‑> omegaconf.dictconfig.DictConfig</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@classmethod
+def config_from_yaml(cls, path: Union[str, Path]) -&gt; DictConfig:
+    return load_config(config_path=path)</code></pre>
+</details>
+</dd>
+<dt id="imutils.utils.etl_utils.Extract.df2csv"><code class="name flex">
+<span>def <span class="ident">df2csv</span></span>(<span>df: pandas.core.frame.DataFrame, path: Union[str, pathlib.Path], index: bool = False) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@classmethod
+def df2csv(cls, df: pd.DataFrame, path: Union[str, Path], index: bool = False) -&gt; None:
+    df.to_csv(path, index=index)</code></pre>
+</details>
+</dd>
+<dt id="imutils.utils.etl_utils.Extract.df_from_csv"><code class="name flex">
+<span>def <span class="ident">df_from_csv</span></span>(<span>path: Union[str, pathlib.Path], index_col: int = None) ‑> pandas.core.frame.DataFrame</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@classmethod
+def df_from_csv(cls, path: Union[str, Path], index_col: int = None) -&gt; pd.DataFrame:
+    return pd.read_csv(path, index_col=index_col)</code></pre>
+</details>
+</dd>
+<dt id="imutils.utils.etl_utils.Extract.df_from_dir"><code class="name flex">
+<span>def <span class="ident">df_from_dir</span></span>(<span>root_dir: Union[str, pathlib.Path], select_subset: Optional[str] = None) ‑> pandas.core.frame.DataFrame</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@classmethod
+def df_from_dir(
+    cls, root_dir: Union[str, Path], select_subset: Optional[str] = None
+) -&gt; pd.DataFrame:
+    files = cls.locate_files(dataset_dir=root_dir, select_subset=select_subset)
+    for k in list(files.keys()):
+        files[k] = pd.DataFrame(files[k]).rename(columns={0: &#34;path&#34;})  # .samples)
+    return files</code></pre>
+</details>
+</dd>
+<dt id="imutils.utils.etl_utils.Extract.get_split_subdir_stems"><code class="name flex">
+<span>def <span class="ident">get_split_subdir_stems</span></span>(<span>dataset_dir: str) ‑> List[str]</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@classmethod
+def get_split_subdir_stems(cls, dataset_dir: str) -&gt; List[str]:
+
+    subdirs = os.listdir(dataset_dir)
+    stems = []
+    for subdir in subdirs:
+        if subdir in cls.valid_splits:
+            stems.append(subdir)
+    return stems</code></pre>
+</details>
+</dd>
+<dt id="imutils.utils.etl_utils.Extract.locate_files"><code class="name flex">
+<span>def <span class="ident">locate_files</span></span>(<span>dataset_dir: Union[str, List[str]], select_subset: Optional[str] = None) ‑> Dict[str, torchdata.datasets.Dataset]</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@classmethod
+def locate_files(
+    cls, dataset_dir: Union[str, List[str]], select_subset: Optional[str] = None
+) -&gt; Dict[str, &#34;torchdata.datasets.Dataset&#34;]:
+
+    files = {}
+    if isinstance(dataset_dir, list):
+        # If a list of data directories is provided, concatenate their results into the &#39;all&#39; key. e.g. When constructing the combined Florissant &amp; General Fossil datasets
+        assert np.all([os.path.isdir(d) for d in dataset_dir])
+        files[&#34;all&#34;] = []
+        for data_dir in dataset_dir:
+            files[&#34;all&#34;].extend(cls.locate_files(data_dir)[&#34;all&#34;])
+        return files
+    splits = cls.get_split_subdir_stems(dataset_dir=dataset_dir)
+
+    if len(splits) &gt; 1:
+        # root
+        #     /train
+        #          /class_0
+        #     /test
+        #     ....
+        for subdir in splits:
+            files[subdir] = torchdata.datasets.Files.from_folder(
+                Path(dataset_dir, subdir), regex=&#34;*/*.jpg&#34;
+            ).files
+        files[&#34;all&#34;] = list(flatten([files[subdir] for subdir in splits]))
+
+    elif len(os.listdir(dataset_dir)) &gt; 1:
+        # root
+        #     /class_0
+        #     /class_1
+        #     ....
+        files[&#34;all&#34;] = torchdata.datasets.Files.from_folder(
+            Path(dataset_dir), regex=&#34;*/*.jpg&#34;
+        ).files
+    else:
+        raise Exception(
+            f&#34;# of valid subdirs = {len(os.listdir(dataset_dir))} is invalid for locating&#34;
+            &#34; files.&#34;
+        )
+
+    if isinstance(select_subset, str):
+        files = {select_subset: files[select_subset]}
+    return files</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="imutils.utils" href="index.html">imutils.utils</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="imutils.utils.etl_utils.load_config" href="#imutils.utils.etl_utils.load_config">load_config</a></code></li>
+<li><code><a title="imutils.utils.etl_utils.save_config" href="#imutils.utils.etl_utils.save_config">save_config</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="imutils.utils.etl_utils.Extract" href="#imutils.utils.etl_utils.Extract">Extract</a></code></h4>
+<ul class="">
+<li><code><a title="imutils.utils.etl_utils.Extract.config2yaml" href="#imutils.utils.etl_utils.Extract.config2yaml">config2yaml</a></code></li>
+<li><code><a title="imutils.utils.etl_utils.Extract.config_from_yaml" href="#imutils.utils.etl_utils.Extract.config_from_yaml">config_from_yaml</a></code></li>
+<li><code><a title="imutils.utils.etl_utils.Extract.data_file_ext_maps" href="#imutils.utils.etl_utils.Extract.data_file_ext_maps">data_file_ext_maps</a></code></li>
+<li><code><a title="imutils.utils.etl_utils.Extract.df2csv" href="#imutils.utils.etl_utils.Extract.df2csv">df2csv</a></code></li>
+<li><code><a title="imutils.utils.etl_utils.Extract.df_from_csv" href="#imutils.utils.etl_utils.Extract.df_from_csv">df_from_csv</a></code></li>
+<li><code><a title="imutils.utils.etl_utils.Extract.df_from_dir" href="#imutils.utils.etl_utils.Extract.df_from_dir">df_from_dir</a></code></li>
+<li><code><a title="imutils.utils.etl_utils.Extract.get_split_subdir_stems" href="#imutils.utils.etl_utils.Extract.get_split_subdir_stems">get_split_subdir_stems</a></code></li>
+<li><code><a title="imutils.utils.etl_utils.Extract.locate_files" href="#imutils.utils.etl_utils.Extract.locate_files">locate_files</a></code></li>
+<li><code><a title="imutils.utils.etl_utils.Extract.valid_splits" href="#imutils.utils.etl_utils.Extract.valid_splits">valid_splits</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+</footer>
+</body>
+</html>

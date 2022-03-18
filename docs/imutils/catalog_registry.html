@@ -1,0 +1,1172 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.10.0" />
+<title>imutils.catalog_registry API documentation</title>
+<meta name="description" content="lightning_hydra_classifiers/data/utils/catalog_registry.py …" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>imutils.catalog_registry</code></h1>
+</header>
+<section id="section-intro">
+<p>lightning_hydra_classifiers/data/utils/catalog_registry.py</p>
+<p>Author: Jacob A Rose
+Created: Sunday August 1st, 2021</p>
+<p>Importable registry of directories containing different datasets and versions mounted on data_cifs.</p>
+<p>Currently covers:
+- leavesdb v0_3
+- leavesdb v1_0</p>
+<p>Work In Progress:
+- leavesdb v1_1</p>
+<p>python "/media/data/jacob/GitHub/lightning-hydra-classifiers/lightning_hydra_classifiers/data/utils/catalog_registry.py"</p>
+<p>python "./lightning-hydra-classifiers/lightning_hydra_classifiers/data/utils/catalog_registry.py"</p>
+<h2 id="examples">Examples</h2>
+<hr>
+<p>from lightning_hydra_classifiers.data.utils.catalog_registry import available_datasets</p>
+<p>available_datasets.get(tag='Fossil_2048', version='v1_0')</p>
+<blockquote>
+<blockquote>
+<p>['/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_0/images/Fossil/General_Fossil/2048/full/jpg',
+'/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_0/images/Fossil/Florissant_Fossil/2048/full/jpg']</p>
+</blockquote>
+</blockquote>
+<p>available_datasets.get(tag='Extant_Leaves_family_20_1024', version='v1_0')</p>
+<blockquote>
+<blockquote>
+<p>'/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_0/images/Extant_Leaves/1024/20/jpg'</p>
+</blockquote>
+</blockquote>
+<p>print(available_datasets().tags)
+print(available_datasets())</p>
+<p><em>shortcut</em>
+from lightning_hydra_classifiers import catalog_registry, available_datasets</p>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">&#34;&#34;&#34;
+
+lightning_hydra_classifiers/data/utils/catalog_registry.py
+
+Author: Jacob A Rose
+Created: Sunday August 1st, 2021
+
+Importable registry of directories containing different datasets and versions mounted on data_cifs.
+
+Currently covers:
+    - leavesdb v0_3
+    - leavesdb v1_0
+
+Work In Progress:
+    - leavesdb v1_1
+
+
+
+python &#34;/media/data/jacob/GitHub/lightning-hydra-classifiers/lightning_hydra_classifiers/data/utils/catalog_registry.py&#34;
+
+python &#34;./lightning-hydra-classifiers/lightning_hydra_classifiers/data/utils/catalog_registry.py&#34;
+
+
+
+
+
+
+
+Examples:
+    ---------
+
+    from lightning_hydra_classifiers.data.utils.catalog_registry import available_datasets
+
+    available_datasets.get(tag=&#39;Fossil_2048&#39;, version=&#39;v1_0&#39;)
+    &gt;&gt;[&#39;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_0/images/Fossil/General_Fossil/2048/full/jpg&#39;,
+       &#39;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_0/images/Fossil/Florissant_Fossil/2048/full/jpg&#39;]
+
+    available_datasets.get(tag=&#39;Extant_Leaves_family_20_1024&#39;, version=&#39;v1_0&#39;)
+    &gt;&gt;&#39;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_0/images/Extant_Leaves/1024/20/jpg&#39;
+
+
+    print(available_datasets().tags)
+    print(available_datasets())
+
+
+    *shortcut*
+    from lightning_hydra_classifiers import catalog_registry, available_datasets
+
+&#34;&#34;&#34;
+
+import argparse
+from dataclasses import dataclass
+from typing import Dict, List, Optional, Tuple, Union
+
+import pandas as pd
+import rich
+from rich import print as pp
+import yaml
+
+__all__ = [
+    &#34;leavesdbv0_3&#34;,
+    &#34;leavesdbv1_0&#34;,
+    &#34;leavesdbv1_1&#34;,
+    &#34;available_datasets&#34;,
+    &#34;AvailableDatasets&#34;,
+]
+
+
+@dataclass
+class LeavesdbBase:
+
+    #     datasets = [&#34;PNAS&#34;, &#34;Extant&#34;, &#34;Fossil&#34;]
+
+    def keys(self):
+        return self.__dict__.keys()
+
+    def __getitem__(self, index):
+        return self.__dict__[index]
+
+    @property
+    def datasets(self):
+        return {&#34;PNAS&#34;: self.PNAS, &#34;Extant&#34;: self.Extant, &#34;Fossil&#34;: self.Fossil}
+
+    @property
+    def tags(self):
+        out = {}
+        for k, v in self.datasets.items():
+            out[k] = []
+            for tag in v.keys():
+                out[k].append(tag)
+        return out
+
+    def __repr__(self):
+        out = []
+        for k, v in self.datasets.items():
+            if k != &#34;all&#34;:
+                out.append((k, len(v)))
+        out = pd.DataFrame(out)
+        out = out.rename(columns={0: &#34;Base Dataset Name&#34;, 1: &#34;# of Variations&#34;}).set_index(
+            &#34;Base Dataset Name&#34;
+        )
+
+        return out.__repr__()
+
+    #     def __repr__(self):
+    #         out = &#34;.[italic red]&#34;.join(str(type(self)).replace(&#34;\&#39;&gt;&#34;,&#34;&#34;).split(&#34;.&#34;)[-2:]) + &#34;[/]&#34; + &#34;\n&#34;
+    #         # out = f&#34;{out!r}&#34;
+    #         out += rich.pretty.pretty_repr(self.datasets)
+    #         return out
+
+    def __rich__(self):
+
+        out = &#34;.[italic red]&#34;.join(str(type(self)).replace(&#34;&#39;&gt;&#34;, &#34;&#34;).split(&#34;.&#34;)[-2:]) + &#34;[/]&#34; + &#34;\n&#34;
+        out += rich.pretty.pretty_repr(self.datasets)
+        return out
+
+    @property
+    def PNAS(self):
+        return {k: self[k] for k in self.keys() if k.startswith(&#34;PNAS&#34;)}
+
+    @property
+    def Extant(self):
+        return {k: self[k] for k in self.keys() if k.startswith(&#34;Extant&#34;)}
+
+    @property
+    def Fossil(self):
+        return {k: self[k] for k in self.keys() if k.startswith(&#34;Fossil&#34;)}
+
+
+@dataclass
+class Leavesdbv0_3(LeavesdbBase):
+
+    PNAS_family_100_original: str = (
+        &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/data_splits/PNAS_family_100&#34;
+    )
+    PNAS_family_4_original: str = (
+        &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/data_splits/PNAS_family_4&#34;
+    )
+
+    PNAS_family_100_512: str = (
+        &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/data_splits/PNAS_family_100_512&#34;
+    )
+    PNAS_family_100_1024: str = (
+        &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/data_splits/PNAS_family_100_1024&#34;
+    )
+    PNAS_family_100_1536: str = (
+        &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/data_splits/PNAS_family_100_1536&#34;
+    )
+    PNAS_family_100_2048: str = (
+        &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/data_splits/PNAS_family_100_2048&#34;
+    )
+    ################################S
+    ################################
+    Extant_Leaves_family_10_512: str = &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v0_3/catalog_files/extant_family_10/512&#34;
+    Extant_Leaves_family_10_1024: str = &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v0_3/catalog_files/extant_family_10/1024&#34;
+    Extant_Leaves_family_10_1536: str = &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v0_3/catalog_files/extant_family_10/1536&#34;
+    Extant_Leaves_family_10_2048: str = &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v0_3/catalog_files/extant_family_10/2048&#34;
+    Extant_Leaves_family_20_512: str = &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v0_3/catalog_files/extant_family_20/512&#34;
+    Extant_Leaves_family_20_1024: str = &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v0_3/catalog_files/extant_family_20/1024&#34;
+    Extant_Leaves_family_20_1536: str = &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v0_3/catalog_files/extant_family_20/1536&#34;
+    Extant_Leaves_family_20_2048: str = &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v0_3/catalog_files/extant_family_20/2048&#34;
+    Extant_Leaves_family_50_512: str = &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v0_3/catalog_files/extant_family_50/512&#34;
+    Extant_Leaves_family_50_1024: str = &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v0_3/catalog_files/extant_family_50/1024&#34;
+    Extant_Leaves_family_50_1536: str = &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v0_3/catalog_files/extant_family_50/1536&#34;
+    Extant_Leaves_family_50_2048: str = &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v0_3/catalog_files/extant_family_50/2048&#34;
+    Extant_Leaves_family_100_512: str = &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v0_3/catalog_files/extant_family_100/512&#34;
+    Extant_Leaves_family_100_1024: str = &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v0_3/catalog_files/extant_family_100/1024&#34;
+    Extant_Leaves_family_100_1536: str = &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v0_3/catalog_files/extant_family_100/1536&#34;
+    Extant_Leaves_family_100_2048: str = &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v0_3/catalog_files/extant_family_100/2048&#34;
+    ################################
+    ################################
+    Wilf_Fossil_512: str = (
+        &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v0_3/Fossil/ccrop_512/Wilf_Fossil&#34;,
+    )
+    Wilf_Fossil_1024: str = (
+        &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v0_3/Fossil/ccrop_1024/Wilf_Fossil&#34;,
+    )
+    Wilf_Fossil_1536: str = (
+        &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v0_3/Fossil/ccrop_1536/Wilf_Fossil&#34;,
+    )
+    Wilf_Fossil_2048: str = (
+        &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v0_3/Fossil/ccrop_2048/Wilf_Fossil&#34;,
+    )
+    Florissant_Fossil_512: str = (
+        &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v0_3/Fossil/ccrop_512/Florissant_Fossil&#34;,
+    )
+    Florissant_Fossil_1024: str = (
+        &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v0_3/Fossil/ccrop_1024/Florissant_Fossil&#34;,
+    )
+    Florissant_Fossil_1536: str = (
+        &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v0_3/Fossil/ccrop_1536/Florissant_Fossil&#34;,
+    )
+    Florissant_Fossil_2048: str = &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v0_3/Fossil/ccrop_2048/Florissant_Fossil&#34;
+    ################################
+    ################################
+    Fossil_512: List[str] = None
+    Fossil_1024: List[str] = None
+    Fossil_1536: List[str] = None
+    Fossil_2048: List[str] = None
+
+    def __post_init__(self):
+
+        self.Fossil_512: List[str] = [
+            &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v0_3/Fossil/ccrop_512/Wilf_Fossil&#34;,
+            &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v0_3/Fossil/ccrop_512/Florissant_Fossil&#34;,
+        ]
+        self.Fossil_1024: List[str] = [
+            &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v0_3/Fossil/ccrop_1024/Wilf_Fossil&#34;,
+            &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v0_3/Fossil/ccrop_1024/Florissant_Fossil&#34;,
+        ]
+        self.Fossil_1536: List[str] = [
+            &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v0_3/Fossil/ccrop_1536/Wilf_Fossil&#34;,
+            &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v0_3/Fossil/ccrop_1536/Florissant_Fossil&#34;,
+        ]
+        self.Fossil_2048: List[str] = [
+            &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v0_3/Fossil/ccrop_2048/Wilf_Fossil&#34;,
+            &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v0_3/Fossil/ccrop_2048/Florissant_Fossil&#34;,
+        ]
+
+    @property
+    def datasets(self):
+        return {&#34;PNAS&#34;: self.PNAS, &#34;Extant&#34;: self.Extant, &#34;Fossil&#34;: self.Fossil}
+
+    def __repr__(self):
+        return super().__repr__()
+
+    #     return rich.pretty.pretty_repr(self.datasets)
+
+
+@dataclass
+class Leavesdbv1_0(LeavesdbBase):
+
+    Extant_Leaves_original: str = &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_0/images/Extant_Leaves/original/full/jpg&#34;
+    General_Fossil_original: str = &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_0/images/Fossil/General_Fossil/original/full/jpg&#34;
+    Florissant_Fossil_original: str = &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_0/images/Fossil/Florissant_Fossil/original/full/jpg&#34;
+    PNAS_family_100_original: str = (
+        &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/data_splits/PNAS_family_100&#34;
+    )
+    PNAS_original: str = (
+        &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v0_1/PNAS&#34;
+    )
+
+    PNAS_family_100_512: str = (
+        &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/data_splits/PNAS_family_100_512&#34;
+    )
+    PNAS_family_100_1024: str = (
+        &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/data_splits/PNAS_family_100_1024&#34;
+    )
+    PNAS_family_100_1536: str = (
+        &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/data_splits/PNAS_family_100_1536&#34;
+    )
+    PNAS_family_100_2048: str = (
+        &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/data_splits/PNAS_family_100_2048&#34;
+    )
+    # ################################S
+    # ################################
+    Extant_Leaves_512: str = &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_0/images/Extant_Leaves/512/full/jpg&#34;
+    Extant_Leaves_1024: str = &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_0/images/Extant_Leaves/1024/full/jpg&#34;
+    Extant_Leaves_1536: str = &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_0/images/Extant_Leaves/1536/full/jpg&#34;
+    Extant_Leaves_2048: str = &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_0/images/Extant_Leaves/2048/full/jpg&#34;
+
+    Extant_Leaves_family_3_512: str = &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_0/images/Extant_Leaves/512/3/jpg&#34;
+    Extant_Leaves_family_3_1024: str = &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_0/images/Extant_Leaves/1024/3/jpg&#34;
+    Extant_Leaves_family_3_1536: str = &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_0/images/Extant_Leaves/1536/3/jpg&#34;
+    Extant_Leaves_family_3_2048: str = &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_0/images/Extant_Leaves/2048/3/jpg&#34;
+    Extant_Leaves_family_3_512: str = &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_0/images/Extant_Leaves/512/3/jpg&#34;
+
+    Extant_Leaves_family_10_1024: str = &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_0/images/Extant_Leaves/1024/10/jpg&#34;
+    Extant_Leaves_family_10_1536: str = &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_0/images/Extant_Leaves/1536/10/jpg&#34;
+    Extant_Leaves_family_10_2048: str = &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_0/images/Extant_Leaves/2048/10/jpg&#34;
+    Extant_Leaves_family_20_512: str = &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_0/images/Extant_Leaves/512/20/jpg&#34;
+    Extant_Leaves_family_20_1024: str = &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_0/images/Extant_Leaves/1024/20/jpg&#34;
+    Extant_Leaves_family_20_1536: str = &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_0/images/Extant_Leaves/1536/20/jpg&#34;
+    Extant_Leaves_family_20_2048: str = &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_0/images/Extant_Leaves/2048/20/jpg&#34;
+    Extant_Leaves_family_10_512: str = &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_0/images/Extant_Leaves/512/50/jpg&#34;
+    Extant_Leaves_family_50_1024: str = &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_0/images/Extant_Leaves/1024/50/jpg&#34;
+    Extant_Leaves_family_50_1536: str = &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_0/images/Extant_Leaves/1536/50/jpg&#34;
+    Extant_Leaves_family_50_2048: str = &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_0/images/Extant_Leaves/2048/50/jpg&#34;
+    Extant_Leaves_family_100_512: str = &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_0/images/Extant_Leaves/512/100/jpg&#34;
+    Extant_Leaves_family_100_1024: str = &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_0/images/Extant_Leaves/1024/100/jpg&#34;
+    Extant_Leaves_family_100_1536: str = &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_0/images/Extant_Leaves/1536/100/jpg&#34;
+    Extant_Leaves_family_100_2048: str = &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_0/images/Extant_Leaves/2048/100/jpg&#34;
+
+    # ################################
+    # ################################
+
+    General_Fossil_512: str = &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_0/images/Fossil/General_Fossil/512/full/jpg&#34;
+    General_Fossil_1024: str = &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_0/images/Fossil/General_Fossil/1024/full/jpg&#34;
+    General_Fossil_1536: str = &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_0/images/Fossil/General_Fossil/1536/full/jpg&#34;
+    General_Fossil_2048: str = &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_0/images/Fossil/General_Fossil/2048/full/jpg&#34;
+    Florissant_Fossil_512: str = &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_0/images/Fossil/Florissant_Fossil/512/full/jpg&#34;
+    Florissant_Fossil_1024: str = &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_0/images/Fossil/Florissant_Fossil/1024/full/jpg&#34;
+    Florissant_Fossil_1536: str = &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_0/images/Fossil/Florissant_Fossil/1536/full/jpg&#34;
+    Florissant_Fossil_2048: str = &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_0/images/Fossil/Florissant_Fossil/2048/full/jpg&#34;
+
+    General_Fossil_family_3_512: str = &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_0/images/Fossil/General_Fossil/512/3/jpg&#34;
+    General_Fossil_family_3_1024: str = &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_0/images/Fossil/General_Fossil/1024/3/jpg&#34;
+    General_Fossil_family_3_1536: str = &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_0/images/Fossil/General_Fossil/1536/3/jpg&#34;
+    General_Fossil_family_3_2048: str = &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_0/images/Fossil/General_Fossil/2048/3/jpg&#34;
+    Florissant_Fossil_family_3_512: str = &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_0/images/Fossil/Florissant_Fossil/512/3/jpg&#34;
+    Florissant_Fossil_family_3_1024: str = &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_0/images/Fossil/Florissant_Fossil/1024/3/jpg&#34;
+    Florissant_Fossil_family_3_1536: str = &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_0/images/Fossil/Florissant_Fossil/1536/3/jpg&#34;
+    Florissant_Fossil_family_3_2048: str = &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_0/images/Fossil/Florissant_Fossil/2048/3/jpg&#34;
+
+    # ################################
+    # ################################
+    original: List[str] = None
+    Fossil_512: List[str] = None
+    Fossil_1024: List[str] = None
+    Fossil_1536: List[str] = None
+    Fossil_2048: List[str] = None
+    Fossil_family_3_512: List[str] = None
+    Fossil_family_3_1024: List[str] = None
+    Fossil_family_3_1536: List[str] = None
+    Fossil_family_3_2048: List[str] = None
+
+    def __post_init__(self):
+
+        self.original: List[str] = [
+            self.Extant_Leaves_original,
+            self.General_Fossil_original,
+            self.Florissant_Fossil_original,
+        ]
+        # Exclude PNAS_family_100_original b/c it&#39;s not really useful for concatenation.
+
+        self.Fossil_original: List[str] = [
+            self.General_Fossil_original,
+            self.Florissant_Fossil_original,
+        ]
+
+        self.Fossil_512: List[str] = [self.General_Fossil_512, self.Florissant_Fossil_512]
+        self.Fossil_1024: List[str] = [self.General_Fossil_1024, self.Florissant_Fossil_1024]
+        self.Fossil_1536: List[str] = [self.General_Fossil_1536, self.Florissant_Fossil_1536]
+        self.Fossil_2048: List[str] = [self.General_Fossil_2048, self.Florissant_Fossil_2048]
+        self.Fossil_family_3_512: List[str] = [
+            self.General_Fossil_family_3_512,
+            self.Florissant_Fossil_family_3_512,
+        ]
+        self.Fossil_family_3_1024: List[str] = [
+            self.General_Fossil_family_3_1024,
+            self.Florissant_Fossil_family_3_1024,
+        ]
+        self.Fossil_family_3_1536: List[str] = [
+            self.General_Fossil_family_3_1536,
+            self.Florissant_Fossil_family_3_1536,
+        ]
+        self.Fossil_family_3_2048: List[str] = [
+            self.General_Fossil_family_3_2048,
+            self.Florissant_Fossil_family_3_2048,
+        ]
+
+    @property
+    def datasets(self):
+        return {
+            &#34;PNAS&#34;: self.PNAS,
+            &#34;Extant&#34;: self.Extant,
+            &#34;Fossil&#34;: self.Fossil,
+            &#34;all&#34;: self.original,
+        }
+
+    @property
+    def tags(self):
+        out = {}
+        for k, v in self.datasets.items():
+            out[k] = []
+            for tag in v.keys():
+                out[k].append(tag)
+        return out
+
+    def __repr__(self):
+        return super().__repr__()
+
+
+@dataclass
+class Leavesdbv1_1(LeavesdbBase):
+    &#34;&#34;&#34;
+    Leavesdb-v1.1
+
+    Released Dec 2021/Jan 2022 as a direct descendent of leavesdb-v1.0-patch.2
+    &#34;&#34;&#34;
+
+    Extant_Leaves_original: str = &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_1/images/Extant_Leaves/original/full/jpg&#34;
+    General_Fossil_original: str = &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_1/images/Fossil/General_Fossil/original/full/jpg&#34;
+    Florissant_Fossil_original: str = &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_1/images/Fossil/Florissant_Fossil/original/full/jpg&#34;
+    PNAS_family_100_original: str = (
+        &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/data_splits/PNAS_family_100&#34;
+    )
+    PNAS_original: str = (
+        &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v0_1/PNAS&#34;
+    )
+
+    PNAS_family_100_512: str = (
+        &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/data_splits/PNAS_family_100_512&#34;
+    )
+    PNAS_family_100_1024: str = (
+        &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/data_splits/PNAS_family_100_1024&#34;
+    )
+    PNAS_family_100_1536: str = (
+        &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/data_splits/PNAS_family_100_1536&#34;
+    )
+    PNAS_family_100_2048: str = (
+        &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/data_splits/PNAS_family_100_2048&#34;
+    )
+    # ################################S
+    # ################################
+    Extant_Leaves_512: str = &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_1/images/Extant_Leaves/512/full/jpg&#34;
+    Extant_Leaves_1024: str = &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_1/images/Extant_Leaves/1024/full/jpg&#34;
+    Extant_Leaves_1536: str = &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_1/images/Extant_Leaves/1536/full/jpg&#34;
+    Extant_Leaves_2048: str = &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_1/images/Extant_Leaves/2048/full/jpg&#34;
+
+    Extant_Leaves_family_3_512: str = &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_1/images/Extant_Leaves/512/3/jpg&#34;
+    Extant_Leaves_family_3_1024: str = &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_1/images/Extant_Leaves/1024/3/jpg&#34;
+    Extant_Leaves_family_3_1536: str = &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_1/images/Extant_Leaves/1536/3/jpg&#34;
+    Extant_Leaves_family_3_2048: str = &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_1/images/Extant_Leaves/2048/3/jpg&#34;
+    Extant_Leaves_family_3_512: str = &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_1/images/Extant_Leaves/512/3/jpg&#34;
+
+    Extant_Leaves_family_10_1024: str = &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_1/images/Extant_Leaves/1024/10/jpg&#34;
+    Extant_Leaves_family_10_1536: str = &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_1/images/Extant_Leaves/1536/10/jpg&#34;
+    Extant_Leaves_family_10_2048: str = &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_1/images/Extant_Leaves/2048/10/jpg&#34;
+    Extant_Leaves_family_20_512: str = &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_1/images/Extant_Leaves/512/20/jpg&#34;
+    Extant_Leaves_family_20_1024: str = &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_1/images/Extant_Leaves/1024/20/jpg&#34;
+    Extant_Leaves_family_20_1536: str = &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_1/images/Extant_Leaves/1536/20/jpg&#34;
+    Extant_Leaves_family_20_2048: str = &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_1/images/Extant_Leaves/2048/20/jpg&#34;
+    Extant_Leaves_family_10_512: str = &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_1/images/Extant_Leaves/512/50/jpg&#34;
+    Extant_Leaves_family_50_1024: str = &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_1/images/Extant_Leaves/1024/50/jpg&#34;
+    Extant_Leaves_family_50_1536: str = &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_1/images/Extant_Leaves/1536/50/jpg&#34;
+    Extant_Leaves_family_50_2048: str = &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_1/images/Extant_Leaves/2048/50/jpg&#34;
+    Extant_Leaves_family_100_512: str = &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_1/images/Extant_Leaves/512/100/jpg&#34;
+    Extant_Leaves_family_100_1024: str = &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_1/images/Extant_Leaves/1024/100/jpg&#34;
+    Extant_Leaves_family_100_1536: str = &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_1/images/Extant_Leaves/1536/100/jpg&#34;
+    Extant_Leaves_family_100_2048: str = &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_1/images/Extant_Leaves/2048/100/jpg&#34;
+
+    # ################################
+    # ################################
+
+    General_Fossil_512: str = &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_1/images/Fossil/General_Fossil/512/full/jpg&#34;
+    General_Fossil_1024: str = &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_1/images/Fossil/General_Fossil/1024/full/jpg&#34;
+    General_Fossil_1536: str = &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_1/images/Fossil/General_Fossil/1536/full/jpg&#34;
+    General_Fossil_2048: str = &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_1/images/Fossil/General_Fossil/2048/full/jpg&#34;
+    Florissant_Fossil_512: str = &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_1/images/Fossil/Florissant_Fossil/512/full/jpg&#34;
+    Florissant_Fossil_1024: str = &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_1/images/Fossil/Florissant_Fossil/1024/full/jpg&#34;
+    Florissant_Fossil_1536: str = &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_1/images/Fossil/Florissant_Fossil/1536/full/jpg&#34;
+    Florissant_Fossil_2048: str = &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_1/images/Fossil/Florissant_Fossil/2048/full/jpg&#34;
+
+    General_Fossil_family_3_512: str = &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_1/images/Fossil/General_Fossil/512/3/jpg&#34;
+    General_Fossil_family_3_1024: str = &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_1/images/Fossil/General_Fossil/1024/3/jpg&#34;
+    General_Fossil_family_3_1536: str = &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_1/images/Fossil/General_Fossil/1536/3/jpg&#34;
+    General_Fossil_family_3_2048: str = &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_1/images/Fossil/General_Fossil/2048/3/jpg&#34;
+    Florissant_Fossil_family_3_512: str = &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_1/images/Fossil/Florissant_Fossil/512/3/jpg&#34;
+    Florissant_Fossil_family_3_1024: str = &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_1/images/Fossil/Florissant_Fossil/1024/3/jpg&#34;
+    Florissant_Fossil_family_3_1536: str = &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_1/images/Fossil/Florissant_Fossil/1536/3/jpg&#34;
+    Florissant_Fossil_family_3_2048: str = &#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_1/images/Fossil/Florissant_Fossil/2048/3/jpg&#34;
+
+    # ################################
+    # ################################
+    original: List[str] = None
+    Fossil_512: List[str] = None
+    Fossil_1024: List[str] = None
+    Fossil_1536: List[str] = None
+    Fossil_2048: List[str] = None
+    Fossil_family_3_512: List[str] = None
+    Fossil_family_3_1024: List[str] = None
+    Fossil_family_3_1536: List[str] = None
+    Fossil_family_3_2048: List[str] = None
+
+    def __post_init__(self):
+
+        self.original: List[str] = [
+            self.Extant_Leaves_original,
+            self.General_Fossil_original,
+            self.Florissant_Fossil_original,
+        ]
+        # Exclude PNAS_family_100_original b/c it&#39;s not really useful for concatenation.
+
+        self.Fossil_original: List[str] = [
+            self.General_Fossil_original,
+            self.Florissant_Fossil_original,
+        ]
+
+        self.Fossil_512: List[str] = [self.General_Fossil_512, self.Florissant_Fossil_512]
+        self.Fossil_1024: List[str] = [self.General_Fossil_1024, self.Florissant_Fossil_1024]
+        self.Fossil_1536: List[str] = [self.General_Fossil_1536, self.Florissant_Fossil_1536]
+        self.Fossil_2048: List[str] = [self.General_Fossil_2048, self.Florissant_Fossil_2048]
+        self.Fossil_family_3_512: List[str] = [
+            self.General_Fossil_family_3_512,
+            self.Florissant_Fossil_family_3_512,
+        ]
+        self.Fossil_family_3_1024: List[str] = [
+            self.General_Fossil_family_3_1024,
+            self.Florissant_Fossil_family_3_1024,
+        ]
+        self.Fossil_family_3_1536: List[str] = [
+            self.General_Fossil_family_3_1536,
+            self.Florissant_Fossil_family_3_1536,
+        ]
+        self.Fossil_family_3_2048: List[str] = [
+            self.General_Fossil_family_3_2048,
+            self.Florissant_Fossil_family_3_2048,
+        ]
+
+    @property
+    def datasets(self):
+        return {
+            &#34;PNAS&#34;: self.PNAS,
+            &#34;Extant&#34;: self.Extant,
+            &#34;Fossil&#34;: self.Fossil,
+            &#34;all&#34;: self.original,
+        }
+
+    @property
+    def tags(self):
+        out = {}
+        for k, v in self.datasets.items():
+            out[k] = []
+            for tag in v.keys():
+                out[k].append(tag)
+        return out
+
+    def __repr__(self):
+        return super().__repr__()
+
+
+##############################
+
+
+def query_dict(target: Dict[str, str], query: str) -&gt; Dict[str, str]:
+    &#34;&#34;&#34;
+    Helper function
+    Searches a target dictionary for k,v pairs for which the key contains a substring equal to {query}.
+    Returned dictionary contains a minimum of 0 and maximum of len(target) items.
+    &#34;&#34;&#34;
+    return {k: v for k, v in vars(target).items() if query in k}
+
+
+#############################
+
+leavesdbv0_3 = Leavesdbv0_3()
+leavesdbv1_0 = Leavesdbv1_0()
+leavesdbv1_1 = Leavesdbv1_1()
+
+
+# import rich.repr
+# @rich.repr.auto
+class AvailableDatasets:
+    # class available_datasets:
+    # class AvailableDatasets:
+
+    versions = {&#34;v0_3&#34;: leavesdbv0_3, &#34;v1_0&#34;: leavesdbv1_0, &#34;v1_1&#34;: leavesdbv1_1}
+    extras = {}
+    
+    def display_all(self):
+        # return yaml.dump({**self.versions, &#34;extras&#34;:self.extras})
+        # return {**self.versions, &#34;extras&#34;:yaml.dump(self.extras)}
+        return {**self.versions, &#34;extras&#34;:self.extras}
+    
+    @property
+    def db_versions(self):
+        return self.versions
+    
+    
+    @classmethod
+    def add_dataset(cls, tag: str, root_dir: str) -&gt; None:
+        try:
+            if tag in cls.extras:
+                root_dir = cls.extras[tag]
+            else:
+                root_dir = cls.get_latest(tag)
+            print(f&#34;Attempted to add existing dataset with tag: {tag} at root_dir: {root_dir}. Continuing with existing entry.&#34;)
+        except KeyError:
+            cls.extras[tag] = root_dir
+            print(f&#34;Added new dataset with tag: {tag} to root_dir: {root_dir}&#34;)
+    
+
+    def __repr__(self):
+        buffer = r&#34;&lt;&#34; * 3 + r&#34;-&#34; * 10 + r&#34;&gt;&#34; * 3 + &#34;\n&#34;
+        return buffer.join(
+            [f&#34;{k}:&#34; + &#34;\n&#34; + v.__repr__() + &#34;\n&#34; for k, v in self.db_versions.items()]
+        )
+
+    def __rich__(self):
+        buffer = r&#34;&lt;&#34; * 3 + r&#34;-&#34; * 10 + r&#34;&gt;&#34; * 3 + &#34;\n&#34;
+        return buffer.join(
+            [f&#34;{k}:&#34; + &#34;\n&#34; + v.__rich__() + &#34;\n&#34; for k, v in self.db_versions.items()]
+        )
+
+    @classmethod
+    def search(cls, query: str, version: Optional[str] = &#34;v1_0&#34;) -&gt; Dict[str, str]:
+        &#34;&#34;&#34;
+        Helper function
+        Searches a target dictionary for k,v pairs for which the key contains a substring equal to {query}.
+        Returned dictionary contains a minimum of 0 and maximum of len(target) items.
+
+        Example:
+        --------
+        &gt; from lightning_hydra_classifiers.data.utils import catalog_registry
+        &gt; available_datasets = catalog_registry.AvailableDatasets()
+        &gt; results = available_datasets.search(&#34;Exta&#34;)
+        Query can be any partial string:
+        &gt; query = &#34;Ex&#34; or &#34;Extant&#34; or &#34;512&#34; or &#34;original&#34;
+
+        &#34;&#34;&#34;
+        target = cls.versions[version]
+        return query_dict(target=target, query=query)
+
+    @classmethod
+    def query_tags(
+        cls,
+        dataset_name: str,
+        threshold: Optional[int] = 0,
+        y_col: str = &#34;family&#34;,
+        resolution: Optional[Tuple[str, int]] = &#34;original&#34;,
+    ) -&gt; str:
+        &#34;&#34;&#34; &#34;&#34;&#34;
+        tag = dataset_name
+        if int(threshold) &gt; 0:
+            tag += f&#34;_{y_col}_{threshold}&#34;
+        tag += f&#34;_{resolution}&#34;
+
+        try:
+            cls.get_latest(tag)
+        except KeyError as e:
+            print(f&#34;KeyError: Invalid dataset query. {tag} doesn&#39;t exist&#34;)
+            print(&#34;tag: &#34;, tag)
+        return tag
+
+    #         if isinstance(resolution, int):
+
+    @classmethod
+    def get_latest(cls, tag: str) -&gt; Union[str, List[str]]:
+        &#34;&#34;&#34;
+        Wrapper around available_datasets.get() that defaults to the latest dataset version containing the requested tag.
+
+        Useful for datasets like PNAS, which havent changed since version 0_3.
+
+        &#34;&#34;&#34;
+        if &#34;PNAS&#34; in tag:
+            return cls.get(tag, version=&#34;v0_3&#34;)
+        else:
+            return cls.get(tag, version=&#34;v1_1&#34;)
+            # return cls.get(tag, version=&#34;v1_0&#34;)
+
+    @classmethod
+    def get(cls, tag: str, version: Optional[str] = &#34;v1_1&#34;) -&gt; Union[str, List[str]]:
+        &#34;&#34;&#34;
+        Get a dataset root path by providing the dataset tag/name + an optional version tag.
+
+        Examples:
+        ---------
+        available_datasets.get(tag=&#39;Fossil_2048&#39;, version=&#39;v1_0&#39;)
+        &gt;&gt;[&#39;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_0/images/Fossil/General_Fossil/2048/full/jpg&#39;,
+           &#39;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_0/images/Fossil/Florissant_Fossil/2048/full/jpg&#39;]
+
+        available_datasets.get(tag=&#39;Extant_Leaves_family_20_1024&#39;, version=&#39;v1_0&#39;)
+        &gt;&gt;&#39;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_0/images/Extant_Leaves/1024/20/jpg&#39;
+
+        &#34;&#34;&#34;
+        return cls.versions[version][tag]
+
+    @property
+    def tags(self):
+        out = {}
+        for version, dataset in self.versions.items():
+            out[version] = dataset.tags
+        return out
+
+
+def cmdline_args():
+    p = argparse.ArgumentParser(
+        description=(
+            &#34;catalog_registry.py -- Module containing key: value mappings between accepted dataset&#34;
+            &#34; names with versions, and their corresponding locations on data_cifs.&#34;
+        )
+    )
+    p.add_argument(
+        &#34;-t&#34;,
+        &#34;--tags&#34;,
+        action=&#34;store_true&#34;,
+        help=(
+            &#34;User provides this flag to display a concise summary of available data, containing all&#34;
+            &#34; tag info while omitting paths.&#34;
+        ),
+    )
+    p.add_argument(
+        &#34;-d&#34;,
+        &#34;--display&#34;,
+        action=&#34;store_true&#34;,
+        help=(
+            &#34;User provides this flag to display a full listing of all datasets with versions,&#34;
+            &#34; mapped to their expected data_cifs locations.&#34;
+        ),
+    )
+    return p.parse_args()
+
+
+available_datasets = AvailableDatasets()
+
+if __name__ == &#34;__main__&#34;:
+
+    args = cmdline_args()
+
+    if args.tags:
+        pp(available_datasets.tags)
+    elif args.display:
+        pp(available_datasets)
+    else:
+        print(
+            f&#34;Provide either --tags or --display if running catalog_registry.py from the command&#34;
+            f&#34; line.&#34;
+        )</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="imutils.catalog_registry.AvailableDatasets"><code class="flex name class">
+<span>class <span class="ident">AvailableDatasets</span></span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class AvailableDatasets:
+    # class available_datasets:
+    # class AvailableDatasets:
+
+    versions = {&#34;v0_3&#34;: leavesdbv0_3, &#34;v1_0&#34;: leavesdbv1_0, &#34;v1_1&#34;: leavesdbv1_1}
+    extras = {}
+    
+    def display_all(self):
+        # return yaml.dump({**self.versions, &#34;extras&#34;:self.extras})
+        # return {**self.versions, &#34;extras&#34;:yaml.dump(self.extras)}
+        return {**self.versions, &#34;extras&#34;:self.extras}
+    
+    @property
+    def db_versions(self):
+        return self.versions
+    
+    
+    @classmethod
+    def add_dataset(cls, tag: str, root_dir: str) -&gt; None:
+        try:
+            if tag in cls.extras:
+                root_dir = cls.extras[tag]
+            else:
+                root_dir = cls.get_latest(tag)
+            print(f&#34;Attempted to add existing dataset with tag: {tag} at root_dir: {root_dir}. Continuing with existing entry.&#34;)
+        except KeyError:
+            cls.extras[tag] = root_dir
+            print(f&#34;Added new dataset with tag: {tag} to root_dir: {root_dir}&#34;)
+    
+
+    def __repr__(self):
+        buffer = r&#34;&lt;&#34; * 3 + r&#34;-&#34; * 10 + r&#34;&gt;&#34; * 3 + &#34;\n&#34;
+        return buffer.join(
+            [f&#34;{k}:&#34; + &#34;\n&#34; + v.__repr__() + &#34;\n&#34; for k, v in self.db_versions.items()]
+        )
+
+    def __rich__(self):
+        buffer = r&#34;&lt;&#34; * 3 + r&#34;-&#34; * 10 + r&#34;&gt;&#34; * 3 + &#34;\n&#34;
+        return buffer.join(
+            [f&#34;{k}:&#34; + &#34;\n&#34; + v.__rich__() + &#34;\n&#34; for k, v in self.db_versions.items()]
+        )
+
+    @classmethod
+    def search(cls, query: str, version: Optional[str] = &#34;v1_0&#34;) -&gt; Dict[str, str]:
+        &#34;&#34;&#34;
+        Helper function
+        Searches a target dictionary for k,v pairs for which the key contains a substring equal to {query}.
+        Returned dictionary contains a minimum of 0 and maximum of len(target) items.
+
+        Example:
+        --------
+        &gt; from lightning_hydra_classifiers.data.utils import catalog_registry
+        &gt; available_datasets = catalog_registry.AvailableDatasets()
+        &gt; results = available_datasets.search(&#34;Exta&#34;)
+        Query can be any partial string:
+        &gt; query = &#34;Ex&#34; or &#34;Extant&#34; or &#34;512&#34; or &#34;original&#34;
+
+        &#34;&#34;&#34;
+        target = cls.versions[version]
+        return query_dict(target=target, query=query)
+
+    @classmethod
+    def query_tags(
+        cls,
+        dataset_name: str,
+        threshold: Optional[int] = 0,
+        y_col: str = &#34;family&#34;,
+        resolution: Optional[Tuple[str, int]] = &#34;original&#34;,
+    ) -&gt; str:
+        &#34;&#34;&#34; &#34;&#34;&#34;
+        tag = dataset_name
+        if int(threshold) &gt; 0:
+            tag += f&#34;_{y_col}_{threshold}&#34;
+        tag += f&#34;_{resolution}&#34;
+
+        try:
+            cls.get_latest(tag)
+        except KeyError as e:
+            print(f&#34;KeyError: Invalid dataset query. {tag} doesn&#39;t exist&#34;)
+            print(&#34;tag: &#34;, tag)
+        return tag
+
+    #         if isinstance(resolution, int):
+
+    @classmethod
+    def get_latest(cls, tag: str) -&gt; Union[str, List[str]]:
+        &#34;&#34;&#34;
+        Wrapper around available_datasets.get() that defaults to the latest dataset version containing the requested tag.
+
+        Useful for datasets like PNAS, which havent changed since version 0_3.
+
+        &#34;&#34;&#34;
+        if &#34;PNAS&#34; in tag:
+            return cls.get(tag, version=&#34;v0_3&#34;)
+        else:
+            return cls.get(tag, version=&#34;v1_1&#34;)
+            # return cls.get(tag, version=&#34;v1_0&#34;)
+
+    @classmethod
+    def get(cls, tag: str, version: Optional[str] = &#34;v1_1&#34;) -&gt; Union[str, List[str]]:
+        &#34;&#34;&#34;
+        Get a dataset root path by providing the dataset tag/name + an optional version tag.
+
+        Examples:
+        ---------
+        available_datasets.get(tag=&#39;Fossil_2048&#39;, version=&#39;v1_0&#39;)
+        &gt;&gt;[&#39;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_0/images/Fossil/General_Fossil/2048/full/jpg&#39;,
+           &#39;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_0/images/Fossil/Florissant_Fossil/2048/full/jpg&#39;]
+
+        available_datasets.get(tag=&#39;Extant_Leaves_family_20_1024&#39;, version=&#39;v1_0&#39;)
+        &gt;&gt;&#39;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_0/images/Extant_Leaves/1024/20/jpg&#39;
+
+        &#34;&#34;&#34;
+        return cls.versions[version][tag]
+
+    @property
+    def tags(self):
+        out = {}
+        for version, dataset in self.versions.items():
+            out[version] = dataset.tags
+        return out</code></pre>
+</details>
+<h3>Class variables</h3>
+<dl>
+<dt id="imutils.catalog_registry.AvailableDatasets.extras"><code class="name">var <span class="ident">extras</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="imutils.catalog_registry.AvailableDatasets.versions"><code class="name">var <span class="ident">versions</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Static methods</h3>
+<dl>
+<dt id="imutils.catalog_registry.AvailableDatasets.add_dataset"><code class="name flex">
+<span>def <span class="ident">add_dataset</span></span>(<span>tag: str, root_dir: str) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@classmethod
+def add_dataset(cls, tag: str, root_dir: str) -&gt; None:
+    try:
+        if tag in cls.extras:
+            root_dir = cls.extras[tag]
+        else:
+            root_dir = cls.get_latest(tag)
+        print(f&#34;Attempted to add existing dataset with tag: {tag} at root_dir: {root_dir}. Continuing with existing entry.&#34;)
+    except KeyError:
+        cls.extras[tag] = root_dir
+        print(f&#34;Added new dataset with tag: {tag} to root_dir: {root_dir}&#34;)</code></pre>
+</details>
+</dd>
+<dt id="imutils.catalog_registry.AvailableDatasets.get"><code class="name flex">
+<span>def <span class="ident">get</span></span>(<span>tag: str, version: Optional[str] = 'v1_1') ‑> Union[str, List[str]]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get a dataset root path by providing the dataset tag/name + an optional version tag.</p>
+<h2 id="examples">Examples:</h2>
+<p>available_datasets.get(tag='Fossil_2048', version='v1_0')</p>
+<blockquote>
+<blockquote>
+<p>['/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_0/images/Fossil/General_Fossil/2048/full/jpg',
+'/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_0/images/Fossil/Florissant_Fossil/2048/full/jpg']</p>
+</blockquote>
+</blockquote>
+<p>available_datasets.get(tag='Extant_Leaves_family_20_1024', version='v1_0')</p>
+<blockquote>
+<blockquote>
+<p>'/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_0/images/Extant_Leaves/1024/20/jpg'</p>
+</blockquote>
+</blockquote></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@classmethod
+def get(cls, tag: str, version: Optional[str] = &#34;v1_1&#34;) -&gt; Union[str, List[str]]:
+    &#34;&#34;&#34;
+    Get a dataset root path by providing the dataset tag/name + an optional version tag.
+
+    Examples:
+    ---------
+    available_datasets.get(tag=&#39;Fossil_2048&#39;, version=&#39;v1_0&#39;)
+    &gt;&gt;[&#39;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_0/images/Fossil/General_Fossil/2048/full/jpg&#39;,
+       &#39;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_0/images/Fossil/Florissant_Fossil/2048/full/jpg&#39;]
+
+    available_datasets.get(tag=&#39;Extant_Leaves_family_20_1024&#39;, version=&#39;v1_0&#39;)
+    &gt;&gt;&#39;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_0/images/Extant_Leaves/1024/20/jpg&#39;
+
+    &#34;&#34;&#34;
+    return cls.versions[version][tag]</code></pre>
+</details>
+</dd>
+<dt id="imutils.catalog_registry.AvailableDatasets.get_latest"><code class="name flex">
+<span>def <span class="ident">get_latest</span></span>(<span>tag: str) ‑> Union[str, List[str]]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Wrapper around available_datasets.get() that defaults to the latest dataset version containing the requested tag.</p>
+<p>Useful for datasets like PNAS, which havent changed since version 0_3.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@classmethod
+def get_latest(cls, tag: str) -&gt; Union[str, List[str]]:
+    &#34;&#34;&#34;
+    Wrapper around available_datasets.get() that defaults to the latest dataset version containing the requested tag.
+
+    Useful for datasets like PNAS, which havent changed since version 0_3.
+
+    &#34;&#34;&#34;
+    if &#34;PNAS&#34; in tag:
+        return cls.get(tag, version=&#34;v0_3&#34;)
+    else:
+        return cls.get(tag, version=&#34;v1_1&#34;)
+        # return cls.get(tag, version=&#34;v1_0&#34;)</code></pre>
+</details>
+</dd>
+<dt id="imutils.catalog_registry.AvailableDatasets.query_tags"><code class="name flex">
+<span>def <span class="ident">query_tags</span></span>(<span>dataset_name: str, threshold: Optional[int] = 0, y_col: str = 'family', resolution: Optional[Tuple[str, int]] = 'original') ‑> str</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@classmethod
+def query_tags(
+    cls,
+    dataset_name: str,
+    threshold: Optional[int] = 0,
+    y_col: str = &#34;family&#34;,
+    resolution: Optional[Tuple[str, int]] = &#34;original&#34;,
+) -&gt; str:
+    &#34;&#34;&#34; &#34;&#34;&#34;
+    tag = dataset_name
+    if int(threshold) &gt; 0:
+        tag += f&#34;_{y_col}_{threshold}&#34;
+    tag += f&#34;_{resolution}&#34;
+
+    try:
+        cls.get_latest(tag)
+    except KeyError as e:
+        print(f&#34;KeyError: Invalid dataset query. {tag} doesn&#39;t exist&#34;)
+        print(&#34;tag: &#34;, tag)
+    return tag</code></pre>
+</details>
+</dd>
+<dt id="imutils.catalog_registry.AvailableDatasets.search"><code class="name flex">
+<span>def <span class="ident">search</span></span>(<span>query: str, version: Optional[str] = 'v1_0') ‑> Dict[str, str]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Helper function
+Searches a target dictionary for k,v pairs for which the key contains a substring equal to {query}.
+Returned dictionary contains a minimum of 0 and maximum of len(target) items.</p>
+<h2 id="example">Example:</h2>
+<blockquote>
+<p>from lightning_hydra_classifiers.data.utils import catalog_registry
+available_datasets = catalog_registry.AvailableDatasets()
+results = available_datasets.search("Exta")
+Query can be any partial string:
+query = "Ex" or "Extant" or "512" or "original"</p>
+</blockquote></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@classmethod
+def search(cls, query: str, version: Optional[str] = &#34;v1_0&#34;) -&gt; Dict[str, str]:
+    &#34;&#34;&#34;
+    Helper function
+    Searches a target dictionary for k,v pairs for which the key contains a substring equal to {query}.
+    Returned dictionary contains a minimum of 0 and maximum of len(target) items.
+
+    Example:
+    --------
+    &gt; from lightning_hydra_classifiers.data.utils import catalog_registry
+    &gt; available_datasets = catalog_registry.AvailableDatasets()
+    &gt; results = available_datasets.search(&#34;Exta&#34;)
+    Query can be any partial string:
+    &gt; query = &#34;Ex&#34; or &#34;Extant&#34; or &#34;512&#34; or &#34;original&#34;
+
+    &#34;&#34;&#34;
+    target = cls.versions[version]
+    return query_dict(target=target, query=query)</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Instance variables</h3>
+<dl>
+<dt id="imutils.catalog_registry.AvailableDatasets.db_versions"><code class="name">var <span class="ident">db_versions</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def db_versions(self):
+    return self.versions</code></pre>
+</details>
+</dd>
+<dt id="imutils.catalog_registry.AvailableDatasets.tags"><code class="name">var <span class="ident">tags</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def tags(self):
+    out = {}
+    for version, dataset in self.versions.items():
+        out[version] = dataset.tags
+    return out</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="imutils.catalog_registry.AvailableDatasets.display_all"><code class="name flex">
+<span>def <span class="ident">display_all</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def display_all(self):
+    # return yaml.dump({**self.versions, &#34;extras&#34;:self.extras})
+    # return {**self.versions, &#34;extras&#34;:yaml.dump(self.extras)}
+    return {**self.versions, &#34;extras&#34;:self.extras}</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="imutils" href="index.html">imutils</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="imutils.catalog_registry.AvailableDatasets" href="#imutils.catalog_registry.AvailableDatasets">AvailableDatasets</a></code></h4>
+<ul class="two-column">
+<li><code><a title="imutils.catalog_registry.AvailableDatasets.add_dataset" href="#imutils.catalog_registry.AvailableDatasets.add_dataset">add_dataset</a></code></li>
+<li><code><a title="imutils.catalog_registry.AvailableDatasets.db_versions" href="#imutils.catalog_registry.AvailableDatasets.db_versions">db_versions</a></code></li>
+<li><code><a title="imutils.catalog_registry.AvailableDatasets.display_all" href="#imutils.catalog_registry.AvailableDatasets.display_all">display_all</a></code></li>
+<li><code><a title="imutils.catalog_registry.AvailableDatasets.extras" href="#imutils.catalog_registry.AvailableDatasets.extras">extras</a></code></li>
+<li><code><a title="imutils.catalog_registry.AvailableDatasets.get" href="#imutils.catalog_registry.AvailableDatasets.get">get</a></code></li>
+<li><code><a title="imutils.catalog_registry.AvailableDatasets.get_latest" href="#imutils.catalog_registry.AvailableDatasets.get_latest">get_latest</a></code></li>
+<li><code><a title="imutils.catalog_registry.AvailableDatasets.query_tags" href="#imutils.catalog_registry.AvailableDatasets.query_tags">query_tags</a></code></li>
+<li><code><a title="imutils.catalog_registry.AvailableDatasets.search" href="#imutils.catalog_registry.AvailableDatasets.search">search</a></code></li>
+<li><code><a title="imutils.catalog_registry.AvailableDatasets.tags" href="#imutils.catalog_registry.AvailableDatasets.tags">tags</a></code></li>
+<li><code><a title="imutils.catalog_registry.AvailableDatasets.versions" href="#imutils.catalog_registry.AvailableDatasets.versions">versions</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+</footer>
+</body>
+</html>

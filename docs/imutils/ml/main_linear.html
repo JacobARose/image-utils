@@ -1,0 +1,623 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.10.0" />
+<title>imutils.ml.main_linear API documentation</title>
+<meta name="description" content="" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>imutils.ml.main_linear</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">from __future__ import print_function
+
+import sys
+import argparse
+import time
+import math
+
+import torch
+import torch.backends.cudnn as cudnn
+
+from imutils.ml.main_ce import set_loader
+from imutils.ml.utils.common import (AverageMeter, adjust_learning_rate, warmup_learning_rate,
+                             accuracy, set_optimizer)
+from imutils.ml.models.resnet_big import SupConResNet, LinearClassifier
+from imutils.ml.data.datamodule import *
+try:
+    import apex
+    from apex import amp, optimizers
+except ImportError:
+    pass
+
+
+def parse_option():
+    parser = argparse.ArgumentParser(&#39;argument for training&#39;)
+
+    parser.add_argument(&#39;--print_freq&#39;, type=int, default=10,
+                        help=&#39;print frequency&#39;)
+    parser.add_argument(&#39;--save_freq&#39;, type=int, default=50,
+                        help=&#39;save frequency&#39;)
+    parser.add_argument(&#39;--batch_size&#39;, type=int, default=256,
+                        help=&#39;batch_size&#39;)
+    parser.add_argument(&#39;--num_workers&#39;, type=int, default=16,
+                        help=&#39;num of workers to use&#39;)
+    parser.add_argument(&#39;--epochs&#39;, type=int, default=100,
+                        help=&#39;number of training epochs&#39;)
+
+    # optimization
+    parser.add_argument(&#39;--learning_rate&#39;, type=float, default=0.1,
+                        help=&#39;learning rate&#39;)
+    parser.add_argument(&#39;--lr_decay_epochs&#39;, type=str, default=&#39;60,75,90&#39;,
+                        help=&#39;where to decay lr, can be a list&#39;)
+    parser.add_argument(&#39;--lr_decay_rate&#39;, type=float, default=0.2,
+                        help=&#39;decay rate for learning rate&#39;)
+    parser.add_argument(&#39;--weight_decay&#39;, type=float, default=0,
+                        help=&#39;weight decay&#39;)
+    parser.add_argument(&#39;--momentum&#39;, type=float, default=0.9,
+                        help=&#39;momentum&#39;)
+
+    # model dataset
+    parser.add_argument(&#39;--model&#39;, type=str, default=&#39;resnet50&#39;)
+    parser.add_argument(&#39;--dataset&#39;, type=str, default=&#39;herbarium2022&#39;,
+                        choices=[&#39;herbarium2022&#39;, &#39;cifar10&#39;, &#39;cifar100&#39;], help=&#39;dataset&#39;)
+
+    # other setting
+    parser.add_argument(&#39;--cosine&#39;, action=&#39;store_true&#39;,
+                        help=&#39;using cosine annealing&#39;)
+    parser.add_argument(&#39;--warm&#39;, action=&#39;store_true&#39;,
+                        help=&#39;warm-up for large batch training&#39;)
+    parser.add_argument(&#39;--ckpt&#39;, type=str, default=&#39;&#39;,
+                        help=&#39;path to pre-trained model&#39;)
+
+    opt = parser.parse_args()
+
+    # set the path according to the environment
+    opt.data_folder = &#39;./datasets/&#39;
+
+    opt.lr_decay_epochs = [int(e) for e in opt.lr_decay_epochs.split(&#39;,&#39;)]
+
+    opt.model_name = &#39;{}_{}_lr_{}_decay_{}_bsz_{}&#39;.\
+        format(opt.dataset, opt.model, opt.learning_rate, opt.weight_decay,
+               opt.batch_size)
+
+    if opt.cosine:
+        opt.model_name = &#39;{}_cosine&#39;.format(opt.model_name)
+
+    # warm-up for large-batch training,
+    if opt.warm:
+        opt.model_name = &#39;{}_warm&#39;.format(opt.model_name)
+        opt.warmup_from = 0.01
+        opt.warm_epochs = 10
+        if opt.cosine:
+            eta_min = opt.learning_rate * (opt.lr_decay_rate ** 3)
+            opt.warmup_to = eta_min + (opt.learning_rate - eta_min) * (
+                    1 + math.cos(math.pi * opt.warm_epochs / opt.epochs)) / 2
+        else:
+            opt.warmup_to = opt.learning_rate
+
+    if opt.dataset == &#39;herbarium2022&#39;:
+        opt.n_cls = 15_501
+    elif opt.dataset == &#39;cifar10&#39;:
+        opt.n_cls = 10
+    elif opt.dataset == &#39;cifar100&#39;:
+        opt.n_cls = 100
+    else:
+        raise ValueError(&#39;dataset not supported: {}&#39;.format(opt.dataset))
+
+    return opt
+
+
+def set_model(opt):
+    model = SupConResNet(name=opt.model)
+    criterion = torch.nn.CrossEntropyLoss()
+
+    classifier = LinearClassifier(name=opt.model, num_classes=opt.n_cls)
+
+    ckpt = torch.load(opt.ckpt, map_location=&#39;cpu&#39;)
+    state_dict = ckpt[&#39;model&#39;]
+
+    if torch.cuda.is_available():
+        if torch.cuda.device_count() &gt; 1:
+            model.encoder = torch.nn.DataParallel(model.encoder)
+        else:
+            new_state_dict = {}
+            for k, v in state_dict.items():
+                k = k.replace(&#34;module.&#34;, &#34;&#34;)
+                new_state_dict[k] = v
+            state_dict = new_state_dict
+        model = model.cuda()
+        classifier = classifier.cuda()
+        criterion = criterion.cuda()
+        cudnn.benchmark = True
+
+        model.load_state_dict(state_dict)
+
+    return model, classifier, criterion
+
+
+def train(train_loader, model, classifier, criterion, optimizer, epoch, opt):
+    &#34;&#34;&#34;one epoch training&#34;&#34;&#34;
+    model.eval()
+    classifier.train()
+
+    batch_time = AverageMeter()
+    data_time = AverageMeter()
+    losses = AverageMeter()
+    top1 = AverageMeter()
+
+    end = time.time()
+    for idx, (images, labels) in enumerate(train_loader):
+        data_time.update(time.time() - end)
+
+        images = images.cuda(non_blocking=True)
+        labels = labels.cuda(non_blocking=True)
+        bsz = labels.shape[0]
+
+        # warm-up learning rate
+        warmup_learning_rate(opt, epoch, idx, len(train_loader), optimizer)
+
+        # compute loss
+        with torch.no_grad():
+            features = model.encoder(images)
+        output = classifier(features.detach())
+        loss = criterion(output, labels)
+
+        # update metric
+        losses.update(loss.item(), bsz)
+        acc1, acc5 = accuracy(output, labels, topk=(1, 5))
+        top1.update(acc1[0], bsz)
+
+        # SGD
+        optimizer.zero_grad()
+        loss.backward()
+        optimizer.step()
+
+        # measure elapsed time
+        batch_time.update(time.time() - end)
+        end = time.time()
+
+        # print info
+        if (idx + 1) % opt.print_freq == 0:
+            print(&#39;Train: [{0}][{1}/{2}]\t&#39;
+                  &#39;BT {batch_time.val:.3f} ({batch_time.avg:.3f})\t&#39;
+                  &#39;DT {data_time.val:.3f} ({data_time.avg:.3f})\t&#39;
+                  &#39;loss {loss.val:.3f} ({loss.avg:.3f})\t&#39;
+                  &#39;Acc@1 {top1.val:.3f} ({top1.avg:.3f})&#39;.format(
+                   epoch, idx + 1, len(train_loader), batch_time=batch_time,
+                   data_time=data_time, loss=losses, top1=top1))
+            sys.stdout.flush()
+
+    return losses.avg, top1.avg
+
+
+def validate(val_loader, model, classifier, criterion, opt):
+    &#34;&#34;&#34;validation&#34;&#34;&#34;
+    model.eval()
+    classifier.eval()
+
+    batch_time = AverageMeter()
+    losses = AverageMeter()
+    top1 = AverageMeter()
+
+    with torch.no_grad():
+        end = time.time()
+        for idx, (images, labels) in enumerate(val_loader):
+            images = images.float().cuda()
+            labels = labels.cuda()
+            bsz = labels.shape[0]
+
+            # forward
+            output = classifier(model.encoder(images))
+            loss = criterion(output, labels)
+
+            # update metric
+            losses.update(loss.item(), bsz)
+            acc1, acc5 = accuracy(output, labels, topk=(1, 5))
+            top1.update(acc1[0], bsz)
+
+            # measure elapsed time
+            batch_time.update(time.time() - end)
+            end = time.time()
+
+            if idx % opt.print_freq == 0:
+                print(&#39;Test: [{0}/{1}]\t&#39;
+                      &#39;Time {batch_time.val:.3f} ({batch_time.avg:.3f})\t&#39;
+                      &#39;Loss {loss.val:.4f} ({loss.avg:.4f})\t&#39;
+                      &#39;Acc@1 {top1.val:.3f} ({top1.avg:.3f})&#39;.format(
+                       idx, len(val_loader), batch_time=batch_time,
+                       loss=losses, top1=top1))
+
+    print(&#39; * Acc@1 {top1.avg:.3f}&#39;.format(top1=top1))
+    return losses.avg, top1.avg
+
+
+def main():
+    best_acc = 0
+    opt = parse_option()
+
+    # build data loader
+    print(f&#34;Loading dataset: {opt.dataset}&#34;)
+    if opt.dataset == &#34;herbarium2022&#34;:
+        datamodule = Herbarium2022DataModule(batch_size=opt.batch_size,
+                                             num_workers=opt.num_workers)
+        datamodule.setup()
+        train_dataloader = datamodule.train_dataloader()
+        val_dataloader = datamodule.val_dataloader()
+    else:
+        train_loader, val_loader = set_loader(opt)
+
+    # build model and criterion
+    model, classifier, criterion = set_model(opt)
+
+    # build optimizer
+    optimizer = set_optimizer(opt, classifier)
+
+    # training routine
+    for epoch in range(1, opt.epochs + 1):
+        adjust_learning_rate(opt, optimizer, epoch)
+
+        # train for one epoch
+        time1 = time.time()
+        loss, acc = train(train_loader, model, classifier, criterion,
+                          optimizer, epoch, opt)
+        time2 = time.time()
+        print(&#39;Train epoch {}, total time {:.2f}, accuracy:{:.2f}&#39;.format(
+            epoch, time2 - time1, acc))
+
+        # eval for one epoch
+        loss, val_acc = validate(val_loader, model, classifier, criterion, opt)
+        if val_acc &gt; best_acc:
+            best_acc = val_acc
+
+    print(&#39;best accuracy: {:.2f}&#39;.format(best_acc))
+
+
+if __name__ == &#39;__main__&#39;:
+    main()</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="imutils.ml.main_linear.main"><code class="name flex">
+<span>def <span class="ident">main</span></span>(<span>)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def main():
+    best_acc = 0
+    opt = parse_option()
+
+    # build data loader
+    print(f&#34;Loading dataset: {opt.dataset}&#34;)
+    if opt.dataset == &#34;herbarium2022&#34;:
+        datamodule = Herbarium2022DataModule(batch_size=opt.batch_size,
+                                             num_workers=opt.num_workers)
+        datamodule.setup()
+        train_dataloader = datamodule.train_dataloader()
+        val_dataloader = datamodule.val_dataloader()
+    else:
+        train_loader, val_loader = set_loader(opt)
+
+    # build model and criterion
+    model, classifier, criterion = set_model(opt)
+
+    # build optimizer
+    optimizer = set_optimizer(opt, classifier)
+
+    # training routine
+    for epoch in range(1, opt.epochs + 1):
+        adjust_learning_rate(opt, optimizer, epoch)
+
+        # train for one epoch
+        time1 = time.time()
+        loss, acc = train(train_loader, model, classifier, criterion,
+                          optimizer, epoch, opt)
+        time2 = time.time()
+        print(&#39;Train epoch {}, total time {:.2f}, accuracy:{:.2f}&#39;.format(
+            epoch, time2 - time1, acc))
+
+        # eval for one epoch
+        loss, val_acc = validate(val_loader, model, classifier, criterion, opt)
+        if val_acc &gt; best_acc:
+            best_acc = val_acc
+
+    print(&#39;best accuracy: {:.2f}&#39;.format(best_acc))</code></pre>
+</details>
+</dd>
+<dt id="imutils.ml.main_linear.parse_option"><code class="name flex">
+<span>def <span class="ident">parse_option</span></span>(<span>)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def parse_option():
+    parser = argparse.ArgumentParser(&#39;argument for training&#39;)
+
+    parser.add_argument(&#39;--print_freq&#39;, type=int, default=10,
+                        help=&#39;print frequency&#39;)
+    parser.add_argument(&#39;--save_freq&#39;, type=int, default=50,
+                        help=&#39;save frequency&#39;)
+    parser.add_argument(&#39;--batch_size&#39;, type=int, default=256,
+                        help=&#39;batch_size&#39;)
+    parser.add_argument(&#39;--num_workers&#39;, type=int, default=16,
+                        help=&#39;num of workers to use&#39;)
+    parser.add_argument(&#39;--epochs&#39;, type=int, default=100,
+                        help=&#39;number of training epochs&#39;)
+
+    # optimization
+    parser.add_argument(&#39;--learning_rate&#39;, type=float, default=0.1,
+                        help=&#39;learning rate&#39;)
+    parser.add_argument(&#39;--lr_decay_epochs&#39;, type=str, default=&#39;60,75,90&#39;,
+                        help=&#39;where to decay lr, can be a list&#39;)
+    parser.add_argument(&#39;--lr_decay_rate&#39;, type=float, default=0.2,
+                        help=&#39;decay rate for learning rate&#39;)
+    parser.add_argument(&#39;--weight_decay&#39;, type=float, default=0,
+                        help=&#39;weight decay&#39;)
+    parser.add_argument(&#39;--momentum&#39;, type=float, default=0.9,
+                        help=&#39;momentum&#39;)
+
+    # model dataset
+    parser.add_argument(&#39;--model&#39;, type=str, default=&#39;resnet50&#39;)
+    parser.add_argument(&#39;--dataset&#39;, type=str, default=&#39;herbarium2022&#39;,
+                        choices=[&#39;herbarium2022&#39;, &#39;cifar10&#39;, &#39;cifar100&#39;], help=&#39;dataset&#39;)
+
+    # other setting
+    parser.add_argument(&#39;--cosine&#39;, action=&#39;store_true&#39;,
+                        help=&#39;using cosine annealing&#39;)
+    parser.add_argument(&#39;--warm&#39;, action=&#39;store_true&#39;,
+                        help=&#39;warm-up for large batch training&#39;)
+    parser.add_argument(&#39;--ckpt&#39;, type=str, default=&#39;&#39;,
+                        help=&#39;path to pre-trained model&#39;)
+
+    opt = parser.parse_args()
+
+    # set the path according to the environment
+    opt.data_folder = &#39;./datasets/&#39;
+
+    opt.lr_decay_epochs = [int(e) for e in opt.lr_decay_epochs.split(&#39;,&#39;)]
+
+    opt.model_name = &#39;{}_{}_lr_{}_decay_{}_bsz_{}&#39;.\
+        format(opt.dataset, opt.model, opt.learning_rate, opt.weight_decay,
+               opt.batch_size)
+
+    if opt.cosine:
+        opt.model_name = &#39;{}_cosine&#39;.format(opt.model_name)
+
+    # warm-up for large-batch training,
+    if opt.warm:
+        opt.model_name = &#39;{}_warm&#39;.format(opt.model_name)
+        opt.warmup_from = 0.01
+        opt.warm_epochs = 10
+        if opt.cosine:
+            eta_min = opt.learning_rate * (opt.lr_decay_rate ** 3)
+            opt.warmup_to = eta_min + (opt.learning_rate - eta_min) * (
+                    1 + math.cos(math.pi * opt.warm_epochs / opt.epochs)) / 2
+        else:
+            opt.warmup_to = opt.learning_rate
+
+    if opt.dataset == &#39;herbarium2022&#39;:
+        opt.n_cls = 15_501
+    elif opt.dataset == &#39;cifar10&#39;:
+        opt.n_cls = 10
+    elif opt.dataset == &#39;cifar100&#39;:
+        opt.n_cls = 100
+    else:
+        raise ValueError(&#39;dataset not supported: {}&#39;.format(opt.dataset))
+
+    return opt</code></pre>
+</details>
+</dd>
+<dt id="imutils.ml.main_linear.set_model"><code class="name flex">
+<span>def <span class="ident">set_model</span></span>(<span>opt)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def set_model(opt):
+    model = SupConResNet(name=opt.model)
+    criterion = torch.nn.CrossEntropyLoss()
+
+    classifier = LinearClassifier(name=opt.model, num_classes=opt.n_cls)
+
+    ckpt = torch.load(opt.ckpt, map_location=&#39;cpu&#39;)
+    state_dict = ckpt[&#39;model&#39;]
+
+    if torch.cuda.is_available():
+        if torch.cuda.device_count() &gt; 1:
+            model.encoder = torch.nn.DataParallel(model.encoder)
+        else:
+            new_state_dict = {}
+            for k, v in state_dict.items():
+                k = k.replace(&#34;module.&#34;, &#34;&#34;)
+                new_state_dict[k] = v
+            state_dict = new_state_dict
+        model = model.cuda()
+        classifier = classifier.cuda()
+        criterion = criterion.cuda()
+        cudnn.benchmark = True
+
+        model.load_state_dict(state_dict)
+
+    return model, classifier, criterion</code></pre>
+</details>
+</dd>
+<dt id="imutils.ml.main_linear.train"><code class="name flex">
+<span>def <span class="ident">train</span></span>(<span>train_loader, model, classifier, criterion, optimizer, epoch, opt)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>one epoch training</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def train(train_loader, model, classifier, criterion, optimizer, epoch, opt):
+    &#34;&#34;&#34;one epoch training&#34;&#34;&#34;
+    model.eval()
+    classifier.train()
+
+    batch_time = AverageMeter()
+    data_time = AverageMeter()
+    losses = AverageMeter()
+    top1 = AverageMeter()
+
+    end = time.time()
+    for idx, (images, labels) in enumerate(train_loader):
+        data_time.update(time.time() - end)
+
+        images = images.cuda(non_blocking=True)
+        labels = labels.cuda(non_blocking=True)
+        bsz = labels.shape[0]
+
+        # warm-up learning rate
+        warmup_learning_rate(opt, epoch, idx, len(train_loader), optimizer)
+
+        # compute loss
+        with torch.no_grad():
+            features = model.encoder(images)
+        output = classifier(features.detach())
+        loss = criterion(output, labels)
+
+        # update metric
+        losses.update(loss.item(), bsz)
+        acc1, acc5 = accuracy(output, labels, topk=(1, 5))
+        top1.update(acc1[0], bsz)
+
+        # SGD
+        optimizer.zero_grad()
+        loss.backward()
+        optimizer.step()
+
+        # measure elapsed time
+        batch_time.update(time.time() - end)
+        end = time.time()
+
+        # print info
+        if (idx + 1) % opt.print_freq == 0:
+            print(&#39;Train: [{0}][{1}/{2}]\t&#39;
+                  &#39;BT {batch_time.val:.3f} ({batch_time.avg:.3f})\t&#39;
+                  &#39;DT {data_time.val:.3f} ({data_time.avg:.3f})\t&#39;
+                  &#39;loss {loss.val:.3f} ({loss.avg:.3f})\t&#39;
+                  &#39;Acc@1 {top1.val:.3f} ({top1.avg:.3f})&#39;.format(
+                   epoch, idx + 1, len(train_loader), batch_time=batch_time,
+                   data_time=data_time, loss=losses, top1=top1))
+            sys.stdout.flush()
+
+    return losses.avg, top1.avg</code></pre>
+</details>
+</dd>
+<dt id="imutils.ml.main_linear.validate"><code class="name flex">
+<span>def <span class="ident">validate</span></span>(<span>val_loader, model, classifier, criterion, opt)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>validation</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def validate(val_loader, model, classifier, criterion, opt):
+    &#34;&#34;&#34;validation&#34;&#34;&#34;
+    model.eval()
+    classifier.eval()
+
+    batch_time = AverageMeter()
+    losses = AverageMeter()
+    top1 = AverageMeter()
+
+    with torch.no_grad():
+        end = time.time()
+        for idx, (images, labels) in enumerate(val_loader):
+            images = images.float().cuda()
+            labels = labels.cuda()
+            bsz = labels.shape[0]
+
+            # forward
+            output = classifier(model.encoder(images))
+            loss = criterion(output, labels)
+
+            # update metric
+            losses.update(loss.item(), bsz)
+            acc1, acc5 = accuracy(output, labels, topk=(1, 5))
+            top1.update(acc1[0], bsz)
+
+            # measure elapsed time
+            batch_time.update(time.time() - end)
+            end = time.time()
+
+            if idx % opt.print_freq == 0:
+                print(&#39;Test: [{0}/{1}]\t&#39;
+                      &#39;Time {batch_time.val:.3f} ({batch_time.avg:.3f})\t&#39;
+                      &#39;Loss {loss.val:.4f} ({loss.avg:.4f})\t&#39;
+                      &#39;Acc@1 {top1.val:.3f} ({top1.avg:.3f})&#39;.format(
+                       idx, len(val_loader), batch_time=batch_time,
+                       loss=losses, top1=top1))
+
+    print(&#39; * Acc@1 {top1.avg:.3f}&#39;.format(top1=top1))
+    return losses.avg, top1.avg</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+<section>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="imutils.ml" href="index.html">imutils.ml</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="imutils.ml.main_linear.main" href="#imutils.ml.main_linear.main">main</a></code></li>
+<li><code><a title="imutils.ml.main_linear.parse_option" href="#imutils.ml.main_linear.parse_option">parse_option</a></code></li>
+<li><code><a title="imutils.ml.main_linear.set_model" href="#imutils.ml.main_linear.set_model">set_model</a></code></li>
+<li><code><a title="imutils.ml.main_linear.train" href="#imutils.ml.main_linear.train">train</a></code></li>
+<li><code><a title="imutils.ml.main_linear.validate" href="#imutils.ml.main_linear.validate">validate</a></code></li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+</footer>
+</body>
+</html>

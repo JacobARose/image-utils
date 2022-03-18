@@ -32,6 +32,7 @@ make_herbarium_2022_catalog_df.py
 
 # assert len(train_data["annotations"]) == len(train_data["images"])
 
+import argparse
 import os
 from typing import *
 import json
@@ -41,16 +42,10 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 from pprint import pprint as pp
 
-HERBARIUM_ROOT = "/media/data_cifs/projects/prj_fossils/data/raw_data/herbarium-2022-fgvc9_resize"
-WORKING_DIR = "/media/data/jacob/GitHub/image-utils/notebooks/herbarium_2022/"
-OUTPUT_DIR = os.path.join(WORKING_DIR, "outputs")
-DATA_DIR = os.path.join(WORKING_DIR, "data")
 
-os.makedirs(OUTPUT_DIR, exist_ok=True)
-os.makedirs(DATA_DIR, exist_ok=True)
+HERBARIUM_ROOT_DEFAULT = "/media/data_cifs/projects/prj_fossils/data/raw_data/herbarium-2022-fgvc9_resize"
 
-TRAIN_KEYS = ['annotations', 'images', 'categories', 'genera', 'institutions', 'distances', 'license']
-TEST_KEYS = ['image_id', 'file_name', 'license']
+
 
 
 def optimize_dtypes_train(df: pd.DataFrame) -> pd.DataFrame:
@@ -58,7 +53,7 @@ def optimize_dtypes_train(df: pd.DataFrame) -> pd.DataFrame:
     Convert column dtypes to optimal type for herbarium train metadata df.
     """
 
-# Reduce total df size by optimizing dtypes per column
+    # Reduce total df size by optimizing dtypes per column
     cat_cols = ['genus_id', 'institution_id', 'category_id',
                 'scientificName', 'family', 'genus', 'species','Species',
                 'collectionCode', 'license', 'authors']
@@ -122,106 +117,171 @@ def read_all_from_csv(root_dir: str) -> Tuple[pd.DataFrame]:
 ###################################
 ###################################
 
-
-def herbarium_train_metadata2df(root_dir: str) -> pd.DataFrame:
-
-    metadata_path = Path(HERBARIUM_ROOT, "train_metadata.json")
+class HerbariumMetadata:
     
-    with open(os.path.join(metadata_path)) as fp:
-        train_data = json.load(fp)
+    TRAIN_KEYS = ['annotations', 'images', 'categories', 'genera', 'institutions', 'distances', 'license']
+    TEST_KEYS = ['image_id', 'file_name', 'license']
     
-    assert all([k in train_data.keys() for k in TRAIN_KEYS])
+    def __init__(self,
+                 herbarium_root: str=HERBARIUM_ROOT_DEFAULT):
+        self.herbarium_root = herbarium_root
+        
     
-    train_annotations = pd.DataFrame(train_data['annotations'])
 
-    train_categories = pd.DataFrame(train_data['categories']).set_index("category_id")
-    train_genera = pd.DataFrame(train_data['genera']).set_index("genus_id")
-    train_institutions = pd.DataFrame(train_data['institutions']).set_index("institution_id")
-    train_images = pd.DataFrame(train_data['images']).set_index("image_id")
+    def get_train_df(self) -> pd.DataFrame:
 
-    df_train = pd.merge(train_annotations, train_images, how="left", right_index=True, left_on="image_id")
-    df_train = pd.merge(df_train, train_categories, how="left", right_index=True, left_on="category_id")
-    df_train = pd.merge(df_train, train_institutions, how="left", right_index=True, left_on="institution_id")
-    # df_train = pd.merge(df_train, train_genera, how="left", right_index=True, left_on="genus_id")
+        metadata_path = Path(self.herbarium_root, "train_metadata.json")
 
-    df_train = df_train.assign(
-        Species = df_train.apply(lambda x: " ".join([x.genus, x.species]), axis=1),
-        path=df_train.file_name.apply(lambda x: str(Path(root_dir, "train_images", x)))
+        with open(os.path.join(metadata_path)) as fp:
+            train_data = json.load(fp)
+
+        assert all([k in train_data.keys() for k in self.TRAIN_KEYS])
+
+        train_annotations = pd.DataFrame(train_data['annotations'])
+
+        train_categories = pd.DataFrame(train_data['categories']).set_index("category_id")
+        train_genera = pd.DataFrame(train_data['genera']).set_index("genus_id")
+        train_institutions = pd.DataFrame(train_data['institutions']).set_index("institution_id")
+        train_images = pd.DataFrame(train_data['images']).set_index("image_id")
+
+        df_train = pd.merge(train_annotations, train_images, how="left", right_index=True, left_on="image_id")
+        df_train = pd.merge(df_train, train_categories, how="left", right_index=True, left_on="category_id")
+        df_train = pd.merge(df_train, train_institutions, how="left", right_index=True, left_on="institution_id")
+
+        df_train = df_train.assign(
+            Species = df_train.apply(lambda x: " ".join([x.genus, x.species]), axis=1),
+            path=df_train.file_name.apply(lambda x: str(Path(self.herbarium_root, "train_images", x)))
+        )
+
+        df_train = optimize_dtypes_train(df_train)
+
+        print(f"training images: {len(df_train)}")
+
+        return df_train
+
+    
+    def get_test_df(self) -> pd.DataFrame:
+
+        metadata_path = Path(self.herbarium_root, "test_metadata.json")
+
+        with open(os.path.join(metadata_path)) as fp:
+            test_data = json.load(fp)
+
+        assert all([k in test_data[0].keys() for k in self.TEST_KEYS])
+
+        df_test = pd.DataFrame(test_data)
+        df_test = df_test.assign(path=df_test.file_name.apply(lambda x: str(Path(self.herbarium_root, "test_images", x))))
+
+        df_test = optimize_dtypes_test(df_test)
+        print(f"test images: {len(df_test)}")
+
+        return df_test
+
+
+    def extract_metadata(self) -> Tuple[pd.DataFrame]:
+
+        df_train = self.get_train_df()
+        df_test = self.get_test_df()
+
+        return df_train, df_test
+    
+    
+    def write_herbarium_metadata2disk(
+        self,
+        output_dir: str=None
+    ) -> Tuple[Path]:
+        """
+        Reads json metadata files from `root_dir`, parses into train & test dataframes, then writes to disk as csv files.
+        """
+        assert os.path.isdir(output_dir)
+
+        # df_train, df_test = extract_metadata(root_dir = root_dir)
+        train_path = Path(output_dir, "train_metadata.csv")
+        test_path = Path(output_dir, "test_metadata.csv")
+
+        if os.path.exists(train_path):
+            print(train_path, "already exists, skipping write process.",
+                  "Delete the existing file if intention is to refresh dataset.")
+            print(f"Reading train data from: {train_path}")
+            # df_train = read_train_df_from_csv(train_path)
+        else:
+            print(f"Writing train data to: {train_path}")
+            df_train = self.get_train_df()
+            df_train.to_csv(train_path)
+
+        if os.path.exists(test_path):
+            print(test_path, "already exists, skipping write process.",
+                  "Delete the existing file if intention is to refresh dataset.")
+            print(f"Reading test data from: {test_path}")
+            # df_test = read_test_df_from_csv(test_path)
+        else:
+            print(f"Writing test data to: {test_path}")
+            df_test = self.get_test_df()
+            df_test.to_csv(test_path)
+
+        return train_path, test_path
+
+
+
+
+def parse_args() -> argparse.Namespace:
+    
+    parser = argparse.ArgumentParser("""Generate train_metadata.csv and test_metadata.csv from Herbarium 2022 original json metadatab splits.""")
+    parser.add_argument(
+        "--target_dir", default="./data", help="directory where catalog csv files are written"
     )
+    parser.add_argument(
+        "--herbarium_source_dir",
+        default=HERBARIUM_ROOT_DEFAULT,
+        help="Source directory containing original herbarium 2022 dataset, as accessed by kaggle.",
+    )
+    args = parser.parse_args()
+    # WORKING_DIR = "/media/data/jacob/GitHub/image-utils/notebooks/herbarium_2022/"
+    # OUTPUT_DIR = os.path.join(WORKING_DIR, "outputs")
+    # DATA_DIR = os.path.join(WORKING_DIR, "data")
+    os.makedirs(args.target_dir, exist_ok=True)    
     
-    df_train = optimize_dtypes_train(df_train)
-    
-    print(f"training images: {len(df_train)}")
-    
-    return df_train
+	
+	
+    return args
 
 
-def herbarium_test_metadata2df(root_dir: str) -> pd.DataFrame:
-
-    metadata_path = Path(HERBARIUM_ROOT, "test_metadata.json")
-    
-    with open(os.path.join(metadata_path)) as fp:
-        test_data = json.load(fp)
-    
-    assert all([k in test_data[0].keys() for k in TEST_KEYS])    
-    
-    df_test = pd.DataFrame(test_data)
-
-    df_test = df_test.assign(path=df_test.file_name.apply(lambda x: str(Path(root_dir, "test_images", x))))
-    
-    df_test = optimize_dtypes_test(df_test)
-    print(f"test images: {len(df_test)}")
-
-    return df_test
 
 
-def extract_train_test_metadata(root_dir: str):
-
-    df_train = herbarium_train_metadata2df(root_dir)
-    df_test = herbarium_test_metadata2df(root_dir)
-                             
-    return df_train, df_test
-
-def write_herbarium_metadata2disk(root_dir: str, output_dir: str=None) -> Tuple[Path]:
-    """
-    Reads json metadata files from `root_dir`, parses into train & test dataframes, then writes to disk as csv files.
-    """
-    assert os.path.isdir(output_dir)
-    
-    # df_train, df_test = extract_train_test_metadata(root_dir = root_dir)
-    train_path = Path(output_dir, "train_metadata.csv")
-    test_path = Path(output_dir, "test_metadata.csv")
-    
-    # try:
-    if os.path.exists(train_path):
-        print(train_path, "already exists, skipping write process.",
-              "Delete the existing file if intention is to refresh dataset.")
-        print(f"Reading train data from: {train_path}")
-        df_train = read_train_df_from_csv(train_path)
-    else:
-        df_train = herbarium_train_metadata2df(root_dir)
-        df_train.to_csv(train_path)
-
-    if os.path.exists(test_path):
-        print(test_path, "already exists, skipping write process.",
-              "Delete the existing file if intention is to refresh dataset.")
-        print(f"Reading test data from: {test_path}")
-        df_test = read_test_df_from_csv(test_path)
-    else:
-        df_test = herbarium_test_metadata2df(root_dir)
-        df_test.to_csv(test_path)
-
-    return train_path, test_path
 
 
-# df_train, df_test = extract_train_test_metadata(root_dir = HERBARIUM_ROOT)
+
 
 if __name__=="__main__":
-    train_path, test_path = write_herbarium_metadata2disk(root_dir=HERBARIUM_ROOT,
-                                                          output_dir=DATA_DIR)
+    
+    args = parse_args()
+    
+    metadata = HerbariumMetadata(herbarium_root=args.herbarium_source_dir)
+    
+    train_path, test_path = metadata.write_herbarium_metadata2disk(output_dir=args.target_dir)
 
     # train_df, test_df = read_all_from_csv(root_dir=HERBARIUM_ROOT)
 
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 ################################################################
 
 ################

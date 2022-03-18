@@ -1,0 +1,2230 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.10.0" />
+<title>imutils.ml.models.pl.transfer API documentation</title>
+<meta name="description" content="lightning_hydra_classifiers/models/transfer.py …" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>imutils.ml.models.pl.transfer</code></h1>
+</header>
+<section id="section-intro">
+<p>lightning_hydra_classifiers/models/transfer.py</p>
+<p>Author: Jacob A Rose
+Created: Thursday Oct 14th, 2021</p>
+<h2 id="plugins">Plugins</h2>
+<p>LayerSelectPlugin
+LayerFreezeLightningPlugin
+LightningMetricsPlugin
+Super classes:
+BaseLightningModule
+Usable classes:
+LightningClassifier</p>
+<h2 id="-">--------------------------------------------------------------------------------------------------------------</h2>
+<p>The previous script with this name (from Wednesday June 23rd, 2021) has been deprecated, and might be found in:
+lightning_hydra_classifiers/models/_DEPRECATED/transfer.py</p>
+<hr>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">&#34;&#34;&#34;
+
+lightning_hydra_classifiers/models/transfer.py
+
+Author: Jacob A Rose
+Created: Thursday Oct 14th, 2021
+
+Plugins:
+    LayerSelectPlugin
+    LayerFreezeLightningPlugin
+    LightningMetricsPlugin
+Super classes:
+    BaseLightningModule
+Usable classes:
+    LightningClassifier
+
+
+--------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------
+The previous script with this name (from Wednesday June 23rd, 2021) has been deprecated, and might be found in:
+lightning_hydra_classifiers/models/_DEPRECATED/transfer.py
+----------------------------------------------------------
+&#34;&#34;&#34;
+
+import logging
+import os
+from rich import print as pp
+import pandas as pd
+import numpy as np
+import torch
+import torch.nn as nn
+import pytorch_lightning as pl
+import timm
+import glob
+import hydra
+from collections import OrderedDict
+from typing import *
+
+# from lightning_hydra_classifiers.utils.model_utils import count_parameters, collect_results
+# from lightning_hydra_classifiers.utils.metric_utils import get_per_class_metrics, get_scalar_metrics
+# from lightning_hydra_classifiers.models.backbones.backbone import build_model
+# # from lightning_hydra_classifiers.experiments.multitask import schedulers
+# from lightning_hydra_classifiers.experiments.multitask.schedulers import configure_schedulers
+
+
+logger = logging.Logger(__name__)
+logger.setLevel(&#39;INFO&#39;)
+
+from tqdm.auto import tqdm, trange
+from prettytable import PrettyTable
+
+
+
+__all__ = [&#34;BaseLightningModule&#34;, &#34;LightningClassifier&#34;]
+
+
+BN_TYPE = (torch.nn.modules.batchnorm._BatchNorm,)
+
+def is_bn(layer: nn.Module) -&gt; bool:
+    &#34;&#34;&#34; Return True if layer&#39;s type is one of the batch norms.&#34;&#34;&#34;
+    return isinstance(layer, BN_TYPE)
+
+def grad_check(tensor: torch.Tensor) -&gt; bool:
+    &#34;&#34;&#34; Returns True if tensor.requires_grad==True, else False.&#34;&#34;&#34;
+    return tensor.requires_grad == True
+
+
+
+class LayerSelectPlugin:
+    &#34;&#34;&#34;
+    LayerSelectPlugin
+
+    To be subclassed by main Pytorch Lightning Module
+    
+    Available methods:
+    * classmethods:
+        - count_parameters
+    * instance methods:
+        - get_batchnorm_modules
+        - get_conv_modules
+        - get_linear_modules
+        - get_named_parameters
+        - get_named_modules
+        - get_trainable_parameters
+        - get_nontrainable_parameters
+        - count_trainable_batchnorm_layers
+
+    
+    
+    &#34;&#34;&#34;
+    
+    # TODO: Switch to using get_modules_by_type instead of get_named_modules
+    @classmethod
+    def get_batchnorm_modules(cls,
+                              model: Optional=None):
+#         model = model or self
+#         return self.get_named_modules(&#34;bn&#34;, model=model)
+        return cls.get_modules_by_type(include_type=BN_TYPE,
+                                        model=model)
+    
+    def get_conv_modules(self,
+                         model: Optional=None):
+        model = model or self
+        return self.get_named_modules(&#34;conv&#34;, model=model)
+    
+    def get_linear_modules(self,
+                           model: Optional=None):
+        model = model or self
+        return ((n,m) for n,m in self.named_modules(model=model) if isinstance(m, nn.modules.Linear))
+    
+    
+    def get_named_parameters(self,
+                             filter_pattern: Optional[str]=None,
+                             model: Optional=None,
+                             trainable: bool=False,
+                             nontrainable: bool=False):
+        
+#         if isinstance(model, (Sequence,Generator)):
+#             named_params = ()
+        model = model or self
+        named_params = model.named_parameters()
+        if isinstance(filter_pattern, str):
+            named_params = ((n,p) for n,p in named_params if filter_pattern in n)
+        if trainable and nontrainable:
+            logger.warning(&#39;Returning all parameters regardless of the values of requires_grad.&#39;)
+            return named_params
+        if trainable:
+            return ((n, p) for n, p in named_params if p.requires_grad)
+        if nontrainable:
+            return ((n, p) for n, p in named_params if not p.requires_grad)
+        return named_params
+    
+    ## TODO: Create a filter_modules() helper method that takes a filter function to be re-used in each of the various get_modules_by* methods.
+
+    def get_named_modules(self,
+                          filter_pattern: Optional[str]=None,
+                          model: Optional=None):
+        model = model or self
+        if isinstance(filter_pattern, str):
+            return ((n,l) for n,l in model.named_modules() if filter_pattern in n)
+        return model.named_modules()
+    
+    @classmethod
+    def get_modules_by_type(cls,
+                            include_type: Any=None,
+                            model: Optional=None):
+#         model = model or self
+        if include_type is not None:
+            return ((n,l) for n,l in model.named_modules() if isinstance(l, include_type))
+        return model.named_modules()
+    
+    
+            
+    def get_trainable_parameters(self, 
+                                 model: Optional=None,
+                                 count_params: bool=False,
+                                 count_layers: bool=False):
+        model = model or self
+        out = (p for _, p in self.get_named_parameters(model=model,
+                                                       trainable=True))
+        if count_params:
+            out = sum((p.numel() for p in out))
+        elif count_layers:
+            out = len(list(out))
+        return out
+#         return (p for p in self.parameters() if p.requires_grad)
+
+    def get_nontrainable_parameters(self,
+                                    model: Optional=None,
+                                    count_params: bool=False,
+                                    count_layers: bool=False):
+        model = model or self
+        out = (p for _, p in self.get_named_parameters(model=model,
+                                                       nontrainable=True))
+        if count_params:
+            out = sum((p.numel() for p in out))
+        elif count_layers:
+            out = len(list(out))
+        return out
+#         return (p for p in self.parameters() if not p.requires_grad)
+
+    def count_trainable_batchnorm_layers(self,
+                                         model: Optional=None) -&gt; Tuple[Dict[str, int]]:
+        model = model or self
+        is_training = np.array([m.training for _, m in self.get_batchnorm_modules(model=model)])
+        training = {&#34;True&#34;:np.sum(is_training),
+                    &#34;False&#34;:np.sum(~is_training),
+                    &#34;Total&#34;: len(is_training)}
+#         print(f&#34;trainable batchnorm modules:{}&#34;)
+#         print(f&#34;nontrainable batchnorm modules:{np.sum(~is_training)}&#34;)
+
+
+        modules = list(tuple(p.parameters()) for n, p in self.get_batchnorm_modules(model=model))
+        is_training = np.array([(grad_check(m[0]) and grad_check(m[1])) for m in modules])
+
+#         is_training = np.array([p.requires_grad for _, p in self.get_named_parameters(&#34;bn&#34;, model=model)])
+        requires_grad = {&#34;True&#34;:np.sum(is_training),
+                         &#34;False&#34;:np.sum(~is_training),
+                         &#34;Total&#34;: len(is_training)}
+        if getattr(self, &#34;_verbose&#34;, False):
+            print(&#34;layer.training-&gt; Use batch statistics&#34;)
+            print(&#34;layer.training-&gt; Use running statistics&#34;)
+            print(&#34;is_training (layer.training==True):&#34;); pp(training)
+            print(&#34;requires_grad (layer.requires_grad==True):&#34;); pp(requires_grad)
+        
+        return training, requires_grad
+
+#         print(f&#34;batchnorm params with requires_grad=True: :{np.sum(is_training)}&#34;)
+#         print(f&#34;batchnorm params with requires_grad=False:{np.sum(~is_training)}&#34;)
+        
+    @classmethod
+    def count_parameters(cls, model, verbose: bool=True) -&gt; PrettyTable:
+        return count_parameters(model, verbose=verbose)
+
+
+class LayerFreezeLightningPlugin:
+    &#34;&#34;&#34;
+    LayerFreezeLightningPlugin
+    
+    To be subclassed by main Pytorch Lightning Module
+    
+    Available methods:
+    * classmethods:
+        - freeze_up_to
+        - freeze
+        - unfreeze
+        - freeze_bn
+        - set_bn_eval
+    * instance methods:
+        - freeze_backbone
+        - unfreeze_backbone_top_layers
+    &#34;&#34;&#34;
+    valid_strategies : Tuple[str] = (&#34;feature_extractor&#34;,
+                                     &#34;feature_extractor_+_bn.eval()&#34;,
+                                     &#34;feature_extractor_+_except_bn&#34;)
+    _verbose: bool = True
+    def set_strategy(self,
+                     feature_extractor_strategy: str=None,
+                     finetuning_strategy: str=None):
+        if feature_extractor_strategy == &#34;feature_extractor&#34;:
+            self.feature_extractor_strategy(freeze_bn=True,
+                                            eval_bn=False)
+        elif feature_extractor_strategy == &#34;feature_extractor_+_bn.eval()&#34;:
+            self.feature_extractor_strategy(freeze_bn=True,
+                                            eval_bn=True)
+        elif feature_extractor_strategy == &#34;feature_extractor_+_except_bn&#34;:
+            self.feature_extractor_strategy(freeze_bn=False,
+                                            eval_bn=False)
+        elif feature_extractor_strategy is None:
+            print(f&#34;Initializing model from scratch due to feature_extractor_strategy=None&#34;)
+            self.freeze_bn = False
+            self.eval_bn = False
+
+            self.unfreeze(self.model)
+        else:
+            raise NotImplementedError(f&#34;{feature_extractor_strategy} is not a valid feature_extractor_strategy. Please select from 1 of the following {len(self.valid_strategies)} strategies: {self.valid_strategies}&#34;)
+        self.hparams.feature_extractor_strategy = feature_extractor_strategy
+        if self._verbose: print(f&#34;Set current model training strategy to: {self.hparams.feature_extractor_strategy}&#34;)
+            
+        
+        if finetuning_strategy == &#34;finetuning_unfreeze_layers_on_plateau&#34;:
+            if &#34;resnet&#34; in self.hparams.backbone_name:
+                self.finetuning_milestones = [&#34;layer4&#34;, &#34;layer3&#34;, &#34;layer2&#34;, &#34;layer1&#34;]
+            elif &#34;efficient&#34; in self.hparams.backbone_name:
+                self.finetuning_milestones = [&#39;blocks.6&#39;, &#39;blocks.5&#39;, &#39;blocks.4&#39;, &#39;blocks.3&#39;, &#39;blocks.2&#39;, &#39;blocks.1&#39;, &#39;blocks.0&#39;]
+            else:
+                self.finetuning_milestones = None
+            if self._verbose: print(f&#34;Set current model finetuning strategy to: {self.finetuning_milestones}&#34;)
+            
+#             self.feature_extractor_strategy(freeze_bn=False,
+#                                             eval_bn=False)
+
+        
+        
+
+    
+    def feature_extractor_strategy(self,
+                                   freeze_bn: bool=True,
+                                   eval_bn: bool=False):
+        &#34;&#34;&#34;
+        Defaults to PyTorch default, which is to freeze the gradients for batchnorm layers, but not necessarily apply eval() to them upon freezing, thus allowing the running mean &amp; std to continue training on each incoming batch.
+        
+        Allows the option of both freezing and setting to eval mode all batch norm layers, thus fully removing the possibility of data leakage or accidental injection of noise.
+
+        Arguments:
+           freeze_bn: bool, default=True
+               If True, set bn layers&#39; attribute requires_grad to False.
+           eval_bn: bool, default=False
+               If True, apply layer.eval() to bn layers. If False, apply layer.train() to bn layers.
+        
+        &#34;&#34;&#34;
+        self.freeze_backbone(freeze_bn=freeze_bn)
+        self.freeze_bn = freeze_bn
+        self.eval_bn = eval_bn
+        
+        if not freeze_bn:
+            self.unfreeze_bn(self.model,
+                             unfreeze_bn=True)
+#             self.unfreeze(self.model,
+#                           filter_pattern=&#34;bn&#34;)
+        if self.eval_bn:
+            self.set_bn_eval(self.model)
+
+            
+#     def on_validation_model_eval(self) -&gt; None:
+#         &#34;&#34;&#34;
+#         Sets the model to eval during the val loop
+#         &#34;&#34;&#34;
+#         self.eval()
+
+    # def on_validation_model_train(self) -&gt; None:
+    #     &#34;&#34;&#34;
+    #     Sets the model to train during the val loop
+    #     &#34;&#34;&#34;
+    #     self.train()
+    #     self.set_strategy(feature_extractor_strategy=self.hparams.feature_extractor_strategy)
+
+    
+    @classmethod
+    def freeze(cls,
+               module,
+               freeze_bn: bool=True,
+               filter_pattern: Optional[str]=None):
+        modules = list(module.named_modules())
+        
+        for n, m in modules:
+#             if filter_pattern not in n:
+            if isinstance(filter_pattern, str) and (filter_pattern not in n):
+                continue
+#             m.eval()
+            for p_name, p in m.named_parameters():
+                if isinstance(filter_pattern, str) and (filter_pattern not in n):
+                    continue
+#                 if freeze_bn or not isinstance(m, nn.BatchNorm2d):
+                if freeze_bn or not is_bn(m):
+                    p.requires_grad=False
+            cls.freeze_bn(m, freeze_bn)      
+
+            
+    @classmethod
+    def unfreeze(cls,
+                 module,
+                 unfreeze_bn: bool=True,
+                 filter_pattern: Optional[str]=None):
+
+#         out = (p for _, p in cls.get_named_parameters(model=module))
+        
+        if isinstance(module, (Generator, Sequence)):
+            modules = module
+        else:
+            modules = list(module.named_modules())
+        for n, m in modules:
+            if isinstance(filter_pattern, str) and (filter_pattern not in n):
+                continue
+            if is_bn(m) and not unfreeze_bn:
+                continue
+            cls.unfreeze_bn(m, unfreeze_bn)
+            for p_name, p in m.named_parameters():
+                p.requires_grad=True
+            m.train()
+
+    @classmethod
+    def freeze_bn(cls, module: nn.Module, freeze_bn: bool=True):
+        for n, m in cls.get_batchnorm_modules(model=module):
+            if freeze_bn:
+                for p in m.parameters():
+                    p.requires_grad = False
+                    if cls._verbose: logger.debug(f&#34;[freeze_bn][Layer={n}] Set requires_grad=False&#34;)
+
+    @classmethod
+    def unfreeze_bn(cls, module: nn.Module, unfreeze_bn: bool=True):
+        for n, m in cls.get_batchnorm_modules(model=module):
+            if unfreeze_bn:
+                for p in m.parameters():
+                    p.requires_grad = True
+                    if cls._verbose: logger.debug(f&#34;[unfreeze_bn][Layer={n}] Set requires_grad=True&#34;)
+
+                    
+    @classmethod
+    def set_bn_eval(cls, module: nn.Module)-&gt;None:
+        &#34;Set bn layers in eval mode for all recursive children of `m`.&#34;
+        for n, l in module.named_children():
+#             if isinstance(l, nn.BatchNorm2d) and not next(l.parameters()).requires_grad:
+            if is_bn(l) and not next(l.parameters()).requires_grad:
+                l.eval()
+                if cls._verbose: logger.debug(f&#34;[set_bn_eval][Layer={n}] Called layer.eval()&#34;)
+
+#                 continue
+            cls.set_bn_eval(l)
+
+
+    def freeze_backbone(self, freeze_bn: bool=True):
+        
+        self.freeze(self.model.backbone,
+                    freeze_bn=freeze_bn)
+        self.unfreeze(self.model.head)
+
+        
+        
+    def unfreeze_backbone_top_layers(self,
+                                     unfreeze_down_to: Union[str,int]=-1):
+        if isinstance(unfreeze_down_to, str):
+            layers = list(reversed(list(self.model.backbone.named_children())))
+        if isinstance(unfreeze_down_to, int):
+            if unfreeze_down_to == 0:
+                print(f&#34;Pass non-zero integer or str label name to unfreeze layers. Returning without change.&#34;)
+                return
+            layers = list(reversed(list(enumerate(self.model.backbone.children()))))
+            if unfreeze_down_to &lt; 0:
+                unfreeze_down_to = len(layers) + unfreeze_down_to
+        
+        for layer_id, l in layers:
+            self.unfreeze(l)
+            if layer_id == unfreeze_down_to:
+                break
+
+#     @classmethod
+#     def freeze_up_to(cls, 
+#                      module, 
+#                      stop_layer: Union[int, str]=None,
+#                      freeze_bn: bool=True):
+
+#         cls.unfreeze(module, freeze_bn=freeze_bn)
+
+#         if isinstance(stop_layer, str):
+#             modules = list(module.named_modules())
+#         elif isinstance(stop_layer, int) or (stop_layer is None):
+#             modules = list(enumerate(module.modules()))
+
+#         for module_id, m in modules:
+#             if stop_layer == module_id:
+#                 logger.warning(f&#34;Stopping at layer: {n}&#34;)
+#                 break
+#             cls.freeze(m, freeze_bn=freeze_bn)
+#             logger.warning(f&#34;Layer {module_id}: type={type(m)}|training={m.training}&#34;)
+#             logger.warning(f&#34;requires_grad={np.all([p.requires_grad for p in m.parameters()])}&#34;)
+
+
+
+class LightningMetricsPlugin:
+    &#34;&#34;&#34;
+    LightningMetricsPlugin
+    
+    To be subclassed by main Pytorch Lightning Module
+    
+    Available methods:
+    * instance methods:
+        - log_metric_step
+        - init_metrics
+    &#34;&#34;&#34;
+    
+    
+    def log_metric_step(self,
+                        stage: str=&#39;train&#39;,
+                        omit_metric_types: Optional[List[str]]=None,
+                        omit_metric_keys: Optional[List[str]]=None):
+        omit_metric_types = omit_metric_types or []
+        omit_metric_keys = omit_metric_keys or []
+        
+        for metric_type, metric_collection in self.all_metrics[stage].items():
+            if metric_type in omit_metric_types:
+                continue
+            if metric_type == &#34;scalar&#34;:
+                self.log_dict({k:v for k,v in metric_collection.items() if k not in omit_metric_keys},
+                               on_step=False, on_epoch=True, prog_bar=True, logger=True)
+
+            elif metric_type == &#34;per_class&#34;:
+                for k,v in metric_collection.items():
+                    if k in omit_metric_keys:
+                        continue
+                    results = v.compute()
+                    for class_idx, result in enumerate(results): #range(len(results)):
+                        self.log(f&#34;{k}_class_{class_idx}&#34;, result,
+                                 on_step=False, on_epoch=True, prog_bar=False, logger=True)
+            else:
+                logger.warning(f&#34;[Warning] {metric_type} requires specialized handling in lightningmodule.log_metric_step().&#34;)
+
+    def init_metrics(self,
+                     stage: str=&#39;train&#39;,
+                     tag: Optional[str]=None):
+        tag = tag or &#34;&#34;
+        if not hasattr(self, &#34;all_metrics&#34;):
+            self.all_metrics = {}
+        
+        if not hasattr(self,&#34;num_classes&#34;) and hasattr(self.hparams, &#34;num_classes&#34;):
+            self.num_classes = self.hparams.num_classes
+        
+        print(f&#34;self.num_classes={self.num_classes}&#34;)
+        if stage in [&#39;train&#39;, &#39;all&#39;]:
+            prefix=f&#39;{tag}_train&#39;.strip(&#34;_&#34;)
+            self.metrics_train = get_scalar_metrics(num_classes=self.num_classes, average=&#39;macro&#39;, prefix=prefix)
+            self.metrics_train_per_class = get_per_class_metrics(num_classes=self.num_classes, prefix=&#39;train&#39;)
+            self.all_metrics[&#39;train&#39;] = {&#34;scalar&#34;:self.metrics_train,
+                                         &#34;per_class&#34;:self.metrics_train_per_class}
+            
+        if stage in [&#39;val&#39;, &#39;all&#39;]:
+            prefix=f&#39;{tag}_val&#39;.strip(&#34;_&#34;)
+            self.metrics_val = get_scalar_metrics(num_classes=self.num_classes, average=&#39;macro&#39;, prefix=prefix)
+            self.metrics_val_per_class = get_per_class_metrics(num_classes=self.num_classes, prefix=&#39;val&#39;)
+            self.all_metrics[&#39;val&#39;] = {&#34;scalar&#34;:self.metrics_val,
+                                       &#34;per_class&#34;:self.metrics_val_per_class}
+            
+        if stage in [&#39;test&#39;, &#39;all&#39;]:
+            if isinstance(tag, str):
+                prefix=tag
+            else:
+                prefix = &#34;test&#34;
+#             prefix=f&#39;{tag}_test&#39;.strip(&#34;_&#34;)
+            self.metrics_test = get_scalar_metrics(num_classes=self.num_classes, average=&#39;macro&#39;, prefix=prefix)
+            self.metrics_test_per_class = get_per_class_metrics(num_classes=self.num_classes, prefix=prefix)
+            self.all_metrics[&#39;test&#39;] = {&#34;scalar&#34;:self.metrics_test,
+                                        &#34;per_class&#34;:self.metrics_test_per_class}
+            
+            
+
+
+class BaseLightningModule(LightningMetricsPlugin,
+                          LayerFreezeLightningPlugin,
+                          LayerSelectPlugin,
+                          pl.LightningModule):
+    &#34;&#34;&#34;
+    BaseLightningModule
+    
+    Additional methods made available through subclassed plugins.
+    
+        Available methods:
+    * instance methods:
+        - step
+        - update_metric_step
+        - training_step
+        - validation_step
+        - test_step
+    
+    Plugins:
+    
+        -- LightningMetricsPlugin
+            * instance methods:
+                - log_metric_step
+                - init_metrics
+        -- LayerFreezeLightningPlugin
+            * classmethods:
+                - freeze_up_to
+                - freeze
+                - unfreeze
+                - freeze_bn
+                - set_bn_eval
+            * instance methods:
+                - freeze_backbone
+                - unfreeze_backbone_top_layers        
+        -- LayerSelectPlugin
+            * classmethods:
+                - count_parameters
+            * instance methods:
+                - get_batchnorm_modules
+                - get_conv_modules
+                - get_linear_modules
+                - get_named_parameters
+                - get_named_modules
+                - get_trainable_parameters
+                - get_nontrainable_parameters
+                - count_trainable_batchnorm_layers
+        
+    
+    
+    &#34;&#34;&#34;
+    
+    def __init__(self, seed: Optional[int]=None):
+        super().__init__()
+        self.seed = seed
+        pl.seed_everything(seed)
+
+    def step(self, batch, batch_idx):
+        image, y_true = batch[0], batch[1]
+        y_logit = self(image)
+        y_pred = torch.argmax(y_logit, dim=-1)
+        return y_logit, y_true, y_pred    
+    
+    def update_metric_step(self,
+                           y_logit,
+                           y_true,
+                           stage: str=&#39;train&#39;):
+        out = {}
+        for metric_type, metric_collection in self.all_metrics[stage].items():
+            out[metric_type] = metric_collection(y_logit, y_true)
+        return out
+    
+    
+    def training_step(self, batch, batch_idx):
+        if self.eval_bn:
+            if self._verbose: logger.debug(f&#34;[training_step] Calling self.set_bn_eval(self.model)&#34;)
+            self.set_bn_eval(self.model)
+            
+        y_logit, y_true, y_pred = self.step(batch, batch_idx)
+        loss = self.criterion(y_logit, y_true)
+        self.update_metric_step(y_logit,
+                                y_true,
+                                stage=&#34;train&#34;)
+        self.log_dict({&#34;train_acc&#34;: self.metrics_train[&#34;train/acc_top1&#34;],
+                       &#34;train_loss&#34;: loss},
+                      on_step=True, on_epoch=True,
+                      prog_bar=True, logger=True)
+        return loss
+
+    def validation_step(self, batch, batch_idx):
+        y_logit, y_true, y_pred = self.step(batch, batch_idx)
+        loss = self.criterion(y_logit, y_true)
+        self.update_metric_step(y_logit,
+                                y_true,
+                                stage=&#34;val&#34;)
+        self.log_dict({&#34;val_acc&#34;: self.metrics_val[&#34;val/acc_top1&#34;],
+                       &#34;val_loss&#34;: loss},
+                      on_step=True, on_epoch=True,
+                      prog_bar=True, logger=True)
+        
+
+        return {&#34;loss&#34;:loss,
+                &#34;y_logit&#34;:y_logit,
+                &#34;y_pred&#34;:y_pred,
+                &#34;y_true&#34;:y_true}
+    
+    def test_step(self, batch, batch_idx):
+        y_logit, y_true, y_pred = self.step(batch, batch_idx)
+        loss = self.criterion(y_logit, y_true)
+        self.update_metric_step(y_logit,
+                                y_true,
+                                stage=&#34;test&#34;)
+        self.log_dict({&#34;test_acc&#34;: self.metrics_test[&#34;test/acc_top1&#34;],
+                       &#34;test_loss&#34;: loss},
+                      on_step=False, on_epoch=True,
+                      prog_bar=True, logger=True)
+        self.log_metric_step(stage=&#34;test&#34;)
+        return {&#34;loss&#34;:loss,
+                &#34;y_logit&#34;:y_logit,
+                &#34;y_pred&#34;:y_pred,
+                &#34;y_true&#34;:y_true}
+    
+    def predict_step(self, batch, batch_idx=None):
+        out = self.step(batch, batch_idx)
+        if hasattr(batch, &#34;metadata&#34;):
+            if &#34;path&#34; in batch.metadata:
+                out = [*out, batch.metadata[&#34;path&#34;]]
+        return out
+    
+
+    def on_predict_epoch_end(self, results: List[Any]) -&gt; None:
+        &#34;&#34;&#34;
+        Called at the end of predicting.
+        &#34;&#34;&#34;
+        
+#         y_logit, y_true, y_pred, paths = collect_results(results)
+        return collect_results(results)
+
+
+
+
+class LightningClassifier(BaseLightningModule):
+    def __init__(self,
+                 backbone_name=&#39;gluon_seresnext50_32x4d&#39;,
+                 pretrained: Union[bool, str]=True,
+                 num_classes: int=1000,
+                 pool_size: int=1,
+                 pool_type: str=&#39;avg&#39;,
+                 head_type: str=&#39;linear&#39;,
+                 hidden_size: Optional[int]=512,
+                 dropout_p: Optional[float]=0.3,
+                 lr: float=2e-03,
+                 backbone_lr_mult: float=0.1,
+                 feature_extractor_strategy: str=&#34;feature_extractor&#34;,
+                 finetuning_strategy: str=None,
+                 weight_decay: float=0.01,
+                 scheduler_config: Dict[str,Any]=None,
+                 seed: int=None,
+                 **kwargs):
+        super().__init__(seed=seed)
+        self.save_hyperparameters()
+        
+        self.model = build_model(backbone_name=backbone_name,
+                                      pretrained=pretrained,
+                                      num_classes=num_classes,
+                                      pool_size=pool_size,
+                                      pool_type=pool_type,
+                                      head_type=head_type,
+                                      hidden_size=hidden_size,
+                                      dropout_p=dropout_p)
+        print(f&#34;self.hparams: {self.hparams}&#34;)
+        print(f&#34;feature_extractor_strategy: {feature_extractor_strategy}&#34;)
+        self.set_strategy(feature_extractor_strategy=feature_extractor_strategy,
+                          finetuning_strategy=finetuning_strategy)
+    
+        self.criterion = nn.CrossEntropyLoss()
+        self.metrics = self.init_metrics(stage=&#39;all&#39;)
+    
+    
+    def forward(self,x):
+        return self.model(x)
+    
+    
+    def get_lr(self, group: str=None):
+        if group is None:
+            return self.hparams.lr
+        if group == &#34;backbone&#34;:
+            return self.hparams.lr * self.hparams.backbone_lr_mult
+        if group == &#34;head&#34;:
+            return self.hparams.lr
+    
+    def configure_optimizers(self):
+        print(f&#34;self.hparams={self.hparams}&#34;)
+        self.optimizers = [torch.optim.AdamW([
+                        {
+                                &#34;params&#34;:self.model.backbone.parameters(),
+                                &#34;lr&#34;:self.get_lr(&#34;backbone&#34;),
+                                &#34;weight_decay&#34;: self.hparams.weight_decay
+                        },
+                        {
+                                &#34;params&#34;:self.model.head.parameters(),
+                                &#34;lr&#34;:self.get_lr(&#34;head&#34;),
+                                &#34;weight_decay&#34;: self.hparams.weight_decay
+                        }
+                ])]
+#         self.scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(self.optimizers, T_max=self.config.t_max, eta_min=self.config.min_lr)
+        self.schedulers = configure_schedulers(optimizer=self.optimizers[0],
+                                               config=self.hparams.get(&#34;scheduler&#34;,{}))
+    
+        return self.optimizers, self.schedulers
+    
+#         return {&#39;optimizer&#39;: self.optimizer,
+#                 &#39;scheduler&#39;: self.scheduler}
+
+    @classmethod
+    def init_pretrained_backbone_w_new_classifier(cls,
+                                                  ckpt_path: str,
+                                                  new_num_classes: Optional[int]=None,
+                                                  **kwargs):
+        &#34;&#34;&#34;
+        Create a new instance of this LightningClassifier with:
+            - backbone weights pretrained on a custom dataset (like Extant_Leaves)
+            - classifier weights randomly initialized
+        &#34;&#34;&#34;
+        if isinstance(new_num_classes, int):
+            kwargs[&#34;num_classes&#34;] = new_num_classes
+        model = cls(**kwargs)
+        ckpt = torch.load(ckpt_path)
+        state_dict = {}
+#         if &#34;metadata&#34; in ckpt:
+#             state_dict[&#34;metadata&#34;] = ckpt[&#34;metadata&#34;]
+        if &#34;state_dict&#34; in ckpt:
+            state_dict = ckpt[&#34;state_dict&#34;]
+        else:
+            state_dict = ckpt
+            
+        backbone_state_dict = OrderedDict({})
+        for k,v in state_dict.items():
+            if k.startswith(&#34;model.&#34;):
+                k = k.split(&#34;model.&#34;)[-1]
+            if k.startswith(&#34;backbone.&#34;):
+                k = k.split(&#34;backbone.&#34;)[-1]
+            backbone_state_dict[k] = v
+
+        missed_keys = model.model.backbone.load_state_dict(backbone_state_dict, strict=False)
+        print(f&#34;missed_keys: {missed_keys}&#34;)
+
+        return model
+    
+    
+    def save_backbone_weights(self,
+                              ckpt_dir: str,
+                              ckpt_filename: str=&#34;backbone.ckpt&#34;,
+                              metadata: Optional[Dict[str, Any]]=None,
+                              verbose: bool=True):
+        &#34;&#34;&#34;
+        Save the weights from this model&#39;s backbone to ${ckpt_dir}/${ckpt_filename}
+        &#34;&#34;&#34;
+        
+        state_dict = {&#34;state_dict&#34;: self.model.model.backbone.state_dict()}
+        if isinstance(metadata, dict):
+            state_dict[&#34;metadata&#34;] = metadata
+        
+        ckpt_path = os.path.join(ckpt_dir, ckpt_filename)
+        torch.save(state_dict, ckpt_path)
+        
+        if verbose and os.path.isfile(ckpt_path):
+            print(f&#34;Saved backbone state_dict to disk at: {ckpt_path}&#34;)
+            
+        if not os.path.isfile(ckpt_path):
+            print(f&#34;[WARNING] Error saving model backbone to {ckpt_path} &#34;)
+            
+        return ckpt_path
+
+    
+    def save_model_checkpoint(ckpt_dir: str,
+                              ckpt_filename: str=&#34;model.ckpt&#34;,
+                              metadata: Optional[Dict[str, Any]]=None,
+                              verbose: bool=True):
+        &#34;&#34;&#34;
+        Save the weights from this model&#39;s backbone &amp; classifier head to ${ckpt_dir}/${ckpt_filename}
+        
+        state_dict should have top level keys: 
+        - model.backbone
+        - model.classifier
+        
+        &#34;&#34;&#34;
+        
+        state_dict = {&#34;state_dict&#34;: self.model.model.state_dict()}
+        if isinstance(metadata, dict):
+            state_dict[&#34;metadata&#34;] = metadata
+        if hasattr(self, &#34;label_encoder&#34;):
+            state_dict[&#34;label_encoder&#34;] = self.label_encoder
+        ckpt_path = os.path.join(ckpt_dir, ckpt_filename)
+        torch.save(state_dict, ckpt_path)
+        
+        if verbose and os.path.isfile(ckpt_path):
+            print(f&#34;Saved backbone state_dict to disk at: {ckpt_path}&#34;)
+            
+        if not os.path.isfile(ckpt_path):
+            print(f&#34;[WARNING] Error saving model backbone to {ckpt_path} &#34;)
+            
+        return ckpt_path
+    
+    
+    @classmethod
+    def load_model_from_checkpoint(cls,
+                                   ckpt_path: str,
+                                   **kwargs):    
+        &#34;&#34;&#34;
+        Create a new instance of this LightningClassifier with:
+            - backbone &amp; classifier weights pretrained on a custom dataset (like Extant_Leaves)
+
+        &#34;&#34;&#34;
+        model = cls(**kwargs)
+        ckpt = torch.load(ckpt_path)
+        state_dict = {}
+        
+        if &#34;label_encoder&#34; in ckpt:
+            self.label_encoder = ckpt[&#34;label_encoder&#34;]
+        if &#34;state_dict&#34; in ckpt:
+            state_dict = ckpt[&#34;state_dict&#34;]
+        else:
+            state_dict = ckpt
+            
+        backbone_state_dict = OrderedDict({})
+        for k,v in state_dict.items():
+            if k.startswith(&#34;model.model.&#34;):
+                k = k.split(&#34;model.&#34;)[-1]
+            backbone_state_dict[k] = v
+
+        missed_keys = model.model.load_state_dict(backbone_state_dict, strict=False)
+        print(f&#34;missed_keys: {missed_keys}&#34;)
+
+        return model ##, missed_keys
+    </code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="imutils.ml.models.pl.transfer.BaseLightningModule"><code class="flex name class">
+<span>class <span class="ident">BaseLightningModule</span></span>
+<span>(</span><span>seed: Optional[int] = None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>BaseLightningModule</p>
+<p>Additional methods made available through subclassed plugins.</p>
+<pre><code>Available methods:
+</code></pre>
+<ul>
+<li>instance methods:<ul>
+<li>step</li>
+<li>update_metric_step</li>
+<li>training_step</li>
+<li>validation_step</li>
+<li>test_step</li>
+</ul>
+</li>
+</ul>
+<h2 id="plugins">Plugins</h2>
+<p>&ndash; LightningMetricsPlugin
+* instance methods:
+- log_metric_step
+- init_metrics
+&ndash; LayerFreezeLightningPlugin
+* classmethods:
+- freeze_up_to
+- freeze
+- unfreeze
+- freeze_bn
+- set_bn_eval
+* instance methods:
+- freeze_backbone
+- unfreeze_backbone_top_layers
+<br>
+&ndash; LayerSelectPlugin
+* classmethods:
+- count_parameters
+* instance methods:
+- get_batchnorm_modules
+- get_conv_modules
+- get_linear_modules
+- get_named_parameters
+- get_named_modules
+- get_trainable_parameters
+- get_nontrainable_parameters
+- count_trainable_batchnorm_layers</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class BaseLightningModule(LightningMetricsPlugin,
+                          LayerFreezeLightningPlugin,
+                          LayerSelectPlugin,
+                          pl.LightningModule):
+    &#34;&#34;&#34;
+    BaseLightningModule
+    
+    Additional methods made available through subclassed plugins.
+    
+        Available methods:
+    * instance methods:
+        - step
+        - update_metric_step
+        - training_step
+        - validation_step
+        - test_step
+    
+    Plugins:
+    
+        -- LightningMetricsPlugin
+            * instance methods:
+                - log_metric_step
+                - init_metrics
+        -- LayerFreezeLightningPlugin
+            * classmethods:
+                - freeze_up_to
+                - freeze
+                - unfreeze
+                - freeze_bn
+                - set_bn_eval
+            * instance methods:
+                - freeze_backbone
+                - unfreeze_backbone_top_layers        
+        -- LayerSelectPlugin
+            * classmethods:
+                - count_parameters
+            * instance methods:
+                - get_batchnorm_modules
+                - get_conv_modules
+                - get_linear_modules
+                - get_named_parameters
+                - get_named_modules
+                - get_trainable_parameters
+                - get_nontrainable_parameters
+                - count_trainable_batchnorm_layers
+        
+    
+    
+    &#34;&#34;&#34;
+    
+    def __init__(self, seed: Optional[int]=None):
+        super().__init__()
+        self.seed = seed
+        pl.seed_everything(seed)
+
+    def step(self, batch, batch_idx):
+        image, y_true = batch[0], batch[1]
+        y_logit = self(image)
+        y_pred = torch.argmax(y_logit, dim=-1)
+        return y_logit, y_true, y_pred    
+    
+    def update_metric_step(self,
+                           y_logit,
+                           y_true,
+                           stage: str=&#39;train&#39;):
+        out = {}
+        for metric_type, metric_collection in self.all_metrics[stage].items():
+            out[metric_type] = metric_collection(y_logit, y_true)
+        return out
+    
+    
+    def training_step(self, batch, batch_idx):
+        if self.eval_bn:
+            if self._verbose: logger.debug(f&#34;[training_step] Calling self.set_bn_eval(self.model)&#34;)
+            self.set_bn_eval(self.model)
+            
+        y_logit, y_true, y_pred = self.step(batch, batch_idx)
+        loss = self.criterion(y_logit, y_true)
+        self.update_metric_step(y_logit,
+                                y_true,
+                                stage=&#34;train&#34;)
+        self.log_dict({&#34;train_acc&#34;: self.metrics_train[&#34;train/acc_top1&#34;],
+                       &#34;train_loss&#34;: loss},
+                      on_step=True, on_epoch=True,
+                      prog_bar=True, logger=True)
+        return loss
+
+    def validation_step(self, batch, batch_idx):
+        y_logit, y_true, y_pred = self.step(batch, batch_idx)
+        loss = self.criterion(y_logit, y_true)
+        self.update_metric_step(y_logit,
+                                y_true,
+                                stage=&#34;val&#34;)
+        self.log_dict({&#34;val_acc&#34;: self.metrics_val[&#34;val/acc_top1&#34;],
+                       &#34;val_loss&#34;: loss},
+                      on_step=True, on_epoch=True,
+                      prog_bar=True, logger=True)
+        
+
+        return {&#34;loss&#34;:loss,
+                &#34;y_logit&#34;:y_logit,
+                &#34;y_pred&#34;:y_pred,
+                &#34;y_true&#34;:y_true}
+    
+    def test_step(self, batch, batch_idx):
+        y_logit, y_true, y_pred = self.step(batch, batch_idx)
+        loss = self.criterion(y_logit, y_true)
+        self.update_metric_step(y_logit,
+                                y_true,
+                                stage=&#34;test&#34;)
+        self.log_dict({&#34;test_acc&#34;: self.metrics_test[&#34;test/acc_top1&#34;],
+                       &#34;test_loss&#34;: loss},
+                      on_step=False, on_epoch=True,
+                      prog_bar=True, logger=True)
+        self.log_metric_step(stage=&#34;test&#34;)
+        return {&#34;loss&#34;:loss,
+                &#34;y_logit&#34;:y_logit,
+                &#34;y_pred&#34;:y_pred,
+                &#34;y_true&#34;:y_true}
+    
+    def predict_step(self, batch, batch_idx=None):
+        out = self.step(batch, batch_idx)
+        if hasattr(batch, &#34;metadata&#34;):
+            if &#34;path&#34; in batch.metadata:
+                out = [*out, batch.metadata[&#34;path&#34;]]
+        return out
+    
+
+    def on_predict_epoch_end(self, results: List[Any]) -&gt; None:
+        &#34;&#34;&#34;
+        Called at the end of predicting.
+        &#34;&#34;&#34;
+        
+#         y_logit, y_true, y_pred, paths = collect_results(results)
+        return collect_results(results)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>imutils.ml.models.pl.transfer.LightningMetricsPlugin</li>
+<li>imutils.ml.models.pl.transfer.LayerFreezeLightningPlugin</li>
+<li>imutils.ml.models.pl.transfer.LayerSelectPlugin</li>
+<li>pytorch_lightning.core.lightning.LightningModule</li>
+<li>pytorch_lightning.core.mixins.device_dtype_mixin.DeviceDtypeModuleMixin</li>
+<li>pytorch_lightning.core.mixins.hparams_mixin.HyperparametersMixin</li>
+<li>pytorch_lightning.core.saving.ModelIO</li>
+<li>pytorch_lightning.core.hooks.ModelHooks</li>
+<li>pytorch_lightning.core.hooks.DataHooks</li>
+<li>pytorch_lightning.core.hooks.CheckpointHooks</li>
+<li>torch.nn.modules.module.Module</li>
+</ul>
+<h3>Subclasses</h3>
+<ul class="hlist">
+<li><a title="imutils.ml.models.pl.transfer.LightningClassifier" href="#imutils.ml.models.pl.transfer.LightningClassifier">LightningClassifier</a></li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="imutils.ml.models.pl.transfer.BaseLightningModule.valid_strategies"><code class="name">var <span class="ident">valid_strategies</span> : Tuple[str]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="imutils.ml.models.pl.transfer.BaseLightningModule.on_predict_epoch_end"><code class="name flex">
+<span>def <span class="ident">on_predict_epoch_end</span></span>(<span>self, results: List[Any]) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Called at the end of predicting.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">    def on_predict_epoch_end(self, results: List[Any]) -&gt; None:
+        &#34;&#34;&#34;
+        Called at the end of predicting.
+        &#34;&#34;&#34;
+        
+#         y_logit, y_true, y_pred, paths = collect_results(results)
+        return collect_results(results)</code></pre>
+</details>
+</dd>
+<dt id="imutils.ml.models.pl.transfer.BaseLightningModule.predict_step"><code class="name flex">
+<span>def <span class="ident">predict_step</span></span>(<span>self, batch, batch_idx=None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Step function called during :meth:<code>~pytorch_lightning.trainer.trainer.Trainer.predict</code>. By default, it
+calls :meth:<code>~pytorch_lightning.core.lightning.LightningModule.forward</code>. Override to add any processing
+logic.</p>
+<p>The :meth:<code>~pytorch_lightning.core.lightning.LightningModule.predict_step</code> is used
+to scale inference on multi-devices.</p>
+<p>To prevent an OOM error, it is possible to use :class:<code>~pytorch_lightning.callbacks.BasePredictionWriter</code>
+callback to write the predictions to disk or database after each batch or on epoch end.</p>
+<p>The :class:<code>~pytorch_lightning.callbacks.BasePredictionWriter</code> should be used while using a spawn
+based accelerator. This happens for <code>Trainer(strategy="ddp_spawn")</code>
+or training on 8 TPU cores with <code>Trainer(tpu_cores=8)</code> as predictions won't be returned.</p>
+<p>Example ::</p>
+<pre><code>class MyModel(LightningModule):
+
+    def predicts_step(self, batch, batch_idx, dataloader_idx):
+        return self(batch)
+
+dm = ...
+model = MyModel()
+trainer = Trainer(gpus=2)
+predictions = trainer.predict(model, dm)
+</code></pre>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>batch</code></strong></dt>
+<dd>Current batch</dd>
+<dt><strong><code>batch_idx</code></strong></dt>
+<dd>Index of current batch</dd>
+<dt><strong><code>dataloader_idx</code></strong></dt>
+<dd>Index of the current dataloader</dd>
+</dl>
+<h2 id="return">Return</h2>
+<p>Predicted output</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def predict_step(self, batch, batch_idx=None):
+    out = self.step(batch, batch_idx)
+    if hasattr(batch, &#34;metadata&#34;):
+        if &#34;path&#34; in batch.metadata:
+            out = [*out, batch.metadata[&#34;path&#34;]]
+    return out</code></pre>
+</details>
+</dd>
+<dt id="imutils.ml.models.pl.transfer.BaseLightningModule.step"><code class="name flex">
+<span>def <span class="ident">step</span></span>(<span>self, batch, batch_idx)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def step(self, batch, batch_idx):
+    image, y_true = batch[0], batch[1]
+    y_logit = self(image)
+    y_pred = torch.argmax(y_logit, dim=-1)
+    return y_logit, y_true, y_pred    </code></pre>
+</details>
+</dd>
+<dt id="imutils.ml.models.pl.transfer.BaseLightningModule.test_step"><code class="name flex">
+<span>def <span class="ident">test_step</span></span>(<span>self, batch, batch_idx)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Operates on a single batch of data from the test set.
+In this step you'd normally generate examples or calculate anything of interest
+such as accuracy.</p>
+<p>.. code-block:: python</p>
+<pre><code># the pseudocode for these calls
+test_outs = []
+for test_batch in test_data:
+    out = test_step(test_batch)
+    test_outs.append(out)
+test_epoch_end(test_outs)
+</code></pre>
+<h2 id="args">Args</h2>
+<dl>
+<dt>batch (:class:<code>~torch.Tensor</code> | (:class:<code>~torch.Tensor</code>, &hellip;) | [:class:<code>~torch.Tensor</code>, &hellip;]):</dt>
+<dt>The output of your :class:<code>~torch.utils.data.DataLoader</code>. A tensor, tuple or list.</dt>
+<dt><strong><code>batch_idx</code></strong> :&ensp;<code>int</code></dt>
+<dd>The index of this batch.</dd>
+<dt><strong><code>dataloader_idx</code></strong> :&ensp;<code>int</code></dt>
+<dd>The index of the dataloader that produced this batch
+(only if multiple test dataloaders used).</dd>
+</dl>
+<h2 id="return">Return</h2>
+<p>Any of.</p>
+<ul>
+<li>Any object or value</li>
+<li><code>None</code> - Testing will skip to the next batch</li>
+</ul>
+<p>.. code-block:: python</p>
+<pre><code># if you have one test dataloader:
+def test_step(self, batch, batch_idx):
+    ...
+
+
+# if you have multiple test dataloaders:
+def test_step(self, batch, batch_idx, dataloader_idx):
+    ...
+</code></pre>
+<p>Examples::</p>
+<pre><code># CASE 1: A single test dataset
+def test_step(self, batch, batch_idx):
+    x, y = batch
+
+    # implement your own
+    out = self(x)
+    loss = self.loss(out, y)
+
+    # log 6 example images
+    # or generated text... or whatever
+    sample_imgs = x[:6]
+    grid = torchvision.utils.make_grid(sample_imgs)
+    self.logger.experiment.add_image('example_images', grid, 0)
+
+    # calculate acc
+    labels_hat = torch.argmax(out, dim=1)
+    test_acc = torch.sum(y == labels_hat).item() / (len(y) * 1.0)
+
+    # log the outputs!
+    self.log_dict({'test_loss': loss, 'test_acc': test_acc})
+</code></pre>
+<p>If you pass in multiple test dataloaders, :meth:<code>test_step</code> will have an additional argument.</p>
+<p>.. code-block:: python</p>
+<pre><code># CASE 2: multiple test dataloaders
+def test_step(self, batch, batch_idx, dataloader_idx):
+    # dataloader_idx tells you which dataset this is.
+    ...
+</code></pre>
+<h2 id="note">Note</h2>
+<p>If you don't need to test you don't need to implement this method.</p>
+<h2 id="note_1">Note</h2>
+<p>When the :meth:<code>test_step</code> is called, the model has been put in eval mode and
+PyTorch gradients have been disabled. At the end of the test epoch, the model goes back
+to training mode and gradients are enabled.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def test_step(self, batch, batch_idx):
+    y_logit, y_true, y_pred = self.step(batch, batch_idx)
+    loss = self.criterion(y_logit, y_true)
+    self.update_metric_step(y_logit,
+                            y_true,
+                            stage=&#34;test&#34;)
+    self.log_dict({&#34;test_acc&#34;: self.metrics_test[&#34;test/acc_top1&#34;],
+                   &#34;test_loss&#34;: loss},
+                  on_step=False, on_epoch=True,
+                  prog_bar=True, logger=True)
+    self.log_metric_step(stage=&#34;test&#34;)
+    return {&#34;loss&#34;:loss,
+            &#34;y_logit&#34;:y_logit,
+            &#34;y_pred&#34;:y_pred,
+            &#34;y_true&#34;:y_true}</code></pre>
+</details>
+</dd>
+<dt id="imutils.ml.models.pl.transfer.BaseLightningModule.training_step"><code class="name flex">
+<span>def <span class="ident">training_step</span></span>(<span>self, batch, batch_idx)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Here you compute and return the training loss and some additional metrics for e.g.
+the progress bar or logger.</p>
+<h2 id="args">Args</h2>
+<p>batch (:class:<code>~torch.Tensor</code> | (:class:<code>~torch.Tensor</code>, &hellip;) | [:class:<code>~torch.Tensor</code>, &hellip;]):
+The output of your :class:<code>~torch.utils.data.DataLoader</code>. A tensor, tuple or list.
+batch_idx (<code>int</code>): Integer displaying index of this batch
+optimizer_idx (<code>int</code>): When using multiple optimizers, this argument will also be present.
+hiddens (<code>Any</code>): Passed in if
+:paramref:<code>~pytorch_lightning.core.lightning.LightningModule.truncated_bptt_steps</code> &gt; 0.</p>
+<h2 id="return">Return</h2>
+<p>Any of.</p>
+<ul>
+<li>:class:<code>~torch.Tensor</code> - The loss tensor</li>
+<li><code>dict</code> - A dictionary. Can include any keys, but must include the key <code>'loss'</code></li>
+<li><code>None</code> - Training will skip to the next batch. This is only for automatic optimization.
+This is not supported for multi-GPU, TPU, IPU, or DeepSpeed.</li>
+</ul>
+<p>In this step you'd normally do the forward pass and calculate the loss for a batch.
+You can also do fancier things like multiple forward passes or something model specific.</p>
+<p>Example::</p>
+<pre><code>def training_step(self, batch, batch_idx):
+    x, y, z = batch
+    out = self.encoder(x)
+    loss = self.loss(out, x)
+    return loss
+</code></pre>
+<p>If you define multiple optimizers, this step will be called with an additional
+<code>optimizer_idx</code> parameter.</p>
+<p>.. code-block:: python</p>
+<pre><code># Multiple optimizers (e.g.: GANs)
+def training_step(self, batch, batch_idx, optimizer_idx):
+    if optimizer_idx == 0:
+        # do training_step with encoder
+        ...
+    if optimizer_idx == 1:
+        # do training_step with decoder
+        ...
+</code></pre>
+<p>If you add truncated back propagation through time you will also get an additional
+argument with the hidden states of the previous step.</p>
+<p>.. code-block:: python</p>
+<pre><code># Truncated back-propagation through time
+def training_step(self, batch, batch_idx, hiddens):
+    # hiddens are the hidden states from the previous truncated backprop step
+    out, hiddens = self.lstm(data, hiddens)
+    loss = ...
+    return {"loss": loss, "hiddens": hiddens}
+</code></pre>
+<h2 id="note">Note</h2>
+<p>The loss value shown in the progress bar is smoothed (averaged) over the last values,
+so it differs from the actual loss returned in train/validation step.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def training_step(self, batch, batch_idx):
+    if self.eval_bn:
+        if self._verbose: logger.debug(f&#34;[training_step] Calling self.set_bn_eval(self.model)&#34;)
+        self.set_bn_eval(self.model)
+        
+    y_logit, y_true, y_pred = self.step(batch, batch_idx)
+    loss = self.criterion(y_logit, y_true)
+    self.update_metric_step(y_logit,
+                            y_true,
+                            stage=&#34;train&#34;)
+    self.log_dict({&#34;train_acc&#34;: self.metrics_train[&#34;train/acc_top1&#34;],
+                   &#34;train_loss&#34;: loss},
+                  on_step=True, on_epoch=True,
+                  prog_bar=True, logger=True)
+    return loss</code></pre>
+</details>
+</dd>
+<dt id="imutils.ml.models.pl.transfer.BaseLightningModule.update_metric_step"><code class="name flex">
+<span>def <span class="ident">update_metric_step</span></span>(<span>self, y_logit, y_true, stage: str = 'train')</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def update_metric_step(self,
+                       y_logit,
+                       y_true,
+                       stage: str=&#39;train&#39;):
+    out = {}
+    for metric_type, metric_collection in self.all_metrics[stage].items():
+        out[metric_type] = metric_collection(y_logit, y_true)
+    return out</code></pre>
+</details>
+</dd>
+<dt id="imutils.ml.models.pl.transfer.BaseLightningModule.validation_step"><code class="name flex">
+<span>def <span class="ident">validation_step</span></span>(<span>self, batch, batch_idx)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Operates on a single batch of data from the validation set.
+In this step you'd might generate examples or calculate anything of interest like accuracy.</p>
+<p>.. code-block:: python</p>
+<pre><code># the pseudocode for these calls
+val_outs = []
+for val_batch in val_data:
+    out = validation_step(val_batch)
+    val_outs.append(out)
+validation_epoch_end(val_outs)
+</code></pre>
+<h2 id="args">Args</h2>
+<dl>
+<dt>batch (:class:<code>~torch.Tensor</code> | (:class:<code>~torch.Tensor</code>, &hellip;) | [:class:<code>~torch.Tensor</code>, &hellip;]):</dt>
+<dt>The output of your :class:<code>~torch.utils.data.DataLoader</code>. A tensor, tuple or list.</dt>
+<dt><strong><code>batch_idx</code></strong> :&ensp;<code>int</code></dt>
+<dd>The index of this batch</dd>
+<dt><strong><code>dataloader_idx</code></strong> :&ensp;<code>int</code></dt>
+<dd>The index of the dataloader that produced this batch
+(only if multiple val dataloaders used)</dd>
+</dl>
+<h2 id="return">Return</h2>
+<ul>
+<li>Any object or value</li>
+<li><code>None</code> - Validation will skip to the next batch</li>
+</ul>
+<p>.. code-block:: python</p>
+<pre><code># pseudocode of order
+val_outs = []
+for val_batch in val_data:
+    out = validation_step(val_batch)
+    if defined("validation_step_end"):
+        out = validation_step_end(out)
+    val_outs.append(out)
+val_outs = validation_epoch_end(val_outs)
+</code></pre>
+<p>.. code-block:: python</p>
+<pre><code># if you have one val dataloader:
+def validation_step(self, batch, batch_idx):
+    ...
+
+
+# if you have multiple val dataloaders:
+def validation_step(self, batch, batch_idx, dataloader_idx):
+    ...
+</code></pre>
+<p>Examples::</p>
+<pre><code># CASE 1: A single validation dataset
+def validation_step(self, batch, batch_idx):
+    x, y = batch
+
+    # implement your own
+    out = self(x)
+    loss = self.loss(out, y)
+
+    # log 6 example images
+    # or generated text... or whatever
+    sample_imgs = x[:6]
+    grid = torchvision.utils.make_grid(sample_imgs)
+    self.logger.experiment.add_image('example_images', grid, 0)
+
+    # calculate acc
+    labels_hat = torch.argmax(out, dim=1)
+    val_acc = torch.sum(y == labels_hat).item() / (len(y) * 1.0)
+
+    # log the outputs!
+    self.log_dict({'val_loss': loss, 'val_acc': val_acc})
+</code></pre>
+<p>If you pass in multiple val dataloaders, :meth:<code>validation_step</code> will have an additional argument.</p>
+<p>.. code-block:: python</p>
+<pre><code># CASE 2: multiple validation dataloaders
+def validation_step(self, batch, batch_idx, dataloader_idx):
+    # dataloader_idx tells you which dataset this is.
+    ...
+</code></pre>
+<h2 id="note">Note</h2>
+<p>If you don't need to validate you don't need to implement this method.</p>
+<h2 id="note_1">Note</h2>
+<p>When the :meth:<code>validation_step</code> is called, the model has been put in eval mode
+and PyTorch gradients have been disabled. At the end of validation,
+the model goes back to training mode and gradients are enabled.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def validation_step(self, batch, batch_idx):
+    y_logit, y_true, y_pred = self.step(batch, batch_idx)
+    loss = self.criterion(y_logit, y_true)
+    self.update_metric_step(y_logit,
+                            y_true,
+                            stage=&#34;val&#34;)
+    self.log_dict({&#34;val_acc&#34;: self.metrics_val[&#34;val/acc_top1&#34;],
+                   &#34;val_loss&#34;: loss},
+                  on_step=True, on_epoch=True,
+                  prog_bar=True, logger=True)
+    
+
+    return {&#34;loss&#34;:loss,
+            &#34;y_logit&#34;:y_logit,
+            &#34;y_pred&#34;:y_pred,
+            &#34;y_true&#34;:y_true}</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="imutils.ml.models.pl.transfer.LightningClassifier"><code class="flex name class">
+<span>class <span class="ident">LightningClassifier</span></span>
+<span>(</span><span>backbone_name='gluon_seresnext50_32x4d', pretrained: Union[bool, str] = True, num_classes: int = 1000, pool_size: int = 1, pool_type: str = 'avg', head_type: str = 'linear', hidden_size: Optional[int] = 512, dropout_p: Optional[float] = 0.3, lr: float = 0.002, backbone_lr_mult: float = 0.1, feature_extractor_strategy: str = 'feature_extractor', finetuning_strategy: str = None, weight_decay: float = 0.01, scheduler_config: Dict[str, Any] = None, seed: int = None, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>BaseLightningModule</p>
+<p>Additional methods made available through subclassed plugins.</p>
+<pre><code>Available methods:
+</code></pre>
+<ul>
+<li>instance methods:<ul>
+<li>step</li>
+<li>update_metric_step</li>
+<li>training_step</li>
+<li>validation_step</li>
+<li>test_step</li>
+</ul>
+</li>
+</ul>
+<h2 id="plugins">Plugins</h2>
+<p>&ndash; LightningMetricsPlugin
+* instance methods:
+- log_metric_step
+- init_metrics
+&ndash; LayerFreezeLightningPlugin
+* classmethods:
+- freeze_up_to
+- freeze
+- unfreeze
+- freeze_bn
+- set_bn_eval
+* instance methods:
+- freeze_backbone
+- unfreeze_backbone_top_layers
+<br>
+&ndash; LayerSelectPlugin
+* classmethods:
+- count_parameters
+* instance methods:
+- get_batchnorm_modules
+- get_conv_modules
+- get_linear_modules
+- get_named_parameters
+- get_named_modules
+- get_trainable_parameters
+- get_nontrainable_parameters
+- count_trainable_batchnorm_layers</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class LightningClassifier(BaseLightningModule):
+    def __init__(self,
+                 backbone_name=&#39;gluon_seresnext50_32x4d&#39;,
+                 pretrained: Union[bool, str]=True,
+                 num_classes: int=1000,
+                 pool_size: int=1,
+                 pool_type: str=&#39;avg&#39;,
+                 head_type: str=&#39;linear&#39;,
+                 hidden_size: Optional[int]=512,
+                 dropout_p: Optional[float]=0.3,
+                 lr: float=2e-03,
+                 backbone_lr_mult: float=0.1,
+                 feature_extractor_strategy: str=&#34;feature_extractor&#34;,
+                 finetuning_strategy: str=None,
+                 weight_decay: float=0.01,
+                 scheduler_config: Dict[str,Any]=None,
+                 seed: int=None,
+                 **kwargs):
+        super().__init__(seed=seed)
+        self.save_hyperparameters()
+        
+        self.model = build_model(backbone_name=backbone_name,
+                                      pretrained=pretrained,
+                                      num_classes=num_classes,
+                                      pool_size=pool_size,
+                                      pool_type=pool_type,
+                                      head_type=head_type,
+                                      hidden_size=hidden_size,
+                                      dropout_p=dropout_p)
+        print(f&#34;self.hparams: {self.hparams}&#34;)
+        print(f&#34;feature_extractor_strategy: {feature_extractor_strategy}&#34;)
+        self.set_strategy(feature_extractor_strategy=feature_extractor_strategy,
+                          finetuning_strategy=finetuning_strategy)
+    
+        self.criterion = nn.CrossEntropyLoss()
+        self.metrics = self.init_metrics(stage=&#39;all&#39;)
+    
+    
+    def forward(self,x):
+        return self.model(x)
+    
+    
+    def get_lr(self, group: str=None):
+        if group is None:
+            return self.hparams.lr
+        if group == &#34;backbone&#34;:
+            return self.hparams.lr * self.hparams.backbone_lr_mult
+        if group == &#34;head&#34;:
+            return self.hparams.lr
+    
+    def configure_optimizers(self):
+        print(f&#34;self.hparams={self.hparams}&#34;)
+        self.optimizers = [torch.optim.AdamW([
+                        {
+                                &#34;params&#34;:self.model.backbone.parameters(),
+                                &#34;lr&#34;:self.get_lr(&#34;backbone&#34;),
+                                &#34;weight_decay&#34;: self.hparams.weight_decay
+                        },
+                        {
+                                &#34;params&#34;:self.model.head.parameters(),
+                                &#34;lr&#34;:self.get_lr(&#34;head&#34;),
+                                &#34;weight_decay&#34;: self.hparams.weight_decay
+                        }
+                ])]
+#         self.scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(self.optimizers, T_max=self.config.t_max, eta_min=self.config.min_lr)
+        self.schedulers = configure_schedulers(optimizer=self.optimizers[0],
+                                               config=self.hparams.get(&#34;scheduler&#34;,{}))
+    
+        return self.optimizers, self.schedulers
+    
+#         return {&#39;optimizer&#39;: self.optimizer,
+#                 &#39;scheduler&#39;: self.scheduler}
+
+    @classmethod
+    def init_pretrained_backbone_w_new_classifier(cls,
+                                                  ckpt_path: str,
+                                                  new_num_classes: Optional[int]=None,
+                                                  **kwargs):
+        &#34;&#34;&#34;
+        Create a new instance of this LightningClassifier with:
+            - backbone weights pretrained on a custom dataset (like Extant_Leaves)
+            - classifier weights randomly initialized
+        &#34;&#34;&#34;
+        if isinstance(new_num_classes, int):
+            kwargs[&#34;num_classes&#34;] = new_num_classes
+        model = cls(**kwargs)
+        ckpt = torch.load(ckpt_path)
+        state_dict = {}
+#         if &#34;metadata&#34; in ckpt:
+#             state_dict[&#34;metadata&#34;] = ckpt[&#34;metadata&#34;]
+        if &#34;state_dict&#34; in ckpt:
+            state_dict = ckpt[&#34;state_dict&#34;]
+        else:
+            state_dict = ckpt
+            
+        backbone_state_dict = OrderedDict({})
+        for k,v in state_dict.items():
+            if k.startswith(&#34;model.&#34;):
+                k = k.split(&#34;model.&#34;)[-1]
+            if k.startswith(&#34;backbone.&#34;):
+                k = k.split(&#34;backbone.&#34;)[-1]
+            backbone_state_dict[k] = v
+
+        missed_keys = model.model.backbone.load_state_dict(backbone_state_dict, strict=False)
+        print(f&#34;missed_keys: {missed_keys}&#34;)
+
+        return model
+    
+    
+    def save_backbone_weights(self,
+                              ckpt_dir: str,
+                              ckpt_filename: str=&#34;backbone.ckpt&#34;,
+                              metadata: Optional[Dict[str, Any]]=None,
+                              verbose: bool=True):
+        &#34;&#34;&#34;
+        Save the weights from this model&#39;s backbone to ${ckpt_dir}/${ckpt_filename}
+        &#34;&#34;&#34;
+        
+        state_dict = {&#34;state_dict&#34;: self.model.model.backbone.state_dict()}
+        if isinstance(metadata, dict):
+            state_dict[&#34;metadata&#34;] = metadata
+        
+        ckpt_path = os.path.join(ckpt_dir, ckpt_filename)
+        torch.save(state_dict, ckpt_path)
+        
+        if verbose and os.path.isfile(ckpt_path):
+            print(f&#34;Saved backbone state_dict to disk at: {ckpt_path}&#34;)
+            
+        if not os.path.isfile(ckpt_path):
+            print(f&#34;[WARNING] Error saving model backbone to {ckpt_path} &#34;)
+            
+        return ckpt_path
+
+    
+    def save_model_checkpoint(ckpt_dir: str,
+                              ckpt_filename: str=&#34;model.ckpt&#34;,
+                              metadata: Optional[Dict[str, Any]]=None,
+                              verbose: bool=True):
+        &#34;&#34;&#34;
+        Save the weights from this model&#39;s backbone &amp; classifier head to ${ckpt_dir}/${ckpt_filename}
+        
+        state_dict should have top level keys: 
+        - model.backbone
+        - model.classifier
+        
+        &#34;&#34;&#34;
+        
+        state_dict = {&#34;state_dict&#34;: self.model.model.state_dict()}
+        if isinstance(metadata, dict):
+            state_dict[&#34;metadata&#34;] = metadata
+        if hasattr(self, &#34;label_encoder&#34;):
+            state_dict[&#34;label_encoder&#34;] = self.label_encoder
+        ckpt_path = os.path.join(ckpt_dir, ckpt_filename)
+        torch.save(state_dict, ckpt_path)
+        
+        if verbose and os.path.isfile(ckpt_path):
+            print(f&#34;Saved backbone state_dict to disk at: {ckpt_path}&#34;)
+            
+        if not os.path.isfile(ckpt_path):
+            print(f&#34;[WARNING] Error saving model backbone to {ckpt_path} &#34;)
+            
+        return ckpt_path
+    
+    
+    @classmethod
+    def load_model_from_checkpoint(cls,
+                                   ckpt_path: str,
+                                   **kwargs):    
+        &#34;&#34;&#34;
+        Create a new instance of this LightningClassifier with:
+            - backbone &amp; classifier weights pretrained on a custom dataset (like Extant_Leaves)
+
+        &#34;&#34;&#34;
+        model = cls(**kwargs)
+        ckpt = torch.load(ckpt_path)
+        state_dict = {}
+        
+        if &#34;label_encoder&#34; in ckpt:
+            self.label_encoder = ckpt[&#34;label_encoder&#34;]
+        if &#34;state_dict&#34; in ckpt:
+            state_dict = ckpt[&#34;state_dict&#34;]
+        else:
+            state_dict = ckpt
+            
+        backbone_state_dict = OrderedDict({})
+        for k,v in state_dict.items():
+            if k.startswith(&#34;model.model.&#34;):
+                k = k.split(&#34;model.&#34;)[-1]
+            backbone_state_dict[k] = v
+
+        missed_keys = model.model.load_state_dict(backbone_state_dict, strict=False)
+        print(f&#34;missed_keys: {missed_keys}&#34;)
+
+        return model ##, missed_keys</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="imutils.ml.models.pl.transfer.BaseLightningModule" href="#imutils.ml.models.pl.transfer.BaseLightningModule">BaseLightningModule</a></li>
+<li>imutils.ml.models.pl.transfer.LightningMetricsPlugin</li>
+<li>imutils.ml.models.pl.transfer.LayerFreezeLightningPlugin</li>
+<li>imutils.ml.models.pl.transfer.LayerSelectPlugin</li>
+<li>pytorch_lightning.core.lightning.LightningModule</li>
+<li>pytorch_lightning.core.mixins.device_dtype_mixin.DeviceDtypeModuleMixin</li>
+<li>pytorch_lightning.core.mixins.hparams_mixin.HyperparametersMixin</li>
+<li>pytorch_lightning.core.saving.ModelIO</li>
+<li>pytorch_lightning.core.hooks.ModelHooks</li>
+<li>pytorch_lightning.core.hooks.DataHooks</li>
+<li>pytorch_lightning.core.hooks.CheckpointHooks</li>
+<li>torch.nn.modules.module.Module</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="imutils.ml.models.pl.transfer.LightningClassifier.valid_strategies"><code class="name">var <span class="ident">valid_strategies</span> : Tuple[str]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Static methods</h3>
+<dl>
+<dt id="imutils.ml.models.pl.transfer.LightningClassifier.init_pretrained_backbone_w_new_classifier"><code class="name flex">
+<span>def <span class="ident">init_pretrained_backbone_w_new_classifier</span></span>(<span>ckpt_path: str, new_num_classes: Optional[int] = None, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Create a new instance of this LightningClassifier with:
+- backbone weights pretrained on a custom dataset (like Extant_Leaves)
+- classifier weights randomly initialized</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">    @classmethod
+    def init_pretrained_backbone_w_new_classifier(cls,
+                                                  ckpt_path: str,
+                                                  new_num_classes: Optional[int]=None,
+                                                  **kwargs):
+        &#34;&#34;&#34;
+        Create a new instance of this LightningClassifier with:
+            - backbone weights pretrained on a custom dataset (like Extant_Leaves)
+            - classifier weights randomly initialized
+        &#34;&#34;&#34;
+        if isinstance(new_num_classes, int):
+            kwargs[&#34;num_classes&#34;] = new_num_classes
+        model = cls(**kwargs)
+        ckpt = torch.load(ckpt_path)
+        state_dict = {}
+#         if &#34;metadata&#34; in ckpt:
+#             state_dict[&#34;metadata&#34;] = ckpt[&#34;metadata&#34;]
+        if &#34;state_dict&#34; in ckpt:
+            state_dict = ckpt[&#34;state_dict&#34;]
+        else:
+            state_dict = ckpt
+            
+        backbone_state_dict = OrderedDict({})
+        for k,v in state_dict.items():
+            if k.startswith(&#34;model.&#34;):
+                k = k.split(&#34;model.&#34;)[-1]
+            if k.startswith(&#34;backbone.&#34;):
+                k = k.split(&#34;backbone.&#34;)[-1]
+            backbone_state_dict[k] = v
+
+        missed_keys = model.model.backbone.load_state_dict(backbone_state_dict, strict=False)
+        print(f&#34;missed_keys: {missed_keys}&#34;)
+
+        return model</code></pre>
+</details>
+</dd>
+<dt id="imutils.ml.models.pl.transfer.LightningClassifier.load_model_from_checkpoint"><code class="name flex">
+<span>def <span class="ident">load_model_from_checkpoint</span></span>(<span>ckpt_path: str, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Create a new instance of this LightningClassifier with:
+- backbone &amp; classifier weights pretrained on a custom dataset (like Extant_Leaves)</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@classmethod
+def load_model_from_checkpoint(cls,
+                               ckpt_path: str,
+                               **kwargs):    
+    &#34;&#34;&#34;
+    Create a new instance of this LightningClassifier with:
+        - backbone &amp; classifier weights pretrained on a custom dataset (like Extant_Leaves)
+
+    &#34;&#34;&#34;
+    model = cls(**kwargs)
+    ckpt = torch.load(ckpt_path)
+    state_dict = {}
+    
+    if &#34;label_encoder&#34; in ckpt:
+        self.label_encoder = ckpt[&#34;label_encoder&#34;]
+    if &#34;state_dict&#34; in ckpt:
+        state_dict = ckpt[&#34;state_dict&#34;]
+    else:
+        state_dict = ckpt
+        
+    backbone_state_dict = OrderedDict({})
+    for k,v in state_dict.items():
+        if k.startswith(&#34;model.model.&#34;):
+            k = k.split(&#34;model.&#34;)[-1]
+        backbone_state_dict[k] = v
+
+    missed_keys = model.model.load_state_dict(backbone_state_dict, strict=False)
+    print(f&#34;missed_keys: {missed_keys}&#34;)
+
+    return model ##, missed_keys</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="imutils.ml.models.pl.transfer.LightningClassifier.configure_optimizers"><code class="name flex">
+<span>def <span class="ident">configure_optimizers</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Choose what optimizers and learning-rate schedulers to use in your optimization.
+Normally you'd need one. But in the case of GANs or similar you might have multiple.</p>
+<h2 id="return">Return</h2>
+<p>Any of these 6 options.</p>
+<ul>
+<li><strong>Single optimizer</strong>.</li>
+<li><strong>List or Tuple</strong> of optimizers.</li>
+<li><strong>Two lists</strong> - The first list has multiple optimizers, and the second has multiple LR schedulers
+(or multiple <code>lr_scheduler_config</code>).</li>
+<li><strong>Dictionary</strong>, with an <code>"optimizer"</code> key, and (optionally) a <code>"lr_scheduler"</code>
+key whose value is a single LR scheduler or <code>lr_scheduler_config</code>.</li>
+<li><strong>Tuple of dictionaries</strong> as described above, with an optional <code>"frequency"</code> key.</li>
+<li><strong>None</strong> - Fit will run without any optimizer.</li>
+</ul>
+<p>The <code>lr_scheduler_config</code> is a dictionary which contains the scheduler and its associated configuration.
+The default configuration is shown below.</p>
+<p>.. code-block:: python</p>
+<pre><code>lr_scheduler_config = {
+    # REQUIRED: The scheduler instance
+    "scheduler": lr_scheduler,
+    # The unit of the scheduler's step size, could also be 'step'.
+    # 'epoch' updates the scheduler on epoch end whereas 'step'
+    # updates it after a optimizer update.
+    "interval": "epoch",
+    # How many epochs/steps should pass between calls to
+    # &lt;code&gt;scheduler.step()&lt;/code&gt;. 1 corresponds to updating the learning
+    # rate after every epoch/step.
+    "frequency": 1,
+    # Metric to to monitor for schedulers like &lt;code&gt;ReduceLROnPlateau&lt;/code&gt;
+    "monitor": "val_loss",
+    # If set to &lt;code&gt;True&lt;/code&gt;, will enforce that the value specified 'monitor'
+    # is available when the scheduler is updated, thus stopping
+    # training if not found. If set to &lt;code&gt;False&lt;/code&gt;, it will only produce a warning
+    "strict": True,
+    # If using the &lt;code&gt;LearningRateMonitor&lt;/code&gt; callback to monitor the
+    # learning rate progress, this keyword can be used to specify
+    # a custom logged name
+    "name": None,
+}
+</code></pre>
+<p>When there are schedulers in which the <code>.step()</code> method is conditioned on a value, such as the
+:class:<code>torch.optim.lr_scheduler.ReduceLROnPlateau</code> scheduler, Lightning requires that the
+<code>lr_scheduler_config</code> contains the keyword <code>"monitor"</code> set to the metric name that the scheduler
+should be conditioned on.</p>
+<div class="admonition testcode">
+<p class="admonition-title">Testcode</p>
+<h1 id="the-reducelronplateau-scheduler-requires-a-monitor">The ReduceLROnPlateau scheduler requires a monitor</h1>
+<p>def configure_optimizers(self):
+optimizer = Adam(&hellip;)
+return {
+"optimizer": optimizer,
+"lr_scheduler": {
+"scheduler": ReduceLROnPlateau(optimizer, &hellip;),
+"monitor": "metric_to_track",
+"frequency": "indicates how often the metric is updated"
+# If "monitor" references validation metrics, then "frequency" should be set to a
+# multiple of "trainer.check_val_every_n_epoch".
+},
+}</p>
+<h1 id="in-the-case-of-two-optimizers-only-one-using-the-reducelronplateau-scheduler">In the case of two optimizers, only one using the ReduceLROnPlateau scheduler</h1>
+<p>def configure_optimizers(self):
+optimizer1 = Adam(&hellip;)
+optimizer2 = SGD(&hellip;)
+scheduler1 = ReduceLROnPlateau(optimizer1, &hellip;)
+scheduler2 = LambdaLR(optimizer2, &hellip;)
+return (
+{
+"optimizer": optimizer1,
+"lr_scheduler": {
+"scheduler": scheduler1,
+"monitor": "metric_to_track",
+},
+},
+{"optimizer": optimizer2, "lr_scheduler": scheduler2},
+)</p>
+</div>
+<p>Metrics can be made available to monitor by simply logging it using
+<code>self.log('metric_to_track', metric_val)</code> in your :class:<code>~pytorch_lightning.core.lightning.LightningModule</code>.</p>
+<h2 id="note">Note</h2>
+<p>The <code>frequency</code> value specified in a dict along with the <code>optimizer</code> key is an int corresponding
+to the number of sequential batches optimized with the specific optimizer.
+It should be given to none or to all of the optimizers.
+There is a difference between passing multiple optimizers in a list,
+and passing multiple optimizers in dictionaries with a frequency of 1:</p>
+<pre><code>- In the former case, all optimizers will operate on the given batch in each optimization step.
+- In the latter, only one optimizer will operate on the given batch at every step.
+</code></pre>
+<p>This is different from the <code>frequency</code> value specified in the <code>lr_scheduler_config</code> mentioned above.</p>
+<p>.. code-block:: python</p>
+<pre><code>def configure_optimizers(self):
+    optimizer_one = torch.optim.SGD(self.model.parameters(), lr=0.01)
+    optimizer_two = torch.optim.SGD(self.model.parameters(), lr=0.01)
+    return [
+        {"optimizer": optimizer_one, "frequency": 5},
+        {"optimizer": optimizer_two, "frequency": 10},
+    ]
+</code></pre>
+<p>In this example, the first optimizer will be used for the first 5 steps,
+the second optimizer for the next 10 steps and that cycle will continue.
+If an LR scheduler is specified for an optimizer using the <code>lr_scheduler</code> key in the above dict,
+the scheduler will only be updated when its optimizer is being used.</p>
+<p>Examples::</p>
+<pre><code># most cases. no learning rate scheduler
+def configure_optimizers(self):
+    return Adam(self.parameters(), lr=1e-3)
+
+# multiple optimizer case (e.g.: GAN)
+def configure_optimizers(self):
+    gen_opt = Adam(self.model_gen.parameters(), lr=0.01)
+    dis_opt = Adam(self.model_dis.parameters(), lr=0.02)
+    return gen_opt, dis_opt
+
+# example with learning rate schedulers
+def configure_optimizers(self):
+    gen_opt = Adam(self.model_gen.parameters(), lr=0.01)
+    dis_opt = Adam(self.model_dis.parameters(), lr=0.02)
+    dis_sch = CosineAnnealing(dis_opt, T_max=10)
+    return [gen_opt, dis_opt], [dis_sch]
+
+# example with step-based learning rate schedulers
+# each optimizer has its own scheduler
+def configure_optimizers(self):
+    gen_opt = Adam(self.model_gen.parameters(), lr=0.01)
+    dis_opt = Adam(self.model_dis.parameters(), lr=0.02)
+    gen_sch = {
+        'scheduler': ExponentialLR(gen_opt, 0.99),
+        'interval': 'step'  # called after each training step
+    }
+    dis_sch = CosineAnnealing(dis_opt, T_max=10) # called every epoch
+    return [gen_opt, dis_opt], [gen_sch, dis_sch]
+
+# example with optimizer frequencies
+# see training procedure in &lt;code&gt;Improved Training of Wasserstein GANs&lt;/code&gt;, Algorithm 1
+# &lt;https://arxiv.org/abs/1704.00028&gt;
+def configure_optimizers(self):
+    gen_opt = Adam(self.model_gen.parameters(), lr=0.01)
+    dis_opt = Adam(self.model_dis.parameters(), lr=0.02)
+    n_critic = 5
+    return (
+        {'optimizer': dis_opt, 'frequency': n_critic},
+        {'optimizer': gen_opt, 'frequency': 1}
+    )
+</code></pre>
+<h2 id="note_1">Note</h2>
+<p>Some things to know:</p>
+<ul>
+<li>Lightning calls <code>.backward()</code> and <code>.step()</code> on each optimizer and learning rate scheduler as needed.</li>
+<li>If you use 16-bit precision (<code>precision=16</code>), Lightning will automatically handle the optimizers.</li>
+<li>If you use multiple optimizers, :meth:<code>training_step</code> will have an additional <code>optimizer_idx</code> parameter.</li>
+<li>If you use :class:<code>torch.optim.LBFGS</code>, Lightning handles the closure function automatically for you.</li>
+<li>If you use multiple optimizers, gradients will be calculated only for the parameters of current optimizer
+at each training step.</li>
+<li>If you need to control how often those optimizers step or override the default <code>.step()</code> schedule,
+override the :meth:<code>optimizer_step</code> hook.</li>
+</ul></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">    def configure_optimizers(self):
+        print(f&#34;self.hparams={self.hparams}&#34;)
+        self.optimizers = [torch.optim.AdamW([
+                        {
+                                &#34;params&#34;:self.model.backbone.parameters(),
+                                &#34;lr&#34;:self.get_lr(&#34;backbone&#34;),
+                                &#34;weight_decay&#34;: self.hparams.weight_decay
+                        },
+                        {
+                                &#34;params&#34;:self.model.head.parameters(),
+                                &#34;lr&#34;:self.get_lr(&#34;head&#34;),
+                                &#34;weight_decay&#34;: self.hparams.weight_decay
+                        }
+                ])]
+#         self.scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(self.optimizers, T_max=self.config.t_max, eta_min=self.config.min_lr)
+        self.schedulers = configure_schedulers(optimizer=self.optimizers[0],
+                                               config=self.hparams.get(&#34;scheduler&#34;,{}))
+    
+        return self.optimizers, self.schedulers</code></pre>
+</details>
+</dd>
+<dt id="imutils.ml.models.pl.transfer.LightningClassifier.forward"><code class="name flex">
+<span>def <span class="ident">forward</span></span>(<span>self, x) ‑> Callable[..., Any]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Same as :meth:<code>torch.nn.Module.forward()</code>.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>*args</code></strong></dt>
+<dd>Whatever you decide to pass into the forward method.</dd>
+<dt><strong><code>**kwargs</code></strong></dt>
+<dd>Keyword arguments are also possible.</dd>
+</dl>
+<h2 id="return">Return</h2>
+<p>Your model's output</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def forward(self,x):
+    return self.model(x)</code></pre>
+</details>
+</dd>
+<dt id="imutils.ml.models.pl.transfer.LightningClassifier.get_lr"><code class="name flex">
+<span>def <span class="ident">get_lr</span></span>(<span>self, group: str = None)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_lr(self, group: str=None):
+    if group is None:
+        return self.hparams.lr
+    if group == &#34;backbone&#34;:
+        return self.hparams.lr * self.hparams.backbone_lr_mult
+    if group == &#34;head&#34;:
+        return self.hparams.lr</code></pre>
+</details>
+</dd>
+<dt id="imutils.ml.models.pl.transfer.LightningClassifier.save_backbone_weights"><code class="name flex">
+<span>def <span class="ident">save_backbone_weights</span></span>(<span>self, ckpt_dir: str, ckpt_filename: str = 'backbone.ckpt', metadata: Optional[Dict[str, Any]] = None, verbose: bool = True)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Save the weights from this model's backbone to ${ckpt_dir}/${ckpt_filename}</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def save_backbone_weights(self,
+                          ckpt_dir: str,
+                          ckpt_filename: str=&#34;backbone.ckpt&#34;,
+                          metadata: Optional[Dict[str, Any]]=None,
+                          verbose: bool=True):
+    &#34;&#34;&#34;
+    Save the weights from this model&#39;s backbone to ${ckpt_dir}/${ckpt_filename}
+    &#34;&#34;&#34;
+    
+    state_dict = {&#34;state_dict&#34;: self.model.model.backbone.state_dict()}
+    if isinstance(metadata, dict):
+        state_dict[&#34;metadata&#34;] = metadata
+    
+    ckpt_path = os.path.join(ckpt_dir, ckpt_filename)
+    torch.save(state_dict, ckpt_path)
+    
+    if verbose and os.path.isfile(ckpt_path):
+        print(f&#34;Saved backbone state_dict to disk at: {ckpt_path}&#34;)
+        
+    if not os.path.isfile(ckpt_path):
+        print(f&#34;[WARNING] Error saving model backbone to {ckpt_path} &#34;)
+        
+    return ckpt_path</code></pre>
+</details>
+</dd>
+<dt id="imutils.ml.models.pl.transfer.LightningClassifier.save_model_checkpoint"><code class="name flex">
+<span>def <span class="ident">save_model_checkpoint</span></span>(<span>ckpt_dir: str, ckpt_filename: str = 'model.ckpt', metadata: Optional[Dict[str, Any]] = None, verbose: bool = True)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Save the weights from this model's backbone &amp; classifier head to ${ckpt_dir}/${ckpt_filename}</p>
+<p>state_dict should have top level keys:
+- model.backbone
+- model.classifier</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def save_model_checkpoint(ckpt_dir: str,
+                          ckpt_filename: str=&#34;model.ckpt&#34;,
+                          metadata: Optional[Dict[str, Any]]=None,
+                          verbose: bool=True):
+    &#34;&#34;&#34;
+    Save the weights from this model&#39;s backbone &amp; classifier head to ${ckpt_dir}/${ckpt_filename}
+    
+    state_dict should have top level keys: 
+    - model.backbone
+    - model.classifier
+    
+    &#34;&#34;&#34;
+    
+    state_dict = {&#34;state_dict&#34;: self.model.model.state_dict()}
+    if isinstance(metadata, dict):
+        state_dict[&#34;metadata&#34;] = metadata
+    if hasattr(self, &#34;label_encoder&#34;):
+        state_dict[&#34;label_encoder&#34;] = self.label_encoder
+    ckpt_path = os.path.join(ckpt_dir, ckpt_filename)
+    torch.save(state_dict, ckpt_path)
+    
+    if verbose and os.path.isfile(ckpt_path):
+        print(f&#34;Saved backbone state_dict to disk at: {ckpt_path}&#34;)
+        
+    if not os.path.isfile(ckpt_path):
+        print(f&#34;[WARNING] Error saving model backbone to {ckpt_path} &#34;)
+        
+    return ckpt_path</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="imutils.ml.models.pl.transfer.BaseLightningModule" href="#imutils.ml.models.pl.transfer.BaseLightningModule">BaseLightningModule</a></b></code>:
+<ul class="hlist">
+<li><code><a title="imutils.ml.models.pl.transfer.BaseLightningModule.on_predict_epoch_end" href="#imutils.ml.models.pl.transfer.BaseLightningModule.on_predict_epoch_end">on_predict_epoch_end</a></code></li>
+<li><code><a title="imutils.ml.models.pl.transfer.BaseLightningModule.predict_step" href="#imutils.ml.models.pl.transfer.BaseLightningModule.predict_step">predict_step</a></code></li>
+<li><code><a title="imutils.ml.models.pl.transfer.BaseLightningModule.test_step" href="#imutils.ml.models.pl.transfer.BaseLightningModule.test_step">test_step</a></code></li>
+<li><code><a title="imutils.ml.models.pl.transfer.BaseLightningModule.training_step" href="#imutils.ml.models.pl.transfer.BaseLightningModule.training_step">training_step</a></code></li>
+<li><code><a title="imutils.ml.models.pl.transfer.BaseLightningModule.validation_step" href="#imutils.ml.models.pl.transfer.BaseLightningModule.validation_step">validation_step</a></code></li>
+</ul>
+</li>
+</ul>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul>
+<li><a href="#-">--------------------------------------------------------------------------------------------------------------</a></li>
+</ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="imutils.ml.models.pl" href="index.html">imutils.ml.models.pl</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="imutils.ml.models.pl.transfer.BaseLightningModule" href="#imutils.ml.models.pl.transfer.BaseLightningModule">BaseLightningModule</a></code></h4>
+<ul class="">
+<li><code><a title="imutils.ml.models.pl.transfer.BaseLightningModule.on_predict_epoch_end" href="#imutils.ml.models.pl.transfer.BaseLightningModule.on_predict_epoch_end">on_predict_epoch_end</a></code></li>
+<li><code><a title="imutils.ml.models.pl.transfer.BaseLightningModule.predict_step" href="#imutils.ml.models.pl.transfer.BaseLightningModule.predict_step">predict_step</a></code></li>
+<li><code><a title="imutils.ml.models.pl.transfer.BaseLightningModule.step" href="#imutils.ml.models.pl.transfer.BaseLightningModule.step">step</a></code></li>
+<li><code><a title="imutils.ml.models.pl.transfer.BaseLightningModule.test_step" href="#imutils.ml.models.pl.transfer.BaseLightningModule.test_step">test_step</a></code></li>
+<li><code><a title="imutils.ml.models.pl.transfer.BaseLightningModule.training_step" href="#imutils.ml.models.pl.transfer.BaseLightningModule.training_step">training_step</a></code></li>
+<li><code><a title="imutils.ml.models.pl.transfer.BaseLightningModule.update_metric_step" href="#imutils.ml.models.pl.transfer.BaseLightningModule.update_metric_step">update_metric_step</a></code></li>
+<li><code><a title="imutils.ml.models.pl.transfer.BaseLightningModule.valid_strategies" href="#imutils.ml.models.pl.transfer.BaseLightningModule.valid_strategies">valid_strategies</a></code></li>
+<li><code><a title="imutils.ml.models.pl.transfer.BaseLightningModule.validation_step" href="#imutils.ml.models.pl.transfer.BaseLightningModule.validation_step">validation_step</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="imutils.ml.models.pl.transfer.LightningClassifier" href="#imutils.ml.models.pl.transfer.LightningClassifier">LightningClassifier</a></code></h4>
+<ul class="">
+<li><code><a title="imutils.ml.models.pl.transfer.LightningClassifier.configure_optimizers" href="#imutils.ml.models.pl.transfer.LightningClassifier.configure_optimizers">configure_optimizers</a></code></li>
+<li><code><a title="imutils.ml.models.pl.transfer.LightningClassifier.forward" href="#imutils.ml.models.pl.transfer.LightningClassifier.forward">forward</a></code></li>
+<li><code><a title="imutils.ml.models.pl.transfer.LightningClassifier.get_lr" href="#imutils.ml.models.pl.transfer.LightningClassifier.get_lr">get_lr</a></code></li>
+<li><code><a title="imutils.ml.models.pl.transfer.LightningClassifier.init_pretrained_backbone_w_new_classifier" href="#imutils.ml.models.pl.transfer.LightningClassifier.init_pretrained_backbone_w_new_classifier">init_pretrained_backbone_w_new_classifier</a></code></li>
+<li><code><a title="imutils.ml.models.pl.transfer.LightningClassifier.load_model_from_checkpoint" href="#imutils.ml.models.pl.transfer.LightningClassifier.load_model_from_checkpoint">load_model_from_checkpoint</a></code></li>
+<li><code><a title="imutils.ml.models.pl.transfer.LightningClassifier.save_backbone_weights" href="#imutils.ml.models.pl.transfer.LightningClassifier.save_backbone_weights">save_backbone_weights</a></code></li>
+<li><code><a title="imutils.ml.models.pl.transfer.LightningClassifier.save_model_checkpoint" href="#imutils.ml.models.pl.transfer.LightningClassifier.save_model_checkpoint">save_model_checkpoint</a></code></li>
+<li><code><a title="imutils.ml.models.pl.transfer.LightningClassifier.valid_strategies" href="#imutils.ml.models.pl.transfer.LightningClassifier.valid_strategies">valid_strategies</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+</footer>
+</body>
+</html>

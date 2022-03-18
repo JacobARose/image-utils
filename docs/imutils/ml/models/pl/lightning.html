@@ -1,0 +1,2195 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.10.0" />
+<title>imutils.ml.models.pl.lightning API documentation</title>
+<meta name="description" content="models/lightning.py" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>imutils.ml.models.pl.lightning</code></h1>
+</header>
+<section id="section-intro">
+<p>models/lightning.py</p>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">&#34;&#34;&#34;
+
+models/lightning.py
+
+&#34;&#34;&#34;
+
+
+import torch
+import torch.nn.functional as F
+import torchvision
+import torchvision.transforms as transforms
+import pytorch_lightning as pl
+import numpy as np
+
+from argparse import ArgumentParser
+from torch.utils.data import random_split, DataLoader, Dataset
+from torchvision.datasets import CIFAR10
+from torchmetrics.functional import accuracy
+from pytorch_lightning.callbacks import ModelCheckpoint, LearningRateMonitor
+from imutils.ml.aug.loss import LabelSmoothingLoss
+from imutils.ml.aug.image.masks import GridMask
+
+from imutils.ml.models.vision_transformer import VisionTransformer
+
+&#34;&#34;&#34;
+Pour l&#39;entrainement de notre modele on utilise pytorch-lightning pour faciliter l&#39;implimentation et optimisation des fonctions d&#39;entrainements.
+&#34;&#34;&#34;
+
+import torch.nn as nn
+import torchvision.models as models
+# from conf import *
+
+def build_model():
+    if args.model_name == &#39;resnet50&#39;:
+        model = models.resnet50(pretrained=True)
+
+    elif args.model_name == &#39;resnet18&#39;:
+        model = models.resnet18(pretrained=True)
+
+    #Modify the classifier for agriculture data
+    num_ftrs = model.fc.in_features
+    model.fc = nn.Sequential(nn.Linear(num_ftrs,512),
+                            nn.ReLU(),
+                            nn.Dropout(p=0.3),
+                            nn.Linear(512,4))
+    
+    if args.channels_last:
+        model = model.to(args.device, memory_format=torch.channels_last)
+    else:
+        model = model.to(args.device)
+        
+    if args.distributed:
+        model = torch.nn.parallel.DistributedDataParallel(model,
+                                                      device_ids=[args.local_rank],
+                                                      output_device=args.local_rank)
+    return model
+
+
+
+
+import pytorch_lightning as pl
+import torch
+import torchmetrics
+
+
+class LoggedLitModule(pl.LightningModule):
+    &#34;&#34;&#34;LightningModule plus wandb features and simple training/val steps.
+    By default, assumes that your training loop involves inputs (xs)
+    fed to .forward to produce outputs (y_hats)
+    that are compared to targets (ys)
+    by self.loss and by metrics,
+    where each batch == (xs, ys).
+    This loss is fed to self.optimizer.
+    If this is not true, overwrite _train_forward
+    and optionally _val_forward and _test_forward.
+    &#34;&#34;&#34;
+
+    def __init__(self,
+                 criterion):
+        super().__init__()
+
+        self.loss = criterion
+        self.train_metrics = torch.nn.ModuleList([])
+        self.val_metrics = torch.nn.ModuleList([])
+        self.test_metrics = torch.nn.ModuleList([])
+
+    def training_step(self, xys, idx):
+        xs, ys = xys
+        y_hats = self._train_forward(xs)
+        loss = self.loss(y_hats, ys)
+
+        logging_scalars = {&#34;loss&#34;: loss}
+        for metric in self.training_metrics:
+            self.log_metric(metric, logging_scalars, y_hats, ys)
+
+        self.do_logging(xs, ys, idx, y_hats, logging_scalars)
+
+        return {&#34;loss&#34;: loss, &#34;y_hats&#34;: y_hats}
+
+    def validation_step(self, xys, idx):
+        xs, ys = xys
+        y_hats = self._val_forward(xs)
+        loss = self.loss(y_hats, ys)
+
+        logging_scalars = {&#34;loss&#34;: loss}
+        for metric in self.validation_metrics:
+            self.log_metric(metric, logging_scalars, y_hats, ys)
+
+        self.do_logging(xs, ys, idx, y_hats, logging_scalars, step=&#34;val&#34;)
+
+        return {&#34;loss&#34;: loss, &#34;y_hats&#34;: y_hats}
+
+    def test_step(self, xys, idx):
+        xs, ys = xys
+        y_hats = self._test_forward(xs)
+        loss = self.loss(y_hats, ys)
+
+        logging_scalars = {&#34;loss&#34;: loss}
+        for metric in self.test_metrics:
+            self.log_metric(metric, logging_scalars, y_hats, ys)
+
+        self.do_logging(xs, ys, idx, y_hats, logging_scalars, step=&#34;test&#34;)
+
+        return {&#34;loss&#34;: loss, &#34;y_hats&#34;: y_hats}
+
+    def do_logging(self, xs, ys, idx, y_hats, scalars, step=&#34;train&#34;):
+        self.log_dict(
+            {step + &#34;/&#34; + name: value for name, value in scalars.items()})
+
+    def on_pretrain_routine_start(self):
+        print(self)
+
+    # def log_metric(self, metric, logging_scalars, y_hats, ys):
+    #     metric_str = metric.__class__.__name__.lower()
+    #     value = metric(y_hats, ys)
+    #     logging_scalars[metric_str] = value
+
+    def _train_forward(self, xs):
+        &#34;&#34;&#34;Overwrite this method when module.forward doesn&#39;t produce y_hats.&#34;&#34;&#34;
+        return self.forward(xs)
+
+    def _val_forward(self, xs):
+        &#34;&#34;&#34;Overwrite this method when training and val forward differ.&#34;&#34;&#34;
+        return self._train_forward(xs)
+
+    def _test_forward(self, xs):
+        &#34;&#34;&#34;Overwrite this method when val and test forward differ.&#34;&#34;&#34;
+        return self._val_forward(xs)
+
+    def configure_optimizers(self):
+        return self.optimizer(self.parameters(), **self.optimizer_params)
+
+    def optimizer(self, *args, **kwargs):
+        error_msg = (&#34;To use LoggedLitModule, you must set self.optimizer to a torch-style Optimizer&#34;
+                     + &#34;and set self.optimizer_params to a dictionary of keyword arguments.&#34;)
+        raise NotImplementedError(error_msg)
+
+
+                
+                
+#################################################
+
+class LitClassifierModel(LoggedLitModule): #pl.LightningModule):
+
+    def __init__(self, backbone, **kwargs):
+        super().__init__()
+        self.save_hyperparameters(kwargs)
+        self.criterion = LabelSmoothingLoss(kwargs[&#39;num_classes&#39;], smoothing=0.1)
+        self.backbone = backbone
+
+    def forward(self, x):
+        x = self.backbone(x)
+        return x
+
+    def training_step(self, batch, batch_idx):
+        x, y = batch
+        logits = self(x)
+        # loss = F.cross_entropy(logits, y)
+        loss = self.criterion(logits, y)
+        y_hat = torch.argmax(logits, dim=1)
+        acc = accuracy(y_hat, y)
+        self.log(&#39;train_loss&#39;, loss, prog_bar=False)
+        self.log(&#39;train_acc&#39;, acc, prog_bar=False)
+        return loss
+
+    def validation_step(self, batch, batch_idx):
+        x, y = batch
+        logits = self(x)
+        # loss = F.cross_entropy(logits, y)
+        loss = self.criterion(logits, y)
+        y_hat = torch.argmax(logits, dim=1)
+        acc = accuracy(y_hat, y)
+        self.log(&#39;val_loss&#39;, loss, prog_bar=True)
+        self.log(&#39;val_acc&#39;, acc, prog_bar=True)
+        return loss
+
+
+    def test_step(self, batch, batch_idx):
+        x, y = batch
+        logits = self(x)
+        # loss = F.cross_entropy(logits, y)
+        loss = self.criterion(logits, y)
+        y_hat = torch.argmax(logits, dim=1)
+        acc = accuracy(y_hat, y)
+        return {&#39;test_loss&#39;: loss, &#39;test_acc&#39;: acc}
+
+
+    def test_epoch_end(self, outputs):
+        # for test_epoch_end showcase, we record batch mse and batch std
+
+        loss, acc = zip(*[(d[&#39;test_loss&#39;], d[&#39;test_acc&#39;]) for d in outputs])
+
+        avg_loss, avg_acc = np.mean(loss), np.mean(acc)
+        std_loss, std_acc = np.std(loss), np.std(acc)
+
+        result = {
+            &#39;loss&#39;: {&#39;avg&#39;: avg_loss, &#39;std&#39;: std_loss},
+            &#39;acc&#39;: {&#39;avg&#39;: avg_acc, &#39;std&#39;: std_acc}
+            }
+        self.log_dict(result)
+        return result
+
+    def configure_optimizers(self):
+        optimizer = torch.optim.Adam(
+            self.parameters(),
+            lr=self.hparams.learning_rate,
+            weight_decay=self.hparams.weight_decay,
+        )
+        return {
+            &#39;optimizer&#39;: optimizer,
+            &#39;lr_scheduler&#39;: torch.optim.lr_scheduler.ReduceLROnPlateau(
+                optimizer,
+                mode=&#39;min&#39;,
+                factor=0.1,
+                patience=5,
+                min_lr=1e-8,
+                verbose=True
+            ),
+            &#39;interval&#39;: &#39;step&#39;,
+            &#39;monitor&#39;: &#39;train_loss&#39;
+        }
+
+    @staticmethod
+    def add_model_specific_args(parent_parser):
+        parser = ArgumentParser(parents=[parent_parser], add_help=False)
+        parser.add_argument(&#39;--patch_size&#39;, default=4, type=int)
+        parser.add_argument(&#39;--emb_dim&#39;, default=128, type=int)
+        parser.add_argument(&#39;--mlp_dim&#39;, default=256, type=int)
+        parser.add_argument(&#39;--num_heads&#39;, default=24, type=int)
+        parser.add_argument(&#39;--num_layers&#39;, default=24, type=int)
+        parser.add_argument(&#39;--attn_dropout_rate&#39;, default=0.0, type=float)
+        parser.add_argument(&#39;--dropout_rate&#39;, default=.1, type=float)
+        parser.add_argument(&#39;--resnet&#39;, action=&#34;store_true&#34;)
+        return parser
+
+
+class CIFAR10DataModule(pl.LightningDataModule):
+    &#34;&#34;&#34;CIFAR 10 DATASET
+    &#34;&#34;&#34;
+    def __init__(self, data_dir: str = &#39;./&#39;, image_size: int = 512, batch_size: int = 128, num_workers: int = 12, val_size: float = 0.2, **kwargs):
+        super().__init__()
+        self.data_dir = data_dir
+        self.transform_train = transforms.Compose([
+            transforms.Resize(image_size),
+            transforms.RandomCrop(image_size, padding=4),
+            transforms.RandomHorizontalFlip(),
+            transforms.ToTensor(),
+            transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),
+        ])
+
+        self.transform_test = transforms.Compose([
+            transforms.Resize(image_size),
+            transforms.ToTensor(),
+            transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),
+        ])
+
+        self.batch_size = batch_size
+        self.num_workers = num_workers
+        self.val_size = val_size
+
+        self.dims = (3, image_size, image_size)
+
+    def prepare_data(self):
+        # download
+        CIFAR10(root=self.data_dir, train=True, download=True)
+        CIFAR10(root=self.data_dir, train=False, download=True)
+
+    def setup(self, stage: str = None):
+
+        # Assign train/val datasets for use in dataloaders
+        if stage == &#39;fit&#39; or stage is None:
+            val_size = int(50000 * self.val_size)
+            cifar10_full = CIFAR10(self.data_dir, train=True, transform=self.transform_train)
+            self.cifar10_train, self.cifar10_val = random_split(cifar10_full, [50000 - val_size, val_size])
+
+        # Assign test dataset for use in dataloader(s)
+        if stage == &#39;test&#39; or stage is None:
+            self.cifar10_test = CIFAR10(self.data_dir, train=False, transform=self.transform_test)
+
+    def train_dataloader(self):
+        return DataLoader(self.cifar10_train, batch_size=self.batch_size, shuffle=True, num_workers=self.num_workers)
+
+    def val_dataloader(self):
+        return DataLoader(self.cifar10_val, batch_size=self.batch_size, shuffle=False, num_workers=self.num_workers)
+
+    def test_dataloader(self):
+        return DataLoader(self.cifar10_test, batch_size=self.batch_size, shuffle=False, num_workers=self.num_workers)
+
+class CIFAR100DataModule(pl.LightningDataModule):
+    &#34;&#34;&#34;CIFAR 100 DATASET
+    &#34;&#34;&#34;
+
+    def __init__(self, data_dir: str = &#39;./&#39;, image_size: int = 512, batch_size: int = 128, num_workers: int = 12, val_size: float = 0.2, **kwargs):
+        super().__init__()
+        self.data_dir = data_dir
+
+        self.transform_train = transforms.Compose([transforms.RandomHorizontalFlip(),
+                    transforms.Resize(image_size),
+                    transforms.RandomCrop(image_size, padding=4),
+                    transforms.RandomHorizontalFlip(),
+                    transforms.ToTensor(),
+                    transforms.Normalize(mean=[n/255.
+                    for n in [129.3, 124.1, 112.4]], std=[n/255. for n in [68.2,  65.4,  70.4]])
+        ])
+
+        self.transform_test = transforms.Compose([
+            transforms.Resize(image_size),
+            transforms.ToTensor(),
+            transforms.Normalize(mean=[n/255. for n in [129.3, 124.1, 112.4]], std=[n/255. for n in [68.2,  65.4,  70.4]])
+        ])
+
+        self.batch_size = batch_size
+        self.num_workers = num_workers
+        self.val_size = val_size
+
+        self.dims = (3, image_size, image_size)
+
+    def prepare_data(self):
+        # download
+        CIFAR10(root=self.data_dir, train=True, download=True)
+        CIFAR10(root=self.data_dir, train=False, download=True)
+
+    def setup(self, stage: str = None):
+
+        # Assign train/val datasets for use in dataloaders
+        if stage == &#39;fit&#39; or stage is None:
+            val_size = int(50000 * self.val_size)
+            cifar10_full = CIFAR10(self.data_dir, train=True, transform=self.transform_train)
+            self.cifar10_train, self.cifar10_val = random_split(cifar10_full, [50000 - val_size, val_size])
+
+        # Assign test dataset for use in dataloader(s)
+        if stage == &#39;test&#39; or stage is None:
+            self.cifar10_test = CIFAR10(self.data_dir, train=False, transform=self.transform_test)
+
+    def train_dataloader(self):
+        return DataLoader(self.cifar10_train, batch_size=self.batch_size, shuffle=True, num_workers=self.num_workers)
+
+    def val_dataloader(self):
+        return DataLoader(self.cifar10_val, batch_size=self.batch_size, shuffle=False, num_workers=self.num_workers)
+
+    def test_dataloader(self):
+        return DataLoader(self.cifar10_test, batch_size=self.batch_size, shuffle=False, num_workers=self.num_workers)
+
+
+def load_from_checkpoint(model_class:type, lit_model:type, hparams_file: str, checkpoint_file:str):
+    hparams = pl.core.saving.load_hparams_from_yaml(hparams_file)
+    backbone = model_class(**hparams)
+    model = lit_model.load_from_checkpoint(
+                checkpoint_file,
+                backbone=backbone
+            )
+    return model</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="imutils.ml.models.pl.lightning.build_model"><code class="name flex">
+<span>def <span class="ident">build_model</span></span>(<span>)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def build_model():
+    if args.model_name == &#39;resnet50&#39;:
+        model = models.resnet50(pretrained=True)
+
+    elif args.model_name == &#39;resnet18&#39;:
+        model = models.resnet18(pretrained=True)
+
+    #Modify the classifier for agriculture data
+    num_ftrs = model.fc.in_features
+    model.fc = nn.Sequential(nn.Linear(num_ftrs,512),
+                            nn.ReLU(),
+                            nn.Dropout(p=0.3),
+                            nn.Linear(512,4))
+    
+    if args.channels_last:
+        model = model.to(args.device, memory_format=torch.channels_last)
+    else:
+        model = model.to(args.device)
+        
+    if args.distributed:
+        model = torch.nn.parallel.DistributedDataParallel(model,
+                                                      device_ids=[args.local_rank],
+                                                      output_device=args.local_rank)
+    return model</code></pre>
+</details>
+</dd>
+<dt id="imutils.ml.models.pl.lightning.load_from_checkpoint"><code class="name flex">
+<span>def <span class="ident">load_from_checkpoint</span></span>(<span>model_class: type, lit_model: type, hparams_file: str, checkpoint_file: str)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def load_from_checkpoint(model_class:type, lit_model:type, hparams_file: str, checkpoint_file:str):
+    hparams = pl.core.saving.load_hparams_from_yaml(hparams_file)
+    backbone = model_class(**hparams)
+    model = lit_model.load_from_checkpoint(
+                checkpoint_file,
+                backbone=backbone
+            )
+    return model</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="imutils.ml.models.pl.lightning.CIFAR100DataModule"><code class="flex name class">
+<span>class <span class="ident">CIFAR100DataModule</span></span>
+<span>(</span><span>data_dir: str = './', image_size: int = 512, batch_size: int = 128, num_workers: int = 12, val_size: float = 0.2, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>CIFAR 100 DATASET</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class CIFAR100DataModule(pl.LightningDataModule):
+    &#34;&#34;&#34;CIFAR 100 DATASET
+    &#34;&#34;&#34;
+
+    def __init__(self, data_dir: str = &#39;./&#39;, image_size: int = 512, batch_size: int = 128, num_workers: int = 12, val_size: float = 0.2, **kwargs):
+        super().__init__()
+        self.data_dir = data_dir
+
+        self.transform_train = transforms.Compose([transforms.RandomHorizontalFlip(),
+                    transforms.Resize(image_size),
+                    transforms.RandomCrop(image_size, padding=4),
+                    transforms.RandomHorizontalFlip(),
+                    transforms.ToTensor(),
+                    transforms.Normalize(mean=[n/255.
+                    for n in [129.3, 124.1, 112.4]], std=[n/255. for n in [68.2,  65.4,  70.4]])
+        ])
+
+        self.transform_test = transforms.Compose([
+            transforms.Resize(image_size),
+            transforms.ToTensor(),
+            transforms.Normalize(mean=[n/255. for n in [129.3, 124.1, 112.4]], std=[n/255. for n in [68.2,  65.4,  70.4]])
+        ])
+
+        self.batch_size = batch_size
+        self.num_workers = num_workers
+        self.val_size = val_size
+
+        self.dims = (3, image_size, image_size)
+
+    def prepare_data(self):
+        # download
+        CIFAR10(root=self.data_dir, train=True, download=True)
+        CIFAR10(root=self.data_dir, train=False, download=True)
+
+    def setup(self, stage: str = None):
+
+        # Assign train/val datasets for use in dataloaders
+        if stage == &#39;fit&#39; or stage is None:
+            val_size = int(50000 * self.val_size)
+            cifar10_full = CIFAR10(self.data_dir, train=True, transform=self.transform_train)
+            self.cifar10_train, self.cifar10_val = random_split(cifar10_full, [50000 - val_size, val_size])
+
+        # Assign test dataset for use in dataloader(s)
+        if stage == &#39;test&#39; or stage is None:
+            self.cifar10_test = CIFAR10(self.data_dir, train=False, transform=self.transform_test)
+
+    def train_dataloader(self):
+        return DataLoader(self.cifar10_train, batch_size=self.batch_size, shuffle=True, num_workers=self.num_workers)
+
+    def val_dataloader(self):
+        return DataLoader(self.cifar10_val, batch_size=self.batch_size, shuffle=False, num_workers=self.num_workers)
+
+    def test_dataloader(self):
+        return DataLoader(self.cifar10_test, batch_size=self.batch_size, shuffle=False, num_workers=self.num_workers)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>pytorch_lightning.core.datamodule.LightningDataModule</li>
+<li>pytorch_lightning.core.hooks.CheckpointHooks</li>
+<li>pytorch_lightning.core.hooks.DataHooks</li>
+<li>pytorch_lightning.core.mixins.hparams_mixin.HyperparametersMixin</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="imutils.ml.models.pl.lightning.CIFAR100DataModule.name"><code class="name">var <span class="ident">name</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="imutils.ml.models.pl.lightning.CIFAR100DataModule.prepare_data"><code class="name flex">
+<span>def <span class="ident">prepare_data</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Use this to download and prepare data.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning:&ensp;DO NOT set state to the model (use <code>setup</code> instead)</p>
+<p>since this is NOT called on every GPU in DDP/TPU</p>
+</div>
+<p>Example::</p>
+<pre><code>def prepare_data(self):
+    # good
+    download_data()
+    tokenize()
+    etc()
+
+    # bad
+    self.split = data_split
+    self.some_state = some_other_state()
+</code></pre>
+<p>In DDP prepare_data can be called in two ways (using Trainer(prepare_data_per_node)):</p>
+<ol>
+<li>Once per node. This is the default and is only called on LOCAL_RANK=0.</li>
+<li>Once in total. Only called on GLOBAL_RANK=0.</li>
+</ol>
+<p>Example::</p>
+<pre><code># DEFAULT
+# called once per node on LOCAL_RANK=0 of that node
+Trainer(prepare_data_per_node=True)
+
+# call on GLOBAL_RANK=0 (great for shared file systems)
+Trainer(prepare_data_per_node=False)
+</code></pre>
+<h2 id="note">Note</h2>
+<p>Setting <code>prepare_data_per_node</code> with the trainer flag is deprecated and will be removed in v1.7.0.
+Please set <code>prepare_data_per_node</code> in LightningDataModule or LightningModule directly instead.</p>
+<p>This is called before requesting the dataloaders:</p>
+<p>.. code-block:: python</p>
+<pre><code>model.prepare_data()
+initialize_distributed()
+model.setup(stage)
+model.train_dataloader()
+model.val_dataloader()
+model.test_dataloader()
+</code></pre></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def prepare_data(self):
+    # download
+    CIFAR10(root=self.data_dir, train=True, download=True)
+    CIFAR10(root=self.data_dir, train=False, download=True)</code></pre>
+</details>
+</dd>
+<dt id="imutils.ml.models.pl.lightning.CIFAR100DataModule.setup"><code class="name flex">
+<span>def <span class="ident">setup</span></span>(<span>self, stage: str = None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Called at the beginning of fit (train + validate), validate, test, and predict. This is a good hook when
+you need to build models dynamically or adjust something about them. This hook is called on every process
+when using DDP.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>stage</code></strong></dt>
+<dd>either <code>'fit'</code>, <code>'validate'</code>, <code>'test'</code>, or <code>'predict'</code></dd>
+</dl>
+<p>Example::</p>
+<pre><code>class LitModel(...):
+    def __init__(self):
+        self.l1 = None
+
+    def prepare_data(self):
+        download_data()
+        tokenize()
+
+        # don't do this
+        self.something = else
+
+    def setup(stage):
+        data = Load_data(...)
+        self.l1 = nn.Linear(28, data.num_classes)
+</code></pre></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def setup(self, stage: str = None):
+
+    # Assign train/val datasets for use in dataloaders
+    if stage == &#39;fit&#39; or stage is None:
+        val_size = int(50000 * self.val_size)
+        cifar10_full = CIFAR10(self.data_dir, train=True, transform=self.transform_train)
+        self.cifar10_train, self.cifar10_val = random_split(cifar10_full, [50000 - val_size, val_size])
+
+    # Assign test dataset for use in dataloader(s)
+    if stage == &#39;test&#39; or stage is None:
+        self.cifar10_test = CIFAR10(self.data_dir, train=False, transform=self.transform_test)</code></pre>
+</details>
+</dd>
+<dt id="imutils.ml.models.pl.lightning.CIFAR100DataModule.test_dataloader"><code class="name flex">
+<span>def <span class="ident">test_dataloader</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Implement one or multiple PyTorch DataLoaders for testing.</p>
+<p>The dataloader you return will not be reloaded unless you set
+:paramref:<code>~pytorch_lightning.trainer.Trainer.reload_dataloaders_every_n_epochs</code> to
+a postive integer.</p>
+<p>For data processing use the following pattern:</p>
+<pre><code>- download in :meth:&lt;code&gt;prepare\_data&lt;/code&gt;
+- process and split in :meth:&lt;code&gt;setup&lt;/code&gt;
+</code></pre>
+<p>However, the above are only necessary for distributed processing.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning:&ensp;do not assign state in prepare_data</p>
+</div>
+<ul>
+<li>:meth:<code>~pytorch_lightning.trainer.Trainer.fit</code></li>
+<li>&hellip;</li>
+<li>:meth:<code>prepare_data</code></li>
+<li>:meth:<code>setup</code></li>
+<li>:meth:<code>train_dataloader</code></li>
+<li>:meth:<code>val_dataloader</code></li>
+<li>:meth:<code>test_dataloader</code></li>
+</ul>
+<h2 id="note">Note</h2>
+<p>Lightning adds the correct sampler for distributed and arbitrary hardware.
+There is no need to set it yourself.</p>
+<h2 id="return">Return</h2>
+<p>A :class:<code>torch.utils.data.DataLoader</code> or a sequence of them specifying testing samples.</p>
+<p>Example::</p>
+<pre><code>def test_dataloader(self):
+    transform = transforms.Compose([transforms.ToTensor(),
+                                    transforms.Normalize((0.5,), (1.0,))])
+    dataset = MNIST(root='/path/to/mnist/', train=False, transform=transform,
+                    download=True)
+    loader = torch.utils.data.DataLoader(
+        dataset=dataset,
+        batch_size=self.batch_size,
+        shuffle=False
+    )
+
+    return loader
+
+# can also return multiple dataloaders
+def test_dataloader(self):
+    return [loader_a, loader_b, ..., loader_n]
+</code></pre>
+<h2 id="note_1">Note</h2>
+<p>If you don't need a test dataset and a :meth:<code>test_step</code>, you don't need to implement
+this method.</p>
+<h2 id="note_2">Note</h2>
+<p>In the case where you return multiple test dataloaders, the :meth:<code>test_step</code>
+will have an argument <code>dataloader_idx</code> which matches the order here.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def test_dataloader(self):
+    return DataLoader(self.cifar10_test, batch_size=self.batch_size, shuffle=False, num_workers=self.num_workers)</code></pre>
+</details>
+</dd>
+<dt id="imutils.ml.models.pl.lightning.CIFAR100DataModule.train_dataloader"><code class="name flex">
+<span>def <span class="ident">train_dataloader</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Implement one or more PyTorch DataLoaders for training.</p>
+<h2 id="return">Return</h2>
+<p>A collection of :class:<code>torch.utils.data.DataLoader</code> specifying training samples.
+In the case of multiple dataloaders, please see this :ref:<code>page &lt;multiple-training-dataloaders&gt;</code>.</p>
+<p>The dataloader you return will not be reloaded unless you set
+:paramref:<code>~pytorch_lightning.trainer.Trainer.reload_dataloaders_every_n_epochs</code> to
+a positive integer.</p>
+<p>For data processing use the following pattern:</p>
+<pre><code>- download in :meth:&lt;code&gt;prepare\_data&lt;/code&gt;
+- process and split in :meth:&lt;code&gt;setup&lt;/code&gt;
+</code></pre>
+<p>However, the above are only necessary for distributed processing.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning:&ensp;do not assign state in prepare_data</p>
+</div>
+<ul>
+<li>:meth:<code>~pytorch_lightning.trainer.Trainer.fit</code></li>
+<li>&hellip;</li>
+<li>:meth:<code>prepare_data</code></li>
+<li>:meth:<code>setup</code></li>
+<li>:meth:<code>train_dataloader</code></li>
+</ul>
+<h2 id="note">Note</h2>
+<p>Lightning adds the correct sampler for distributed and arbitrary hardware.
+There is no need to set it yourself.</p>
+<p>Example::</p>
+<pre><code># single dataloader
+def train_dataloader(self):
+    transform = transforms.Compose([transforms.ToTensor(),
+                                    transforms.Normalize((0.5,), (1.0,))])
+    dataset = MNIST(root='/path/to/mnist/', train=True, transform=transform,
+                    download=True)
+    loader = torch.utils.data.DataLoader(
+        dataset=dataset,
+        batch_size=self.batch_size,
+        shuffle=True
+    )
+    return loader
+
+# multiple dataloaders, return as list
+def train_dataloader(self):
+    mnist = MNIST(...)
+    cifar = CIFAR(...)
+    mnist_loader = torch.utils.data.DataLoader(
+        dataset=mnist, batch_size=self.batch_size, shuffle=True
+    )
+    cifar_loader = torch.utils.data.DataLoader(
+        dataset=cifar, batch_size=self.batch_size, shuffle=True
+    )
+    # each batch will be a list of tensors: [batch_mnist, batch_cifar]
+    return [mnist_loader, cifar_loader]
+
+# multiple dataloader, return as dict
+def train_dataloader(self):
+    mnist = MNIST(...)
+    cifar = CIFAR(...)
+    mnist_loader = torch.utils.data.DataLoader(
+        dataset=mnist, batch_size=self.batch_size, shuffle=True
+    )
+    cifar_loader = torch.utils.data.DataLoader(
+        dataset=cifar, batch_size=self.batch_size, shuffle=True
+    )
+    # each batch will be a dict of tensors: {'mnist': batch_mnist, 'cifar': batch_cifar}
+    return {'mnist': mnist_loader, 'cifar': cifar_loader}
+</code></pre></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def train_dataloader(self):
+    return DataLoader(self.cifar10_train, batch_size=self.batch_size, shuffle=True, num_workers=self.num_workers)</code></pre>
+</details>
+</dd>
+<dt id="imutils.ml.models.pl.lightning.CIFAR100DataModule.val_dataloader"><code class="name flex">
+<span>def <span class="ident">val_dataloader</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Implement one or multiple PyTorch DataLoaders for validation.</p>
+<p>The dataloader you return will not be reloaded unless you set
+:paramref:<code>~pytorch_lightning.trainer.Trainer.reload_dataloaders_every_n_epochs</code> to
+a positive integer.</p>
+<p>It's recommended that all data downloads and preparation happen in :meth:<code>prepare_data</code>.</p>
+<ul>
+<li>:meth:<code>~pytorch_lightning.trainer.Trainer.fit</code></li>
+<li>&hellip;</li>
+<li>:meth:<code>prepare_data</code></li>
+<li>:meth:<code>train_dataloader</code></li>
+<li>:meth:<code>val_dataloader</code></li>
+<li>:meth:<code>test_dataloader</code></li>
+</ul>
+<h2 id="note">Note</h2>
+<p>Lightning adds the correct sampler for distributed and arbitrary hardware
+There is no need to set it yourself.</p>
+<h2 id="return">Return</h2>
+<p>A :class:<code>torch.utils.data.DataLoader</code> or a sequence of them specifying validation samples.</p>
+<p>Examples::</p>
+<pre><code>def val_dataloader(self):
+    transform = transforms.Compose([transforms.ToTensor(),
+                                    transforms.Normalize((0.5,), (1.0,))])
+    dataset = MNIST(root='/path/to/mnist/', train=False,
+                    transform=transform, download=True)
+    loader = torch.utils.data.DataLoader(
+        dataset=dataset,
+        batch_size=self.batch_size,
+        shuffle=False
+    )
+
+    return loader
+
+# can also return multiple dataloaders
+def val_dataloader(self):
+    return [loader_a, loader_b, ..., loader_n]
+</code></pre>
+<h2 id="note_1">Note</h2>
+<p>If you don't need a validation dataset and a :meth:<code>validation_step</code>, you don't need to
+implement this method.</p>
+<h2 id="note_2">Note</h2>
+<p>In the case where you return multiple validation dataloaders, the :meth:<code>validation_step</code>
+will have an argument <code>dataloader_idx</code> which matches the order here.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def val_dataloader(self):
+    return DataLoader(self.cifar10_val, batch_size=self.batch_size, shuffle=False, num_workers=self.num_workers)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="imutils.ml.models.pl.lightning.CIFAR10DataModule"><code class="flex name class">
+<span>class <span class="ident">CIFAR10DataModule</span></span>
+<span>(</span><span>data_dir: str = './', image_size: int = 512, batch_size: int = 128, num_workers: int = 12, val_size: float = 0.2, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>CIFAR 10 DATASET</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class CIFAR10DataModule(pl.LightningDataModule):
+    &#34;&#34;&#34;CIFAR 10 DATASET
+    &#34;&#34;&#34;
+    def __init__(self, data_dir: str = &#39;./&#39;, image_size: int = 512, batch_size: int = 128, num_workers: int = 12, val_size: float = 0.2, **kwargs):
+        super().__init__()
+        self.data_dir = data_dir
+        self.transform_train = transforms.Compose([
+            transforms.Resize(image_size),
+            transforms.RandomCrop(image_size, padding=4),
+            transforms.RandomHorizontalFlip(),
+            transforms.ToTensor(),
+            transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),
+        ])
+
+        self.transform_test = transforms.Compose([
+            transforms.Resize(image_size),
+            transforms.ToTensor(),
+            transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),
+        ])
+
+        self.batch_size = batch_size
+        self.num_workers = num_workers
+        self.val_size = val_size
+
+        self.dims = (3, image_size, image_size)
+
+    def prepare_data(self):
+        # download
+        CIFAR10(root=self.data_dir, train=True, download=True)
+        CIFAR10(root=self.data_dir, train=False, download=True)
+
+    def setup(self, stage: str = None):
+
+        # Assign train/val datasets for use in dataloaders
+        if stage == &#39;fit&#39; or stage is None:
+            val_size = int(50000 * self.val_size)
+            cifar10_full = CIFAR10(self.data_dir, train=True, transform=self.transform_train)
+            self.cifar10_train, self.cifar10_val = random_split(cifar10_full, [50000 - val_size, val_size])
+
+        # Assign test dataset for use in dataloader(s)
+        if stage == &#39;test&#39; or stage is None:
+            self.cifar10_test = CIFAR10(self.data_dir, train=False, transform=self.transform_test)
+
+    def train_dataloader(self):
+        return DataLoader(self.cifar10_train, batch_size=self.batch_size, shuffle=True, num_workers=self.num_workers)
+
+    def val_dataloader(self):
+        return DataLoader(self.cifar10_val, batch_size=self.batch_size, shuffle=False, num_workers=self.num_workers)
+
+    def test_dataloader(self):
+        return DataLoader(self.cifar10_test, batch_size=self.batch_size, shuffle=False, num_workers=self.num_workers)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>pytorch_lightning.core.datamodule.LightningDataModule</li>
+<li>pytorch_lightning.core.hooks.CheckpointHooks</li>
+<li>pytorch_lightning.core.hooks.DataHooks</li>
+<li>pytorch_lightning.core.mixins.hparams_mixin.HyperparametersMixin</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="imutils.ml.models.pl.lightning.CIFAR10DataModule.name"><code class="name">var <span class="ident">name</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="imutils.ml.models.pl.lightning.CIFAR10DataModule.prepare_data"><code class="name flex">
+<span>def <span class="ident">prepare_data</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Use this to download and prepare data.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning:&ensp;DO NOT set state to the model (use <code>setup</code> instead)</p>
+<p>since this is NOT called on every GPU in DDP/TPU</p>
+</div>
+<p>Example::</p>
+<pre><code>def prepare_data(self):
+    # good
+    download_data()
+    tokenize()
+    etc()
+
+    # bad
+    self.split = data_split
+    self.some_state = some_other_state()
+</code></pre>
+<p>In DDP prepare_data can be called in two ways (using Trainer(prepare_data_per_node)):</p>
+<ol>
+<li>Once per node. This is the default and is only called on LOCAL_RANK=0.</li>
+<li>Once in total. Only called on GLOBAL_RANK=0.</li>
+</ol>
+<p>Example::</p>
+<pre><code># DEFAULT
+# called once per node on LOCAL_RANK=0 of that node
+Trainer(prepare_data_per_node=True)
+
+# call on GLOBAL_RANK=0 (great for shared file systems)
+Trainer(prepare_data_per_node=False)
+</code></pre>
+<h2 id="note">Note</h2>
+<p>Setting <code>prepare_data_per_node</code> with the trainer flag is deprecated and will be removed in v1.7.0.
+Please set <code>prepare_data_per_node</code> in LightningDataModule or LightningModule directly instead.</p>
+<p>This is called before requesting the dataloaders:</p>
+<p>.. code-block:: python</p>
+<pre><code>model.prepare_data()
+initialize_distributed()
+model.setup(stage)
+model.train_dataloader()
+model.val_dataloader()
+model.test_dataloader()
+</code></pre></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def prepare_data(self):
+    # download
+    CIFAR10(root=self.data_dir, train=True, download=True)
+    CIFAR10(root=self.data_dir, train=False, download=True)</code></pre>
+</details>
+</dd>
+<dt id="imutils.ml.models.pl.lightning.CIFAR10DataModule.setup"><code class="name flex">
+<span>def <span class="ident">setup</span></span>(<span>self, stage: str = None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Called at the beginning of fit (train + validate), validate, test, and predict. This is a good hook when
+you need to build models dynamically or adjust something about them. This hook is called on every process
+when using DDP.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>stage</code></strong></dt>
+<dd>either <code>'fit'</code>, <code>'validate'</code>, <code>'test'</code>, or <code>'predict'</code></dd>
+</dl>
+<p>Example::</p>
+<pre><code>class LitModel(...):
+    def __init__(self):
+        self.l1 = None
+
+    def prepare_data(self):
+        download_data()
+        tokenize()
+
+        # don't do this
+        self.something = else
+
+    def setup(stage):
+        data = Load_data(...)
+        self.l1 = nn.Linear(28, data.num_classes)
+</code></pre></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def setup(self, stage: str = None):
+
+    # Assign train/val datasets for use in dataloaders
+    if stage == &#39;fit&#39; or stage is None:
+        val_size = int(50000 * self.val_size)
+        cifar10_full = CIFAR10(self.data_dir, train=True, transform=self.transform_train)
+        self.cifar10_train, self.cifar10_val = random_split(cifar10_full, [50000 - val_size, val_size])
+
+    # Assign test dataset for use in dataloader(s)
+    if stage == &#39;test&#39; or stage is None:
+        self.cifar10_test = CIFAR10(self.data_dir, train=False, transform=self.transform_test)</code></pre>
+</details>
+</dd>
+<dt id="imutils.ml.models.pl.lightning.CIFAR10DataModule.test_dataloader"><code class="name flex">
+<span>def <span class="ident">test_dataloader</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Implement one or multiple PyTorch DataLoaders for testing.</p>
+<p>The dataloader you return will not be reloaded unless you set
+:paramref:<code>~pytorch_lightning.trainer.Trainer.reload_dataloaders_every_n_epochs</code> to
+a postive integer.</p>
+<p>For data processing use the following pattern:</p>
+<pre><code>- download in :meth:&lt;code&gt;prepare\_data&lt;/code&gt;
+- process and split in :meth:&lt;code&gt;setup&lt;/code&gt;
+</code></pre>
+<p>However, the above are only necessary for distributed processing.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning:&ensp;do not assign state in prepare_data</p>
+</div>
+<ul>
+<li>:meth:<code>~pytorch_lightning.trainer.Trainer.fit</code></li>
+<li>&hellip;</li>
+<li>:meth:<code>prepare_data</code></li>
+<li>:meth:<code>setup</code></li>
+<li>:meth:<code>train_dataloader</code></li>
+<li>:meth:<code>val_dataloader</code></li>
+<li>:meth:<code>test_dataloader</code></li>
+</ul>
+<h2 id="note">Note</h2>
+<p>Lightning adds the correct sampler for distributed and arbitrary hardware.
+There is no need to set it yourself.</p>
+<h2 id="return">Return</h2>
+<p>A :class:<code>torch.utils.data.DataLoader</code> or a sequence of them specifying testing samples.</p>
+<p>Example::</p>
+<pre><code>def test_dataloader(self):
+    transform = transforms.Compose([transforms.ToTensor(),
+                                    transforms.Normalize((0.5,), (1.0,))])
+    dataset = MNIST(root='/path/to/mnist/', train=False, transform=transform,
+                    download=True)
+    loader = torch.utils.data.DataLoader(
+        dataset=dataset,
+        batch_size=self.batch_size,
+        shuffle=False
+    )
+
+    return loader
+
+# can also return multiple dataloaders
+def test_dataloader(self):
+    return [loader_a, loader_b, ..., loader_n]
+</code></pre>
+<h2 id="note_1">Note</h2>
+<p>If you don't need a test dataset and a :meth:<code>test_step</code>, you don't need to implement
+this method.</p>
+<h2 id="note_2">Note</h2>
+<p>In the case where you return multiple test dataloaders, the :meth:<code>test_step</code>
+will have an argument <code>dataloader_idx</code> which matches the order here.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def test_dataloader(self):
+    return DataLoader(self.cifar10_test, batch_size=self.batch_size, shuffle=False, num_workers=self.num_workers)</code></pre>
+</details>
+</dd>
+<dt id="imutils.ml.models.pl.lightning.CIFAR10DataModule.train_dataloader"><code class="name flex">
+<span>def <span class="ident">train_dataloader</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Implement one or more PyTorch DataLoaders for training.</p>
+<h2 id="return">Return</h2>
+<p>A collection of :class:<code>torch.utils.data.DataLoader</code> specifying training samples.
+In the case of multiple dataloaders, please see this :ref:<code>page &lt;multiple-training-dataloaders&gt;</code>.</p>
+<p>The dataloader you return will not be reloaded unless you set
+:paramref:<code>~pytorch_lightning.trainer.Trainer.reload_dataloaders_every_n_epochs</code> to
+a positive integer.</p>
+<p>For data processing use the following pattern:</p>
+<pre><code>- download in :meth:&lt;code&gt;prepare\_data&lt;/code&gt;
+- process and split in :meth:&lt;code&gt;setup&lt;/code&gt;
+</code></pre>
+<p>However, the above are only necessary for distributed processing.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning:&ensp;do not assign state in prepare_data</p>
+</div>
+<ul>
+<li>:meth:<code>~pytorch_lightning.trainer.Trainer.fit</code></li>
+<li>&hellip;</li>
+<li>:meth:<code>prepare_data</code></li>
+<li>:meth:<code>setup</code></li>
+<li>:meth:<code>train_dataloader</code></li>
+</ul>
+<h2 id="note">Note</h2>
+<p>Lightning adds the correct sampler for distributed and arbitrary hardware.
+There is no need to set it yourself.</p>
+<p>Example::</p>
+<pre><code># single dataloader
+def train_dataloader(self):
+    transform = transforms.Compose([transforms.ToTensor(),
+                                    transforms.Normalize((0.5,), (1.0,))])
+    dataset = MNIST(root='/path/to/mnist/', train=True, transform=transform,
+                    download=True)
+    loader = torch.utils.data.DataLoader(
+        dataset=dataset,
+        batch_size=self.batch_size,
+        shuffle=True
+    )
+    return loader
+
+# multiple dataloaders, return as list
+def train_dataloader(self):
+    mnist = MNIST(...)
+    cifar = CIFAR(...)
+    mnist_loader = torch.utils.data.DataLoader(
+        dataset=mnist, batch_size=self.batch_size, shuffle=True
+    )
+    cifar_loader = torch.utils.data.DataLoader(
+        dataset=cifar, batch_size=self.batch_size, shuffle=True
+    )
+    # each batch will be a list of tensors: [batch_mnist, batch_cifar]
+    return [mnist_loader, cifar_loader]
+
+# multiple dataloader, return as dict
+def train_dataloader(self):
+    mnist = MNIST(...)
+    cifar = CIFAR(...)
+    mnist_loader = torch.utils.data.DataLoader(
+        dataset=mnist, batch_size=self.batch_size, shuffle=True
+    )
+    cifar_loader = torch.utils.data.DataLoader(
+        dataset=cifar, batch_size=self.batch_size, shuffle=True
+    )
+    # each batch will be a dict of tensors: {'mnist': batch_mnist, 'cifar': batch_cifar}
+    return {'mnist': mnist_loader, 'cifar': cifar_loader}
+</code></pre></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def train_dataloader(self):
+    return DataLoader(self.cifar10_train, batch_size=self.batch_size, shuffle=True, num_workers=self.num_workers)</code></pre>
+</details>
+</dd>
+<dt id="imutils.ml.models.pl.lightning.CIFAR10DataModule.val_dataloader"><code class="name flex">
+<span>def <span class="ident">val_dataloader</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Implement one or multiple PyTorch DataLoaders for validation.</p>
+<p>The dataloader you return will not be reloaded unless you set
+:paramref:<code>~pytorch_lightning.trainer.Trainer.reload_dataloaders_every_n_epochs</code> to
+a positive integer.</p>
+<p>It's recommended that all data downloads and preparation happen in :meth:<code>prepare_data</code>.</p>
+<ul>
+<li>:meth:<code>~pytorch_lightning.trainer.Trainer.fit</code></li>
+<li>&hellip;</li>
+<li>:meth:<code>prepare_data</code></li>
+<li>:meth:<code>train_dataloader</code></li>
+<li>:meth:<code>val_dataloader</code></li>
+<li>:meth:<code>test_dataloader</code></li>
+</ul>
+<h2 id="note">Note</h2>
+<p>Lightning adds the correct sampler for distributed and arbitrary hardware
+There is no need to set it yourself.</p>
+<h2 id="return">Return</h2>
+<p>A :class:<code>torch.utils.data.DataLoader</code> or a sequence of them specifying validation samples.</p>
+<p>Examples::</p>
+<pre><code>def val_dataloader(self):
+    transform = transforms.Compose([transforms.ToTensor(),
+                                    transforms.Normalize((0.5,), (1.0,))])
+    dataset = MNIST(root='/path/to/mnist/', train=False,
+                    transform=transform, download=True)
+    loader = torch.utils.data.DataLoader(
+        dataset=dataset,
+        batch_size=self.batch_size,
+        shuffle=False
+    )
+
+    return loader
+
+# can also return multiple dataloaders
+def val_dataloader(self):
+    return [loader_a, loader_b, ..., loader_n]
+</code></pre>
+<h2 id="note_1">Note</h2>
+<p>If you don't need a validation dataset and a :meth:<code>validation_step</code>, you don't need to
+implement this method.</p>
+<h2 id="note_2">Note</h2>
+<p>In the case where you return multiple validation dataloaders, the :meth:<code>validation_step</code>
+will have an argument <code>dataloader_idx</code> which matches the order here.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def val_dataloader(self):
+    return DataLoader(self.cifar10_val, batch_size=self.batch_size, shuffle=False, num_workers=self.num_workers)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="imutils.ml.models.pl.lightning.LitClassifierModel"><code class="flex name class">
+<span>class <span class="ident">LitClassifierModel</span></span>
+<span>(</span><span>backbone, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>LightningModule plus wandb features and simple training/val steps.
+By default, assumes that your training loop involves inputs (xs)
+fed to .forward to produce outputs (y_hats)
+that are compared to targets (ys)
+by self.loss and by metrics,
+where each batch == (xs, ys).
+This loss is fed to self.optimizer.
+If this is not true, overwrite _train_forward
+and optionally _val_forward and _test_forward.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class LitClassifierModel(LoggedLitModule): #pl.LightningModule):
+
+    def __init__(self, backbone, **kwargs):
+        super().__init__()
+        self.save_hyperparameters(kwargs)
+        self.criterion = LabelSmoothingLoss(kwargs[&#39;num_classes&#39;], smoothing=0.1)
+        self.backbone = backbone
+
+    def forward(self, x):
+        x = self.backbone(x)
+        return x
+
+    def training_step(self, batch, batch_idx):
+        x, y = batch
+        logits = self(x)
+        # loss = F.cross_entropy(logits, y)
+        loss = self.criterion(logits, y)
+        y_hat = torch.argmax(logits, dim=1)
+        acc = accuracy(y_hat, y)
+        self.log(&#39;train_loss&#39;, loss, prog_bar=False)
+        self.log(&#39;train_acc&#39;, acc, prog_bar=False)
+        return loss
+
+    def validation_step(self, batch, batch_idx):
+        x, y = batch
+        logits = self(x)
+        # loss = F.cross_entropy(logits, y)
+        loss = self.criterion(logits, y)
+        y_hat = torch.argmax(logits, dim=1)
+        acc = accuracy(y_hat, y)
+        self.log(&#39;val_loss&#39;, loss, prog_bar=True)
+        self.log(&#39;val_acc&#39;, acc, prog_bar=True)
+        return loss
+
+
+    def test_step(self, batch, batch_idx):
+        x, y = batch
+        logits = self(x)
+        # loss = F.cross_entropy(logits, y)
+        loss = self.criterion(logits, y)
+        y_hat = torch.argmax(logits, dim=1)
+        acc = accuracy(y_hat, y)
+        return {&#39;test_loss&#39;: loss, &#39;test_acc&#39;: acc}
+
+
+    def test_epoch_end(self, outputs):
+        # for test_epoch_end showcase, we record batch mse and batch std
+
+        loss, acc = zip(*[(d[&#39;test_loss&#39;], d[&#39;test_acc&#39;]) for d in outputs])
+
+        avg_loss, avg_acc = np.mean(loss), np.mean(acc)
+        std_loss, std_acc = np.std(loss), np.std(acc)
+
+        result = {
+            &#39;loss&#39;: {&#39;avg&#39;: avg_loss, &#39;std&#39;: std_loss},
+            &#39;acc&#39;: {&#39;avg&#39;: avg_acc, &#39;std&#39;: std_acc}
+            }
+        self.log_dict(result)
+        return result
+
+    def configure_optimizers(self):
+        optimizer = torch.optim.Adam(
+            self.parameters(),
+            lr=self.hparams.learning_rate,
+            weight_decay=self.hparams.weight_decay,
+        )
+        return {
+            &#39;optimizer&#39;: optimizer,
+            &#39;lr_scheduler&#39;: torch.optim.lr_scheduler.ReduceLROnPlateau(
+                optimizer,
+                mode=&#39;min&#39;,
+                factor=0.1,
+                patience=5,
+                min_lr=1e-8,
+                verbose=True
+            ),
+            &#39;interval&#39;: &#39;step&#39;,
+            &#39;monitor&#39;: &#39;train_loss&#39;
+        }
+
+    @staticmethod
+    def add_model_specific_args(parent_parser):
+        parser = ArgumentParser(parents=[parent_parser], add_help=False)
+        parser.add_argument(&#39;--patch_size&#39;, default=4, type=int)
+        parser.add_argument(&#39;--emb_dim&#39;, default=128, type=int)
+        parser.add_argument(&#39;--mlp_dim&#39;, default=256, type=int)
+        parser.add_argument(&#39;--num_heads&#39;, default=24, type=int)
+        parser.add_argument(&#39;--num_layers&#39;, default=24, type=int)
+        parser.add_argument(&#39;--attn_dropout_rate&#39;, default=0.0, type=float)
+        parser.add_argument(&#39;--dropout_rate&#39;, default=.1, type=float)
+        parser.add_argument(&#39;--resnet&#39;, action=&#34;store_true&#34;)
+        return parser</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="imutils.ml.models.pl.lightning.LoggedLitModule" href="#imutils.ml.models.pl.lightning.LoggedLitModule">LoggedLitModule</a></li>
+<li>pytorch_lightning.core.lightning.LightningModule</li>
+<li>pytorch_lightning.core.mixins.device_dtype_mixin.DeviceDtypeModuleMixin</li>
+<li>pytorch_lightning.core.mixins.hparams_mixin.HyperparametersMixin</li>
+<li>pytorch_lightning.core.saving.ModelIO</li>
+<li>pytorch_lightning.core.hooks.ModelHooks</li>
+<li>pytorch_lightning.core.hooks.DataHooks</li>
+<li>pytorch_lightning.core.hooks.CheckpointHooks</li>
+<li>torch.nn.modules.module.Module</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="imutils.ml.models.pl.lightning.LitClassifierModel.dump_patches"><code class="name">var <span class="ident">dump_patches</span> : bool</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="imutils.ml.models.pl.lightning.LitClassifierModel.training"><code class="name">var <span class="ident">training</span> : bool</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Static methods</h3>
+<dl>
+<dt id="imutils.ml.models.pl.lightning.LitClassifierModel.add_model_specific_args"><code class="name flex">
+<span>def <span class="ident">add_model_specific_args</span></span>(<span>parent_parser)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def add_model_specific_args(parent_parser):
+    parser = ArgumentParser(parents=[parent_parser], add_help=False)
+    parser.add_argument(&#39;--patch_size&#39;, default=4, type=int)
+    parser.add_argument(&#39;--emb_dim&#39;, default=128, type=int)
+    parser.add_argument(&#39;--mlp_dim&#39;, default=256, type=int)
+    parser.add_argument(&#39;--num_heads&#39;, default=24, type=int)
+    parser.add_argument(&#39;--num_layers&#39;, default=24, type=int)
+    parser.add_argument(&#39;--attn_dropout_rate&#39;, default=0.0, type=float)
+    parser.add_argument(&#39;--dropout_rate&#39;, default=.1, type=float)
+    parser.add_argument(&#39;--resnet&#39;, action=&#34;store_true&#34;)
+    return parser</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="imutils.ml.models.pl.lightning.LitClassifierModel.test_epoch_end"><code class="name flex">
+<span>def <span class="ident">test_epoch_end</span></span>(<span>self, outputs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Called at the end of a test epoch with the output of all test steps.</p>
+<p>.. code-block:: python</p>
+<pre><code># the pseudocode for these calls
+test_outs = []
+for test_batch in test_data:
+    out = test_step(test_batch)
+    test_outs.append(out)
+test_epoch_end(test_outs)
+</code></pre>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>outputs</code></strong></dt>
+<dd>List of outputs you defined in :meth:<code>test_step_end</code>, or if there
+are multiple dataloaders, a list containing a list of outputs for each dataloader</dd>
+</dl>
+<h2 id="return">Return</h2>
+<p>None</p>
+<h2 id="note">Note</h2>
+<p>If you didn't define a :meth:<code>test_step</code>, this won't be called.</p>
+<h2 id="examples">Examples</h2>
+<p>With a single dataloader:</p>
+<p>.. code-block:: python</p>
+<pre><code>def test_epoch_end(self, outputs):
+    # do something with the outputs of all test batches
+    all_test_preds = test_step_outputs.predictions
+
+    some_result = calc_all_results(all_test_preds)
+    self.log(some_result)
+</code></pre>
+<p>With multiple dataloaders, <code>outputs</code> will be a list of lists. The outer list contains
+one entry per dataloader, while the inner list contains the individual outputs of
+each test step for that dataloader.</p>
+<p>.. code-block:: python</p>
+<pre><code>def test_epoch_end(self, outputs):
+    final_value = 0
+    for dataloader_outputs in outputs:
+        for test_step_out in dataloader_outputs:
+            # do something
+            final_value += test_step_out
+
+    self.log("final_metric", final_value)
+</code></pre></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def test_epoch_end(self, outputs):
+    # for test_epoch_end showcase, we record batch mse and batch std
+
+    loss, acc = zip(*[(d[&#39;test_loss&#39;], d[&#39;test_acc&#39;]) for d in outputs])
+
+    avg_loss, avg_acc = np.mean(loss), np.mean(acc)
+    std_loss, std_acc = np.std(loss), np.std(acc)
+
+    result = {
+        &#39;loss&#39;: {&#39;avg&#39;: avg_loss, &#39;std&#39;: std_loss},
+        &#39;acc&#39;: {&#39;avg&#39;: avg_acc, &#39;std&#39;: std_acc}
+        }
+    self.log_dict(result)
+    return result</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="imutils.ml.models.pl.lightning.LoggedLitModule" href="#imutils.ml.models.pl.lightning.LoggedLitModule">LoggedLitModule</a></b></code>:
+<ul class="hlist">
+<li><code><a title="imutils.ml.models.pl.lightning.LoggedLitModule.configure_optimizers" href="#imutils.ml.models.pl.lightning.LoggedLitModule.configure_optimizers">configure_optimizers</a></code></li>
+<li><code><a title="imutils.ml.models.pl.lightning.LoggedLitModule.forward" href="#imutils.ml.models.pl.lightning.LoggedLitModule.forward">forward</a></code></li>
+<li><code><a title="imutils.ml.models.pl.lightning.LoggedLitModule.on_pretrain_routine_start" href="#imutils.ml.models.pl.lightning.LoggedLitModule.on_pretrain_routine_start">on_pretrain_routine_start</a></code></li>
+<li><code><a title="imutils.ml.models.pl.lightning.LoggedLitModule.test_step" href="#imutils.ml.models.pl.lightning.LoggedLitModule.test_step">test_step</a></code></li>
+<li><code><a title="imutils.ml.models.pl.lightning.LoggedLitModule.training_step" href="#imutils.ml.models.pl.lightning.LoggedLitModule.training_step">training_step</a></code></li>
+<li><code><a title="imutils.ml.models.pl.lightning.LoggedLitModule.validation_step" href="#imutils.ml.models.pl.lightning.LoggedLitModule.validation_step">validation_step</a></code></li>
+</ul>
+</li>
+</ul>
+</dd>
+<dt id="imutils.ml.models.pl.lightning.LoggedLitModule"><code class="flex name class">
+<span>class <span class="ident">LoggedLitModule</span></span>
+<span>(</span><span>criterion)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>LightningModule plus wandb features and simple training/val steps.
+By default, assumes that your training loop involves inputs (xs)
+fed to .forward to produce outputs (y_hats)
+that are compared to targets (ys)
+by self.loss and by metrics,
+where each batch == (xs, ys).
+This loss is fed to self.optimizer.
+If this is not true, overwrite _train_forward
+and optionally _val_forward and _test_forward.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class LoggedLitModule(pl.LightningModule):
+    &#34;&#34;&#34;LightningModule plus wandb features and simple training/val steps.
+    By default, assumes that your training loop involves inputs (xs)
+    fed to .forward to produce outputs (y_hats)
+    that are compared to targets (ys)
+    by self.loss and by metrics,
+    where each batch == (xs, ys).
+    This loss is fed to self.optimizer.
+    If this is not true, overwrite _train_forward
+    and optionally _val_forward and _test_forward.
+    &#34;&#34;&#34;
+
+    def __init__(self,
+                 criterion):
+        super().__init__()
+
+        self.loss = criterion
+        self.train_metrics = torch.nn.ModuleList([])
+        self.val_metrics = torch.nn.ModuleList([])
+        self.test_metrics = torch.nn.ModuleList([])
+
+    def training_step(self, xys, idx):
+        xs, ys = xys
+        y_hats = self._train_forward(xs)
+        loss = self.loss(y_hats, ys)
+
+        logging_scalars = {&#34;loss&#34;: loss}
+        for metric in self.training_metrics:
+            self.log_metric(metric, logging_scalars, y_hats, ys)
+
+        self.do_logging(xs, ys, idx, y_hats, logging_scalars)
+
+        return {&#34;loss&#34;: loss, &#34;y_hats&#34;: y_hats}
+
+    def validation_step(self, xys, idx):
+        xs, ys = xys
+        y_hats = self._val_forward(xs)
+        loss = self.loss(y_hats, ys)
+
+        logging_scalars = {&#34;loss&#34;: loss}
+        for metric in self.validation_metrics:
+            self.log_metric(metric, logging_scalars, y_hats, ys)
+
+        self.do_logging(xs, ys, idx, y_hats, logging_scalars, step=&#34;val&#34;)
+
+        return {&#34;loss&#34;: loss, &#34;y_hats&#34;: y_hats}
+
+    def test_step(self, xys, idx):
+        xs, ys = xys
+        y_hats = self._test_forward(xs)
+        loss = self.loss(y_hats, ys)
+
+        logging_scalars = {&#34;loss&#34;: loss}
+        for metric in self.test_metrics:
+            self.log_metric(metric, logging_scalars, y_hats, ys)
+
+        self.do_logging(xs, ys, idx, y_hats, logging_scalars, step=&#34;test&#34;)
+
+        return {&#34;loss&#34;: loss, &#34;y_hats&#34;: y_hats}
+
+    def do_logging(self, xs, ys, idx, y_hats, scalars, step=&#34;train&#34;):
+        self.log_dict(
+            {step + &#34;/&#34; + name: value for name, value in scalars.items()})
+
+    def on_pretrain_routine_start(self):
+        print(self)
+
+    # def log_metric(self, metric, logging_scalars, y_hats, ys):
+    #     metric_str = metric.__class__.__name__.lower()
+    #     value = metric(y_hats, ys)
+    #     logging_scalars[metric_str] = value
+
+    def _train_forward(self, xs):
+        &#34;&#34;&#34;Overwrite this method when module.forward doesn&#39;t produce y_hats.&#34;&#34;&#34;
+        return self.forward(xs)
+
+    def _val_forward(self, xs):
+        &#34;&#34;&#34;Overwrite this method when training and val forward differ.&#34;&#34;&#34;
+        return self._train_forward(xs)
+
+    def _test_forward(self, xs):
+        &#34;&#34;&#34;Overwrite this method when val and test forward differ.&#34;&#34;&#34;
+        return self._val_forward(xs)
+
+    def configure_optimizers(self):
+        return self.optimizer(self.parameters(), **self.optimizer_params)
+
+    def optimizer(self, *args, **kwargs):
+        error_msg = (&#34;To use LoggedLitModule, you must set self.optimizer to a torch-style Optimizer&#34;
+                     + &#34;and set self.optimizer_params to a dictionary of keyword arguments.&#34;)
+        raise NotImplementedError(error_msg)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>pytorch_lightning.core.lightning.LightningModule</li>
+<li>pytorch_lightning.core.mixins.device_dtype_mixin.DeviceDtypeModuleMixin</li>
+<li>pytorch_lightning.core.mixins.hparams_mixin.HyperparametersMixin</li>
+<li>pytorch_lightning.core.saving.ModelIO</li>
+<li>pytorch_lightning.core.hooks.ModelHooks</li>
+<li>pytorch_lightning.core.hooks.DataHooks</li>
+<li>pytorch_lightning.core.hooks.CheckpointHooks</li>
+<li>torch.nn.modules.module.Module</li>
+</ul>
+<h3>Subclasses</h3>
+<ul class="hlist">
+<li><a title="imutils.ml.models.pl.lightning.LitClassifierModel" href="#imutils.ml.models.pl.lightning.LitClassifierModel">LitClassifierModel</a></li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="imutils.ml.models.pl.lightning.LoggedLitModule.dump_patches"><code class="name">var <span class="ident">dump_patches</span> : bool</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="imutils.ml.models.pl.lightning.LoggedLitModule.training"><code class="name">var <span class="ident">training</span> : bool</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="imutils.ml.models.pl.lightning.LoggedLitModule.configure_optimizers"><code class="name flex">
+<span>def <span class="ident">configure_optimizers</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Choose what optimizers and learning-rate schedulers to use in your optimization.
+Normally you'd need one. But in the case of GANs or similar you might have multiple.</p>
+<h2 id="return">Return</h2>
+<p>Any of these 6 options.</p>
+<ul>
+<li><strong>Single optimizer</strong>.</li>
+<li><strong>List or Tuple</strong> of optimizers.</li>
+<li><strong>Two lists</strong> - The first list has multiple optimizers, and the second has multiple LR schedulers
+(or multiple <code>lr_scheduler_config</code>).</li>
+<li><strong>Dictionary</strong>, with an <code>"optimizer"</code> key, and (optionally) a <code>"lr_scheduler"</code>
+key whose value is a single LR scheduler or <code>lr_scheduler_config</code>.</li>
+<li><strong>Tuple of dictionaries</strong> as described above, with an optional <code>"frequency"</code> key.</li>
+<li><strong>None</strong> - Fit will run without any optimizer.</li>
+</ul>
+<p>The <code>lr_scheduler_config</code> is a dictionary which contains the scheduler and its associated configuration.
+The default configuration is shown below.</p>
+<p>.. code-block:: python</p>
+<pre><code>lr_scheduler_config = {
+    # REQUIRED: The scheduler instance
+    "scheduler": lr_scheduler,
+    # The unit of the scheduler's step size, could also be 'step'.
+    # 'epoch' updates the scheduler on epoch end whereas 'step'
+    # updates it after a optimizer update.
+    "interval": "epoch",
+    # How many epochs/steps should pass between calls to
+    # &lt;code&gt;scheduler.step()&lt;/code&gt;. 1 corresponds to updating the learning
+    # rate after every epoch/step.
+    "frequency": 1,
+    # Metric to to monitor for schedulers like &lt;code&gt;ReduceLROnPlateau&lt;/code&gt;
+    "monitor": "val_loss",
+    # If set to &lt;code&gt;True&lt;/code&gt;, will enforce that the value specified 'monitor'
+    # is available when the scheduler is updated, thus stopping
+    # training if not found. If set to &lt;code&gt;False&lt;/code&gt;, it will only produce a warning
+    "strict": True,
+    # If using the &lt;code&gt;LearningRateMonitor&lt;/code&gt; callback to monitor the
+    # learning rate progress, this keyword can be used to specify
+    # a custom logged name
+    "name": None,
+}
+</code></pre>
+<p>When there are schedulers in which the <code>.step()</code> method is conditioned on a value, such as the
+:class:<code>torch.optim.lr_scheduler.ReduceLROnPlateau</code> scheduler, Lightning requires that the
+<code>lr_scheduler_config</code> contains the keyword <code>"monitor"</code> set to the metric name that the scheduler
+should be conditioned on.</p>
+<div class="admonition testcode">
+<p class="admonition-title">Testcode</p>
+<h1 id="the-reducelronplateau-scheduler-requires-a-monitor">The ReduceLROnPlateau scheduler requires a monitor</h1>
+<p>def configure_optimizers(self):
+optimizer = Adam(&hellip;)
+return {
+"optimizer": optimizer,
+"lr_scheduler": {
+"scheduler": ReduceLROnPlateau(optimizer, &hellip;),
+"monitor": "metric_to_track",
+"frequency": "indicates how often the metric is updated"
+# If "monitor" references validation metrics, then "frequency" should be set to a
+# multiple of "trainer.check_val_every_n_epoch".
+},
+}</p>
+<h1 id="in-the-case-of-two-optimizers-only-one-using-the-reducelronplateau-scheduler">In the case of two optimizers, only one using the ReduceLROnPlateau scheduler</h1>
+<p>def configure_optimizers(self):
+optimizer1 = Adam(&hellip;)
+optimizer2 = SGD(&hellip;)
+scheduler1 = ReduceLROnPlateau(optimizer1, &hellip;)
+scheduler2 = LambdaLR(optimizer2, &hellip;)
+return (
+{
+"optimizer": optimizer1,
+"lr_scheduler": {
+"scheduler": scheduler1,
+"monitor": "metric_to_track",
+},
+},
+{"optimizer": optimizer2, "lr_scheduler": scheduler2},
+)</p>
+</div>
+<p>Metrics can be made available to monitor by simply logging it using
+<code>self.log('metric_to_track', metric_val)</code> in your :class:<code>~pytorch_lightning.core.lightning.LightningModule</code>.</p>
+<h2 id="note">Note</h2>
+<p>The <code>frequency</code> value specified in a dict along with the <code>optimizer</code> key is an int corresponding
+to the number of sequential batches optimized with the specific optimizer.
+It should be given to none or to all of the optimizers.
+There is a difference between passing multiple optimizers in a list,
+and passing multiple optimizers in dictionaries with a frequency of 1:</p>
+<pre><code>- In the former case, all optimizers will operate on the given batch in each optimization step.
+- In the latter, only one optimizer will operate on the given batch at every step.
+</code></pre>
+<p>This is different from the <code>frequency</code> value specified in the <code>lr_scheduler_config</code> mentioned above.</p>
+<p>.. code-block:: python</p>
+<pre><code>def configure_optimizers(self):
+    optimizer_one = torch.optim.SGD(self.model.parameters(), lr=0.01)
+    optimizer_two = torch.optim.SGD(self.model.parameters(), lr=0.01)
+    return [
+        {"optimizer": optimizer_one, "frequency": 5},
+        {"optimizer": optimizer_two, "frequency": 10},
+    ]
+</code></pre>
+<p>In this example, the first optimizer will be used for the first 5 steps,
+the second optimizer for the next 10 steps and that cycle will continue.
+If an LR scheduler is specified for an optimizer using the <code>lr_scheduler</code> key in the above dict,
+the scheduler will only be updated when its optimizer is being used.</p>
+<p>Examples::</p>
+<pre><code># most cases. no learning rate scheduler
+def configure_optimizers(self):
+    return Adam(self.parameters(), lr=1e-3)
+
+# multiple optimizer case (e.g.: GAN)
+def configure_optimizers(self):
+    gen_opt = Adam(self.model_gen.parameters(), lr=0.01)
+    dis_opt = Adam(self.model_dis.parameters(), lr=0.02)
+    return gen_opt, dis_opt
+
+# example with learning rate schedulers
+def configure_optimizers(self):
+    gen_opt = Adam(self.model_gen.parameters(), lr=0.01)
+    dis_opt = Adam(self.model_dis.parameters(), lr=0.02)
+    dis_sch = CosineAnnealing(dis_opt, T_max=10)
+    return [gen_opt, dis_opt], [dis_sch]
+
+# example with step-based learning rate schedulers
+# each optimizer has its own scheduler
+def configure_optimizers(self):
+    gen_opt = Adam(self.model_gen.parameters(), lr=0.01)
+    dis_opt = Adam(self.model_dis.parameters(), lr=0.02)
+    gen_sch = {
+        'scheduler': ExponentialLR(gen_opt, 0.99),
+        'interval': 'step'  # called after each training step
+    }
+    dis_sch = CosineAnnealing(dis_opt, T_max=10) # called every epoch
+    return [gen_opt, dis_opt], [gen_sch, dis_sch]
+
+# example with optimizer frequencies
+# see training procedure in &lt;code&gt;Improved Training of Wasserstein GANs&lt;/code&gt;, Algorithm 1
+# &lt;https://arxiv.org/abs/1704.00028&gt;
+def configure_optimizers(self):
+    gen_opt = Adam(self.model_gen.parameters(), lr=0.01)
+    dis_opt = Adam(self.model_dis.parameters(), lr=0.02)
+    n_critic = 5
+    return (
+        {'optimizer': dis_opt, 'frequency': n_critic},
+        {'optimizer': gen_opt, 'frequency': 1}
+    )
+</code></pre>
+<h2 id="note_1">Note</h2>
+<p>Some things to know:</p>
+<ul>
+<li>Lightning calls <code>.backward()</code> and <code>.step()</code> on each optimizer and learning rate scheduler as needed.</li>
+<li>If you use 16-bit precision (<code>precision=16</code>), Lightning will automatically handle the optimizers.</li>
+<li>If you use multiple optimizers, :meth:<code>training_step</code> will have an additional <code>optimizer_idx</code> parameter.</li>
+<li>If you use :class:<code>torch.optim.LBFGS</code>, Lightning handles the closure function automatically for you.</li>
+<li>If you use multiple optimizers, gradients will be calculated only for the parameters of current optimizer
+at each training step.</li>
+<li>If you need to control how often those optimizers step or override the default <code>.step()</code> schedule,
+override the :meth:<code>optimizer_step</code> hook.</li>
+</ul></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def configure_optimizers(self):
+    return self.optimizer(self.parameters(), **self.optimizer_params)</code></pre>
+</details>
+</dd>
+<dt id="imutils.ml.models.pl.lightning.LoggedLitModule.do_logging"><code class="name flex">
+<span>def <span class="ident">do_logging</span></span>(<span>self, xs, ys, idx, y_hats, scalars, step='train')</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def do_logging(self, xs, ys, idx, y_hats, scalars, step=&#34;train&#34;):
+    self.log_dict(
+        {step + &#34;/&#34; + name: value for name, value in scalars.items()})</code></pre>
+</details>
+</dd>
+<dt id="imutils.ml.models.pl.lightning.LoggedLitModule.forward"><code class="name flex">
+<span>def <span class="ident">forward</span></span>(<span>self, *args, **kwargs) ‑> Any</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Same as :meth:<code>torch.nn.Module.forward()</code>.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>*args</code></strong></dt>
+<dd>Whatever you decide to pass into the forward method.</dd>
+<dt><strong><code>**kwargs</code></strong></dt>
+<dd>Keyword arguments are also possible.</dd>
+</dl>
+<h2 id="return">Return</h2>
+<p>Your model's output</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def forward(self, *args, **kwargs) -&gt; Any:
+    r&#34;&#34;&#34;
+    Same as :meth:`torch.nn.Module.forward()`.
+
+    Args:
+        *args: Whatever you decide to pass into the forward method.
+        **kwargs: Keyword arguments are also possible.
+
+    Return:
+        Your model&#39;s output
+    &#34;&#34;&#34;
+    return super().forward(*args, **kwargs)</code></pre>
+</details>
+</dd>
+<dt id="imutils.ml.models.pl.lightning.LoggedLitModule.on_pretrain_routine_start"><code class="name flex">
+<span>def <span class="ident">on_pretrain_routine_start</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Called at the beginning of the pretrain routine (between fit and train start).</p>
+<ul>
+<li>fit</li>
+<li>pretrain_routine start</li>
+<li>pretrain_routine end</li>
+<li>training_start</li>
+</ul></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def on_pretrain_routine_start(self):
+    print(self)</code></pre>
+</details>
+</dd>
+<dt id="imutils.ml.models.pl.lightning.LoggedLitModule.optimizer"><code class="name flex">
+<span>def <span class="ident">optimizer</span></span>(<span>self, *args, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def optimizer(self, *args, **kwargs):
+    error_msg = (&#34;To use LoggedLitModule, you must set self.optimizer to a torch-style Optimizer&#34;
+                 + &#34;and set self.optimizer_params to a dictionary of keyword arguments.&#34;)
+    raise NotImplementedError(error_msg)</code></pre>
+</details>
+</dd>
+<dt id="imutils.ml.models.pl.lightning.LoggedLitModule.test_step"><code class="name flex">
+<span>def <span class="ident">test_step</span></span>(<span>self, xys, idx)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Operates on a single batch of data from the test set.
+In this step you'd normally generate examples or calculate anything of interest
+such as accuracy.</p>
+<p>.. code-block:: python</p>
+<pre><code># the pseudocode for these calls
+test_outs = []
+for test_batch in test_data:
+    out = test_step(test_batch)
+    test_outs.append(out)
+test_epoch_end(test_outs)
+</code></pre>
+<h2 id="args">Args</h2>
+<dl>
+<dt>batch (:class:<code>~torch.Tensor</code> | (:class:<code>~torch.Tensor</code>, &hellip;) | [:class:<code>~torch.Tensor</code>, &hellip;]):</dt>
+<dt>The output of your :class:<code>~torch.utils.data.DataLoader</code>. A tensor, tuple or list.</dt>
+<dt><strong><code>batch_idx</code></strong> :&ensp;<code>int</code></dt>
+<dd>The index of this batch.</dd>
+<dt><strong><code>dataloader_idx</code></strong> :&ensp;<code>int</code></dt>
+<dd>The index of the dataloader that produced this batch
+(only if multiple test dataloaders used).</dd>
+</dl>
+<h2 id="return">Return</h2>
+<p>Any of.</p>
+<ul>
+<li>Any object or value</li>
+<li><code>None</code> - Testing will skip to the next batch</li>
+</ul>
+<p>.. code-block:: python</p>
+<pre><code># if you have one test dataloader:
+def test_step(self, batch, batch_idx):
+    ...
+
+
+# if you have multiple test dataloaders:
+def test_step(self, batch, batch_idx, dataloader_idx):
+    ...
+</code></pre>
+<p>Examples::</p>
+<pre><code># CASE 1: A single test dataset
+def test_step(self, batch, batch_idx):
+    x, y = batch
+
+    # implement your own
+    out = self(x)
+    loss = self.loss(out, y)
+
+    # log 6 example images
+    # or generated text... or whatever
+    sample_imgs = x[:6]
+    grid = torchvision.utils.make_grid(sample_imgs)
+    self.logger.experiment.add_image('example_images', grid, 0)
+
+    # calculate acc
+    labels_hat = torch.argmax(out, dim=1)
+    test_acc = torch.sum(y == labels_hat).item() / (len(y) * 1.0)
+
+    # log the outputs!
+    self.log_dict({'test_loss': loss, 'test_acc': test_acc})
+</code></pre>
+<p>If you pass in multiple test dataloaders, :meth:<code>test_step</code> will have an additional argument.</p>
+<p>.. code-block:: python</p>
+<pre><code># CASE 2: multiple test dataloaders
+def test_step(self, batch, batch_idx, dataloader_idx):
+    # dataloader_idx tells you which dataset this is.
+    ...
+</code></pre>
+<h2 id="note">Note</h2>
+<p>If you don't need to test you don't need to implement this method.</p>
+<h2 id="note_1">Note</h2>
+<p>When the :meth:<code>test_step</code> is called, the model has been put in eval mode and
+PyTorch gradients have been disabled. At the end of the test epoch, the model goes back
+to training mode and gradients are enabled.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def test_step(self, xys, idx):
+    xs, ys = xys
+    y_hats = self._test_forward(xs)
+    loss = self.loss(y_hats, ys)
+
+    logging_scalars = {&#34;loss&#34;: loss}
+    for metric in self.test_metrics:
+        self.log_metric(metric, logging_scalars, y_hats, ys)
+
+    self.do_logging(xs, ys, idx, y_hats, logging_scalars, step=&#34;test&#34;)
+
+    return {&#34;loss&#34;: loss, &#34;y_hats&#34;: y_hats}</code></pre>
+</details>
+</dd>
+<dt id="imutils.ml.models.pl.lightning.LoggedLitModule.training_step"><code class="name flex">
+<span>def <span class="ident">training_step</span></span>(<span>self, xys, idx)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Here you compute and return the training loss and some additional metrics for e.g.
+the progress bar or logger.</p>
+<h2 id="args">Args</h2>
+<p>batch (:class:<code>~torch.Tensor</code> | (:class:<code>~torch.Tensor</code>, &hellip;) | [:class:<code>~torch.Tensor</code>, &hellip;]):
+The output of your :class:<code>~torch.utils.data.DataLoader</code>. A tensor, tuple or list.
+batch_idx (<code>int</code>): Integer displaying index of this batch
+optimizer_idx (<code>int</code>): When using multiple optimizers, this argument will also be present.
+hiddens (<code>Any</code>): Passed in if
+:paramref:<code>~pytorch_lightning.core.lightning.LightningModule.truncated_bptt_steps</code> &gt; 0.</p>
+<h2 id="return">Return</h2>
+<p>Any of.</p>
+<ul>
+<li>:class:<code>~torch.Tensor</code> - The loss tensor</li>
+<li><code>dict</code> - A dictionary. Can include any keys, but must include the key <code>'loss'</code></li>
+<li><code>None</code> - Training will skip to the next batch. This is only for automatic optimization.
+This is not supported for multi-GPU, TPU, IPU, or DeepSpeed.</li>
+</ul>
+<p>In this step you'd normally do the forward pass and calculate the loss for a batch.
+You can also do fancier things like multiple forward passes or something model specific.</p>
+<p>Example::</p>
+<pre><code>def training_step(self, batch, batch_idx):
+    x, y, z = batch
+    out = self.encoder(x)
+    loss = self.loss(out, x)
+    return loss
+</code></pre>
+<p>If you define multiple optimizers, this step will be called with an additional
+<code>optimizer_idx</code> parameter.</p>
+<p>.. code-block:: python</p>
+<pre><code># Multiple optimizers (e.g.: GANs)
+def training_step(self, batch, batch_idx, optimizer_idx):
+    if optimizer_idx == 0:
+        # do training_step with encoder
+        ...
+    if optimizer_idx == 1:
+        # do training_step with decoder
+        ...
+</code></pre>
+<p>If you add truncated back propagation through time you will also get an additional
+argument with the hidden states of the previous step.</p>
+<p>.. code-block:: python</p>
+<pre><code># Truncated back-propagation through time
+def training_step(self, batch, batch_idx, hiddens):
+    # hiddens are the hidden states from the previous truncated backprop step
+    out, hiddens = self.lstm(data, hiddens)
+    loss = ...
+    return {"loss": loss, "hiddens": hiddens}
+</code></pre>
+<h2 id="note">Note</h2>
+<p>The loss value shown in the progress bar is smoothed (averaged) over the last values,
+so it differs from the actual loss returned in train/validation step.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def training_step(self, xys, idx):
+    xs, ys = xys
+    y_hats = self._train_forward(xs)
+    loss = self.loss(y_hats, ys)
+
+    logging_scalars = {&#34;loss&#34;: loss}
+    for metric in self.training_metrics:
+        self.log_metric(metric, logging_scalars, y_hats, ys)
+
+    self.do_logging(xs, ys, idx, y_hats, logging_scalars)
+
+    return {&#34;loss&#34;: loss, &#34;y_hats&#34;: y_hats}</code></pre>
+</details>
+</dd>
+<dt id="imutils.ml.models.pl.lightning.LoggedLitModule.validation_step"><code class="name flex">
+<span>def <span class="ident">validation_step</span></span>(<span>self, xys, idx)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Operates on a single batch of data from the validation set.
+In this step you'd might generate examples or calculate anything of interest like accuracy.</p>
+<p>.. code-block:: python</p>
+<pre><code># the pseudocode for these calls
+val_outs = []
+for val_batch in val_data:
+    out = validation_step(val_batch)
+    val_outs.append(out)
+validation_epoch_end(val_outs)
+</code></pre>
+<h2 id="args">Args</h2>
+<dl>
+<dt>batch (:class:<code>~torch.Tensor</code> | (:class:<code>~torch.Tensor</code>, &hellip;) | [:class:<code>~torch.Tensor</code>, &hellip;]):</dt>
+<dt>The output of your :class:<code>~torch.utils.data.DataLoader</code>. A tensor, tuple or list.</dt>
+<dt><strong><code>batch_idx</code></strong> :&ensp;<code>int</code></dt>
+<dd>The index of this batch</dd>
+<dt><strong><code>dataloader_idx</code></strong> :&ensp;<code>int</code></dt>
+<dd>The index of the dataloader that produced this batch
+(only if multiple val dataloaders used)</dd>
+</dl>
+<h2 id="return">Return</h2>
+<ul>
+<li>Any object or value</li>
+<li><code>None</code> - Validation will skip to the next batch</li>
+</ul>
+<p>.. code-block:: python</p>
+<pre><code># pseudocode of order
+val_outs = []
+for val_batch in val_data:
+    out = validation_step(val_batch)
+    if defined("validation_step_end"):
+        out = validation_step_end(out)
+    val_outs.append(out)
+val_outs = validation_epoch_end(val_outs)
+</code></pre>
+<p>.. code-block:: python</p>
+<pre><code># if you have one val dataloader:
+def validation_step(self, batch, batch_idx):
+    ...
+
+
+# if you have multiple val dataloaders:
+def validation_step(self, batch, batch_idx, dataloader_idx):
+    ...
+</code></pre>
+<p>Examples::</p>
+<pre><code># CASE 1: A single validation dataset
+def validation_step(self, batch, batch_idx):
+    x, y = batch
+
+    # implement your own
+    out = self(x)
+    loss = self.loss(out, y)
+
+    # log 6 example images
+    # or generated text... or whatever
+    sample_imgs = x[:6]
+    grid = torchvision.utils.make_grid(sample_imgs)
+    self.logger.experiment.add_image('example_images', grid, 0)
+
+    # calculate acc
+    labels_hat = torch.argmax(out, dim=1)
+    val_acc = torch.sum(y == labels_hat).item() / (len(y) * 1.0)
+
+    # log the outputs!
+    self.log_dict({'val_loss': loss, 'val_acc': val_acc})
+</code></pre>
+<p>If you pass in multiple val dataloaders, :meth:<code>validation_step</code> will have an additional argument.</p>
+<p>.. code-block:: python</p>
+<pre><code># CASE 2: multiple validation dataloaders
+def validation_step(self, batch, batch_idx, dataloader_idx):
+    # dataloader_idx tells you which dataset this is.
+    ...
+</code></pre>
+<h2 id="note">Note</h2>
+<p>If you don't need to validate you don't need to implement this method.</p>
+<h2 id="note_1">Note</h2>
+<p>When the :meth:<code>validation_step</code> is called, the model has been put in eval mode
+and PyTorch gradients have been disabled. At the end of validation,
+the model goes back to training mode and gradients are enabled.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def validation_step(self, xys, idx):
+    xs, ys = xys
+    y_hats = self._val_forward(xs)
+    loss = self.loss(y_hats, ys)
+
+    logging_scalars = {&#34;loss&#34;: loss}
+    for metric in self.validation_metrics:
+        self.log_metric(metric, logging_scalars, y_hats, ys)
+
+    self.do_logging(xs, ys, idx, y_hats, logging_scalars, step=&#34;val&#34;)
+
+    return {&#34;loss&#34;: loss, &#34;y_hats&#34;: y_hats}</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="imutils.ml.models.pl" href="index.html">imutils.ml.models.pl</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="imutils.ml.models.pl.lightning.build_model" href="#imutils.ml.models.pl.lightning.build_model">build_model</a></code></li>
+<li><code><a title="imutils.ml.models.pl.lightning.load_from_checkpoint" href="#imutils.ml.models.pl.lightning.load_from_checkpoint">load_from_checkpoint</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="imutils.ml.models.pl.lightning.CIFAR100DataModule" href="#imutils.ml.models.pl.lightning.CIFAR100DataModule">CIFAR100DataModule</a></code></h4>
+<ul class="two-column">
+<li><code><a title="imutils.ml.models.pl.lightning.CIFAR100DataModule.name" href="#imutils.ml.models.pl.lightning.CIFAR100DataModule.name">name</a></code></li>
+<li><code><a title="imutils.ml.models.pl.lightning.CIFAR100DataModule.prepare_data" href="#imutils.ml.models.pl.lightning.CIFAR100DataModule.prepare_data">prepare_data</a></code></li>
+<li><code><a title="imutils.ml.models.pl.lightning.CIFAR100DataModule.setup" href="#imutils.ml.models.pl.lightning.CIFAR100DataModule.setup">setup</a></code></li>
+<li><code><a title="imutils.ml.models.pl.lightning.CIFAR100DataModule.test_dataloader" href="#imutils.ml.models.pl.lightning.CIFAR100DataModule.test_dataloader">test_dataloader</a></code></li>
+<li><code><a title="imutils.ml.models.pl.lightning.CIFAR100DataModule.train_dataloader" href="#imutils.ml.models.pl.lightning.CIFAR100DataModule.train_dataloader">train_dataloader</a></code></li>
+<li><code><a title="imutils.ml.models.pl.lightning.CIFAR100DataModule.val_dataloader" href="#imutils.ml.models.pl.lightning.CIFAR100DataModule.val_dataloader">val_dataloader</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="imutils.ml.models.pl.lightning.CIFAR10DataModule" href="#imutils.ml.models.pl.lightning.CIFAR10DataModule">CIFAR10DataModule</a></code></h4>
+<ul class="two-column">
+<li><code><a title="imutils.ml.models.pl.lightning.CIFAR10DataModule.name" href="#imutils.ml.models.pl.lightning.CIFAR10DataModule.name">name</a></code></li>
+<li><code><a title="imutils.ml.models.pl.lightning.CIFAR10DataModule.prepare_data" href="#imutils.ml.models.pl.lightning.CIFAR10DataModule.prepare_data">prepare_data</a></code></li>
+<li><code><a title="imutils.ml.models.pl.lightning.CIFAR10DataModule.setup" href="#imutils.ml.models.pl.lightning.CIFAR10DataModule.setup">setup</a></code></li>
+<li><code><a title="imutils.ml.models.pl.lightning.CIFAR10DataModule.test_dataloader" href="#imutils.ml.models.pl.lightning.CIFAR10DataModule.test_dataloader">test_dataloader</a></code></li>
+<li><code><a title="imutils.ml.models.pl.lightning.CIFAR10DataModule.train_dataloader" href="#imutils.ml.models.pl.lightning.CIFAR10DataModule.train_dataloader">train_dataloader</a></code></li>
+<li><code><a title="imutils.ml.models.pl.lightning.CIFAR10DataModule.val_dataloader" href="#imutils.ml.models.pl.lightning.CIFAR10DataModule.val_dataloader">val_dataloader</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="imutils.ml.models.pl.lightning.LitClassifierModel" href="#imutils.ml.models.pl.lightning.LitClassifierModel">LitClassifierModel</a></code></h4>
+<ul class="">
+<li><code><a title="imutils.ml.models.pl.lightning.LitClassifierModel.add_model_specific_args" href="#imutils.ml.models.pl.lightning.LitClassifierModel.add_model_specific_args">add_model_specific_args</a></code></li>
+<li><code><a title="imutils.ml.models.pl.lightning.LitClassifierModel.dump_patches" href="#imutils.ml.models.pl.lightning.LitClassifierModel.dump_patches">dump_patches</a></code></li>
+<li><code><a title="imutils.ml.models.pl.lightning.LitClassifierModel.test_epoch_end" href="#imutils.ml.models.pl.lightning.LitClassifierModel.test_epoch_end">test_epoch_end</a></code></li>
+<li><code><a title="imutils.ml.models.pl.lightning.LitClassifierModel.training" href="#imutils.ml.models.pl.lightning.LitClassifierModel.training">training</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="imutils.ml.models.pl.lightning.LoggedLitModule" href="#imutils.ml.models.pl.lightning.LoggedLitModule">LoggedLitModule</a></code></h4>
+<ul class="">
+<li><code><a title="imutils.ml.models.pl.lightning.LoggedLitModule.configure_optimizers" href="#imutils.ml.models.pl.lightning.LoggedLitModule.configure_optimizers">configure_optimizers</a></code></li>
+<li><code><a title="imutils.ml.models.pl.lightning.LoggedLitModule.do_logging" href="#imutils.ml.models.pl.lightning.LoggedLitModule.do_logging">do_logging</a></code></li>
+<li><code><a title="imutils.ml.models.pl.lightning.LoggedLitModule.dump_patches" href="#imutils.ml.models.pl.lightning.LoggedLitModule.dump_patches">dump_patches</a></code></li>
+<li><code><a title="imutils.ml.models.pl.lightning.LoggedLitModule.forward" href="#imutils.ml.models.pl.lightning.LoggedLitModule.forward">forward</a></code></li>
+<li><code><a title="imutils.ml.models.pl.lightning.LoggedLitModule.on_pretrain_routine_start" href="#imutils.ml.models.pl.lightning.LoggedLitModule.on_pretrain_routine_start">on_pretrain_routine_start</a></code></li>
+<li><code><a title="imutils.ml.models.pl.lightning.LoggedLitModule.optimizer" href="#imutils.ml.models.pl.lightning.LoggedLitModule.optimizer">optimizer</a></code></li>
+<li><code><a title="imutils.ml.models.pl.lightning.LoggedLitModule.test_step" href="#imutils.ml.models.pl.lightning.LoggedLitModule.test_step">test_step</a></code></li>
+<li><code><a title="imutils.ml.models.pl.lightning.LoggedLitModule.training" href="#imutils.ml.models.pl.lightning.LoggedLitModule.training">training</a></code></li>
+<li><code><a title="imutils.ml.models.pl.lightning.LoggedLitModule.training_step" href="#imutils.ml.models.pl.lightning.LoggedLitModule.training_step">training_step</a></code></li>
+<li><code><a title="imutils.ml.models.pl.lightning.LoggedLitModule.validation_step" href="#imutils.ml.models.pl.lightning.LoggedLitModule.validation_step">validation_step</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+</footer>
+</body>
+</html>

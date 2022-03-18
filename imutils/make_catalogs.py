@@ -41,28 +41,28 @@ from typing import *
 
 import pandas as pd
 import torch
-import torchdata
+# import torchdata
 import torchvision
 
 # from lightning_hydra_classifiers.utils.common_utils import LabelEncoder
 from IPython.display import display
 
 # from lightning_hydra_classifiers.data.utils import catalog_registry
-from lightning_hydra_classifiers.data.datasets.common import (
-    ETL,
-    CSVDataset,
-    CSVDatasetConfig,
-    ImageFileDataset,
-    ImageFileDatasetConfig,
-    PathSchema,
-    SampleSchema,
-)
-from lightning_hydra_classifiers.utils.common_utils import (
-    DataSplitter,
-    LabelEncoder,
-    trainval_split,
-    trainvaltest_split,
-)
+# from lightning_hydra_classifiers.data.datasets.common import (
+#     ETL,
+#     CSVDataset,
+#     CSVDatasetConfig,
+#     ImageFileDataset,
+#     ImageFileDatasetConfig,
+#     PathSchema,
+#     SampleSchema,
+# )
+# from lightning_hydra_classifiers.utils.common_utils import (
+#     DataSplitter,
+#     LabelEncoder,
+#     trainval_split,
+#     trainvaltest_split,
+# )
 from omegaconf import DictConfig
 from PIL import Image
 
@@ -141,7 +141,7 @@ def export_composite_dataset_catalog_configuration(
     csv_cfg_path_A: str = None,
     csv_cfg_path_B: str = None,
     composition: str = "-",
-) -> Tuple[CSVDataset, CSVDatasetConfig]:
+) -> Tuple["CSVDataset", "CSVDatasetConfig"]:
 
     csv_config_A = CSVDatasetConfig.load(path=csv_cfg_path_A)
     csv_config_B = CSVDatasetConfig.load(path=csv_cfg_path_B)
@@ -570,7 +570,7 @@ def cmdline_args():
     return p.parse_args()
 
 
-make_all_original
+# make_all_original
 
 if __name__ == "__main__":
     #     import sys

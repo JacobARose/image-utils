@@ -1,0 +1,1062 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.10.0" />
+<title>imutils.utils.dataset_management_utils API documentation</title>
+<meta name="description" content="image-utils/imutils/dataset_management_utils.py …" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>imutils.utils.dataset_management_utils</code></h1>
+</header>
+<section id="section-intro">
+<p>image-utils/imutils/dataset_management_utils.py</p>
+<p>Created on: Tuesday, July 27th, 2021
+Author: Jacob A Rose</p>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">&#34;&#34;&#34;
+image-utils/imutils/dataset_management_utils.py
+
+
+Created on: Tuesday, July 27th, 2021
+Author: Jacob A Rose
+
+
+&#34;&#34;&#34;
+
+import collections
+import dataclasses
+import json
+import numbers
+import os
+from pathlib import Path
+from typing import Any, Callable, Dict, List, Optional, Tuple, Union
+
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+import seaborn as sns
+from more_itertools import collapse, flatten
+from omegaconf import DictConfig, OmegaConf
+from sklearn.model_selection import train_test_split
+from torchvision.datasets import ImageFolder
+
+from imutils.utils import torchdata
+from imutils.utils.etl_utils import Extract
+from imutils.utils.SmartCrop import CleverCrop
+
+# try:
+#     import torchdatasets as torchdata
+# except ModuleNotFoundError:
+#     import torchdata
+
+
+__all__ = [
+    &#34;CleverCrop&#34;,
+    &#34;Extract&#34;,
+    &#34;DatasetFilePathParser&#34;,
+    &#34;parse_df_catalog_from_image_directory&#34;,
+    &#34;dataframe_difference&#34;,
+    &#34;diff_dataset_catalogs&#34;,
+]
+
+
+##################
+##################
+
+
+import argparse
+import sys
+from typing import *
+
+
+class DatasetFilePathParser:
+    @classmethod
+    def get_parser(cls, dataset_name: str) -&gt; Dict[str, Callable]:
+        if &#34;Extant_Leaves&#34; in dataset_name:
+            return cls().ExtantLeavesParser
+        if &#34;Fossil&#34; in dataset_name:
+            return cls().FossilParser
+        if &#34;PNAS&#34; in dataset_name:
+            return cls().PNASParser
+
+    #     @property
+    @classmethod
+    def parse_dtypes(self, data: pd.DataFrame) -&gt; pd.DataFrame:
+        return data.astype(
+            {
+                &#34;path&#34;: pd.StringDtype(),
+                &#34;family&#34;: pd.CategoricalDtype(),
+                &#34;genus&#34;: pd.CategoricalDtype(),
+                &#34;species&#34;: pd.CategoricalDtype(),
+                &#34;catalog_number&#34;: pd.StringDtype(),
+                &#34;relative_path&#34;: pd.StringDtype(),
+                &#34;root_dir&#34;: pd.CategoricalDtype(),
+            }
+        )
+
+    @property
+    def ExtantLeavesParser(self):
+        return {
+            &#34;family&#34;: lambda x, col: Path(x[col]).stem.split(&#34;_&#34;)[0],
+            &#34;genus&#34;: lambda x, col: Path(x[col]).stem.split(&#34;_&#34;)[1],
+            &#34;species&#34;: lambda x, col: Path(x[col]).stem.split(&#34;_&#34;)[2],
+            &#34;catalog_number&#34;: lambda x, col: Path(x[col]).stem.split(&#34;_&#34;, maxsplit=4)[-1],
+            &#34;relative_path&#34;: lambda x, col: str(
+                Path(x[col]).relative_to(Path(x[col]).parent.parent)
+            ),
+            &#34;root_dir&#34;: lambda x, col: str(Path(x[col]).parent.parent),
+        }
+
+    @property
+    def FossilParser(self):
+        return {
+            &#34;family&#34;: lambda x, col: Path(x[col]).stem.split(&#34;_&#34;)[0],
+            &#34;genus&#34;: lambda x, col: Path(x[col]).stem.split(&#34;_&#34;)[1],
+            &#34;species&#34;: lambda x, col: Path(x[col]).stem.split(&#34;_&#34;)[2],
+            &#34;catalog_number&#34;: lambda x, col: Path(x[col]).stem.split(&#34;_&#34;, maxsplit=4)[-1],
+            &#34;relative_path&#34;: lambda x, col: str(
+                Path(x[col]).relative_to(Path(x[col]).parent.parent)
+            ),
+            &#34;root_dir&#34;: lambda x, col: str(Path(x[col]).parent.parent),
+        }
+
+    @property
+    def PNASParser(self):
+        return {
+            &#34;family&#34;: lambda x, col: Path(x[col]).stem.split(&#34;_&#34;)[0],
+            &#34;genus&#34;: lambda x, col: Path(x[col]).stem.split(&#34;_&#34;)[1],
+            &#34;species&#34;: lambda x, col: Path(x[col]).stem.split(&#34;_&#34;)[2],
+            &#34;catalog_number&#34;: lambda x, col: Path(x[col]).stem.split(&#34;_&#34;, maxsplit=3)[-1],
+            &#34;relative_path&#34;: lambda x, col: str(
+                Path(x[col]).relative_to(Path(x[col]).parent.parent)
+            ),
+            &#34;root_dir&#34;: lambda x, col: str(Path(x[col]).parent.parent),
+        }
+
+
+def parse_df_catalog_from_image_directory(
+    root_dir: str, dataset_name: str = &#34;Extant_Leaves&#34;
+) -&gt; pd.DataFrame:
+    &#34;&#34;&#34;
+    Crawls root_dir and collects absolute paths of any images into a dataframe. Then, extracts
+    maximum available metadata from file paths (e.g. family, species labels in file name).
+
+    Metadata fields in each file path are specified by using a DatasetFilePathParser object.
+
+    Arguments:
+
+        root_dir (str):
+            Location of the Imagenet-format organized image data on disk
+    Returns:
+        data_df (pd.DataFrame):
+
+
+    &#34;&#34;&#34;
+
+    parser = DatasetFilePathParser().get_parser(dataset_name)
+    data_df = Extract.df_from_dir(root_dir)[&#34;all&#34;]
+    if data_df.shape[0] == 0:
+        print(&#34;Empty data catalog, skipping parsing step.&#34;)
+        return data_df
+    for col, func in parser.items():
+        print(col)
+        data_df = data_df.assign(**{col: data_df.apply(lambda x: func(x, &#34;path&#34;), axis=1)})
+
+    data_df = DatasetFilePathParser.parse_dtypes(data_df)
+    return data_df
+
+
+def dataframe_difference(
+    source_df: pd.DataFrame,
+    target_df: pd.DataFrame,
+    id_col: str = &#34;relative_path&#34;,
+    keep_cols: Optional[List[str]] = None,
+):
+    &#34;&#34;&#34;
+    Find rows which are different between two DataFrames.
+
+    Example:
+
+        shared, diff, source_only, target_only = dataframe_difference(source_df=data_df,
+                                                                      target_df=target_data_df,
+                                                                      id_col=&#34;relative_path&#34;,
+                                                                      keep_cols=[&#34;path&#34;])
+    &#34;&#34;&#34;
+    keep_cols = keep_cols or []
+    #     import pdb;pdb.set_trace()
+
+    comparison_df = source_df.merge(
+        target_df.loc[:, [id_col, *keep_cols]], how=&#34;outer&#34;, on=id_col, indicator=True
+    )
+
+    comparison_df = comparison_df.replace({&#34;left_only&#34;: &#34;source_only&#34;, &#34;right_only&#34;: &#34;target_only&#34;})
+
+    shared = comparison_df[comparison_df[&#34;_merge&#34;] == &#34;both&#34;]
+    diff = comparison_df[comparison_df[&#34;_merge&#34;] != &#34;both&#34;]
+    source_only = comparison_df[comparison_df[&#34;_merge&#34;] == &#34;source_only&#34;].rename(
+        columns={&#34;path_x&#34;: &#34;path&#34;}
+    )
+    target_only = comparison_df[comparison_df[&#34;_merge&#34;] == &#34;target_only&#34;].rename(
+        columns={&#34;path_y&#34;: &#34;path&#34;}
+    )
+
+    return shared, diff, source_only, target_only
+
+
+def diff_dataset_catalogs(
+    source_catalog: pd.DataFrame, target_catalog: pd.DataFrame
+) -&gt; Tuple[pd.DataFrame]:
+    &#34;&#34;&#34;
+    Find the shared and unique rows between 2 dataframes based on the &#34;relative_path&#34; column.
+    &#34;&#34;&#34;
+
+    shared, diff, source_only, target_only = dataframe_difference(
+        source_df=source_catalog,
+        target_df=target_catalog,
+        id_col=&#34;relative_path&#34;,
+        keep_cols=[&#34;path&#34;, &#34;catalog_number&#34;],
+    )
+
+    num_preexisting = sum([shared.shape[0] + target_only.shape[0]])
+    if num_preexisting &gt; 0:
+        print(f&#34;Found {num_preexisting} previously generated files in target location.&#34;)
+        print(
+            f&#34;&#34;&#34;
+        shared: {shared.shape[0]}
+        diff: {diff.shape[0]}
+        source_only: {source_only.shape[0]}
+        target_only: {target_only.shape[0]}
+        &#34;&#34;&#34;
+        )
+    else:
+        print(f&#34;No previously generated files found in target location.&#34;)
+
+    return shared, diff, source_only, target_only</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="imutils.utils.dataset_management_utils.dataframe_difference"><code class="name flex">
+<span>def <span class="ident">dataframe_difference</span></span>(<span>source_df: pandas.core.frame.DataFrame, target_df: pandas.core.frame.DataFrame, id_col: str = 'relative_path', keep_cols: Optional[List[str]] = None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Find rows which are different between two DataFrames.</p>
+<h2 id="example">Example</h2>
+<p>shared, diff, source_only, target_only = dataframe_difference(source_df=data_df,
+target_df=target_data_df,
+id_col="relative_path",
+keep_cols=["path"])</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def dataframe_difference(
+    source_df: pd.DataFrame,
+    target_df: pd.DataFrame,
+    id_col: str = &#34;relative_path&#34;,
+    keep_cols: Optional[List[str]] = None,
+):
+    &#34;&#34;&#34;
+    Find rows which are different between two DataFrames.
+
+    Example:
+
+        shared, diff, source_only, target_only = dataframe_difference(source_df=data_df,
+                                                                      target_df=target_data_df,
+                                                                      id_col=&#34;relative_path&#34;,
+                                                                      keep_cols=[&#34;path&#34;])
+    &#34;&#34;&#34;
+    keep_cols = keep_cols or []
+    #     import pdb;pdb.set_trace()
+
+    comparison_df = source_df.merge(
+        target_df.loc[:, [id_col, *keep_cols]], how=&#34;outer&#34;, on=id_col, indicator=True
+    )
+
+    comparison_df = comparison_df.replace({&#34;left_only&#34;: &#34;source_only&#34;, &#34;right_only&#34;: &#34;target_only&#34;})
+
+    shared = comparison_df[comparison_df[&#34;_merge&#34;] == &#34;both&#34;]
+    diff = comparison_df[comparison_df[&#34;_merge&#34;] != &#34;both&#34;]
+    source_only = comparison_df[comparison_df[&#34;_merge&#34;] == &#34;source_only&#34;].rename(
+        columns={&#34;path_x&#34;: &#34;path&#34;}
+    )
+    target_only = comparison_df[comparison_df[&#34;_merge&#34;] == &#34;target_only&#34;].rename(
+        columns={&#34;path_y&#34;: &#34;path&#34;}
+    )
+
+    return shared, diff, source_only, target_only</code></pre>
+</details>
+</dd>
+<dt id="imutils.utils.dataset_management_utils.diff_dataset_catalogs"><code class="name flex">
+<span>def <span class="ident">diff_dataset_catalogs</span></span>(<span>source_catalog: pandas.core.frame.DataFrame, target_catalog: pandas.core.frame.DataFrame) ‑> Tuple[pandas.core.frame.DataFrame]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Find the shared and unique rows between 2 dataframes based on the "relative_path" column.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def diff_dataset_catalogs(
+    source_catalog: pd.DataFrame, target_catalog: pd.DataFrame
+) -&gt; Tuple[pd.DataFrame]:
+    &#34;&#34;&#34;
+    Find the shared and unique rows between 2 dataframes based on the &#34;relative_path&#34; column.
+    &#34;&#34;&#34;
+
+    shared, diff, source_only, target_only = dataframe_difference(
+        source_df=source_catalog,
+        target_df=target_catalog,
+        id_col=&#34;relative_path&#34;,
+        keep_cols=[&#34;path&#34;, &#34;catalog_number&#34;],
+    )
+
+    num_preexisting = sum([shared.shape[0] + target_only.shape[0]])
+    if num_preexisting &gt; 0:
+        print(f&#34;Found {num_preexisting} previously generated files in target location.&#34;)
+        print(
+            f&#34;&#34;&#34;
+        shared: {shared.shape[0]}
+        diff: {diff.shape[0]}
+        source_only: {source_only.shape[0]}
+        target_only: {target_only.shape[0]}
+        &#34;&#34;&#34;
+        )
+    else:
+        print(f&#34;No previously generated files found in target location.&#34;)
+
+    return shared, diff, source_only, target_only</code></pre>
+</details>
+</dd>
+<dt id="imutils.utils.dataset_management_utils.parse_df_catalog_from_image_directory"><code class="name flex">
+<span>def <span class="ident">parse_df_catalog_from_image_directory</span></span>(<span>root_dir: str, dataset_name: str = 'Extant_Leaves') ‑> pandas.core.frame.DataFrame</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Crawls root_dir and collects absolute paths of any images into a dataframe. Then, extracts
+maximum available metadata from file paths (e.g. family, species labels in file name).</p>
+<p>Metadata fields in each file path are specified by using a DatasetFilePathParser object.</p>
+<h2 id="arguments">Arguments</h2>
+<p>root_dir (str):
+Location of the Imagenet-format organized image data on disk</p>
+<h2 id="returns">Returns</h2>
+<p>data_df (pd.DataFrame):</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def parse_df_catalog_from_image_directory(
+    root_dir: str, dataset_name: str = &#34;Extant_Leaves&#34;
+) -&gt; pd.DataFrame:
+    &#34;&#34;&#34;
+    Crawls root_dir and collects absolute paths of any images into a dataframe. Then, extracts
+    maximum available metadata from file paths (e.g. family, species labels in file name).
+
+    Metadata fields in each file path are specified by using a DatasetFilePathParser object.
+
+    Arguments:
+
+        root_dir (str):
+            Location of the Imagenet-format organized image data on disk
+    Returns:
+        data_df (pd.DataFrame):
+
+
+    &#34;&#34;&#34;
+
+    parser = DatasetFilePathParser().get_parser(dataset_name)
+    data_df = Extract.df_from_dir(root_dir)[&#34;all&#34;]
+    if data_df.shape[0] == 0:
+        print(&#34;Empty data catalog, skipping parsing step.&#34;)
+        return data_df
+    for col, func in parser.items():
+        print(col)
+        data_df = data_df.assign(**{col: data_df.apply(lambda x: func(x, &#34;path&#34;), axis=1)})
+
+    data_df = DatasetFilePathParser.parse_dtypes(data_df)
+    return data_df</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="imutils.utils.dataset_management_utils.CleverCrop"><code class="flex name class">
+<span>class <span class="ident">CleverCrop</span></span>
+<span>(</span><span>interp_method=&lt;function cubic&gt;, antialiasing=True, target_shape: Tuple[int] = (3, 128, 128), max_aspect_ratio: float = 1.2, grayscale: bool = False, normalize: bool = True)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>[summary]</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>interp_method</code></strong></dt>
+<dd>Defaults to interp_methods.cubic.</dd>
+<dt><strong><code>antialiasing</code></strong> :&ensp;<code>bool</code></dt>
+<dd>Defaults to True.</dd>
+<dt><strong><code>target_shape</code></strong> :&ensp;<code>Tuple[int]</code>, optional</dt>
+<dd>[description]. Defaults to (3,128,128).</dd>
+<dt><strong><code>grayscale</code></strong> :&ensp;<code>bool</code>, optional</dt>
+<dd>[description]. Defaults to False.</dd>
+<dt><strong><code>max_aspect_ratio</code></strong> :&ensp;<code>float</code></dt>
+<dd>Defaults to 1.2</dd>
+<dt><strong><code>normalize</code></strong> :&ensp;<code>bool</code></dt>
+<dd>Defaults to True
+If True, normalize final image tensor to the range [0.0, 1.0]</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class CleverCrop:
+    def __init__(
+        self,
+        interp_method=interp_methods.cubic,
+        antialiasing=True,
+        target_shape: Tuple[int] = (3, 128, 128),
+        max_aspect_ratio: float = 1.2,
+        grayscale: bool = False,
+        normalize: bool = True,
+    ):
+        &#34;&#34;&#34;[summary]
+
+        Args:
+            interp_method: Defaults to interp_methods.cubic.
+            antialiasing (bool): Defaults to True.
+            target_shape (Tuple[int], optional): [description]. Defaults to (3,128,128).
+            grayscale (bool, optional): [description]. Defaults to False.
+            max_aspect_ratio (float): Defaults to 1.2
+            normalize (bool): Defaults to True
+                If True, normalize final image tensor to the range [0.0, 1.0]
+
+        &#34;&#34;&#34;
+
+        self.interp_method = interp_method
+        self.antialiasing = antialiasing
+        self.target_shape = target_shape
+        self.num_output_channels = self.target_shape[0]
+        self.max_aspect_ratio = max_aspect_ratio
+        self.grayscale = grayscale
+        self.normalize = normalize
+
+        self.resize = partial(
+            resize_right.resize,
+            #                               out_shape=self.target_shape,
+            interp_method=self.interp_method,
+            antialiasing=self.antialiasing,
+        )
+        self.normalize_image = NormalizeImage.normalize_image
+
+    @staticmethod
+    def aspect_ratio(img: torch.Tensor):
+
+        minside = np.min(img.shape[1:])
+        maxside = np.max(img.shape[1:])
+
+        aspect_ratio = maxside / minside
+        return aspect_ratio
+
+    def __call__(
+        self, img: torch.Tensor, target_shape: Optional[Tuple[int]] = None
+    ) -&gt; torch.Tensor:
+        &#34;&#34;&#34;[summary]
+
+        Args:
+            img (torch.Tensor): [description]
+            target_shape: (Optional[Tuple[int]]): Optionally override this CleverCrop class instance&#39;s init value.
+
+        Returns:
+            torch.Tensor: [description]
+        &#34;&#34;&#34;
+        target_shape = target_shape or self.target_shape
+
+        minside = np.min(img.shape[1:])  # + 1
+        maxside = np.max(img.shape[1:])  # + 1
+        new_img = img
+
+        aspect_ratio = maxside / minside
+        if aspect_ratio &gt; self.max_aspect_ratio:
+            num_repeats = np.floor((maxside / minside))
+            min_dim = np.argmin(img.shape[1:]) + 1
+            for _ in range(int(num_repeats)):
+                new_img = torch.cat([new_img, img], dim=min_dim)
+        if maxside == img.shape[2]:
+            new_img = torch.rot90(new_img, k=1, dims=[1, 2])
+
+        new_img = self.resize(new_img, out_shape=target_shape)
+
+        if self.grayscale:
+            num_output_channels = self.target_shape[0]
+            new_img = torchvision.transforms.functional.rgb_to_grayscale(
+                img=new_img, num_output_channels=self.num_output_channels
+            )
+
+        if self.normalize:
+            new_img = self.normalize_image(new_img)
+
+        return new_img
+
+    def __repr__(self):
+        return json.dumps(
+            {
+                &#34;interp_method&#34;: str(self.interp_method),
+                &#34;antialiasing&#34;: self.antialiasing,
+                &#34;target_shape&#34;: self.target_shape,
+                &#34;num_output_channels&#34;: self.num_output_channels,
+                &#34;max_aspect_ratio&#34;: self.max_aspect_ratio,
+                &#34;grayscale&#34;: self.grayscale,
+                &#34;normalize&#34;: self.normalize,
+            }
+        )</code></pre>
+</details>
+<h3>Static methods</h3>
+<dl>
+<dt id="imutils.utils.dataset_management_utils.CleverCrop.aspect_ratio"><code class="name flex">
+<span>def <span class="ident">aspect_ratio</span></span>(<span>img: torch.Tensor)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def aspect_ratio(img: torch.Tensor):
+
+    minside = np.min(img.shape[1:])
+    maxside = np.max(img.shape[1:])
+
+    aspect_ratio = maxside / minside
+    return aspect_ratio</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="imutils.utils.dataset_management_utils.DatasetFilePathParser"><code class="flex name class">
+<span>class <span class="ident">DatasetFilePathParser</span></span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class DatasetFilePathParser:
+    @classmethod
+    def get_parser(cls, dataset_name: str) -&gt; Dict[str, Callable]:
+        if &#34;Extant_Leaves&#34; in dataset_name:
+            return cls().ExtantLeavesParser
+        if &#34;Fossil&#34; in dataset_name:
+            return cls().FossilParser
+        if &#34;PNAS&#34; in dataset_name:
+            return cls().PNASParser
+
+    #     @property
+    @classmethod
+    def parse_dtypes(self, data: pd.DataFrame) -&gt; pd.DataFrame:
+        return data.astype(
+            {
+                &#34;path&#34;: pd.StringDtype(),
+                &#34;family&#34;: pd.CategoricalDtype(),
+                &#34;genus&#34;: pd.CategoricalDtype(),
+                &#34;species&#34;: pd.CategoricalDtype(),
+                &#34;catalog_number&#34;: pd.StringDtype(),
+                &#34;relative_path&#34;: pd.StringDtype(),
+                &#34;root_dir&#34;: pd.CategoricalDtype(),
+            }
+        )
+
+    @property
+    def ExtantLeavesParser(self):
+        return {
+            &#34;family&#34;: lambda x, col: Path(x[col]).stem.split(&#34;_&#34;)[0],
+            &#34;genus&#34;: lambda x, col: Path(x[col]).stem.split(&#34;_&#34;)[1],
+            &#34;species&#34;: lambda x, col: Path(x[col]).stem.split(&#34;_&#34;)[2],
+            &#34;catalog_number&#34;: lambda x, col: Path(x[col]).stem.split(&#34;_&#34;, maxsplit=4)[-1],
+            &#34;relative_path&#34;: lambda x, col: str(
+                Path(x[col]).relative_to(Path(x[col]).parent.parent)
+            ),
+            &#34;root_dir&#34;: lambda x, col: str(Path(x[col]).parent.parent),
+        }
+
+    @property
+    def FossilParser(self):
+        return {
+            &#34;family&#34;: lambda x, col: Path(x[col]).stem.split(&#34;_&#34;)[0],
+            &#34;genus&#34;: lambda x, col: Path(x[col]).stem.split(&#34;_&#34;)[1],
+            &#34;species&#34;: lambda x, col: Path(x[col]).stem.split(&#34;_&#34;)[2],
+            &#34;catalog_number&#34;: lambda x, col: Path(x[col]).stem.split(&#34;_&#34;, maxsplit=4)[-1],
+            &#34;relative_path&#34;: lambda x, col: str(
+                Path(x[col]).relative_to(Path(x[col]).parent.parent)
+            ),
+            &#34;root_dir&#34;: lambda x, col: str(Path(x[col]).parent.parent),
+        }
+
+    @property
+    def PNASParser(self):
+        return {
+            &#34;family&#34;: lambda x, col: Path(x[col]).stem.split(&#34;_&#34;)[0],
+            &#34;genus&#34;: lambda x, col: Path(x[col]).stem.split(&#34;_&#34;)[1],
+            &#34;species&#34;: lambda x, col: Path(x[col]).stem.split(&#34;_&#34;)[2],
+            &#34;catalog_number&#34;: lambda x, col: Path(x[col]).stem.split(&#34;_&#34;, maxsplit=3)[-1],
+            &#34;relative_path&#34;: lambda x, col: str(
+                Path(x[col]).relative_to(Path(x[col]).parent.parent)
+            ),
+            &#34;root_dir&#34;: lambda x, col: str(Path(x[col]).parent.parent),
+        }</code></pre>
+</details>
+<h3>Static methods</h3>
+<dl>
+<dt id="imutils.utils.dataset_management_utils.DatasetFilePathParser.get_parser"><code class="name flex">
+<span>def <span class="ident">get_parser</span></span>(<span>dataset_name: str) ‑> Dict[str, Callable]</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@classmethod
+def get_parser(cls, dataset_name: str) -&gt; Dict[str, Callable]:
+    if &#34;Extant_Leaves&#34; in dataset_name:
+        return cls().ExtantLeavesParser
+    if &#34;Fossil&#34; in dataset_name:
+        return cls().FossilParser
+    if &#34;PNAS&#34; in dataset_name:
+        return cls().PNASParser</code></pre>
+</details>
+</dd>
+<dt id="imutils.utils.dataset_management_utils.DatasetFilePathParser.parse_dtypes"><code class="name flex">
+<span>def <span class="ident">parse_dtypes</span></span>(<span>data: pandas.core.frame.DataFrame) ‑> pandas.core.frame.DataFrame</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@classmethod
+def parse_dtypes(self, data: pd.DataFrame) -&gt; pd.DataFrame:
+    return data.astype(
+        {
+            &#34;path&#34;: pd.StringDtype(),
+            &#34;family&#34;: pd.CategoricalDtype(),
+            &#34;genus&#34;: pd.CategoricalDtype(),
+            &#34;species&#34;: pd.CategoricalDtype(),
+            &#34;catalog_number&#34;: pd.StringDtype(),
+            &#34;relative_path&#34;: pd.StringDtype(),
+            &#34;root_dir&#34;: pd.CategoricalDtype(),
+        }
+    )</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Instance variables</h3>
+<dl>
+<dt id="imutils.utils.dataset_management_utils.DatasetFilePathParser.ExtantLeavesParser"><code class="name">var <span class="ident">ExtantLeavesParser</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def ExtantLeavesParser(self):
+    return {
+        &#34;family&#34;: lambda x, col: Path(x[col]).stem.split(&#34;_&#34;)[0],
+        &#34;genus&#34;: lambda x, col: Path(x[col]).stem.split(&#34;_&#34;)[1],
+        &#34;species&#34;: lambda x, col: Path(x[col]).stem.split(&#34;_&#34;)[2],
+        &#34;catalog_number&#34;: lambda x, col: Path(x[col]).stem.split(&#34;_&#34;, maxsplit=4)[-1],
+        &#34;relative_path&#34;: lambda x, col: str(
+            Path(x[col]).relative_to(Path(x[col]).parent.parent)
+        ),
+        &#34;root_dir&#34;: lambda x, col: str(Path(x[col]).parent.parent),
+    }</code></pre>
+</details>
+</dd>
+<dt id="imutils.utils.dataset_management_utils.DatasetFilePathParser.FossilParser"><code class="name">var <span class="ident">FossilParser</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def FossilParser(self):
+    return {
+        &#34;family&#34;: lambda x, col: Path(x[col]).stem.split(&#34;_&#34;)[0],
+        &#34;genus&#34;: lambda x, col: Path(x[col]).stem.split(&#34;_&#34;)[1],
+        &#34;species&#34;: lambda x, col: Path(x[col]).stem.split(&#34;_&#34;)[2],
+        &#34;catalog_number&#34;: lambda x, col: Path(x[col]).stem.split(&#34;_&#34;, maxsplit=4)[-1],
+        &#34;relative_path&#34;: lambda x, col: str(
+            Path(x[col]).relative_to(Path(x[col]).parent.parent)
+        ),
+        &#34;root_dir&#34;: lambda x, col: str(Path(x[col]).parent.parent),
+    }</code></pre>
+</details>
+</dd>
+<dt id="imutils.utils.dataset_management_utils.DatasetFilePathParser.PNASParser"><code class="name">var <span class="ident">PNASParser</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def PNASParser(self):
+    return {
+        &#34;family&#34;: lambda x, col: Path(x[col]).stem.split(&#34;_&#34;)[0],
+        &#34;genus&#34;: lambda x, col: Path(x[col]).stem.split(&#34;_&#34;)[1],
+        &#34;species&#34;: lambda x, col: Path(x[col]).stem.split(&#34;_&#34;)[2],
+        &#34;catalog_number&#34;: lambda x, col: Path(x[col]).stem.split(&#34;_&#34;, maxsplit=3)[-1],
+        &#34;relative_path&#34;: lambda x, col: str(
+            Path(x[col]).relative_to(Path(x[col]).parent.parent)
+        ),
+        &#34;root_dir&#34;: lambda x, col: str(Path(x[col]).parent.parent),
+    }</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="imutils.utils.dataset_management_utils.Extract"><code class="flex name class">
+<span>class <span class="ident">Extract</span></span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Extract:
+
+    valid_splits: Tuple[str] = (&#34;train&#34;, &#34;val&#34;, &#34;test&#34;)
+
+    data_file_ext_maps = {&#34;df&#34;: &#34;.csv&#34;, &#34;encoder&#34;: &#34;.json&#34;, &#34;config&#34;: &#34;.yaml&#34;}
+
+    @classmethod
+    def get_split_subdir_stems(cls, dataset_dir: str) -&gt; List[str]:
+
+        subdirs = os.listdir(dataset_dir)
+        stems = []
+        for subdir in subdirs:
+            if subdir in cls.valid_splits:
+                stems.append(subdir)
+        return stems
+
+    @classmethod
+    def locate_files(
+        cls, dataset_dir: Union[str, List[str]], select_subset: Optional[str] = None
+    ) -&gt; Dict[str, &#34;torchdata.datasets.Dataset&#34;]:
+
+        files = {}
+        if isinstance(dataset_dir, list):
+            # If a list of data directories is provided, concatenate their results into the &#39;all&#39; key. e.g. When constructing the combined Florissant &amp; General Fossil datasets
+            assert np.all([os.path.isdir(d) for d in dataset_dir])
+            files[&#34;all&#34;] = []
+            for data_dir in dataset_dir:
+                files[&#34;all&#34;].extend(cls.locate_files(data_dir)[&#34;all&#34;])
+            return files
+        splits = cls.get_split_subdir_stems(dataset_dir=dataset_dir)
+
+        if len(splits) &gt; 1:
+            # root
+            #     /train
+            #          /class_0
+            #     /test
+            #     ....
+            for subdir in splits:
+                files[subdir] = torchdata.datasets.Files.from_folder(
+                    Path(dataset_dir, subdir), regex=&#34;*/*.jpg&#34;
+                ).files
+            files[&#34;all&#34;] = list(flatten([files[subdir] for subdir in splits]))
+
+        elif len(os.listdir(dataset_dir)) &gt; 1:
+            # root
+            #     /class_0
+            #     /class_1
+            #     ....
+            files[&#34;all&#34;] = torchdata.datasets.Files.from_folder(
+                Path(dataset_dir), regex=&#34;*/*.jpg&#34;
+            ).files
+        else:
+            raise Exception(
+                f&#34;# of valid subdirs = {len(os.listdir(dataset_dir))} is invalid for locating&#34;
+                &#34; files.&#34;
+            )
+
+        if isinstance(select_subset, str):
+            files = {select_subset: files[select_subset]}
+        return files
+
+    @classmethod
+    def df_from_dir(
+        cls, root_dir: Union[str, Path], select_subset: Optional[str] = None
+    ) -&gt; pd.DataFrame:
+        files = cls.locate_files(dataset_dir=root_dir, select_subset=select_subset)
+        for k in list(files.keys()):
+            files[k] = pd.DataFrame(files[k]).rename(columns={0: &#34;path&#34;})  # .samples)
+        return files
+
+    @classmethod
+    def df_from_csv(cls, path: Union[str, Path], index_col: int = None) -&gt; pd.DataFrame:
+        return pd.read_csv(path, index_col=index_col)
+
+    @classmethod
+    def config_from_yaml(cls, path: Union[str, Path]) -&gt; DictConfig:
+        return load_config(config_path=path)
+
+    @classmethod
+    def df2csv(cls, df: pd.DataFrame, path: Union[str, Path], index: bool = False) -&gt; None:
+        df.to_csv(path, index=index)
+
+    @classmethod
+    def config2yaml(cls, config: DictConfig, path: Union[str, Path]) -&gt; None:
+        save_config(config=config, config_path=path)</code></pre>
+</details>
+<h3>Class variables</h3>
+<dl>
+<dt id="imutils.utils.dataset_management_utils.Extract.data_file_ext_maps"><code class="name">var <span class="ident">data_file_ext_maps</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="imutils.utils.dataset_management_utils.Extract.valid_splits"><code class="name">var <span class="ident">valid_splits</span> : Tuple[str]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Static methods</h3>
+<dl>
+<dt id="imutils.utils.dataset_management_utils.Extract.config2yaml"><code class="name flex">
+<span>def <span class="ident">config2yaml</span></span>(<span>config: omegaconf.dictconfig.DictConfig, path: Union[str, pathlib.Path]) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@classmethod
+def config2yaml(cls, config: DictConfig, path: Union[str, Path]) -&gt; None:
+    save_config(config=config, config_path=path)</code></pre>
+</details>
+</dd>
+<dt id="imutils.utils.dataset_management_utils.Extract.config_from_yaml"><code class="name flex">
+<span>def <span class="ident">config_from_yaml</span></span>(<span>path: Union[str, pathlib.Path]) ‑> omegaconf.dictconfig.DictConfig</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@classmethod
+def config_from_yaml(cls, path: Union[str, Path]) -&gt; DictConfig:
+    return load_config(config_path=path)</code></pre>
+</details>
+</dd>
+<dt id="imutils.utils.dataset_management_utils.Extract.df2csv"><code class="name flex">
+<span>def <span class="ident">df2csv</span></span>(<span>df: pandas.core.frame.DataFrame, path: Union[str, pathlib.Path], index: bool = False) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@classmethod
+def df2csv(cls, df: pd.DataFrame, path: Union[str, Path], index: bool = False) -&gt; None:
+    df.to_csv(path, index=index)</code></pre>
+</details>
+</dd>
+<dt id="imutils.utils.dataset_management_utils.Extract.df_from_csv"><code class="name flex">
+<span>def <span class="ident">df_from_csv</span></span>(<span>path: Union[str, pathlib.Path], index_col: int = None) ‑> pandas.core.frame.DataFrame</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@classmethod
+def df_from_csv(cls, path: Union[str, Path], index_col: int = None) -&gt; pd.DataFrame:
+    return pd.read_csv(path, index_col=index_col)</code></pre>
+</details>
+</dd>
+<dt id="imutils.utils.dataset_management_utils.Extract.df_from_dir"><code class="name flex">
+<span>def <span class="ident">df_from_dir</span></span>(<span>root_dir: Union[str, pathlib.Path], select_subset: Optional[str] = None) ‑> pandas.core.frame.DataFrame</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@classmethod
+def df_from_dir(
+    cls, root_dir: Union[str, Path], select_subset: Optional[str] = None
+) -&gt; pd.DataFrame:
+    files = cls.locate_files(dataset_dir=root_dir, select_subset=select_subset)
+    for k in list(files.keys()):
+        files[k] = pd.DataFrame(files[k]).rename(columns={0: &#34;path&#34;})  # .samples)
+    return files</code></pre>
+</details>
+</dd>
+<dt id="imutils.utils.dataset_management_utils.Extract.get_split_subdir_stems"><code class="name flex">
+<span>def <span class="ident">get_split_subdir_stems</span></span>(<span>dataset_dir: str) ‑> List[str]</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@classmethod
+def get_split_subdir_stems(cls, dataset_dir: str) -&gt; List[str]:
+
+    subdirs = os.listdir(dataset_dir)
+    stems = []
+    for subdir in subdirs:
+        if subdir in cls.valid_splits:
+            stems.append(subdir)
+    return stems</code></pre>
+</details>
+</dd>
+<dt id="imutils.utils.dataset_management_utils.Extract.locate_files"><code class="name flex">
+<span>def <span class="ident">locate_files</span></span>(<span>dataset_dir: Union[str, List[str]], select_subset: Optional[str] = None) ‑> Dict[str, torchdata.datasets.Dataset]</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@classmethod
+def locate_files(
+    cls, dataset_dir: Union[str, List[str]], select_subset: Optional[str] = None
+) -&gt; Dict[str, &#34;torchdata.datasets.Dataset&#34;]:
+
+    files = {}
+    if isinstance(dataset_dir, list):
+        # If a list of data directories is provided, concatenate their results into the &#39;all&#39; key. e.g. When constructing the combined Florissant &amp; General Fossil datasets
+        assert np.all([os.path.isdir(d) for d in dataset_dir])
+        files[&#34;all&#34;] = []
+        for data_dir in dataset_dir:
+            files[&#34;all&#34;].extend(cls.locate_files(data_dir)[&#34;all&#34;])
+        return files
+    splits = cls.get_split_subdir_stems(dataset_dir=dataset_dir)
+
+    if len(splits) &gt; 1:
+        # root
+        #     /train
+        #          /class_0
+        #     /test
+        #     ....
+        for subdir in splits:
+            files[subdir] = torchdata.datasets.Files.from_folder(
+                Path(dataset_dir, subdir), regex=&#34;*/*.jpg&#34;
+            ).files
+        files[&#34;all&#34;] = list(flatten([files[subdir] for subdir in splits]))
+
+    elif len(os.listdir(dataset_dir)) &gt; 1:
+        # root
+        #     /class_0
+        #     /class_1
+        #     ....
+        files[&#34;all&#34;] = torchdata.datasets.Files.from_folder(
+            Path(dataset_dir), regex=&#34;*/*.jpg&#34;
+        ).files
+    else:
+        raise Exception(
+            f&#34;# of valid subdirs = {len(os.listdir(dataset_dir))} is invalid for locating&#34;
+            &#34; files.&#34;
+        )
+
+    if isinstance(select_subset, str):
+        files = {select_subset: files[select_subset]}
+    return files</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="imutils.utils" href="index.html">imutils.utils</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="imutils.utils.dataset_management_utils.dataframe_difference" href="#imutils.utils.dataset_management_utils.dataframe_difference">dataframe_difference</a></code></li>
+<li><code><a title="imutils.utils.dataset_management_utils.diff_dataset_catalogs" href="#imutils.utils.dataset_management_utils.diff_dataset_catalogs">diff_dataset_catalogs</a></code></li>
+<li><code><a title="imutils.utils.dataset_management_utils.parse_df_catalog_from_image_directory" href="#imutils.utils.dataset_management_utils.parse_df_catalog_from_image_directory">parse_df_catalog_from_image_directory</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="imutils.utils.dataset_management_utils.CleverCrop" href="#imutils.utils.dataset_management_utils.CleverCrop">CleverCrop</a></code></h4>
+<ul class="">
+<li><code><a title="imutils.utils.dataset_management_utils.CleverCrop.aspect_ratio" href="#imutils.utils.dataset_management_utils.CleverCrop.aspect_ratio">aspect_ratio</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="imutils.utils.dataset_management_utils.DatasetFilePathParser" href="#imutils.utils.dataset_management_utils.DatasetFilePathParser">DatasetFilePathParser</a></code></h4>
+<ul class="">
+<li><code><a title="imutils.utils.dataset_management_utils.DatasetFilePathParser.ExtantLeavesParser" href="#imutils.utils.dataset_management_utils.DatasetFilePathParser.ExtantLeavesParser">ExtantLeavesParser</a></code></li>
+<li><code><a title="imutils.utils.dataset_management_utils.DatasetFilePathParser.FossilParser" href="#imutils.utils.dataset_management_utils.DatasetFilePathParser.FossilParser">FossilParser</a></code></li>
+<li><code><a title="imutils.utils.dataset_management_utils.DatasetFilePathParser.PNASParser" href="#imutils.utils.dataset_management_utils.DatasetFilePathParser.PNASParser">PNASParser</a></code></li>
+<li><code><a title="imutils.utils.dataset_management_utils.DatasetFilePathParser.get_parser" href="#imutils.utils.dataset_management_utils.DatasetFilePathParser.get_parser">get_parser</a></code></li>
+<li><code><a title="imutils.utils.dataset_management_utils.DatasetFilePathParser.parse_dtypes" href="#imutils.utils.dataset_management_utils.DatasetFilePathParser.parse_dtypes">parse_dtypes</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="imutils.utils.dataset_management_utils.Extract" href="#imutils.utils.dataset_management_utils.Extract">Extract</a></code></h4>
+<ul class="">
+<li><code><a title="imutils.utils.dataset_management_utils.Extract.config2yaml" href="#imutils.utils.dataset_management_utils.Extract.config2yaml">config2yaml</a></code></li>
+<li><code><a title="imutils.utils.dataset_management_utils.Extract.config_from_yaml" href="#imutils.utils.dataset_management_utils.Extract.config_from_yaml">config_from_yaml</a></code></li>
+<li><code><a title="imutils.utils.dataset_management_utils.Extract.data_file_ext_maps" href="#imutils.utils.dataset_management_utils.Extract.data_file_ext_maps">data_file_ext_maps</a></code></li>
+<li><code><a title="imutils.utils.dataset_management_utils.Extract.df2csv" href="#imutils.utils.dataset_management_utils.Extract.df2csv">df2csv</a></code></li>
+<li><code><a title="imutils.utils.dataset_management_utils.Extract.df_from_csv" href="#imutils.utils.dataset_management_utils.Extract.df_from_csv">df_from_csv</a></code></li>
+<li><code><a title="imutils.utils.dataset_management_utils.Extract.df_from_dir" href="#imutils.utils.dataset_management_utils.Extract.df_from_dir">df_from_dir</a></code></li>
+<li><code><a title="imutils.utils.dataset_management_utils.Extract.get_split_subdir_stems" href="#imutils.utils.dataset_management_utils.Extract.get_split_subdir_stems">get_split_subdir_stems</a></code></li>
+<li><code><a title="imutils.utils.dataset_management_utils.Extract.locate_files" href="#imutils.utils.dataset_management_utils.Extract.locate_files">locate_files</a></code></li>
+<li><code><a title="imutils.utils.dataset_management_utils.Extract.valid_splits" href="#imutils.utils.dataset_management_utils.Extract.valid_splits">valid_splits</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+</footer>
+</body>
+</html>

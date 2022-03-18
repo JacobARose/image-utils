@@ -1,0 +1,1143 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.10.0" />
+<title>imutils.generate_multithresh_symlink_trees API documentation</title>
+<meta name="description" content="generate_multithresh_symlink_trees.py …" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>imutils.generate_multithresh_symlink_trees</code></h1>
+</header>
+<section id="section-intro">
+<p>generate_multithresh_symlink_trees.py</p>
+<p>Created On: Wednesday Aug 11th, 2021
+Created By: Jacob A Rose</p>
+<p>Summary: This script takes a source dataset of images organized into class-wise subdirs, and produces a set of symlink trees linking to it, each one containing only the classes that have at least as many images as that version's threshold.</p>
+<h1 id="print-all-directories-and-quit-before-launch">print all directories and quit before launch</h1>
+<p>python "/media/data/jacob/GitHub/lightning-hydra-classifiers/lightning_hydra_classifiers/data/utils/generate_multithresh_symlink_trees.py" &ndash;dry-run -a</p>
+<h1 id="clean-create-all-symlink-dirs">Clean, &amp; create, all symlink dirs.</h1>
+<p>python "/media/data/jacob/GitHub/lightning-hydra-classifiers/lightning_hydra_classifiers/data/utils/generate_multithresh_symlink_trees.py" &ndash;task "clean+create" -a</p>
+<h1 id="clean-then-create-all-symlink-dirs">Clean, then create, all symlink dirs.</h1>
+<p>python "/media/data/jacob/GitHub/lightning-hydra-classifiers/lightning_hydra_classifiers/data/utils/generate_multithresh_symlink_trees.py" &ndash;task clean -a
+python "/media/data/jacob/GitHub/lightning-hydra-classifiers/lightning_hydra_classifiers/data/utils/generate_multithresh_symlink_trees.py" &ndash;task create -a</p>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">&#34;&#34;&#34;
+
+generate_multithresh_symlink_trees.py
+
+Created On: Wednesday Aug 11th, 2021
+Created By: Jacob A Rose
+
+Summary: This script takes a source dataset of images organized into class-wise subdirs, and produces a set of symlink trees linking to it, each one containing only the classes that have at least as many images as that version&#39;s threshold.
+
+# print all directories and quit before launch
+python &#34;/media/data/jacob/GitHub/lightning-hydra-classifiers/lightning_hydra_classifiers/data/utils/generate_multithresh_symlink_trees.py&#34; --dry-run -a
+
+
+# Clean, &amp; create, all symlink dirs.
+python &#34;/media/data/jacob/GitHub/lightning-hydra-classifiers/lightning_hydra_classifiers/data/utils/generate_multithresh_symlink_trees.py&#34; --task &#34;clean+create&#34; -a
+
+# Clean, then create, all symlink dirs.
+python &#34;/media/data/jacob/GitHub/lightning-hydra-classifiers/lightning_hydra_classifiers/data/utils/generate_multithresh_symlink_trees.py&#34; --task clean -a
+python &#34;/media/data/jacob/GitHub/lightning-hydra-classifiers/lightning_hydra_classifiers/data/utils/generate_multithresh_symlink_trees.py&#34; --task create -a
+
+&#34;&#34;&#34;
+import argparse
+import contextlib
+import io
+import os
+import shutil
+import sys
+import time
+from pathlib import Path
+from typing import Callable, Dict, List, Optional, Union
+
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+
+# from torch.utils.data import Dataset, Subset, random_split, DataLoader
+import torch
+import torchvision
+from pandarallel import pandarallel
+from plumbum import local
+from rich import print as pp
+from sklearn.model_selection import StratifiedKFold
+from torchvision import transforms
+from torchvision.datasets import ImageFolder
+from tqdm.auto import tqdm
+
+tqdm.pandas()
+
+
+############################
+
+
+class CatalogDataset(ImageFolder):
+
+    columns = (
+        &#34;absolute_path&#34;,
+        &#34;family&#34;,
+        &#34;genus&#34;,
+        &#34;species&#34;,
+        &#34;collection&#34;,
+        &#34;catalog_number&#34;,
+        &#34;relative_path&#34;,
+        &#34;root_dir&#34;,
+    )
+    root = None
+
+    def __init__(
+        self,
+        data_catalog: pd.DataFrame,
+        path_col: str = &#34;absolute_path&#34;,
+        label_col: str = &#34;family&#34;,
+        class2idx: Optional[Dict[str, int]] = None,
+    ):
+        #         super().__init__(&#39;.&#39;)
+
+        self.data = data_catalog
+        self.records = self.data.to_records()
+
+        if not isinstance(class2idx, Dict):
+            class2idx = {
+                label: idx for idx, label in enumerate(sorted(set(data_catalog[label_col])))
+            }
+        self.class2idx = class2idx
+
+        self.paths = self.records[path_col].tolist()
+        self.targets = [self.class2idx[label] for label in self.records[label_col]]
+        self.samples = [(path, label_idx) for path, label_idx in zip(self.paths, self.targets)]
+
+        if data.root_dir.nunique() == 1:
+            self.root = data.root_dir[0]
+
+        self.transforms = transforms.Compose([transforms.ToTensor()])
+
+    def __getitem__(self, index):
+        x, y = self.samples[index]
+
+        x = Image.open(x)
+
+        x = self.transforms(x)
+        return (x, y)
+
+    def __len__(self):
+        return len(self.records)
+
+
+def dataset2catalog(
+    root_dir: Optional[Union[str, Path]] = None, dataset: Optional[torch.utils.data.Dataset] = None
+) -&gt; pd.DataFrame:
+
+    &#34;&#34;&#34;
+    Simple wrapper around torchvision.datasets.ImageFolder
+    &#34;&#34;&#34;
+    #     if root_dir is None and dataset is None:
+    #         print(&#34;Error: Either root_dir or dataset cannot be None&#34;)
+    #         return
+    if root_dir is None:
+        if dataset is None:
+            print(&#34;Error: Either root_dir or dataset cannot be None&#34;)
+            return
+        root_dir = dataset.root
+    elif isinstance(root_dir, str):
+        if isinstance(dataset, torch.utils.data.Dataset):
+            print(
+                &#34;Warning: Both root_dir and dataset provided, ignoring dataset and building from&#34;
+                &#34; root_dir&#34;
+            )
+        dataset = get_image_dataset(root_dir)
+
+    #     dataset = get_image_dataset(root_dir)
+    classes = dataset.classes
+    samples = pd.DataFrame(dataset.samples, columns=[&#34;absolute_path&#34;, &#34;family_idx&#34;])
+
+    samples = samples.assign(
+        family=samples.family_idx.apply(lambda x: classes[x]).astype(pd.CategoricalDtype())
+    ).drop(columns=[&#34;family_idx&#34;])
+
+    samples = samples.assign(
+        genus=samples.absolute_path.apply(lambda x: Path(x).stem.split(&#34;_&#34;)[1]).astype(
+            pd.CategoricalDtype()
+        ),
+        species=samples.absolute_path.apply(lambda x: Path(x).stem.split(&#34;_&#34;)[2]).astype(
+            pd.CategoricalDtype()
+        ),
+        collection=samples.absolute_path.apply(lambda x: Path(x).stem.split(&#34;_&#34;)[3]).astype(
+            pd.CategoricalDtype()
+        ),
+        catalog_number=samples.absolute_path.apply(
+            lambda x: Path(x).stem.split(&#34;_&#34;, maxsplit=4)[-1]
+        ).astype(pd.StringDtype()),
+        relative_path=samples.absolute_path.apply(
+            lambda x: str(Path(x).relative_to(root_dir))
+        ).astype(pd.StringDtype()),
+        root_dir=root_dir,
+    )
+    return samples
+
+
+def plot_kfold_class_distributions(
+    y: List[int], kfolds: int = 10, seed: int = None, name: str = None, bins: int = None
+) -&gt; np.array:
+    &#34;&#34;&#34;
+    Create k-stratified folds of a list of int labels `y`, plot their distributions per-foldm, and return a dataframe containing indices as values, and each fold as a separate column.
+
+    Arguments:
+        y: List[int]
+            The integer-encoded class labels for N samples contained in their true order, in a list.
+            shape = (N,)
+        kfolds: int=10
+            Integer number of folds to be split
+        seed: int=None
+            random_state for kfold shuffling
+        name: str=None
+            Optional str to be added to suptitle to distinguish this dataset
+    Returns:
+        splits_idx: np.array[int]
+            An array containing integer index values for selecting the true label from y.
+            shape = (N//kfolds, kfolds)
+
+    &#34;&#34;&#34;
+
+    skf = StratifiedKFold(n_splits=cfg.kfolds, shuffle=True, random_state=cfg.seed)
+
+    splits_idx = pd.DataFrame(
+        [sorted(test) for train, test in skf.split(range(len(y)), y)]
+    ).T.convert_dtypes()
+
+    splits_y = pd.DataFrame(np.array(y)[splits_idx.dropna().values.astype(int)])
+    splits_y.T.index.name = &#34;kfold&#34;
+
+    num_classes = len(set(y))
+    bins = bins or num_classes // 6
+
+    splits_y.stack().hist(
+        by=&#34;kfold&#34;, alpha=0.4, bins=bins, figsize=(14, 14), sharex=True, sharey=True, color=&#34;b&#34;
+    )
+
+    title = f&#34;class distributions across k={cfg.kfolds} StratifiedFolds&#34;
+    if isinstance(name, str):
+        title = f&#34;{name} | {title}&#34;
+
+    plt.suptitle(title)
+    #     plt.suptitle(f&#39;class distributions across k={cfg.kfolds} StratifiedFolds&#39;)
+    plt.tight_layout()
+
+    return splits_idx
+
+
+def filter_rare_classes_from_dataframe(
+    data: pd.DataFrame, y_col: str = &#34;family&#34;, threshold: int = 1, verbose: bool = True
+) -&gt; pd.DataFrame:
+    &#34;&#34;&#34;
+    Low class-count dataframe filter function
+
+    Filter dataframe `data` to only include classes with a minimum of `threshold` counts.
+    Classes are defined by the column of `y_col`
+
+    &#34;&#34;&#34;
+    class_counts = data.value_counts(y_col)
+    class_counts = class_counts[class_counts &gt;= threshold]
+    include_classes = class_counts.index
+
+    filtered_data = data[data[y_col].isin(include_classes)]
+
+    if verbose:
+        print(f&#34;Num_classes: Previous={len(set(data[y_col]))}, Now={len(include_classes)}&#34;)
+        print(f&#34;Num_samples: Previous={data.shape[0]}, Now={filtered_data.shape[0]}&#34;)
+
+    return filtered_data
+
+
+##################################################
+
+
+def create_symlink(src_path: str, target_path: str, keep_existing: bool = False):
+    if os.path.exists(target_path):
+        if keep_existing:
+            return
+        os.path.unlink(target_path)
+    os.symlink(src_path, target_path)
+
+
+#     os.symlink(x.absolute_path, x.target_path)
+
+
+## creates symlinks for 1 dataset
+def create_symlinks(
+    data: pd.DataFrame,
+    target_dir: str,
+    y_col: str,
+    keep_existing: bool = True,
+    parallel: bool = True,
+    skip_symlinks: bool = False,
+):
+
+    if os.path.isdir(target_dir) and not keep_existing:
+        shutil.rmtree(target_dir)
+
+    subdirs = sorted(set(data[y_col]))
+    for subdir in subdirs:
+        os.makedirs(Path(target_dir, subdir), exist_ok=True)
+
+    data = data.assign(target_path=data.relative_path.apply(lambda x: str(Path(target_dir, x))))
+    if skip_symlinks:
+        return data
+
+    print(f&#34;Generating {len(subdirs)} subdirs in directory {target_dir}&#34;)
+    print(f&#34;Generating {data.shape[0]} symlinks in generated subdirs&#34;)
+    if parallel:
+        data.parallel_apply(
+            lambda x: create_symlink(
+                src_path=x.absolute_path, target_path=x.target_path, keep_existing=keep_existing
+            ),
+            axis=1,
+        )
+    else:
+        data.apply(
+            lambda x: create_symlink(
+                src_path=x.absolute_path, target_path=x.target_path, keep_existing=keep_existing
+            ),
+            axis=1,
+        )
+
+    return data
+
+
+######################################
+
+
+## Filters classes and creates symlinks for 1 dataset
+def filter_rare_classes_and_create_symlinks(
+    data: pd.DataFrame,
+    target_dir: str,
+    y_col: str = &#34;family&#34;,
+    threshold: int = 10,
+    skip_symlinks: bool = False,
+) -&gt; pd.DataFrame:
+
+    filtered_catalog = filter_rare_classes_from_dataframe(
+        data=data, y_col=y_col, threshold=threshold, verbose=True
+    )
+    print(f&#34;Dataset: {cfg.dataset_name}, Target dir: {target_dir}&#34;)
+
+    symlink_data_catalog = create_symlinks(
+        data=filtered_catalog, target_dir=target_dir, y_col=y_col, skip_symlinks=skip_symlinks
+    )
+
+    is_link = symlink_data_catalog.target_path.parallel_apply(os.path.islink)
+    print(
+        &#34;Expected Num_samples: &#34;,
+        symlink_data_catalog.shape[0],
+        &#34;Verified existing Num_samples: &#34;,
+        is_link.sum(),
+    )
+    print(f&#34;Finished threshold={threshold}&#34;)
+    print(&#34;=&#34; * 25)
+    return symlink_data_catalog
+
+
+# python &#34;/media/data/jacob/GitHub/lightning-hydra-classifiers/lightning_hydra_classifiers/data/utils/generate_multithresh_symlink_trees.py&#34; --dry-run --resolution 512 1024 1536 2048 --dataset_name General_Fossil Florissant_Fossil --num_workers 8
+
+# python &#34;/media/data/jacob/GitHub/lightning-hydra-classifiers/lightning_hydra_classifiers/data/utils/generate_multithresh_symlink_trees.py&#34; --task clean -r 512 --dataset_name Florissant_Fossil --dry-run
+
+
+def cmdline_args(args=&#34;&#34;):
+    p = argparse.ArgumentParser(
+        description=&#34;Produce symlink trees from source dataset, or clean them up.&#34;
+    )
+    p.add_argument(
+        &#34;-t&#34;,
+        &#34;--task&#34;,
+        dest=&#34;task&#34;,
+        type=str,
+        choices=[&#34;create&#34;, &#34;clean&#34;, &#34;clean+create&#34;],
+        default=&#34;create&#34;,
+        help=(
+            &#34;Specify whether to create or clean (unlink) symlink trees according to the query&#34;
+            &#34; produced by the other cmdline args.&#34;
+        ),
+    )
+    p.add_argument(
+        &#34;-data&#34;,
+        &#34;--dataset_name&#34;,
+        dest=&#34;dataset_name&#34;,
+        type=str,
+        nargs=&#34;+&#34;,
+        choices=[&#34;Extant_Leaves&#34;, &#34;Florissant_Fossil&#34;, &#34;General_Fossil&#34;, &#34;all&#34;],
+        help=(
+            &#34;Which dataset names to produce multiple threshold versions of. Currently available:&#34;
+            &#34; [&#39;Extant_Leaves&#39;, &#39;Florissant_Fossil&#39;, &#39;General_Fossil&#39;]&#34;
+        ),
+    )
+    p.add_argument(
+        &#34;-r&#34;,
+        &#34;--resolution&#34;,
+        dest=&#34;resolution&#34;,
+        type=int,
+        nargs=&#34;*&#34;,
+        default=512,
+        help=&#34;Resolution(s) to build symlinks from, images should be resized to (3, res, res).&#34;,
+    )
+    p.add_argument(
+        &#34;-d&#34;,
+        &#34;--root_dir&#34;,
+        dest=&#34;root_dir&#34;,
+        type=str,
+        default=&#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_1/images&#34;,
+        help=&#34;&#34;&#34;Destination image root dir. Script will expect source images to exist in class-wise subdirs in &#34;.{dataset_name}/original/full/jpg&#34;. Then, for creating the target images it will create subdirs &#34;.{dataset_name}/{resolution}/{threshold}/jpg&#34; for user-input threshold value.&#34;&#34;&#34;,
+    )
+    p.add_argument(
+        &#34;-a&#34;,
+        &#34;--run-all&#34;,
+        dest=&#34;run_all&#34;,
+        action=&#34;store_true&#34;,
+        help=(
+            &#34;Overrides any values provided to --dataset_name. Flag for when user would like to run&#34;
+            &#34; through all default threshold arguments on all datasets. Currently available:&#34;
+            &#34; [&#39;Extant_Leaves&#39;, &#39;Florissant_Fossil&#39;, &#39;General_Fossil&#39;].&#34;
+        ),
+    )
+    p.add_argument(
+        &#34;--num_workers&#34;,
+        dest=&#34;num_workers&#34;,
+        type=int,
+        default=16,
+        help=&#34;Number of parallel processes to be used by pandas to efficiently construct symlinks.&#34;,
+    )
+    p.add_argument(
+        &#34;--dry-run&#34;,
+        dest=&#34;dry_run&#34;,
+        action=&#34;store_true&#34;,
+        help=(
+            &#34;Flag for displaying the configurations indicated by args, then exiting prior to&#34;
+            &#34; actually constructing anything on disk.&#34;
+        ),
+    )
+    args = p.parse_args(args)
+
+    #     if args.task == &#34;&#34;
+    if args.run_all:
+        args.resolution = [512, 1024, 1536, 2048]
+        print(&#34;[RUNNING ALL THRESHOLDS]&#34;)
+    if args.dataset_name == &#34;all&#34;:
+        args.dataset_name = [&#34;Extant_Leaves&#34;, &#34;Florissant_Fossil&#34;, &#34;General_Fossil&#34;]
+        print(&#34;[RUNNING ALL DATASETS]&#34;)
+    return args
+
+
+######################################################
+
+if __name__ == &#34;__main__&#34;:
+
+    args = cmdline_args(sys.argv[1:])
+    image_root_dir = Path(args.root_dir)
+    dataset_names = args.dataset_name
+    resolutions = args.resolution
+    #     if args.run_all:
+    #         args.resolution = [&#34;original&#34;, 512, 1024, 1536, 2048]
+    #         args.dataset_name = [&#39;Extant_Leaves&#39;, &#39;Florissant_Fossil&#39;, &#39;General_Fossil&#39;]
+    subdirs = {
+        &#34;Extant_Leaves&#34;: &#34;Extant_Leaves&#34;,
+        &#34;Florissant_Fossil&#34;: str(Path(&#34;Fossil&#34;, &#34;Florissant_Fossil&#34;)),
+        &#34;General_Fossil&#34;: str(Path(&#34;Fossil&#34;, &#34;General_Fossil&#34;)),
+    }
+    dataset_thresholds = {
+        &#34;Extant_Leaves&#34;: [3, 10, 20, 50, 100],
+        &#34;Florissant_Fossil&#34;: [3, 10, 20, 50],
+        &#34;General_Fossil&#34;: [3, 10, 20, 50],
+    }
+    y_col = &#34;family&#34;
+    seed = 3546
+
+    ## Create subdirs for each combination of (resolution, threshold, dataset)
+    dataset_root_dirs = {}
+    dataset_root_dirs_flat = {}
+
+    for name in dataset_names:
+        dataset_root_dirs[name] = {}  # str(image_root_dir / subdirs[name])
+        for resolution in resolutions:
+            dataset_root_dirs[name][resolution] = {}
+            for threshold in dataset_thresholds[name]:
+                dataset_root_dirs[name][resolution][threshold] = str(
+                    image_root_dir / subdirs[name] / str(resolution) / str(threshold) / &#34;jpg&#34;
+                )
+                dataset_root_dirs_flat[
+                    f&#34;{name}_{resolution}_{y_col}_{threshold}&#34;
+                ] = dataset_root_dirs[name][resolution][threshold]
+
+    if args.dry_run:
+        print(
+            &#34;Dry Run exiting before any changes on disk. User cmd line args would otherwise&#34;
+            f&#34; produce {len(dataset_root_dirs_flat)} different configurations.&#34;
+        )
+        pp(dataset_root_dirs_flat)
+        exit(0)
+
+    num_workers = args.num_workers
+    pandarallel.initialize(nb_workers=num_workers, progress_bar=True)
+
+    ## Define subdirs for each source dataset in its original resolution and &#34;full&#34; class listing (i.e. threshold=0)
+    ## Load each of these source datasets using torchvision.datasets.ImageFolder
+    full_root_dirs = {}
+    source_datasets = {}
+    for name in dataset_names:
+        source_datasets[name] = {}
+        full_root_dirs[name] = {}
+        for resolution in resolutions:
+            full_root_dirs[name][resolution] = str(
+                image_root_dir / subdirs[name] / str(resolution) / &#34;full&#34; / &#34;jpg&#34;
+            )
+            #         full_root_dirs[name] = str(image_root_dir / subdirs[name] / &#34;original&#34; / &#34;full&#34; / &#34;jpg&#34;)
+            source_datasets[name][resolution] = torchvision.datasets.ImageFolder(
+                full_root_dirs[name][resolution]
+            )
+
+    print(
+        f&#34;Producing {len(dataset_root_dirs_flat)} unique configurations for symlink trees, across&#34;
+        f&#34; datasets: {dataset_names}&#34;
+    )
+
+    class Config:
+        pass
+
+    #     resolutions = args.resolution #[512, 1024, 1536, 2048]
+    i = 0
+    skip_symlinks = False  # True
+    symlink_data_catalogs = {}
+    for dataset_name in dataset_names:
+        symlink_data_catalogs[dataset_name] = {}
+        for resolution in resolutions:
+            symlink_data_catalogs[dataset_name][resolution] = {}
+            for threshold in dataset_thresholds[dataset_name]:
+
+                cfg = Config()
+                cfg.dataset_name = dataset_name
+                cfg.resolution = resolution
+                cfg.threshold = threshold
+                cfg.seed = seed
+                cfg.y_col = y_col
+
+                data = source_datasets[cfg.dataset_name][cfg.resolution]
+                data_catalog = dataset2catalog(root_dir=None, dataset=data)
+                target_dir = dataset_root_dirs[cfg.dataset_name][cfg.resolution][cfg.threshold]
+
+                if &#34;clean&#34; in args.task:
+                    if os.path.isdir(target_dir):
+                        print(
+                            f&#34;[CLEANING] - [{time.ctime()}] - {i} - dataset: {dataset_name} -&#34;
+                            f&#34; resolution: {resolution} - threshold: {threshold}&#34;
+                        )
+                        print(&#34;\t\t - &#34; + f&#34;target_dir: {target_dir.rstrip(&#39;jpg&#39;)}&#34;)
+                        shutil.rmtree(target_dir.rstrip(&#34;jpg&#34;))
+                        print(
+                            f&#34;[FINISHED] - [{time.ctime()}] - {i} - dataset: {dataset_name} -&#34;
+                            f&#34; resolution: {resolution} - thresholds:&#34;
+                            f&#34; {dataset_thresholds[dataset_name]}&#34;
+                        )
+
+                if &#34;create&#34; in args.task:
+                    print(
+                        f&#34;[CREATING] - [{time.ctime()}] - {i} - dataset: {dataset_name} -&#34;
+                        f&#34; resolution: {resolution} - threshold: {threshold}&#34;
+                    )
+                    symlink_data_catalogs[cfg.dataset_name][cfg.resolution][
+                        cfg.threshold
+                    ] = filter_rare_classes_and_create_symlinks(
+                        data=data_catalog,
+                        target_dir=target_dir,
+                        y_col=cfg.y_col,
+                        threshold=cfg.threshold,
+                        skip_symlinks=skip_symlinks,
+                    )
+                i += 1
+            print(
+                f&#34;[FINISHED] - [{time.ctime()}] - {i} - dataset: {dataset_name} - resolution:&#34;
+                f&#34; {resolution} - thresholds: {dataset_thresholds[dataset_name]}&#34;
+            )
+
+    mode = &#34;w&#34;
+    if os.path.isfile(Path(image_root_dir, &#34;Dataset summary.txt&#34;)):
+        mode = &#34;a&#34;
+    f = open(Path(image_root_dir, &#34;Dataset summary.txt&#34;), mode)
+    with contextlib.redirect_stdout(f):
+        print(&#34;=&#34; * 60)
+        print()
+        print(f&#34;Last task: {args.task}&#34;)
+        print(f&#34;Time: {time.ctime()}&#34;)
+        print(f&#34;root_dir: {image_root_dir}&#34;)
+        for dataset_name, v in symlink_data_catalogs.items():
+            print(&#34;=&#34; * 30)
+            print(f&#34;Dataset: {dataset_name}&#34;)
+            for resolution, v_i in v.items():
+                print(f&#34;Resolution: {resolution}&#34;)
+                for threshold_i, v_ii in v_i.items():
+                    print(f&#34;Threshold: {threshold_i} -- {v_ii.shape[0]} Samples&#34;)
+                    print(f&#34;Path: {dataset_root_dirs[dataset_name][resolution][threshold_i]}&#34;)
+                    if os.path.exists(
+                        dataset_root_dirs[dataset_name][resolution][threshold_i]
+                    ) and len(os.listdir(dataset_root_dirs[dataset_name][resolution][threshold_i])):
+                        print(&#34;Status: Exists&#34;)
+                    else:
+                        print(&#34;Status: Cleaned&#34;)
+
+    f.close()</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="imutils.generate_multithresh_symlink_trees.cmdline_args"><code class="name flex">
+<span>def <span class="ident">cmdline_args</span></span>(<span>args='')</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def cmdline_args(args=&#34;&#34;):
+    p = argparse.ArgumentParser(
+        description=&#34;Produce symlink trees from source dataset, or clean them up.&#34;
+    )
+    p.add_argument(
+        &#34;-t&#34;,
+        &#34;--task&#34;,
+        dest=&#34;task&#34;,
+        type=str,
+        choices=[&#34;create&#34;, &#34;clean&#34;, &#34;clean+create&#34;],
+        default=&#34;create&#34;,
+        help=(
+            &#34;Specify whether to create or clean (unlink) symlink trees according to the query&#34;
+            &#34; produced by the other cmdline args.&#34;
+        ),
+    )
+    p.add_argument(
+        &#34;-data&#34;,
+        &#34;--dataset_name&#34;,
+        dest=&#34;dataset_name&#34;,
+        type=str,
+        nargs=&#34;+&#34;,
+        choices=[&#34;Extant_Leaves&#34;, &#34;Florissant_Fossil&#34;, &#34;General_Fossil&#34;, &#34;all&#34;],
+        help=(
+            &#34;Which dataset names to produce multiple threshold versions of. Currently available:&#34;
+            &#34; [&#39;Extant_Leaves&#39;, &#39;Florissant_Fossil&#39;, &#39;General_Fossil&#39;]&#34;
+        ),
+    )
+    p.add_argument(
+        &#34;-r&#34;,
+        &#34;--resolution&#34;,
+        dest=&#34;resolution&#34;,
+        type=int,
+        nargs=&#34;*&#34;,
+        default=512,
+        help=&#34;Resolution(s) to build symlinks from, images should be resized to (3, res, res).&#34;,
+    )
+    p.add_argument(
+        &#34;-d&#34;,
+        &#34;--root_dir&#34;,
+        dest=&#34;root_dir&#34;,
+        type=str,
+        default=&#34;/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_1/images&#34;,
+        help=&#34;&#34;&#34;Destination image root dir. Script will expect source images to exist in class-wise subdirs in &#34;.{dataset_name}/original/full/jpg&#34;. Then, for creating the target images it will create subdirs &#34;.{dataset_name}/{resolution}/{threshold}/jpg&#34; for user-input threshold value.&#34;&#34;&#34;,
+    )
+    p.add_argument(
+        &#34;-a&#34;,
+        &#34;--run-all&#34;,
+        dest=&#34;run_all&#34;,
+        action=&#34;store_true&#34;,
+        help=(
+            &#34;Overrides any values provided to --dataset_name. Flag for when user would like to run&#34;
+            &#34; through all default threshold arguments on all datasets. Currently available:&#34;
+            &#34; [&#39;Extant_Leaves&#39;, &#39;Florissant_Fossil&#39;, &#39;General_Fossil&#39;].&#34;
+        ),
+    )
+    p.add_argument(
+        &#34;--num_workers&#34;,
+        dest=&#34;num_workers&#34;,
+        type=int,
+        default=16,
+        help=&#34;Number of parallel processes to be used by pandas to efficiently construct symlinks.&#34;,
+    )
+    p.add_argument(
+        &#34;--dry-run&#34;,
+        dest=&#34;dry_run&#34;,
+        action=&#34;store_true&#34;,
+        help=(
+            &#34;Flag for displaying the configurations indicated by args, then exiting prior to&#34;
+            &#34; actually constructing anything on disk.&#34;
+        ),
+    )
+    args = p.parse_args(args)
+
+    #     if args.task == &#34;&#34;
+    if args.run_all:
+        args.resolution = [512, 1024, 1536, 2048]
+        print(&#34;[RUNNING ALL THRESHOLDS]&#34;)
+    if args.dataset_name == &#34;all&#34;:
+        args.dataset_name = [&#34;Extant_Leaves&#34;, &#34;Florissant_Fossil&#34;, &#34;General_Fossil&#34;]
+        print(&#34;[RUNNING ALL DATASETS]&#34;)
+    return args</code></pre>
+</details>
+</dd>
+<dt id="imutils.generate_multithresh_symlink_trees.create_symlink"><code class="name flex">
+<span>def <span class="ident">create_symlink</span></span>(<span>src_path: str, target_path: str, keep_existing: bool = False)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def create_symlink(src_path: str, target_path: str, keep_existing: bool = False):
+    if os.path.exists(target_path):
+        if keep_existing:
+            return
+        os.path.unlink(target_path)
+    os.symlink(src_path, target_path)</code></pre>
+</details>
+</dd>
+<dt id="imutils.generate_multithresh_symlink_trees.create_symlinks"><code class="name flex">
+<span>def <span class="ident">create_symlinks</span></span>(<span>data: pandas.core.frame.DataFrame, target_dir: str, y_col: str, keep_existing: bool = True, parallel: bool = True, skip_symlinks: bool = False)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def create_symlinks(
+    data: pd.DataFrame,
+    target_dir: str,
+    y_col: str,
+    keep_existing: bool = True,
+    parallel: bool = True,
+    skip_symlinks: bool = False,
+):
+
+    if os.path.isdir(target_dir) and not keep_existing:
+        shutil.rmtree(target_dir)
+
+    subdirs = sorted(set(data[y_col]))
+    for subdir in subdirs:
+        os.makedirs(Path(target_dir, subdir), exist_ok=True)
+
+    data = data.assign(target_path=data.relative_path.apply(lambda x: str(Path(target_dir, x))))
+    if skip_symlinks:
+        return data
+
+    print(f&#34;Generating {len(subdirs)} subdirs in directory {target_dir}&#34;)
+    print(f&#34;Generating {data.shape[0]} symlinks in generated subdirs&#34;)
+    if parallel:
+        data.parallel_apply(
+            lambda x: create_symlink(
+                src_path=x.absolute_path, target_path=x.target_path, keep_existing=keep_existing
+            ),
+            axis=1,
+        )
+    else:
+        data.apply(
+            lambda x: create_symlink(
+                src_path=x.absolute_path, target_path=x.target_path, keep_existing=keep_existing
+            ),
+            axis=1,
+        )
+
+    return data</code></pre>
+</details>
+</dd>
+<dt id="imutils.generate_multithresh_symlink_trees.dataset2catalog"><code class="name flex">
+<span>def <span class="ident">dataset2catalog</span></span>(<span>root_dir: Union[str, pathlib.Path, None] = None, dataset: Optional[torch.utils.data.dataset.Dataset] = None) ‑> pandas.core.frame.DataFrame</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Simple wrapper around torchvision.datasets.ImageFolder</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def dataset2catalog(
+    root_dir: Optional[Union[str, Path]] = None, dataset: Optional[torch.utils.data.Dataset] = None
+) -&gt; pd.DataFrame:
+
+    &#34;&#34;&#34;
+    Simple wrapper around torchvision.datasets.ImageFolder
+    &#34;&#34;&#34;
+    #     if root_dir is None and dataset is None:
+    #         print(&#34;Error: Either root_dir or dataset cannot be None&#34;)
+    #         return
+    if root_dir is None:
+        if dataset is None:
+            print(&#34;Error: Either root_dir or dataset cannot be None&#34;)
+            return
+        root_dir = dataset.root
+    elif isinstance(root_dir, str):
+        if isinstance(dataset, torch.utils.data.Dataset):
+            print(
+                &#34;Warning: Both root_dir and dataset provided, ignoring dataset and building from&#34;
+                &#34; root_dir&#34;
+            )
+        dataset = get_image_dataset(root_dir)
+
+    #     dataset = get_image_dataset(root_dir)
+    classes = dataset.classes
+    samples = pd.DataFrame(dataset.samples, columns=[&#34;absolute_path&#34;, &#34;family_idx&#34;])
+
+    samples = samples.assign(
+        family=samples.family_idx.apply(lambda x: classes[x]).astype(pd.CategoricalDtype())
+    ).drop(columns=[&#34;family_idx&#34;])
+
+    samples = samples.assign(
+        genus=samples.absolute_path.apply(lambda x: Path(x).stem.split(&#34;_&#34;)[1]).astype(
+            pd.CategoricalDtype()
+        ),
+        species=samples.absolute_path.apply(lambda x: Path(x).stem.split(&#34;_&#34;)[2]).astype(
+            pd.CategoricalDtype()
+        ),
+        collection=samples.absolute_path.apply(lambda x: Path(x).stem.split(&#34;_&#34;)[3]).astype(
+            pd.CategoricalDtype()
+        ),
+        catalog_number=samples.absolute_path.apply(
+            lambda x: Path(x).stem.split(&#34;_&#34;, maxsplit=4)[-1]
+        ).astype(pd.StringDtype()),
+        relative_path=samples.absolute_path.apply(
+            lambda x: str(Path(x).relative_to(root_dir))
+        ).astype(pd.StringDtype()),
+        root_dir=root_dir,
+    )
+    return samples</code></pre>
+</details>
+</dd>
+<dt id="imutils.generate_multithresh_symlink_trees.filter_rare_classes_and_create_symlinks"><code class="name flex">
+<span>def <span class="ident">filter_rare_classes_and_create_symlinks</span></span>(<span>data: pandas.core.frame.DataFrame, target_dir: str, y_col: str = 'family', threshold: int = 10, skip_symlinks: bool = False) ‑> pandas.core.frame.DataFrame</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def filter_rare_classes_and_create_symlinks(
+    data: pd.DataFrame,
+    target_dir: str,
+    y_col: str = &#34;family&#34;,
+    threshold: int = 10,
+    skip_symlinks: bool = False,
+) -&gt; pd.DataFrame:
+
+    filtered_catalog = filter_rare_classes_from_dataframe(
+        data=data, y_col=y_col, threshold=threshold, verbose=True
+    )
+    print(f&#34;Dataset: {cfg.dataset_name}, Target dir: {target_dir}&#34;)
+
+    symlink_data_catalog = create_symlinks(
+        data=filtered_catalog, target_dir=target_dir, y_col=y_col, skip_symlinks=skip_symlinks
+    )
+
+    is_link = symlink_data_catalog.target_path.parallel_apply(os.path.islink)
+    print(
+        &#34;Expected Num_samples: &#34;,
+        symlink_data_catalog.shape[0],
+        &#34;Verified existing Num_samples: &#34;,
+        is_link.sum(),
+    )
+    print(f&#34;Finished threshold={threshold}&#34;)
+    print(&#34;=&#34; * 25)
+    return symlink_data_catalog</code></pre>
+</details>
+</dd>
+<dt id="imutils.generate_multithresh_symlink_trees.filter_rare_classes_from_dataframe"><code class="name flex">
+<span>def <span class="ident">filter_rare_classes_from_dataframe</span></span>(<span>data: pandas.core.frame.DataFrame, y_col: str = 'family', threshold: int = 1, verbose: bool = True) ‑> pandas.core.frame.DataFrame</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Low class-count dataframe filter function</p>
+<p>Filter dataframe <code>data</code> to only include classes with a minimum of <code>threshold</code> counts.
+Classes are defined by the column of <code>y_col</code></p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def filter_rare_classes_from_dataframe(
+    data: pd.DataFrame, y_col: str = &#34;family&#34;, threshold: int = 1, verbose: bool = True
+) -&gt; pd.DataFrame:
+    &#34;&#34;&#34;
+    Low class-count dataframe filter function
+
+    Filter dataframe `data` to only include classes with a minimum of `threshold` counts.
+    Classes are defined by the column of `y_col`
+
+    &#34;&#34;&#34;
+    class_counts = data.value_counts(y_col)
+    class_counts = class_counts[class_counts &gt;= threshold]
+    include_classes = class_counts.index
+
+    filtered_data = data[data[y_col].isin(include_classes)]
+
+    if verbose:
+        print(f&#34;Num_classes: Previous={len(set(data[y_col]))}, Now={len(include_classes)}&#34;)
+        print(f&#34;Num_samples: Previous={data.shape[0]}, Now={filtered_data.shape[0]}&#34;)
+
+    return filtered_data</code></pre>
+</details>
+</dd>
+<dt id="imutils.generate_multithresh_symlink_trees.plot_kfold_class_distributions"><code class="name flex">
+<span>def <span class="ident">plot_kfold_class_distributions</span></span>(<span>y: List[int], kfolds: int = 10, seed: int = None, name: str = None, bins: int = None) ‑> <built-in function array></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Create k-stratified folds of a list of int labels <code>y</code>, plot their distributions per-foldm, and return a dataframe containing indices as values, and each fold as a separate column.</p>
+<h2 id="arguments">Arguments</h2>
+<p>y: List[int]
+The integer-encoded class labels for N samples contained in their true order, in a list.
+shape = (N,)
+kfolds: int=10
+Integer number of folds to be split
+seed: int=None
+random_state for kfold shuffling
+name: str=None
+Optional str to be added to suptitle to distinguish this dataset</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>splits_idx</code></dt>
+<dd>np.array[int]
+An array containing integer index values for selecting the true label from y.
+shape = (N//kfolds, kfolds)</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def plot_kfold_class_distributions(
+    y: List[int], kfolds: int = 10, seed: int = None, name: str = None, bins: int = None
+) -&gt; np.array:
+    &#34;&#34;&#34;
+    Create k-stratified folds of a list of int labels `y`, plot their distributions per-foldm, and return a dataframe containing indices as values, and each fold as a separate column.
+
+    Arguments:
+        y: List[int]
+            The integer-encoded class labels for N samples contained in their true order, in a list.
+            shape = (N,)
+        kfolds: int=10
+            Integer number of folds to be split
+        seed: int=None
+            random_state for kfold shuffling
+        name: str=None
+            Optional str to be added to suptitle to distinguish this dataset
+    Returns:
+        splits_idx: np.array[int]
+            An array containing integer index values for selecting the true label from y.
+            shape = (N//kfolds, kfolds)
+
+    &#34;&#34;&#34;
+
+    skf = StratifiedKFold(n_splits=cfg.kfolds, shuffle=True, random_state=cfg.seed)
+
+    splits_idx = pd.DataFrame(
+        [sorted(test) for train, test in skf.split(range(len(y)), y)]
+    ).T.convert_dtypes()
+
+    splits_y = pd.DataFrame(np.array(y)[splits_idx.dropna().values.astype(int)])
+    splits_y.T.index.name = &#34;kfold&#34;
+
+    num_classes = len(set(y))
+    bins = bins or num_classes // 6
+
+    splits_y.stack().hist(
+        by=&#34;kfold&#34;, alpha=0.4, bins=bins, figsize=(14, 14), sharex=True, sharey=True, color=&#34;b&#34;
+    )
+
+    title = f&#34;class distributions across k={cfg.kfolds} StratifiedFolds&#34;
+    if isinstance(name, str):
+        title = f&#34;{name} | {title}&#34;
+
+    plt.suptitle(title)
+    #     plt.suptitle(f&#39;class distributions across k={cfg.kfolds} StratifiedFolds&#39;)
+    plt.tight_layout()
+
+    return splits_idx</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="imutils.generate_multithresh_symlink_trees.CatalogDataset"><code class="flex name class">
+<span>class <span class="ident">CatalogDataset</span></span>
+<span>(</span><span>data_catalog: pandas.core.frame.DataFrame, path_col: str = 'absolute_path', label_col: str = 'family', class2idx: Optional[Dict[str, int]] = None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>A generic data loader where the images are arranged in this way: ::</p>
+<pre><code>root/dog/xxx.png
+root/dog/xxy.png
+root/dog/[...]/xxz.png
+
+root/cat/123.png
+root/cat/nsdf3.png
+root/cat/[...]/asd932_.png
+</code></pre>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>root</code></strong> :&ensp;<code>string</code></dt>
+<dd>Root directory path.</dd>
+<dt><strong><code>transform</code></strong> :&ensp;<code>callable</code>, optional</dt>
+<dd>A function/transform that
+takes in an PIL image
+and returns a transformed version. E.g, <code>transforms.RandomCrop</code></dd>
+<dt><strong><code>target_transform</code></strong> :&ensp;<code>callable</code>, optional</dt>
+<dd>A function/transform that takes in the
+target and transforms it.</dd>
+<dt><strong><code>loader</code></strong> :&ensp;<code>callable</code>, optional</dt>
+<dd>A function to load an image given its path.</dd>
+<dt><strong><code>is_valid_file</code></strong> :&ensp;<code>callable</code>, optional</dt>
+<dd>A function that takes path of an Image file
+and check if the file is a valid file (used to check of corrupt files)</dd>
+</dl>
+<p>Attributes:
+classes (list): List of the class names sorted alphabetically.
+class_to_idx (dict): Dict with items (class_name, class_index).
+imgs (list): List of (image path, class_index) tuples</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class CatalogDataset(ImageFolder):
+
+    columns = (
+        &#34;absolute_path&#34;,
+        &#34;family&#34;,
+        &#34;genus&#34;,
+        &#34;species&#34;,
+        &#34;collection&#34;,
+        &#34;catalog_number&#34;,
+        &#34;relative_path&#34;,
+        &#34;root_dir&#34;,
+    )
+    root = None
+
+    def __init__(
+        self,
+        data_catalog: pd.DataFrame,
+        path_col: str = &#34;absolute_path&#34;,
+        label_col: str = &#34;family&#34;,
+        class2idx: Optional[Dict[str, int]] = None,
+    ):
+        #         super().__init__(&#39;.&#39;)
+
+        self.data = data_catalog
+        self.records = self.data.to_records()
+
+        if not isinstance(class2idx, Dict):
+            class2idx = {
+                label: idx for idx, label in enumerate(sorted(set(data_catalog[label_col])))
+            }
+        self.class2idx = class2idx
+
+        self.paths = self.records[path_col].tolist()
+        self.targets = [self.class2idx[label] for label in self.records[label_col]]
+        self.samples = [(path, label_idx) for path, label_idx in zip(self.paths, self.targets)]
+
+        if data.root_dir.nunique() == 1:
+            self.root = data.root_dir[0]
+
+        self.transforms = transforms.Compose([transforms.ToTensor()])
+
+    def __getitem__(self, index):
+        x, y = self.samples[index]
+
+        x = Image.open(x)
+
+        x = self.transforms(x)
+        return (x, y)
+
+    def __len__(self):
+        return len(self.records)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>torchvision.datasets.folder.ImageFolder</li>
+<li>torchvision.datasets.folder.DatasetFolder</li>
+<li>torchvision.datasets.vision.VisionDataset</li>
+<li>torch.utils.data.dataset.Dataset</li>
+<li>typing.Generic</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="imutils.generate_multithresh_symlink_trees.CatalogDataset.columns"><code class="name">var <span class="ident">columns</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="imutils.generate_multithresh_symlink_trees.CatalogDataset.root"><code class="name">var <span class="ident">root</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul>
+<li><a href="#print-all-directories-and-quit-before-launch">print all directories and quit before launch</a></li>
+<li><a href="#clean-create-all-symlink-dirs">Clean, &amp; create, all symlink dirs.</a></li>
+<li><a href="#clean-then-create-all-symlink-dirs">Clean, then create, all symlink dirs.</a></li>
+</ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="imutils" href="index.html">imutils</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="imutils.generate_multithresh_symlink_trees.cmdline_args" href="#imutils.generate_multithresh_symlink_trees.cmdline_args">cmdline_args</a></code></li>
+<li><code><a title="imutils.generate_multithresh_symlink_trees.create_symlink" href="#imutils.generate_multithresh_symlink_trees.create_symlink">create_symlink</a></code></li>
+<li><code><a title="imutils.generate_multithresh_symlink_trees.create_symlinks" href="#imutils.generate_multithresh_symlink_trees.create_symlinks">create_symlinks</a></code></li>
+<li><code><a title="imutils.generate_multithresh_symlink_trees.dataset2catalog" href="#imutils.generate_multithresh_symlink_trees.dataset2catalog">dataset2catalog</a></code></li>
+<li><code><a title="imutils.generate_multithresh_symlink_trees.filter_rare_classes_and_create_symlinks" href="#imutils.generate_multithresh_symlink_trees.filter_rare_classes_and_create_symlinks">filter_rare_classes_and_create_symlinks</a></code></li>
+<li><code><a title="imutils.generate_multithresh_symlink_trees.filter_rare_classes_from_dataframe" href="#imutils.generate_multithresh_symlink_trees.filter_rare_classes_from_dataframe">filter_rare_classes_from_dataframe</a></code></li>
+<li><code><a title="imutils.generate_multithresh_symlink_trees.plot_kfold_class_distributions" href="#imutils.generate_multithresh_symlink_trees.plot_kfold_class_distributions">plot_kfold_class_distributions</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="imutils.generate_multithresh_symlink_trees.CatalogDataset" href="#imutils.generate_multithresh_symlink_trees.CatalogDataset">CatalogDataset</a></code></h4>
+<ul class="">
+<li><code><a title="imutils.generate_multithresh_symlink_trees.CatalogDataset.columns" href="#imutils.generate_multithresh_symlink_trees.CatalogDataset.columns">columns</a></code></li>
+<li><code><a title="imutils.generate_multithresh_symlink_trees.CatalogDataset.root" href="#imutils.generate_multithresh_symlink_trees.CatalogDataset.root">root</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+</footer>
+</body>
+</html>

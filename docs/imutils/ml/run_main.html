@@ -1,0 +1,421 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.10.0" />
+<title>imutils.ml.run_main API documentation</title>
+<meta name="description" content="imutils/ml/run_main.py" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>imutils.ml.run_main</code></h1>
+</header>
+<section id="section-intro">
+<p>imutils/ml/run_main.py</p>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">&#34;&#34;&#34;
+
+imutils/ml/run_main.py
+
+&#34;&#34;&#34;
+
+
+import logging
+import os
+import shutil
+from pathlib import Path
+from typing import List
+
+import hydra
+from hydra.core.hydra_config import HydraConfig
+import omegaconf
+from omegaconf import DictConfig
+import pytorch_lightning as pl
+from pytorch_lightning import Callback, seed_everything
+#from pytorch_lightning.plugins import DDPPlugin
+from pytorch_lightning.callbacks import (
+    EarlyStopping,
+    LearningRateMonitor,
+    ModelCheckpoint,
+    ProgressBar,
+    TQDMProgressBar
+)
+from pytorch_lightning.loggers import WandbLogger
+import torch
+
+from imutils.ml.utils.common import load_envs
+
+torch.backends.cudnn.benchmark = True
+# Set the cwd to the project root
+os.chdir(Path(__file__).parent.parent)
+
+# Load environment variables
+load_envs()
+
+
+def build_callbacks(cfg: DictConfig) -&gt; List[Callback]:
+    callbacks: List[Callback] = []
+
+    if &#34;lr_monitor&#34; in cfg.logging:
+        hydra.utils.log.info(f&#34;Adding callback &lt;LearningRateMonitor&gt;&#34;)
+        callbacks.append(
+            LearningRateMonitor(
+                logging_interval=cfg.logging.lr_monitor.logging_interval,
+                log_momentum=cfg.logging.lr_monitor.log_momentum,
+            )
+        )
+
+    if &#34;early_stopping&#34; in cfg.train:
+        hydra.utils.log.info(f&#34;Adding callback &lt;EarlyStopping&gt;&#34;)
+        callbacks.append(
+            EarlyStopping(
+                monitor=cfg.train.monitor_metric,
+                mode=cfg.train.monitor_metric_mode,
+                patience=cfg.train.early_stopping.patience,
+                verbose=cfg.train.early_stopping.verbose,
+            )
+        )
+
+    if &#34;model_checkpoints&#34; in cfg.train.model_checkpoints:
+        hydra.utils.log.info(f&#34;Adding callback &lt;ModelCheckpoint&gt;&#34;)
+        callbacks.append(
+            ModelCheckpoint(
+                monitor=cfg.train.monitor_metric,
+                mode=cfg.train.monitor_metric_mode,
+                save_top_k=cfg.train.model_checkpoints.save_top_k,
+                verbose=cfg.train.model_checkpoints.verbose,
+            )
+        )
+
+    callbacks.append(
+        TQDMProgressBar(
+            refresh_rate=cfg.logging.progress_bar_refresh_rate
+            )
+        )
+    return callbacks
+
+
+def run(cfg: DictConfig) -&gt; None:
+    &#34;&#34;&#34;
+    Generic train loop
+
+    :param cfg: run configuration, defined by Hydra in /conf
+    &#34;&#34;&#34;
+    if cfg.train.deterministic:
+        seed_everything(cfg.train.random_seed)
+
+    if cfg.train.pl_trainer.fast_dev_run:
+        hydra.utils.log.info(
+            f&#34;Debug mode &lt;{cfg.train.pl_trainer.fast_dev_run}&gt;. &#34;
+            f&#34;Forcing debugger friendly configuration!&#34;
+        )
+        # Debuggers don&#39;t like GPUs nor multiprocessing
+        cfg.train.pl_trainer.gpus = 0
+        cfg.data.datamodule.num_workers.train = 0
+        cfg.data.datamodule.num_workers.val = 0
+        cfg.data.datamodule.num_workers.test = 0
+
+    # Hydra run directory
+    hydra_dir = Path(HydraConfig.get().run.dir)
+
+
+    # Instantiate datamodule
+    hydra.utils.log.info(f&#34;Instantiating &lt;{cfg.data.datamodule._target_}&gt;&#34;)
+    datamodule: pl.LightningDataModule = hydra.utils.instantiate(
+        cfg.data.datamodule, cfg=cfg, _recursive_=False
+    )
+
+        
+    # Instantiate model
+    hydra.utils.log.info(f&#34;Instantiating &lt;{cfg.model._target_}&gt;&#34;)
+    model: pl.LightningModule = hydra.utils.instantiate(cfg.model, cfg=cfg, _recursive_=False)
+
+        
+    # Instantiate the callbacks
+    callbacks: List[Callback] = build_callbacks(cfg=cfg)
+
+        
+    # Logger instantiation/configuration
+    wandb_logger = None
+    if &#34;wandb&#34; in cfg.logging:
+        hydra.utils.log.info(f&#34;Instantiating &lt;WandbLogger&gt;&#34;)
+        wandb_config = cfg.logging.wandb
+        wandb_logger = WandbLogger(
+            name=cfg.data.datamodule.dataset_name + &#34;__&#34; + cfg.model.name,
+            project=wandb_config.project,
+            entity=wandb_config.entity,
+            tags=cfg.core.tags,
+            log_model=True,
+        )
+        hydra.utils.log.info(f&#34;W&amp;B is now watching &lt;{wandb_config.watch.log}&gt;!&#34;)
+        wandb_logger.watch(
+            model, log=wandb_config.watch.log, log_freq=wandb_config.watch.log_freq
+        )
+
+    hydra.utils.log.info(f&#34;Instantiating the Trainer&#34;)
+
+    # The Lightning core, the Trainer
+    trainer = pl.Trainer(
+        default_root_dir=hydra_dir,
+        logger=wandb_logger,
+        callbacks=callbacks,
+        deterministic=cfg.train.deterministic,
+        val_check_interval=cfg.logging.val_check_interval,
+        log_every_n_steps=10,
+        #auto_select_gpus=True,
+        # benchmark=True,
+        accelerator=None,  # &#39;dp&#39;, &#34;ddp&#34; if args.gpus &gt; 1 else None,
+        #plugins=[DDPPlugin(find_unused_parameters=True)],
+        **cfg.train.pl_trainer,
+    )
+
+    # num_samples = len(datamodule.train_dataset)
+    num_classes = cfg.model.num_classes
+    batch_size = datamodule.batch_size[&#34;train&#34;]
+
+    hydra.utils.log.info(&#34;Starting training with {} classes and batches of {} images&#34;.format(
+        num_classes,
+        batch_size))
+
+    trainer.fit(model=model, datamodule=datamodule)
+
+    hydra.utils.log.info(f&#34;Starting testing!&#34;)
+    trainer.test(model=model, datamodule=datamodule)
+
+    shutil.copytree(&#34;.hydra&#34;, Path(wandb_logger.experiment.dir) / &#34;hydra&#34;)
+
+    # Logger closing to release resources/avoid multi-run conflicts
+    if wandb_logger is not None:
+        wandb_logger.experiment.finish()
+
+
+@hydra.main(config_path=&#34;conf&#34;, config_name=&#34;base_conf&#34;)
+def main(cfg: omegaconf.DictConfig):
+    run(cfg)
+
+
+if __name__ == &#34;__main__&#34;:
+    main()</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="imutils.ml.run_main.build_callbacks"><code class="name flex">
+<span>def <span class="ident">build_callbacks</span></span>(<span>cfg: omegaconf.dictconfig.DictConfig) ‑> List[pytorch_lightning.callbacks.base.Callback]</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def build_callbacks(cfg: DictConfig) -&gt; List[Callback]:
+    callbacks: List[Callback] = []
+
+    if &#34;lr_monitor&#34; in cfg.logging:
+        hydra.utils.log.info(f&#34;Adding callback &lt;LearningRateMonitor&gt;&#34;)
+        callbacks.append(
+            LearningRateMonitor(
+                logging_interval=cfg.logging.lr_monitor.logging_interval,
+                log_momentum=cfg.logging.lr_monitor.log_momentum,
+            )
+        )
+
+    if &#34;early_stopping&#34; in cfg.train:
+        hydra.utils.log.info(f&#34;Adding callback &lt;EarlyStopping&gt;&#34;)
+        callbacks.append(
+            EarlyStopping(
+                monitor=cfg.train.monitor_metric,
+                mode=cfg.train.monitor_metric_mode,
+                patience=cfg.train.early_stopping.patience,
+                verbose=cfg.train.early_stopping.verbose,
+            )
+        )
+
+    if &#34;model_checkpoints&#34; in cfg.train.model_checkpoints:
+        hydra.utils.log.info(f&#34;Adding callback &lt;ModelCheckpoint&gt;&#34;)
+        callbacks.append(
+            ModelCheckpoint(
+                monitor=cfg.train.monitor_metric,
+                mode=cfg.train.monitor_metric_mode,
+                save_top_k=cfg.train.model_checkpoints.save_top_k,
+                verbose=cfg.train.model_checkpoints.verbose,
+            )
+        )
+
+    callbacks.append(
+        TQDMProgressBar(
+            refresh_rate=cfg.logging.progress_bar_refresh_rate
+            )
+        )
+    return callbacks</code></pre>
+</details>
+</dd>
+<dt id="imutils.ml.run_main.main"><code class="name flex">
+<span>def <span class="ident">main</span></span>(<span>cfg: omegaconf.dictconfig.DictConfig)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@hydra.main(config_path=&#34;conf&#34;, config_name=&#34;base_conf&#34;)
+def main(cfg: omegaconf.DictConfig):
+    run(cfg)</code></pre>
+</details>
+</dd>
+<dt id="imutils.ml.run_main.run"><code class="name flex">
+<span>def <span class="ident">run</span></span>(<span>cfg: omegaconf.dictconfig.DictConfig) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Generic train loop</p>
+<p>:param cfg: run configuration, defined by Hydra in /conf</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def run(cfg: DictConfig) -&gt; None:
+    &#34;&#34;&#34;
+    Generic train loop
+
+    :param cfg: run configuration, defined by Hydra in /conf
+    &#34;&#34;&#34;
+    if cfg.train.deterministic:
+        seed_everything(cfg.train.random_seed)
+
+    if cfg.train.pl_trainer.fast_dev_run:
+        hydra.utils.log.info(
+            f&#34;Debug mode &lt;{cfg.train.pl_trainer.fast_dev_run}&gt;. &#34;
+            f&#34;Forcing debugger friendly configuration!&#34;
+        )
+        # Debuggers don&#39;t like GPUs nor multiprocessing
+        cfg.train.pl_trainer.gpus = 0
+        cfg.data.datamodule.num_workers.train = 0
+        cfg.data.datamodule.num_workers.val = 0
+        cfg.data.datamodule.num_workers.test = 0
+
+    # Hydra run directory
+    hydra_dir = Path(HydraConfig.get().run.dir)
+
+
+    # Instantiate datamodule
+    hydra.utils.log.info(f&#34;Instantiating &lt;{cfg.data.datamodule._target_}&gt;&#34;)
+    datamodule: pl.LightningDataModule = hydra.utils.instantiate(
+        cfg.data.datamodule, cfg=cfg, _recursive_=False
+    )
+
+        
+    # Instantiate model
+    hydra.utils.log.info(f&#34;Instantiating &lt;{cfg.model._target_}&gt;&#34;)
+    model: pl.LightningModule = hydra.utils.instantiate(cfg.model, cfg=cfg, _recursive_=False)
+
+        
+    # Instantiate the callbacks
+    callbacks: List[Callback] = build_callbacks(cfg=cfg)
+
+        
+    # Logger instantiation/configuration
+    wandb_logger = None
+    if &#34;wandb&#34; in cfg.logging:
+        hydra.utils.log.info(f&#34;Instantiating &lt;WandbLogger&gt;&#34;)
+        wandb_config = cfg.logging.wandb
+        wandb_logger = WandbLogger(
+            name=cfg.data.datamodule.dataset_name + &#34;__&#34; + cfg.model.name,
+            project=wandb_config.project,
+            entity=wandb_config.entity,
+            tags=cfg.core.tags,
+            log_model=True,
+        )
+        hydra.utils.log.info(f&#34;W&amp;B is now watching &lt;{wandb_config.watch.log}&gt;!&#34;)
+        wandb_logger.watch(
+            model, log=wandb_config.watch.log, log_freq=wandb_config.watch.log_freq
+        )
+
+    hydra.utils.log.info(f&#34;Instantiating the Trainer&#34;)
+
+    # The Lightning core, the Trainer
+    trainer = pl.Trainer(
+        default_root_dir=hydra_dir,
+        logger=wandb_logger,
+        callbacks=callbacks,
+        deterministic=cfg.train.deterministic,
+        val_check_interval=cfg.logging.val_check_interval,
+        log_every_n_steps=10,
+        #auto_select_gpus=True,
+        # benchmark=True,
+        accelerator=None,  # &#39;dp&#39;, &#34;ddp&#34; if args.gpus &gt; 1 else None,
+        #plugins=[DDPPlugin(find_unused_parameters=True)],
+        **cfg.train.pl_trainer,
+    )
+
+    # num_samples = len(datamodule.train_dataset)
+    num_classes = cfg.model.num_classes
+    batch_size = datamodule.batch_size[&#34;train&#34;]
+
+    hydra.utils.log.info(&#34;Starting training with {} classes and batches of {} images&#34;.format(
+        num_classes,
+        batch_size))
+
+    trainer.fit(model=model, datamodule=datamodule)
+
+    hydra.utils.log.info(f&#34;Starting testing!&#34;)
+    trainer.test(model=model, datamodule=datamodule)
+
+    shutil.copytree(&#34;.hydra&#34;, Path(wandb_logger.experiment.dir) / &#34;hydra&#34;)
+
+    # Logger closing to release resources/avoid multi-run conflicts
+    if wandb_logger is not None:
+        wandb_logger.experiment.finish()</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+<section>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="imutils.ml" href="index.html">imutils.ml</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="imutils.ml.run_main.build_callbacks" href="#imutils.ml.run_main.build_callbacks">build_callbacks</a></code></li>
+<li><code><a title="imutils.ml.run_main.main" href="#imutils.ml.run_main.main">main</a></code></li>
+<li><code><a title="imutils.ml.run_main.run" href="#imutils.ml.run_main.run">run</a></code></li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+</footer>
+</body>
+</html>

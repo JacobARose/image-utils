@@ -8,11 +8,11 @@ import math
 import torch
 import torch.backends.cudnn as cudnn
 
-from main_ce import set_loader
-from imutils.ml.util import (AverageMeter, adjust_learning_rate, warmup_learning_rate,
+from imutils.ml.main_ce import set_loader
+from imutils.ml.utils.common import (AverageMeter, adjust_learning_rate, warmup_learning_rate,
                              accuracy, set_optimizer)
 from imutils.ml.models.resnet_big import SupConResNet, LinearClassifier
-from imutils.big.datamodule import *
+from imutils.ml.data.datamodule import *
 try:
     import apex
     from apex import amp, optimizers

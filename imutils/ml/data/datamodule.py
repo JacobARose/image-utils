@@ -1,0 +1,422 @@
+"""
+imutils/ml/data/datamodule.py
+
+Created on: Wednesday March 16th, 2022  
+Created by: Jacob Alexander Rose  
+
+"""
+
+import jpeg4py as jpeg
+from omegaconf import DictConfig, OmegaConf
+import os
+import pandas as pd
+from pathlib import Path
+from PIL import Image
+import multiprocessing as mproc
+import pytorch_lightning as pl
+from torch.utils.data import DataLoader, Dataset
+from torchvision import transforms as T
+from typing import *
+
+
+# from imutils.big.make_train_val_splits import main as make_train_val_splits
+from imutils.big.make_train_val_splits import (check_already_built,
+											   read_encoded_splits,
+											   find_data_splits_dir,
+											   main as make_train_val_splits)
+
+# from imutils.big.transforms.image import (Preprocess,
+from imutils.ml.aug.image.images import (Preprocess,
+										 BatchTransform,
+										 get_default_transforms,
+										 DEFAULT_CFG as DEFAULT_TRANSFORM_CFG)
+
+__all__ = ["Herbarium2022DataModule", "Herbarium2022Dataset", "get_default_transforms"]
+
+
+
+def read_jpeg(path):
+	return jpeg.JPEG(path).decode()
+
+def read_pil(path):
+	return Image.open(path)
+
+default_reader = read_jpeg
+
+
+class AbstractCatalogDataset(Dataset):
+	
+	@property
+	def splits_dir(self) -> Path:
+		return find_data_splits_dir(source_dir=self.catalog_dir,
+									train_size=self.train_size)
+	
+	@property
+	def already_built(self) -> bool:
+		return check_already_built(self.splits_dir)
+
+	
+	def prepare_metadata(self):
+
+		if not self.already_built:
+			
+			data = make_train_val_splits(source_dir=self.catalog_dir,
+										 splits_dir=self.splits_dir,
+										 label_col=self.label_col,
+										 train_size=self.train_size,
+										 seed=self.seed)
+
+			return data
+
+
+	def get_data_subset(self,
+						subset: str="train") -> Tuple["LabelEncoder", pd.DataFrame]:
+		"""
+		Read the selected data subset into a pd.DataFrame
+		"""
+		data = read_encoded_splits(source_dir=self.splits_dir,
+											include=[subset])
+		encoder = data["label_encoder"]
+		data = data["subsets"][subset]
+		
+		return encoder, data
+
+	
+	def setup(self):
+		data = self.prepare_metadata()
+		if data is None:
+			encoder, data = self.get_data_subset(subset=self.subset)
+		else:
+			encoder = data["label_encoder"]
+			data = data["subsets"][self.subset]
+		setattr(data, "label_encoder", encoder)
+		self.label_encoder = encoder
+		self.df = data
+		
+		if self.shuffle:
+			self.df = self.df.sample(frac=1, random_state=self.seed).reset_index(drop=False)
+			
+		self.paths = self.df[self.x_col]
+
+		if self.is_supervised:
+			# self.imgs = 
+			self.targets = self.df[self.y_col]
+			self.num_classes = len(set(self.df[self.y_col]))
+		else:
+			self.targets = None
+			self.num_classes = -1
+	
+	
+
+class Herbarium2022Dataset(AbstractCatalogDataset):
+	catalog_dir: str = os.path.abspath("./data")
+	
+	def __init__(self,
+				 catalog_dir: Optional[str]=None,
+				 subset: str="train",
+				 label_col: str="scientificName",
+				 train_size: float=0.7,
+				 shuffle: bool=True,
+				 seed: int=14,
+				 image_reader: Callable=default_reader, #Image.open,
+				 preprocess: Callable=None,
+				 transform: Callable=None):
+		
+		self.catalog_dir = catalog_dir or self.catalog_dir
+		
+		self.x_col = "path"
+		self.y_col = "y"
+		self.id_col = "image_id"
+		self.label_col = label_col
+		self.train_size = train_size
+		self.shuffle = shuffle
+		self.seed = seed
+		self.subset = subset
+		self.is_supervised = bool(subset != "test")
+
+		self.set_image_reader(image_reader)
+		self.preprocess = preprocess
+		self.transform = transform
+		self.setup()
+				
+	@classmethod
+	def from_cfg(cls,
+				 cfg: DictConfig,
+				 **kwargs):
+		cfg = OmegaConf.merge(cfg, kwargs)
+		return cls(**cfg)
+		
+	def __len__(self):
+		return len(self.df)
+	
+	def set_image_reader(self,
+						 reader: Callable) -> None:
+		self.reader = reader
+	
+	def parse_sample(self, index: int):
+		return self.df.iloc[index, :]
+		
+	def fetch_item(self, index: int) -> Tuple[str]:
+		"""
+		Returns identically-structured namedtuple as __getitem__, with the following differences:
+			- PIL Image (or raw bytes) as returned by self.reader function w/o any transforms
+				vs.
+			  torch.Tensor after all transformssx
+			- target text label vs, target int label
+			- image path
+			- image catalog_number
+		
+		"""
+		sample = self.parse_sample(index)
+		path = getattr(sample, self.x_col)
+		catalog_number = getattr(sample, self.id_col)
+		
+		image = self.reader(path)
+		
+		metadata={
+				  "path":path,
+				  "catalog_number":catalog_number
+				 }
+		label = None
+		if self.is_supervised:
+			label = getattr(sample, self.y_col, None)
+		return image, label, metadata
+		
+	def __getitem__(self, index: int):
+		
+		image, label, metadata = self.fetch_item(index)
+		
+		if self.preprocess is not None:
+			image = self.preprocess(image)
+		
+		if self.transform is not None:
+			image = self.transform(image)
+		
+		return image, label, metadata
+
+
+
+	
+	
+
+
+class Herbarium2022DataModule(pl.LightningDataModule):
+	dataset_cls = Herbarium2022Dataset
+	train_dataset = None
+	val_dataset = None
+	test_dataset = None
+	
+	train_transform = None
+	val_transform = None
+	test_transform = None
+	
+	transform_cfg = DEFAULT_TRANSFORM_CFG
+	
+	def __init__(self,
+				 catalog_dir: Optional[str]=None,
+				 label_col="scientificName",
+				 train_size=0.7,
+				 shuffle: bool=True,
+				 seed=14,
+				 batch_size: int = 128,
+				 num_workers: int = None,
+				 pin_memory: bool=True,
+				 train_transform=None,
+				 val_transform=None,
+				 test_transform=None,
+				 transform_cfg=None,
+				 remove_transforms: bool=False,
+				 image_reader: Callable=default_reader, #Image.open,
+	):
+		super().__init__()
+		
+		self.catalog_dir = catalog_dir
+		
+		self.label_col = label_col
+		self.train_size = train_size
+		self.shuffle = shuffle
+		self.seed = seed
+		self.batch_size = batch_size
+		self.num_workers = num_workers if num_workers is not None else mproc.cpu_count()
+		self.pin_memory = pin_memory
+		self.image_reader = image_reader
+
+		self.setup_transforms(transform_cfg=transform_cfg,
+							  train_transform=train_transform,
+							  val_transform=val_transform,
+							  test_transform=test_transform,
+							  remove_transforms=remove_transforms)
+		self.cfg = self.get_cfg()
+		
+
+	@classmethod
+	def from_cfg(cls,
+				 cfg: DictConfig,
+				 **kwargs):
+		cfg = OmegaConf.merge(cfg, kwargs)
+		return cls(**cfg)
+
+	def get_cfg(self,
+				 cfg: DictConfig,
+				 **kwargs):
+		
+		default_cfg = DictConfig(dict(
+			catalog_dir=self.catalog_dir or None,
+			label_col=self.label_col or "scientificName",
+			train_size=self.train_size or 0.7,
+			shuffle=self.shuffle,
+			seed=self.seed or 14,
+			batch_size = self.batch_size or 128,
+			num_workers = self.num_workers or None,
+			pin_memory=self.pin_memory,
+			transform_cfg=self.transform_cfg,
+			remove_transforms=self.remove_transforms,
+		))
+		
+		cfg = OmegaConf.merge(default_cfg, cfg, kwargs)
+		return cfg
+
+	
+	
+
+	def prepare_data(self):
+		pass
+
+	@property
+	def num_classes(self) -> int:
+		assert self.train_dataset and self.valid_dataset
+		return max(self.train_dataset.num_classes, self.valid_dataset.num_classes)
+
+	def setup(self, stage=None):
+		if stage in ["train", "all", None]:
+			self.train_dataset = Herbarium2022Dataset(catalog_dir=self.catalog_dir,
+													  subset="train",
+													  label_col=self.label_col,
+													  train_size=self.train_size,
+													  shuffle=self.shuffle,
+													  seed=self.seed,
+													  transform=self.train_transform)
+			print(f"training dataset length: {len(self.train_dataset)}")
+		if stage in ["val", "all", None]:
+			self.val_dataset = Herbarium2022Dataset(catalog_dir=self.catalog_dir,
+													subset="val",
+													label_col=self.label_col,
+													train_size=self.train_size,
+													shuffle=self.shuffle,
+													seed=self.seed,
+													transform=self.val_transform)
+			print(f"validation dataset length: {len(self.val_dataset)}")
+		if stage in ["test", "all", None]:
+			self.test_dataset = Herbarium2022Dataset(catalog_dir=self.catalog_dir,
+													 subset="test",
+													 label_col=self.label_col,
+													 train_size=self.train_size,
+													 shuffle=self.shuffle,
+													 seed=self.seed,
+													 transform=self.test_transform)
+			print(f"test dataset length: {len(self.test_dataset)}")
+			
+		self.set_image_reader(self.image_reader)
+
+	def train_dataloader(self):
+		return DataLoader(
+			self.train_dataset,
+			batch_size=self.batch_size,
+			num_workers=self.num_workers,
+			shuffle=True,
+			pin_memory=self.pin_memory
+		)
+
+	def val_dataloader(self):
+		return DataLoader(
+			self.val_dataset,
+			batch_size=self.batch_size,
+			num_workers=self.num_workers,
+			shuffle=False,
+			pin_memory=self.pin_memory
+		)
+
+	def test_dataloader(self):
+		return DataLoader(
+			self.test_dataset,
+			batch_size=self.batch_size,
+			num_workers=self.num_workers,
+			shuffle=False,
+			pin_memory=self.pin_memory
+		)
+
+	def get_dataloader(self,
+					   subset:str="train"):
+		if subset == "train":
+			return self.train_dataloader()
+		elif subset == "val":
+			return self.val_dataloader()
+		elif subset == "test":
+			return self.test_dataloader()
+		else:
+			return None
+
+	def get_dataset(self,
+					   subset:str="train"):
+		if subset == "train":
+			return self.train_dataset
+		elif subset == "val":
+			return self.val_dataset
+		elif subset == "test":
+			return self.test_dataset
+		else:
+			return None
+		
+	def setup_transforms(self,
+						 transform_cfg: dict=None,
+						 train_transform=None,
+						 val_transform=None,
+						 test_transform=None,
+						 remove_transforms: bool=False):
+		transform_cfg = transform_cfg or {}
+		self.transform_cfg = OmegaConf.merge(self.transform_cfg, transform_cfg)
+		self.remove_transforms = remove_transforms
+		if self.remove_transforms:
+			self.train_transform = None
+			self.val_transform = None
+			self.test_transform = None
+		else:
+			self.train_transform = (
+				get_default_transforms(mode="train", config=self.transform_cfg)
+				if train_transform is None else train_transform
+			)
+			self.val_transform = (
+				get_default_transforms(mode="val", config=self.transform_cfg)
+				if val_transform is None else val_transform
+			)
+			self.test_transform = (
+				get_default_transforms(mode="test", config=self.transform_cfg)
+				if test_transform is None else test_transform
+			)
+		
+	def set_image_reader(self,
+						 reader: Callable) -> None:
+		"""
+		Pass in a callable that reads image data from disk,
+		which is assigned to each of this datamodule's datasets, respectively.
+		"""
+		for data in [self.train_dataset, self.val_dataset, self.test_dataset]:
+			if data is None:
+				pass
+			data.set_image_reader(reader)
+
+
+
+	def show_batch(self, win_size=(10, 10)):
+		def _to_vis(data):
+			return tensor_to_image(torchvision.utils.make_grid(data, nrow=8))
+
+		# get a batch from the training set: try with `val_datlaoader` :)
+		imgs, labels = next(iter(self.train_dataloader()))
+		imgs_aug = self.transform(imgs)  # apply transforms
+		# use matplotlib to visualize
+		plt.figure(figsize=win_size)
+		plt.imshow(_to_vis(imgs))
+		plt.figure(figsize=win_size)
+		plt.imshow(_to_vis(imgs_aug))
+		

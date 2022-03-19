@@ -1,5 +1,5 @@
-#-r requirements.txt
-ipython
+-r ./requirements.txt
+ipython[all]
 ipykernel
 ipywidgets
 jupyter
@@ -13,3 +13,4 @@ jupyterlab-widgets
 flake8
 pre-commit
 Sphinx
+pdoc3

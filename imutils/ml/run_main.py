@@ -138,12 +138,131 @@ Goals:
     - 2. Trying to debug why DDP isnt working on both GPUs
 Actions:
     - 1. Refactoring step to not return x at every batch.
-- Moving back to 2-gpus and strategy=DDP, batch_size=128
-- freezing full backbone now
+- Keeping to 2-gpus and strategy=DDP, batch_size=128
+- freezing full backbone
+
+- (12:15 PM) -- Removed x from step returns to see if the memory leak disappears
+    - Also printing available GPU devices between model creations & DDP.
 
 
-- Result (11:57 AM): [OOM ERROR] -- Crashed in the middle of Fossil Sync meeting
-    - wandb shows process gpu memory increasing linearly until the crash, indicating a likely MEMORY LEAK.
+export CUDA_VISIBLE_DEVICES='0,4'; python run_main.py \
+        train.pl_trainer.devices=2 \
+        train.pl_trainer.accelerator="gpu" \
+        +train.pl_trainer.strategy="ddp" \
+        +train.pl_trainer.max_epochs=30 \
+        +train.pl_trainer.profiler="simple" \
+        optim.use_lr_scheduler=False \
+        data.datamodule.batch_size=64
+
+
+#################################################
+
+
+(1:10 PM AM 2022-03-21)
+Goals:
+    - 1. Trying to specify GPUs without CUDA_VISIBLE_DEVICES
+    - 2. Trying to debug why DDP isnt working on both GPUs
+Actions:
+    - 1. specifying devices=[0,4]
+    
+- Had to enter this command first:
+unset CUDA_VISIBLE_DEVICES
+
+python run_main.py \
+        train.pl_trainer.devices=[0,4] \
+        train.pl_trainer.accelerator="gpu" \
+        +train.pl_trainer.strategy="ddp" \
+        +train.pl_trainer.max_epochs=30 \
+        +train.pl_trainer.profiler="simple" \
+        optim.use_lr_scheduler=False \
+        data.datamodule.batch_size=128
+
+##################################
+
+
+python run_main.py \
+        train.pl_trainer.devices=[0,4] \
+        train.pl_trainer.accelerator="gpu" \
+        data.datamodule.num_workers=1 \
+        +train.pl_trainer.strategy="ddp" \
+        +train.pl_trainer.max_epochs=30 \
+        +train.pl_trainer.profiler="simple" \
+        optim.use_lr_scheduler=False \
+        data.datamodule.batch_size=128
+
+
+python run_main.py \
+        train.pl_trainer.devices=[0,4] \
+        train.pl_trainer.accelerator="gpu" \
+        data.datamodule.num_workers=0 \
+        +train.pl_trainer.strategy="ddp" \
+        +train.pl_trainer.max_epochs=30 \
+        +train.pl_trainer.profiler="simple" \
+        optim.use_lr_scheduler=False \
+        data.datamodule.batch_size=128
+        
+python run_main.py \
+        train.pl_trainer.devices=[0,4] \
+        train.pl_trainer.accelerator="gpu" \
+        data.datamodule.num_workers=8 \
+        +train.pl_trainer.strategy="ddp" \
+        +train.pl_trainer.max_epochs=30 \
+        +train.pl_trainer.profiler="simple" \
+        optim.use_lr_scheduler=False \
+        data.datamodule.batch_size=128
+        
+################################
+
+
+(~2:40 PM)
+
+python run_main.py \
+        train.pl_trainer.devices=[0,4] \
+        train.pl_trainer.accelerator="gpu" \
+        data.datamodule.num_workers=4 \
+        +train.pl_trainer.strategy="ddp" \
+        +train.pl_trainer.max_epochs=30 \
+        +train.pl_trainer.profiler="simple" \
+        optim.use_lr_scheduler=False \
+        data.datamodule.batch_size=128 \
+        hp.resolution=448 \
+        aug@data.datamodule.transform_cfg=medium_image_aug_conf
+
+
+####################################
+
+
+(~3 PM)
+
+(~2:40 PM)
+
+python run_main.py \
+        train.pl_trainer.devices=[0,4,5,6] \
+        train.pl_trainer.accelerator="gpu" \
+        data.datamodule.num_workers=4 \
+        +train.pl_trainer.strategy="ddp" \
+        +train.pl_trainer.max_epochs=30 \
+        +train.pl_trainer.profiler="simple" \
+        optim.use_lr_scheduler=False \
+        data.datamodule.batch_size=32 \
+        hp.resolution=448 \
+        aug@data.datamodule.transform_cfg=medium_image_aug_conf
+
+################
+
+(~3:40 PM) -- Removed gradient_clip_val = 10,000,000 from default trainer cfg.
+
+python run_main.py \
+        train.pl_trainer.devices=[0,4,5,6] \
+        train.pl_trainer.accelerator="gpu" \
+        data.datamodule.num_workers=4 \
+        +train.pl_trainer.strategy="ddp" \
+        +train.pl_trainer.max_epochs=30 \
+        +train.pl_trainer.profiler="simple" \
+        optim.use_lr_scheduler=False \
+        data.datamodule.batch_size=32 \
+        hp.resolution=448 \
+        aug@data.datamodule.transform_cfg=medium_image_aug_conf
 
 
 
@@ -181,8 +300,10 @@ import imutils.ml.models.pl.classifier
 
 torch.backends.cudnn.benchmark = True
 
+logging = template_utils.get_logger(__file__)
+
 # Set the cwd to the project root
-os.chdir(Path(__file__).parent.parent)
+# os.chdir(Path(__file__).parent.parent)
 
 # Load environment variables
 load_envs()
@@ -197,6 +318,8 @@ def train(cfg: DictConfig) -> None:
 
     :param cfg: run configuration, defined by Hydra in /conf
     """
+    from icecream import ic
+    
     OmegaConf.register_new_resolver("int", int)
     
     if cfg.train.deterministic:
@@ -227,12 +350,24 @@ def train(cfg: DictConfig) -> None:
         cfg.data.datamodule, _recursive_=False
     )
 
+    logging.warning("1. Before model, before trainer")
+    ic(torch.cuda.device_count())
+    ic(torch.cuda.is_available())
+    ic(torch.cuda.current_device())    
+    ic(torch.cuda.get_device_name(0))
+
 	
     hydra.utils.log.info(f"Instantiating <{cfg.model_cfg._target_}>")
     # model: pl.LightningModule = hydra.utils.instantiate(cfg.model, cfg=cfg, _recursive_=False)
     model = imutils.ml.models.pl.classifier.LitClassifier(cfg=cfg, #model_cfg=cfg.model_cfg,
                                                           loss=cfg.model_cfg.loss)
+    
 
+    logging.warning("2. After model, before trainer")
+    ic(torch.cuda.device_count())
+    ic(torch.cuda.is_available())
+    ic(torch.cuda.current_device())    
+    ic(torch.cuda.get_device_name(0))
 	
     wandb_logger = configure_loggers(cfg=cfg, model=model)
     # Instantiate the callbacks
@@ -249,7 +384,7 @@ def train(cfg: DictConfig) -> None:
         callbacks=callbacks,
         deterministic=cfg.train.deterministic,
         val_check_interval=cfg.logging.val_check_interval,
-        log_every_n_steps=10,
+        # log_every_n_steps=10,
         #auto_select_gpus=True,
         # benchmark=True,
         # accelerator=None,  # 'dp', "ddp" if args.gpus > 1 else None,
@@ -257,6 +392,13 @@ def train(cfg: DictConfig) -> None:
         **cfg.train.pl_trainer,
     )
 
+    logging.warning("3. After model, after trainer, before fit")
+    ic(torch.cuda.device_count())
+    ic(torch.cuda.is_available())
+    ic(torch.cuda.current_device())    
+    ic(torch.cuda.get_device_name(0))
+
+    
     # num_samples = len(datamodule.train_dataset)
     num_classes = cfg.model_cfg.head.num_classes
     batch_size = datamodule.batch_size #["train"]

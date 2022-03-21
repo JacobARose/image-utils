@@ -69,7 +69,7 @@ class LitClassifier(BaseLightningModule): #pl.LightningModule):
 		if self.cfg.train.freeze_backbone:
 			self.freeze_up_to(layer=-1,
 							  submodule="backbone",
-							  verbose=True)	# def on_fit_start(self):
+							  verbose=False)	# def on_fit_start(self):
 
 		
 		if self.cfg.logging.log_model_summary:
@@ -126,7 +126,7 @@ class LitClassifier(BaseLightningModule): #pl.LightningModule):
 
 		x, y = batch[:2]
 		out = self.step(x, y)
-		return out
+		return {k: out[k] for k in ["logits", "loss", "y"]}
 
 	def training_step_end(self, out):
 		self.train_metric(out["logits"], out["y"])
@@ -136,14 +136,14 @@ class LitClassifier(BaseLightningModule): #pl.LightningModule):
 				**self.train_metric
 			},
 			on_step=True,
-			on_epoch=False
+			on_epoch=True
 		)
 		return out["loss"].mean()
 
 	def validation_step(self, batch: Any, batch_idx: int) -> Dict[str, torch.Tensor]:
 		x, y = batch[:2]
 		out = self.step(x, y)
-		return out
+		return {k: out[k] for k in ["logits", "loss", "y"]}
 	
 	def validation_step_end(self, out):
 		self.val_metric(out["logits"], out["y"])
@@ -158,7 +158,7 @@ class LitClassifier(BaseLightningModule): #pl.LightningModule):
 		self.log_dict(log_dict)
 		
 		return {
-			"image": out["x"],
+			# "image": out["x"],
 			"y_true": out["y"],
 			"logits": out["logits"],
 			"val_loss": out["loss"].mean(),
@@ -167,7 +167,7 @@ class LitClassifier(BaseLightningModule): #pl.LightningModule):
 	def test_step(self, batch: Any, batch_idx: int) -> Dict[str, torch.Tensor]:
 		x, y = batch[:2]
 		out = self.step(x, y)
-		return out
+		return {k: out[k] for k in ["logits", "loss", "y"]}
 
 	def test_step_end(self, out):
 		self.test_metric(out["logits"], out["y"])
@@ -178,7 +178,7 @@ class LitClassifier(BaseLightningModule): #pl.LightningModule):
 			},
 		)
 		return {
-			"image": out["x"],
+			# "image": out["x"],
 			"y_true": out["y"],
 			"logits": out["logits"],
 			"val_loss": out["loss"].mean(),
@@ -189,6 +189,9 @@ class LitClassifier(BaseLightningModule): #pl.LightningModule):
 		"""
 		
 		"""
+		if "image" not in outputs:
+			print(f"Skipping val render_image_predictions due to missing 'image' key in epoch outputs.")
+			return
 		self.render_image_predictions(
 			outputs=outputs,
 			batch_size=self.cfg.data.datamodule.batch_size,
@@ -201,6 +204,9 @@ class LitClassifier(BaseLightningModule): #pl.LightningModule):
 
 
 	def test_epoch_end(self, outputs: List[Any]) -> None:
+		if "image" not in outputs:
+			print(f"Skipping test render_image_predictions due to missing 'image' key in epoch outputs.")
+			return
 		
 		self.render_image_predictions(
 			outputs=outputs,

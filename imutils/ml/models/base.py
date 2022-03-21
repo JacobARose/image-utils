@@ -7,6 +7,7 @@ Author: Jacob A Rose
 Created: Saturday May 29th, 2021
 
 """
+from icecream import ic
 from typing import *
 import torch
 from torch import nn
@@ -193,7 +194,7 @@ class BaseLightningModule(pl.LightningModule):
         if self.cfg.train.freeze_backbone:
             self.freeze_up_to(layer=-1,
                               submodule="backbone",
-                              verbose=True)    # def on_fit_start(self):
+                              verbose=False)    # def on_fit_start(self):
         if self.cfg.logging.log_model_summary:
             self.summarize_model(f"{self.name}/init")
     
@@ -214,6 +215,8 @@ class BaseLightningModule(pl.LightningModule):
                 layer = len(list(net.parameters())) #+ layer
             
         net.requires_grad_(True)
+        num_layers = len(list(net.state_dict()))
+        num_frozen=0
         for i, (name, param) in enumerate(net.named_parameters()):
             if isinstance(layer, int) and (layer == i):
                 print(f'breaking: {layer}={i}')
@@ -221,14 +224,17 @@ class BaseLightningModule(pl.LightningModule):
             elif isinstance(layer, str) and (layer == name):
                 print(f'breaking: {layer}={name}')
                 break
-            print(f'Setting to False: {name}')
+            if verbose:
+                print(f'Setting to False: {name}')
             param.requires_grad_(False)
+            num_frozen += 1
 
             if verbose:
                 if isinstance(submodule, str):
                     name = ".".join([submodule, name])
                 print(f"Setting layer:({name}) requires_grad={param.requires_grad}.")
-        
+        ic(submodule)
+        print(f"Total frozen layers: {num_frozen}, Total unfrozen layers: {num_layers-num_frozen}")
     
     def summarize_model(self,
                         model_name: str=None):

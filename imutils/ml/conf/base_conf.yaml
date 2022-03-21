@@ -163,7 +163,7 @@ train:
         # max_steps: ${optim.lr_scheduler.total_steps}
         # accumulate_grad_batches: 1
         # num_sanity_val_steps: 2
-        gradient_clip_val: 10000000.0    # 10.
+        # gradient_clip_val: 10000000.0    # 10.
 
     # monitor_metric: 'val_loss'
     # monitor_metric_mode: 'min'
@@ -175,14 +175,6 @@ train:
 #     model_checkpoints:
 #         save_top_k: 2
 #         verbose: True # False
-        
-
-
-
-
-
-
-
 
 
 logging:
@@ -193,7 +185,7 @@ logging:
     normalize_visualization: True
 
     # log frequency
-    val_check_interval: 1 #.0
+    # val_check_interval: 1 #.0
     progress_bar_refresh_rate: 20
 
     wandb:

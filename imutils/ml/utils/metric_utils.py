@@ -1,8 +1,11 @@
 """
-lightning_hydra_classifiers/utils/metric_utils.py
+image-utils/imutils/ml/utils/metric_utils.py
+
+[TODO] - refactor metric configuration to be more general & use Hydra config-style configuration.
+
 
 Author: Jacob A Rose
-Created: Thursday Junee 11th, 2021
+Created: Thursday June 11th, 2021
 
 """
 
@@ -22,6 +25,7 @@ def get_scalar_metrics(num_classes: int,
     default = {'acc_top1': metrics.Accuracy(top_k=1, num_classes=num_classes, average=average),
                'acc_top3': metrics.Accuracy(top_k=3, num_classes=num_classes, average=average),
                'F1_top1':  metrics.F1(top_k=1, num_classes=num_classes, average=average),
+               'F1_top3':  metrics.F1(top_k=3, num_classes=num_classes, average=average),
                'precision_top1': metrics.Precision(top_k=1, num_classes=num_classes, average=average),
                'recall_top1': metrics.Recall(top_k=1, num_classes=num_classes, average=average)}
     if len(prefix)>0:

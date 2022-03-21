@@ -26,7 +26,7 @@ from sklearn.model_selection import train_test_split
 from torchvision.datasets import ImageFolder
 
 from imutils.utils import torchdata
-from imutils.utils.etl_utils import Extract
+from imutils.ml.utils.etl_utils import Extract
 from imutils.utils.SmartCrop import CleverCrop
 
 # try:

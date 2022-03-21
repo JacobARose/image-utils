@@ -1,0 +1,44 @@
+# Note (10-14-21) Jacob: Switched order of callbacks s/t early stopping comes before model checkpoint, to potentially address the issue of early stopping 1 epoch too soon.
+# Idea came from: https://github.com/PyTorchLightning/pytorch-lightning/issues/1464
+
+
+
+
+kwargs:
+    monitor:
+        metric: "val_F1"
+        mode: "max"
+
+lr_monitor:
+    _target_: pytorch_lightning.callbacks.LearningRateMonitor
+    logging_interval: "step" #null
+    log_momentum: false #true
+
+
+early_stopping:
+    _target_: pytorch_lightning.callbacks.early_stopping.EarlyStopping
+    monitor: '${..kwargs.monitor.metric}'
+    patience: 15
+    verbose: true
+    mode: '${..kwargs.monitor.mode}'
+    min_delta: 0.05
+
+
+
+model_checkpoint:
+    _target_: pytorch_lightning.callbacks.ModelCheckpoint
+    monitor: '${..kwargs.monitor.metric}'
+    save_top_k: 2
+    save_last: true
+    mode: '${..kwargs.monitor.mode}'
+    verbose: true
+    dirpath: '${checkpoint_dir}'
+    filename: '{epoch:02d}-{val_loss:.3f}-{${..kwargs.monitor.metric}:.3f}'
+    save_weights_only: true
+
+
+# finetuning_lightning_callback:
+#     _target_: lightning_hydra_classifiers.callbacks.finetuning_callbacks.FinetuningLightningCallback
+#     monitor: "val_acc"
+#     mode: "max"
+#     patience: 1

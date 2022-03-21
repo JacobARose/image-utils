@@ -20,6 +20,7 @@ from typing import *
 from torchvision import transforms as T
 from albumentations.augmentations import transforms as AT
 
+
 DEFAULT_CFG_PATH = os.path.join(os.path.dirname(__file__), "default_image_transform_config.yaml")
 DEFAULT_CFG = OmegaConf.load(DEFAULT_CFG_PATH)
 
@@ -40,7 +41,7 @@ class Preprocess(nn.Module):
 	@torch.no_grad()  # disable gradients for effiency
 	def forward(self, x) -> torch.Tensor:
 		# x_tmp: np.ndarray = np.array(x)  # HxWxC
-		# x_out: Tensor = to_tensor(x_tmp, keepdim=True)  # CxHxW
+		x: Tensor = to_tensor(x)  # CxHxW
 		if self.resize:
 			x = self.resize_func(x)
 
@@ -57,6 +58,7 @@ class BatchTransform(nn.Module):
 				 random_resize_crop=None,
 				 center_crop=None,
 				 apply_color_jitter: bool = False,
+				 random_flips: bool=True,
 				 normalize = (
 					 [0,0,0],
 					 [1,1,1]
@@ -68,7 +70,7 @@ class BatchTransform(nn.Module):
 		self.center_crop = center_crop
 		self._apply_color_jitter = apply_color_jitter
 		self.normalize = normalize
-		
+		self.random_flips = random_flips
 		self.build_transforms(mode=mode)
 
 		
@@ -79,10 +81,11 @@ class BatchTransform(nn.Module):
 		transforms.append(T.RandomPerspective())
 		if type(self.random_resize_crop) == int:
 			transforms.append(T.RandomResizedCrop(self.random_resize_crop))
-		transforms.extend([
-			T.RandomHorizontalFlip(),
-			T.RandomVerticalFlip()
-		])
+		if self.random_flips:
+			transforms.extend([
+				T.RandomHorizontalFlip(),
+				T.RandomVerticalFlip()
+			])
 		return transforms
 
 	def add_test_transforms(self, transforms=None):
@@ -100,6 +103,8 @@ class BatchTransform(nn.Module):
 			transforms = self.add_train_transforms(transforms=transforms)
 		elif mode in ["val", "test"]:
 			transforms = self.add_test_transforms(transforms=transforms)
+			
+		print(f"self.normalize: {self.normalize}")
 
 		transforms.extend([
 			# T.ToTensor(),
@@ -125,18 +130,23 @@ class BatchTransform(nn.Module):
 
 def get_default_transforms(
 		mode: str="train",
+		compose: bool=True,
 		config = dict(
 			preprocess={
 				'train': {'resize': 512},
-				'val': {'resize': 256}},
+				'val': {'resize': 256},
+				'test': {'resize': 256}},
 
 			batch_transform={
 				'train': {'random_resize_crop': 224}, 
-				'val': {'center_crop': 224}},
+				'val': {'center_crop': 224},
+				'test': {'center_crop': 224}},
 			normalize=(
 				[0.485, 0.456, 0.406],
 				[0.229, 0.224, 0.225]
-			)
+			),
+			apply_color_transform=False,
+			random_flips=True
 		)
 	) -> Tuple[Callable]:
 	
@@ -145,13 +155,33 @@ def get_default_transforms(
 	preprocess_transforms = Preprocess(mode=mode, 
 									   resize=config["preprocess"][mode]["resize"])
 	
+	if mode == "train":
+		random_resize_crop = config["batch_transform"]["train"]["random_resize_crop"]
+		center_crop = None
+	else:
+		random_resize_crop = None
+		center_crop = config["batch_transform"][mode]["center_crop"]
+	apply_color_jitter = config.get("apply_color_transform", False)
+	random_flips = config.get("random_flips", True)
+	normalize = config.get("normalize", 
+						   (
+		[0,0,0],
+		[1,1,1]
+	)
+						  )
+		
 	batch_transforms = BatchTransform(mode=mode,
-									   random_resize_crop=None, #config["batch_transform"]["val"]["random_resize_crop"],
-									   center_crop=None, #config["batch_transform"]["val"]["center_crop"],
-									   apply_color_jitter = False,
+									   random_resize_crop=random_resize_crop,
+									   center_crop=center_crop,
+									   apply_color_jitter = apply_color_jitter,
+									   random_flips = random_flips,
 									   normalize = normalize)
 	
-	return preprocess_transforms, batch_transforms
+	transforms = (preprocess_transforms, 
+				  batch_transforms)
+	if compose:
+		transforms = T.Compose(transforms)
+	return transforms
 
 
 

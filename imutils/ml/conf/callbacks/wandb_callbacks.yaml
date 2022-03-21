@@ -1,0 +1,40 @@
+
+defaults:
+    - base_callbacks.yaml
+
+
+# class_counts_stats:
+#     _target_: imutils.ml.callbacks.class_label_stats_callbacks.ClassLabelStatsCallback
+#     subsets:
+        # - "train"
+        # - "val"
+        # - "test"
+        
+    # y_col: ${data.datamodule.label_col}
+
+
+# log_per_class_metrics_to_wandb:
+#     _target_: imutils.ml.callbacks.wandb_callbacks.LogPerClassMetricsToWandb
+#     class_names: null
+
+
+# image_prediction_logger:
+#     _target_: imutils.ml.utils.callback_utils.ImagePredictionLogger
+#     top_k_per_batch: 3
+#     bottom_k_per_batch: 3
+#     frequency: 50
+
+
+# watch_model_with_wandb:
+#     _target_: imutils.ml.callbacks.wandb_callbacks.WatchModelWithWandb
+#     log: "gradients"
+#     log_freq: 100
+
+
+# uploadcheckpointsasartifact:
+#     _target_: imutils.ml.utils.logging_utils.UploadCheckpointsAsArtifact
+#     ckpt_dir: '${checkpoint_dir}'
+#     upload_best_only: true
+
+module_data_monitor:
+    _target_: pl_bolts.callbacks.ModuleDataMonitor

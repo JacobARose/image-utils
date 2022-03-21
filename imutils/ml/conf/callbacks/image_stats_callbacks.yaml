@@ -1,0 +1,8 @@
+
+
+image_stats_accumulator: null
+    # _target_: imutils.ml.callbacks.image_stats_callbacks.ImageStatsAccumulatorCallback
+    # name: "image_stats"
+    # cache_dir: '${run_output_dir}/image_stats'
+    # clear_cache: true
+

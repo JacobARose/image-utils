@@ -12,6 +12,7 @@ import os
 import pandas as pd
 from pathlib import Path
 from PIL import Image
+from rich import print as pp
 import multiprocessing as mproc
 import pytorch_lightning as pl
 from torch.utils.data import DataLoader, Dataset
@@ -42,6 +43,14 @@ def read_pil(path):
 	return Image.open(path)
 
 default_reader = read_jpeg
+
+
+IMAGE_READERS = {
+	"jpeg.JPEG":read_jpeg,
+	"PIL":read_pil,
+	"default":default_reader
+}
+
 
 
 class AbstractCatalogDataset(Dataset):
@@ -118,9 +127,10 @@ class Herbarium2022Dataset(AbstractCatalogDataset):
 				 train_size: float=0.7,
 				 shuffle: bool=True,
 				 seed: int=14,
-				 image_reader: Callable=default_reader, #Image.open,
+				 image_reader: Union[Callable,str]="default", #Image.open,
 				 preprocess: Callable=None,
 				 transform: Callable=None):
+		super().__init__()
 		
 		self.catalog_dir = catalog_dir or self.catalog_dir
 		
@@ -150,7 +160,14 @@ class Herbarium2022Dataset(AbstractCatalogDataset):
 		return len(self.df)
 	
 	def set_image_reader(self,
-						 reader: Callable) -> None:
+						 reader: Union[Callable,str]) -> None:
+		if isinstance(reader, str):
+			if reader not in IMAGE_READERS:
+				print(f"specified image_reader is invalid, using default jpeg.JPEG")
+			reader = IMAGE_READERS.get(reader, IMAGE_READERS["default"])
+		elif not isinstance(reader, Callable):
+			raise InvalidArgument
+		
 		self.reader = reader
 	
 	def parse_sample(self, index: int):
@@ -226,7 +243,8 @@ class Herbarium2022DataModule(pl.LightningDataModule):
 				 test_transform=None,
 				 transform_cfg=None,
 				 remove_transforms: bool=False,
-				 image_reader: Callable=default_reader, #Image.open,
+				 image_reader: Callable="default", #Image.open,
+				 **kwargs
 	):
 		super().__init__()
 		
@@ -247,6 +265,7 @@ class Herbarium2022DataModule(pl.LightningDataModule):
 							  test_transform=test_transform,
 							  remove_transforms=remove_transforms)
 		self.cfg = self.get_cfg()
+		self.kwargs = kwargs
 		
 
 	@classmethod
@@ -257,9 +276,9 @@ class Herbarium2022DataModule(pl.LightningDataModule):
 		return cls(**cfg)
 
 	def get_cfg(self,
-				 cfg: DictConfig,
+				 cfg: DictConfig=None,
 				 **kwargs):
-		
+		cfg=cfg or {}
 		default_cfg = DictConfig(dict(
 			catalog_dir=self.catalog_dir or None,
 			label_col=self.label_col or "scientificName",
@@ -288,7 +307,7 @@ class Herbarium2022DataModule(pl.LightningDataModule):
 		return max(self.train_dataset.num_classes, self.valid_dataset.num_classes)
 
 	def setup(self, stage=None):
-		if stage in ["train", "all", None]:
+		if stage in ["train", "fit", "all", None]:
 			self.train_dataset = Herbarium2022Dataset(catalog_dir=self.catalog_dir,
 													  subset="train",
 													  label_col=self.label_col,
@@ -296,8 +315,9 @@ class Herbarium2022DataModule(pl.LightningDataModule):
 													  shuffle=self.shuffle,
 													  seed=self.seed,
 													  transform=self.train_transform)
-			print(f"training dataset length: {len(self.train_dataset)}")
-		if stage in ["val", "all", None]:
+			self.get_dataset_size(subset="train",
+								  verbose=True)
+		if stage in ["val", "fit", "all", None]:
 			self.val_dataset = Herbarium2022Dataset(catalog_dir=self.catalog_dir,
 													subset="val",
 													label_col=self.label_col,
@@ -305,7 +325,8 @@ class Herbarium2022DataModule(pl.LightningDataModule):
 													shuffle=self.shuffle,
 													seed=self.seed,
 													transform=self.val_transform)
-			print(f"validation dataset length: {len(self.val_dataset)}")
+			self.get_dataset_size(subset="val",
+								  verbose=True)
 		if stage in ["test", "all", None]:
 			self.test_dataset = Herbarium2022Dataset(catalog_dir=self.catalog_dir,
 													 subset="test",
@@ -314,7 +335,8 @@ class Herbarium2022DataModule(pl.LightningDataModule):
 													 shuffle=self.shuffle,
 													 seed=self.seed,
 													 transform=self.test_transform)
-			print(f"test dataset length: {len(self.test_dataset)}")
+			self.get_dataset_size(subset="test",
+								  verbose=True)
 			
 		self.set_image_reader(self.image_reader)
 
@@ -366,6 +388,25 @@ class Herbarium2022DataModule(pl.LightningDataModule):
 			return self.test_dataset
 		else:
 			return None
+
+	def num_samples(self, 
+					subset: str="train"):
+		return len(self.get_dataset(subset=subset))
+	
+	def num_batches(self, 
+					subset: str="train"):
+		return len(self.get_dataloader(subset=subset))
+	
+	def get_dataset_size(self, 
+						subset: str="train",
+						verbose: bool=False):
+		num_samples = self.num_samples(subset) # len(datamodule.get_dataset(subset=subset))
+		num_batches = self.num_batches(subset) # len(datamodule.get_dataloader(subset=subset))
+		if verbose:
+			print(f"{subset} --> (num_samples: {num_samples:,}), (num_batches: {num_batches:,})")
+		return num_samples, num_batches
+
+
 		
 	def setup_transforms(self,
 						 transform_cfg: dict=None,
@@ -381,6 +422,7 @@ class Herbarium2022DataModule(pl.LightningDataModule):
 			self.val_transform = None
 			self.test_transform = None
 		else:
+			print("self.transform_cfg:"); pp(self.transform_cfg)
 			self.train_transform = (
 				get_default_transforms(mode="train", config=self.transform_cfg)
 				if train_transform is None else train_transform
@@ -402,7 +444,7 @@ class Herbarium2022DataModule(pl.LightningDataModule):
 		"""
 		for data in [self.train_dataset, self.val_dataset, self.test_dataset]:
 			if data is None:
-				pass
+				continue
 			data.set_image_reader(reader)
 
 

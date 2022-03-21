@@ -1,5 +1,5 @@
 """
-lightning_hydra_classifiers/models/backbone.py
+image-utils/imutils/ml/models/backbone.py
 
 Author: Jacob A Rose
 Created: Saturday May 29th, 2021
@@ -7,7 +7,7 @@ Created: Saturday May 29th, 2021
 """
 
 from typing import Any, List, Optional, Dict, Tuple, Union
-
+from omegaconf import DictConfig
 import torch
 from torch import nn, functional as F
 import torchvision
@@ -39,10 +39,13 @@ def load_model_checkpoint(model, ckpt_path: str):
     return model
 
 from collections import OrderedDict
+from imutils.ml.models.base import BaseModule
+
 
 def build_timm_backbone(backbone_name='gluon_seresnext50_32x4d',
                          pretrained: Union[bool, str]=True,
                          num_classes: int=1000,
+                         freeze_backbone: bool=False,
                          feature_layer: int=-2):
     if pretrained == "imagenet":
         num_classes = 1000
@@ -53,24 +56,68 @@ def build_timm_backbone(backbone_name='gluon_seresnext50_32x4d',
         
 #     body = nn.Sequential(*list(model.children())[:feature_layer])
 
-    body = nn.Sequential(OrderedDict(list(model.named_children())[:feature_layer]))
+    body = nn.Sequential(OrderedDict(
+        list(
+            model.named_children()
+        )[:feature_layer]
+    ))
+    
+    if freeze_backbone:
+        print(f"Freezing all layers in backbone of model.")
+        BaseModule.freeze(body)
     
     return body
+
+
+
+# def build_generic_backbone(backbone_name='gluon_seresnext50_32x4d',
+#                             pretrained: Union[bool, str]=True,
+#                             num_classes: int=1000,
+#                             feature_layer: int=-2,
+#                             model_repo: str= "timm",
+#                             _target_=None):
+#     cfg = DictConf(dict(
+#         backbone_name=backbone_name,
+#         pretrained=pretrained,
+#         num_classes=1000,
+#         feature_layer=feature_layer,
+#         model_repo=model_repo
+#     ))
+#     hydra.utils.log.info(f"Instantiating <{cfg.model._target_}>")
+#     model: pl.LightningModule = hydra.utils.instantiate(cfg, _recursive_=False)
+#     return model                    
+
+
 
 
 def build_model_backbone(backbone_name='gluon_seresnext50_32x4d',
                          pretrained: Union[bool, str]=True,
                          num_classes: int=1000,
                          feature_layer: int=-2,
-                         model_repo: str= "timm"):
+                         model_repo: str= "timm",
+                        _target_=None,
+                        **kwargs):
 
     if model_repo == "timm":
         return build_timm_backbone(backbone_name=backbone_name,
                                    pretrained=pretrained,
                                    num_classes=num_classes,
                                    feature_layer=feature_layer)
-    # TBD Add other pretrained model backends
-    raise NotImplementedError(f"Invalid model_repo={model_repo}")
+    else:
+        try:
+            print("Trying non-timm based model loading")
+            cfg = DictConf(dict(
+                backbone_name=backbone_name,
+                pretrained=pretrained,
+                num_classes=1000,
+                feature_layer=feature_layer,
+                model_repo=model_repo
+            ))
+            # return hydra.utils.log.info(f"Instantiating <{cfg.model._target_}>")
+            # model: pl.LightningModule = hydra.utils.instantiate(cfg.model, cfg=cfg, _recursive_=False)
+        except:
+            # TBD Add other pretrained model backends
+            raise NotImplementedError(f"Invalid model_repo={model_repo}")
 
 def build_model_head(num_classes: int=1000,
                      pool_size: int=1,
@@ -78,7 +125,8 @@ def build_model_head(num_classes: int=1000,
                      head_type: str='linear',
                      feature_size: int=512,
                      hidden_size: Optional[int]=512,
-                     dropout_p: Optional[float]=0.3):
+                     dropout_p: Optional[float]=0.3,
+                    **kwargs):
     """
     
     Returns a nn.Sequential model containing 3 children:
@@ -127,45 +175,75 @@ def build_model_head(num_classes: int=1000,
                                 nn.BatchNorm1d(hidden_size),
                                 nn.Linear(hidden_size, num_classes))
     head = nn.Sequential(head)
+    print(f"Initializing weights of the model head.")
+    BaseModule.initialize_weights(head)
     return head
 
 
 
-def build_model(backbone_name='gluon_seresnext50_32x4d',
+def build_model(backbone_cfg: Optional[DictConfig]=None,
+                head_cfg: Optional[DictConfig]=None,
+                backbone_name='gluon_seresnext50_32x4d',
                 pretrained: Union[bool, str]=True,
                 num_classes: int=1000,
+                freeze_backbone: bool=False,
                 pool_size: int=1,
                 pool_type: str='avg',
                 head_type: str='linear',
                 hidden_size: Optional[int]=512,
                 dropout_p: Optional[float]=0.3):
+    """
     
-    backbone = build_model_backbone(backbone_name=backbone_name,
-                                    pretrained=pretrained,
-                                    num_classes=num_classes,
-                                    feature_layer=-2)
+    Creates a classifier lightning module from a backbone model + a classication head.
+    
+    
+    Return:
+    ```
+            model = nn.Sequential(OrderedDict({
+                "backbone":backbone,
+                "head":head
+            }))
+    ```
+
+    
+    """
+    if backbone_cfg is None:
+        backbone = build_model_backbone(backbone_name=backbone_name,
+                                        pretrained=pretrained,
+                                        num_classes=num_classes,
+                                        freeze_backbone=freeze_backbone,
+                                        feature_layer=-2)
+    else:
+        backbone = build_model_backbone(**backbone_cfg)
     
     feature_size = list(backbone.parameters())[-1].shape[0]
     
-
-    head = build_model_head(num_classes=num_classes,
-                            pool_size=pool_size,
-                            pool_type=pool_type,
-                            head_type=head_type,
-                            feature_size=feature_size,
-                            hidden_size=hidden_size,
-                            dropout_p=dropout_p)
+    if head_cfg is None:
+        head = build_model_head(num_classes=num_classes,
+                                pool_size=pool_size,
+                                pool_type=pool_type,
+                                head_type=head_type,
+                                feature_size=feature_size,
+                                hidden_size=hidden_size,
+                                dropout_p=dropout_p)
+    else:
+        head = build_model_head(feature_size=feature_size,
+                                **head_cfg)
     
     model = nn.Sequential(OrderedDict({
         "backbone":backbone,
         "head":head
     }))
+
+    
+    
     return model
 
 
+from imutils.ml.utils.model_utils import log_model_summary
 
 
-
+        
 
 
 

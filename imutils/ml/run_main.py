@@ -440,6 +440,24 @@ export CUDA_VISIBLE_DEVICES=6,7; python run_main.py \
         aug@data.datamodule.transform_cfg=medium_image_aug_conf
 
 
+###############################################
+
+(11: AM 2022-03-23) Experiment #9
+export CUDA_VISIBLE_DEVICES=6,7; python run_main.py \
+        +train.pl_trainer.limit_train_batches=0.01 \
+        +train.pl_trainer.limit_val_batches=0 \
+        +train.pl_trainer.limit_test_batches=0 \
+        train.pl_trainer.devices=2 \
+        data.datamodule.num_workers=4 \
+        +train.pl_trainer.max_epochs=30 \
+        train.freeze_backbone_up_to=-3 \
+        +train.pl_trainer.profiler="advanced" \
+        train.pl_trainer.accumulate_grad_batches=1 \
+        optim.use_lr_scheduler=False \
+        optim.optimizer.lr=1e-2 \
+        data.datamodule.batch_size=128 \
+        hp.resolution=448 \
+        aug@data.datamodule.transform_cfg=medium_image_aug_conf
 
 
 

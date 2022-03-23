@@ -6,6 +6,7 @@ Created by: Jacob Alexander Rose
 
 """
 
+from icecream import ic
 import jpeg4py as jpeg
 from omegaconf import DictConfig, OmegaConf
 import os
@@ -301,12 +302,9 @@ class Herbarium2022DataModule(pl.LightningDataModule):
 	def prepare_data(self):
 		pass
 
-	@property
-	def num_classes(self) -> int:
-		assert self.train_dataset and self.valid_dataset
-		return max(self.train_dataset.num_classes, self.valid_dataset.num_classes)
 
 	def setup(self, stage=None):
+		subsets=[]
 		if stage in ["train", "fit", "all", None]:
 			self.train_dataset = Herbarium2022Dataset(catalog_dir=self.catalog_dir,
 													  subset="train",
@@ -315,8 +313,7 @@ class Herbarium2022DataModule(pl.LightningDataModule):
 													  shuffle=self.shuffle,
 													  seed=self.seed,
 													  transform=self.train_transform)
-			self.get_dataset_size(subset="train",
-								  verbose=True)
+			subsets.append("train")
 		if stage in ["val", "fit", "all", None]:
 			self.val_dataset = Herbarium2022Dataset(catalog_dir=self.catalog_dir,
 													subset="val",
@@ -325,8 +322,7 @@ class Herbarium2022DataModule(pl.LightningDataModule):
 													shuffle=self.shuffle,
 													seed=self.seed,
 													transform=self.val_transform)
-			self.get_dataset_size(subset="val",
-								  verbose=True)
+			subsets.append("val")
 		if stage in ["test", "all", None]:
 			self.test_dataset = Herbarium2022Dataset(catalog_dir=self.catalog_dir,
 													 subset="test",
@@ -335,7 +331,10 @@ class Herbarium2022DataModule(pl.LightningDataModule):
 													 shuffle=self.shuffle,
 													 seed=self.seed,
 													 transform=self.test_transform)
-			self.get_dataset_size(subset="test",
+			subsets.append("test")
+			
+		for s in subsets:
+			self.get_dataset_size(subset=s,
 								  verbose=True)
 			
 		self.set_image_reader(self.image_reader)
@@ -389,6 +388,11 @@ class Herbarium2022DataModule(pl.LightningDataModule):
 		else:
 			return None
 
+	@property
+	def num_classes(self) -> int:
+		assert self.train_dataset and self.val_dataset
+		return max(self.train_dataset.num_classes, self.val_dataset.num_classes)
+
 	def num_samples(self, 
 					subset: str="train"):
 		return len(self.get_dataset(subset=subset))
@@ -403,7 +407,8 @@ class Herbarium2022DataModule(pl.LightningDataModule):
 		num_samples = self.num_samples(subset) # len(datamodule.get_dataset(subset=subset))
 		num_batches = self.num_batches(subset) # len(datamodule.get_dataloader(subset=subset))
 		if verbose:
-			print(f"{subset} --> (num_samples: {num_samples:,}), (num_batches: {num_batches:,})")
+			# print(f"{subset} --> (num_samples: {num_samples:,}), (num_batches: {num_batches:,})")
+			ic(subset, num_samples, num_batches, self.num_classes, self.batch_size)
 		return num_samples, num_batches
 
 

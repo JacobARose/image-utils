@@ -3,6 +3,7 @@ defaults:
     - _self_
     - callbacks@train.callbacks: default
     - aug@data.datamodule.transform_cfg: default_image_aug_conf
+    - train/pl_trainer/strategy: ddp
     # - override train/callbacks: default
 
 # metadata specialised for each experiment
@@ -151,17 +152,21 @@ train:
     random_seed: ${seed}
     
     freeze_backbone: true
-
+    freeze_backbone_up_to: -1
     # training
 
     pl_trainer:
+        _target_: pytorch_lightning.Trainer
         fast_dev_run: False # Enable this for debug purposes
         accelerator: "gpu"
         devices: 1
         precision: 16
         enable_model_summary: true
+        log_gpu_memory: true
+        # strategy: "dpp_find_unused_parameters"
+            
         # max_steps: ${optim.lr_scheduler.total_steps}
-        # accumulate_grad_batches: 1
+        accumulate_grad_batches: 1
         # num_sanity_val_steps: 2
         # gradient_clip_val: 10000000.0    # 10.
 
@@ -185,7 +190,7 @@ logging:
     normalize_visualization: True
 
     # log frequency
-    # val_check_interval: 1 #.0
+    val_check_interval: 1.0
     progress_bar_refresh_rate: 20
 
     wandb:
@@ -197,9 +202,9 @@ logging:
             log: 'all'
             log_freq: 10
 
-    lr_monitor:
-        logging_interval: step
-        log_momentum: False
+    # lr_monitor:
+    #     logging_interval: step
+    #     log_momentum: False
 
         
 hydra:

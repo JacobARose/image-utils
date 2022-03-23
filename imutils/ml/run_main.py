@@ -8,7 +8,7 @@ python run_main.py \
     +train.pl_trainer.limit_train_batches=1 \
     +train.pl_trainer.limit_val_batches=1 \
     +train.pl_trainer.limit_test_batches=1 \
-	+train.pl_trainer.max_epochs=2 \
+    +train.pl_trainer.max_epochs=2 \
     data.datamodule.batch_size=16 \
     train.callbacks.class_counts_stats=null \
     train.callbacks.image_stats_accumulator=null
@@ -17,7 +17,7 @@ python run_main.py \
     +train.pl_trainer.limit_train_batches=5 \
     +train.pl_trainer.limit_val_batches=5 \
     +train.pl_trainer.limit_test_batches=5 \
-	+train.pl_trainer.max_epochs=3 \
+    +train.pl_trainer.max_epochs=3 \
     data.datamodule.batch_size=16 \
     train.callbacks.class_counts_stats=null \
     train.callbacks.image_stats_accumulator=null
@@ -26,7 +26,7 @@ python run_main.py \
 python run_main.py \
     train.pl_trainer.gpus=2 \
     +train.pl_trainer.accelerator="ddp" \
-	+train.pl_trainer.max_epochs=30 \
+    +train.pl_trainer.max_epochs=30 \
     data.datamodule.batch_size=64 \
     train.callbacks.class_counts_stats=null \
     train.callbacks.image_stats_accumulator=null
@@ -37,7 +37,7 @@ python run_main.py \
     train.pl_trainer.devices=2 \
     train.pl_trainer.accelerator="gpu" \
     +train.pl_trainer.strategy="ddp" \
-	+train.pl_trainer.max_epochs=30 \
+    +train.pl_trainer.max_epochs=30 \
     data.datamodule.batch_size=64 \
     train.callbacks.class_counts_stats=null \
     train.callbacks.image_stats_accumulator=null
@@ -50,7 +50,7 @@ python run_main.py \
 python run_main.py \
     train.pl_trainer.devices=1 \
     train.pl_trainer.accelerator="gpu" \
-	+train.pl_trainer.max_epochs=30 \
+    +train.pl_trainer.max_epochs=30 \
     data.datamodule.batch_size=64
     
 ############################
@@ -72,7 +72,7 @@ python run_main.py \
 export CUDA_VISIBLE_DEVICES=6; python run_main.py \
     train.pl_trainer.devices=1 \
     train.pl_trainer.accelerator="gpu" \
-	+train.pl_trainer.max_epochs=30 \
+    +train.pl_trainer.max_epochs=30 \
     +train.pl_trainer.profiler="simple" \
     optim.use_lr_scheduler=False \
     data.datamodule.batch_size=128
@@ -88,7 +88,7 @@ export CUDA_VISIBLE_DEVICES=6; python run_main.py \
 export CUDA_VISIBLE_DEVICES=7; python run_main.py \
     train.pl_trainer.devices=1 \
     train.pl_trainer.accelerator="gpu" \
-	+train.pl_trainer.max_epochs=30 \
+    +train.pl_trainer.max_epochs=30 \
     +train.pl_trainer.profiler="simple" \
     optim.use_lr_scheduler=False \
     data.datamodule.batch_size=128
@@ -103,7 +103,7 @@ export CUDA_VISIBLE_DEVICES=7; python run_main.py \
 export CUDA_VISIBLE_DEVICES=7; python run_main.py \
     train.pl_trainer.devices=1 \
     train.pl_trainer.accelerator="gpu" \
-	+train.pl_trainer.max_epochs=30 \
+    +train.pl_trainer.max_epochs=30 \
     +train.pl_trainer.profiler="simple" \
     optim.use_lr_scheduler=False \
     data.datamodule.batch_size=64
@@ -124,7 +124,7 @@ export CUDA_VISIBLE_DEVICES='5,7'; python run_main.py \
     train.pl_trainer.devices=2 \
     train.pl_trainer.accelerator="gpu" \
     +train.pl_trainer.strategy="ddp" \
-	+train.pl_trainer.max_epochs=30 \
+    +train.pl_trainer.max_epochs=30 \
     +train.pl_trainer.profiler="simple" \
     optim.use_lr_scheduler=False \
     data.datamodule.batch_size=128
@@ -263,11 +263,195 @@ python run_main.py \
         data.datamodule.batch_size=32 \
         hp.resolution=448 \
         aug@data.datamodule.transform_cfg=medium_image_aug_conf
+        
+        
+python run_main.py \
+        train.pl_trainer.devices=[0,4,5,6] \
+        train.pl_trainer.accelerator="gpu" \
+        data.datamodule.num_workers=4 \
+        +train.pl_trainer.strategy="ddp" \
+        +train.pl_trainer.max_epochs=30 \
+        +train.pl_trainer.profiler="simple" \
+        optim.use_lr_scheduler=False \
+        data.datamodule.batch_size=24 \
+        hp.resolution=448 \
+        aug@data.datamodule.transform_cfg=medium_image_aug_conf
+
+
+#############################
+
+
+python run_main.py \
+        train.pl_trainer.devices=[0,4,5,6] \
+        train.pl_trainer.accelerator="gpu" \
+        data.datamodule.num_workers=4 \
+        +train.pl_trainer.strategy="ddp" \
+        +train.pl_trainer.max_epochs=30 \
+        +train.pl_trainer.profiler="simple" \
+        optim.use_lr_scheduler=False \
+        data.datamodule.batch_size=24 \
+        hp.resolution=448 \
+        aug@data.datamodule.transform_cfg=medium_image_aug_conf
+
+
+###################
+
+python run_main.py \
+        train.pl_trainer.devices=[0,4] \
+        train.pl_trainer.accelerator="gpu" \
+        data.datamodule.num_workers=4 \
+        +train.pl_trainer.strategy="ddp" \
+        +train.pl_trainer.max_epochs=30 \
+        +train.pl_trainer.profiler="simple" \
+        optim.use_lr_scheduler=False \
+        data.datamodule.batch_size=32 \
+        hp.resolution=448 \
+        aug@data.datamodule.transform_cfg=medium_image_aug_conf \
+        +overfit_batches=10
+
+
+#############################################
+
+(11:30 PM 2022-03-22)
+export CUDA_VISIBLE_DEVICES=6,7; python run_main.py \
+        train.pl_trainer.devices=2 \
+        data.datamodule.num_workers=4 \
+        +train.pl_trainer.max_epochs=30 \
+        +train.pl_trainer.profiler="simple" \
+        optim.use_lr_scheduler=False \
+        data.datamodule.batch_size=32 \
+        hp.resolution=448 \
+        aug@data.datamodule.transform_cfg=medium_image_aug_conf
+
+#############################################
+
+(12:40 AM 2022-03-23)
+export CUDA_VISIBLE_DEVICES=6,7; python run_main.py \
+        +train.pl_trainer.limit_train_batches=0.5 \
+        +train.pl_trainer.limit_val_batches=0.5 \
+        +train.pl_trainer.limit_test_batches=0.5 \
+        train.pl_trainer.devices=2 \
+        data.datamodule.num_workers=4 \
+        +train.pl_trainer.max_epochs=30 \
+        +train.pl_trainer.profiler="simple" \
+        optim.use_lr_scheduler=False \
+        data.datamodule.batch_size=48 \
+        hp.resolution=448 \
+        aug@data.datamodule.transform_cfg=medium_image_aug_conf
+
+###############################################
+
+(1:25 AM 2022-03-23)
+export CUDA_VISIBLE_DEVICES=6,7; python run_main.py \
+        +train.pl_trainer.limit_train_batches=0.5 \
+        +train.pl_trainer.limit_val_batches=0.5 \
+        +train.pl_trainer.limit_test_batches=0.5 \
+        train.pl_trainer.devices=2 \
+        data.datamodule.num_workers=4 \
+        +train.pl_trainer.max_epochs=30 \
+        +train.pl_trainer.profiler="simple" \
+        optim.use_lr_scheduler=False \
+        data.datamodule.batch_size=64 \
+        hp.resolution=448 \
+        aug@data.datamodule.transform_cfg=medium_image_aug_conf
+
+###############################################
+
+(2:45 AM 2022-03-23)
+export CUDA_VISIBLE_DEVICES=6,7; python run_main.py \
+        +train.pl_trainer.limit_train_batches=0.5 \
+        +train.pl_trainer.limit_val_batches=0.5 \
+        +train.pl_trainer.limit_test_batches=0.5 \
+        train.pl_trainer.devices=2 \
+        data.datamodule.num_workers=4 \
+        +train.pl_trainer.max_epochs=30 \
+        +train.pl_trainer.profiler="simple" \
+        optim.use_lr_scheduler=False \
+        data.datamodule.batch_size=96 \
+        hp.resolution=448 \
+        aug@data.datamodule.transform_cfg=medium_image_aug_conf
+
+
+###############################################
+
+(3:15 AM 2022-03-23)
+export CUDA_VISIBLE_DEVICES=6,7; python run_main.py \
+        +train.pl_trainer.limit_train_batches=0.5 \
+        +train.pl_trainer.limit_val_batches=0.5 \
+        +train.pl_trainer.limit_test_batches=0.5 \
+        train.pl_trainer.devices=2 \
+        data.datamodule.num_workers=4 \
+        +train.pl_trainer.max_epochs=30 \
+        +train.pl_trainer.profiler="simple" \
+        optim.use_lr_scheduler=False \
+        data.datamodule.batch_size=128 \
+        hp.resolution=448 \
+        aug@data.datamodule.transform_cfg=medium_image_aug_conf
+
+###############################################
+
+(4:30 AM 2022-03-23)
+export CUDA_VISIBLE_DEVICES=6,7; python run_main.py \
+        +train.pl_trainer.limit_train_batches=0.5 \
+        +train.pl_trainer.limit_val_batches=0.5 \
+        +train.pl_trainer.limit_test_batches=0.5 \
+        train.pl_trainer.devices=2 \
+        data.datamodule.num_workers=4 \
+        +train.pl_trainer.max_epochs=30 \
+        +train.pl_trainer.profiler="simple" \
+        optim.use_lr_scheduler=False \
+        data.datamodule.batch_size=144 \
+        hp.resolution=448 \
+        aug@data.datamodule.transform_cfg=medium_image_aug_conf
+
+###############################################
+
+(5:45 AM 2022-03-23) Experiment #7
+export CUDA_VISIBLE_DEVICES=6,7; python run_main.py \
+        +train.pl_trainer.limit_train_batches=0.5 \
+        +train.pl_trainer.limit_val_batches=0.5 \
+        +train.pl_trainer.limit_test_batches=0.5 \
+        train.pl_trainer.devices=2 \
+        data.datamodule.num_workers=4 \
+        +train.pl_trainer.max_epochs=30 \
+        +train.pl_trainer.profiler="simple" \
+        train.pl_trainer.accumulate_grad_batches=2 \
+        optim.use_lr_scheduler=False \
+        data.datamodule.batch_size=144 \
+        hp.resolution=448 \
+        aug@data.datamodule.transform_cfg=medium_image_aug_conf
+
+###############################################
+
+(8:50 AM 2022-03-23) Experiment #8
+export CUDA_VISIBLE_DEVICES=6,7; python run_main.py \
+        +train.pl_trainer.limit_train_batches=0.1 \
+        +train.pl_trainer.limit_val_batches=0 \
+        +train.pl_trainer.limit_test_batches=0 \
+        train.pl_trainer.devices=2 \
+        data.datamodule.num_workers=4 \
+        +train.pl_trainer.max_epochs=30 \
+        +train.pl_trainer.profiler="advanced" \
+        train.pl_trainer.accumulate_grad_batches=2 \
+        optim.use_lr_scheduler=False \
+        optim.optimizer.lr=1e-2 \
+        data.datamodule.batch_size=128 \
+        hp.resolution=448 \
+        aug@data.datamodule.transform_cfg=medium_image_aug_conf
 
 
 
 
-    
+
+
+        -train.callbacks.lr_monitor \
+        -train.callbacks.early_stopping \
+        -train.callbacks.model_checkpoint
+
+
+
+
+
 
 """
 
@@ -287,8 +471,8 @@ from pytorch_lightning.callbacks import (
     EarlyStopping,
     LearningRateMonitor,
     ModelCheckpoint,
-    ProgressBar,
-    TQDMProgressBar
+    # ProgressBar,
+    # TQDMProgressBar
 )
 from pytorch_lightning.loggers import WandbLogger
 import torch
@@ -349,6 +533,7 @@ def train(cfg: DictConfig) -> None:
     datamodule: pl.LightningDataModule = hydra.utils.instantiate(
         cfg.data.datamodule, _recursive_=False
     )
+    datamodule.setup()
 
     logging.warning("1. Before model, before trainer")
     ic(torch.cuda.device_count())
@@ -356,7 +541,7 @@ def train(cfg: DictConfig) -> None:
     ic(torch.cuda.current_device())    
     ic(torch.cuda.get_device_name(0))
 
-	
+    
     hydra.utils.log.info(f"Instantiating <{cfg.model_cfg._target_}>")
     # model: pl.LightningModule = hydra.utils.instantiate(cfg.model, cfg=cfg, _recursive_=False)
     model = imutils.ml.models.pl.classifier.LitClassifier(cfg=cfg, #model_cfg=cfg.model_cfg,
@@ -368,36 +553,55 @@ def train(cfg: DictConfig) -> None:
     ic(torch.cuda.is_available())
     ic(torch.cuda.current_device())    
     ic(torch.cuda.get_device_name(0))
-	
+    
     wandb_logger = configure_loggers(cfg=cfg, model=model)
     # Instantiate the callbacks
     callbacks: List[pl.Callback] = configure_callbacks(cfg=cfg.train)
 
 
 
-    from rich import print as pp	
+    from rich import print as pp
+    
+    
+#     trainer_cfg = 
+    
+#     from pytorch_lightning.plugins import DDPPlugin
+#     if cfg.train.pl_trainer.get("strategy").lower()=="ddp":
+#         cfg.train.pl_trainer.strategy=DDPPlugin(find_unused_parameters=False)
+    
     hydra.utils.log.info(f"Instantiating the Trainer")
     pp(OmegaConf.to_container(cfg.train.pl_trainer))
-    trainer = pl.Trainer(
-        default_root_dir=cfg.run_output_dir, #hydra.run.dir,
-        logger=wandb_logger,
-        callbacks=callbacks,
-        deterministic=cfg.train.deterministic,
-        val_check_interval=cfg.logging.val_check_interval,
-        # log_every_n_steps=10,
-        #auto_select_gpus=True,
-        # benchmark=True,
-        # accelerator=None,  # 'dp', "ddp" if args.gpus > 1 else None,
-        #plugins=[DDPPlugin(find_unused_parameters=True)],
-        **cfg.train.pl_trainer,
-    )
+    
+    trainer = configure_trainer(cfg,
+                                callbacks=callbacks,
+                                logger=wandb_logger)
+    
+    # trainer = pl.Trainer(
+    #     default_root_dir=cfg.run_output_dir, #hydra.run.dir,
+    #     logger=wandb_logger,
+    #     # strategy=strategy,
+    #     callbacks=callbacks,
+    #     deterministic=cfg.train.deterministic,
+    #     val_check_interval=cfg.logging.val_check_interval,
+    #     # log_every_n_steps=10,
+    #     #auto_select_gpus=True,
+    #     # benchmark=True,
+    #     # accelerator=None,  # 'dp', "ddp" if args.gpus > 1 else None,
+    #     #plugins=[DDPPlugin(find_unused_parameters=True)],
+    #     **cfg.train.pl_trainer,
+    # )
+    
+    # trainer = configure_trainer(cfg,
+    #                             callbacks=callbacks,
+    #                             logger=wandb_logger,
+    #                             **kwargs
+    
 
     logging.warning("3. After model, after trainer, before fit")
-    ic(torch.cuda.device_count())
-    ic(torch.cuda.is_available())
-    ic(torch.cuda.current_device())    
-    ic(torch.cuda.get_device_name(0))
+    ic(torch.cuda.current_device())
 
+    ic(os.environ.get("WORLD_SIZE"))
+    ic(os.environ.get("NODE_RANK"))
     
     # num_samples = len(datamodule.train_dataset)
     num_classes = cfg.model_cfg.head.num_classes
@@ -445,10 +649,10 @@ def main(cfg: omegaconf.DictConfig):
         template_utils.print_config(cfg, resolve=True)
 
     return train(cfg)
-		
-		
-		
-		
+        
+        
+        
+        
 
 # @hydra.main(config_path="conf", config_name="base_conf")
 # def main(cfg: omegaconf.DictConfig):

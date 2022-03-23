@@ -114,7 +114,7 @@ def log_model_summary(model: nn.Module,
                             input_size=input_size,
                             row_settings=('depth', 'var_names'),
                             col_names=col_names,
-                            verbose=verbose)
+                            verbose=(verbose==2))
 
     if (model_name is None) and (hasattr(model, "name")):
         model_name = model.name
@@ -127,6 +127,8 @@ def log_model_summary(model: nn.Module,
 
     with open(summary_path, "w") as f:
         f.write(str(model_summary))
+        if verbose > 1:
+            print(f"Saved model summary to: {summary_path}")
         
     return model_summary
 

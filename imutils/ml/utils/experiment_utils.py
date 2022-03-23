@@ -16,6 +16,7 @@ Author: Jacob A Rose
 """
 
 import argparse
+from dataclasses import asdict
 import os
 from pathlib import Path
 import pandas as pd
@@ -111,20 +112,39 @@ def configure_loggers(cfg, model=None):
 
 
 
+def configure_ckpt_dir(cfg):
+    """
+    Creates directory cfg.checkpoint_dir if it doesn't exist. 
+    If there are previous ckpts, assigns cfg.resume_from_checkpoint to the value of the path of the last one.
+    
+    Currently meant to only be called inside configure_trainer(cfg,...)
+    
+    (2022-03-22)
+    [Note]: This is not tested or guaranteed to select the most relevant ckpt
+    [Note]: cfg.resume_from_checkpoint is not yet guaranteed to be used. Might need to change to cfg.pl_trainer.resume_from_checkpoint.
+    """
+    
+    if os.path.exists(os.path.abspath(cfg.checkpoint_dir)):
+        os.makedirs(os.path.abspath(cfg.checkpoint_dir), exist_ok=True)
+        ckpt_paths = [os.path.join(cfg.checkpoint_dir, ckpt) for ckpt in os.listdir(cfg.checkpoint_dir)]
+        if len(ckpt_paths) and os.path.exists(ckpt_paths[-1]):
+            print(f"Found checkpoint: {os.path.basename(ckpt_paths[-1])} in cfg.checkpoint_dir: {os.path.abspath(cfg.checkpoint_dir)}")
+            cfg.resume_from_checkpoint = ckpt_paths[-1]
 
-def configure_trainer(config,
+
+def configure_trainer(cfg,
                       callbacks=None,
-                      logger=None) -> pl.Trainer:
+                      logger=None,
+                      **kwargs) -> pl.Trainer:
+    """
+    Checks for existing checkpoints, adds callbacks and logger to cfg, then instantiates pl.Trainer
+    """
+    configure_ckpt_dir(cfg)
     
-    ckpt_paths = [os.path.join(config.checkpoint_dir, ckpt) for ckpt in os.listdir(config.checkpoint_dir)]
-    if len(ckpt_paths) and os.path.exists(ckpt_paths[-1]):
-        print(f"Found {ckpt_paths[-1]}")
-        config.resume_from_checkpoint = ckpt_paths[-1]
-    
-    trainer_config = resolve_config(config.trainer)
-    trainer_config['callbacks'] = callbacks
-    trainer_config['logger'] = logger
-    trainer: pl.Trainer = hydra.utils.instantiate(trainer_config)
+    trainer_cfg = resolve_config(cfg.train.pl_trainer)
+    trainer_cfg['callbacks'] = callbacks
+    trainer_cfg['logger'] = logger
+    trainer: pl.Trainer = hydra.utils.instantiate(trainer_cfg, **kwargs)
     return trainer
 
 

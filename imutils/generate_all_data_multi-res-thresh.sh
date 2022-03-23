@@ -23,6 +23,15 @@ Description:
         - 1536
         - 2048
 
+
+resize
+
+create_multithresh_symlink_tree
+
+clean
+
+make_catalogs
+
 """
 
 # Run all 3 datasets for all 4 resolutions in serial

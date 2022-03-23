@@ -54,7 +54,9 @@ class LitClassifier(BaseLightningModule): #pl.LightningModule):
 				 # self_supervised=False,
 				 *args, **kwargs) -> None:
 		super().__init__(*args, **kwargs)
-		self.save_hyperparameters(cfg)
+		# import pdb; pdb.set_trace()
+		
+		self.save_hyperparameters(OmegaConf.to_container(cfg, resolve=True))
 		self.cfg = cfg
 		model_cfg = cfg.get("model_cfg", {})
 		self.model_cfg = model_cfg or {}
@@ -130,11 +132,18 @@ class LitClassifier(BaseLightningModule): #pl.LightningModule):
 
 	def training_step_end(self, out):
 		self.train_metric(out["logits"], out["y"])
+		
+		log_dict = {"train_loss": out["loss"].mean()}
+		if "train/F1_top1" in self.train_metric.keys():
+			log_dict["train_F1"] = self.train_metric["train/F1_top1"]
 		self.log_dict(
-			{
-				"train_loss": out["loss"].mean(),
-				**self.train_metric
-			},
+			log_dict,
+			on_step=True,
+			on_epoch=True,
+			prog_bar=True
+		)			
+		self.log_dict(
+			self.train_metric,
 			on_step=True,
 			on_epoch=True
 		)
@@ -190,7 +199,7 @@ class LitClassifier(BaseLightningModule): #pl.LightningModule):
 		
 		"""
 		if "image" not in outputs:
-			print(f"Skipping val render_image_predictions due to missing 'image' key in epoch outputs.")
+			# print(f"Skipping val render_image_predictions due to missing 'image' key in epoch outputs.")
 			return
 		self.render_image_predictions(
 			outputs=outputs,
@@ -205,7 +214,7 @@ class LitClassifier(BaseLightningModule): #pl.LightningModule):
 
 	def test_epoch_end(self, outputs: List[Any]) -> None:
 		if "image" not in outputs:
-			print(f"Skipping test render_image_predictions due to missing 'image' key in epoch outputs.")
+			# print(f"Skipping test render_image_predictions due to missing 'image' key in epoch outputs.")
 			return
 		
 		self.render_image_predictions(

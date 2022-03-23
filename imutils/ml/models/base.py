@@ -188,13 +188,17 @@ class BaseLightningModule(pl.LightningModule):
     Implements some more custom boiler plate for custom lightning modules
     
     """
-    
+    # def on_fit_start(self) -> None:
+    #     import pdb; pdb.set_trace()
     def on_train_epoch_start(self) -> None:
-        print("on_train_epoch_start")
+        print("on_train_start")
         if self.cfg.train.freeze_backbone:
-            self.freeze_up_to(layer=-1,
+            layer = self.cfg.train.get("freeze_backbone_up_to", -1)
+            self.freeze_up_to(layer,
                               submodule="backbone",
                               verbose=False)    # def on_fit_start(self):
+
+    def on_train_start(self) -> None:
         if self.cfg.logging.log_model_summary:
             self.summarize_model(f"{self.name}/init")
     

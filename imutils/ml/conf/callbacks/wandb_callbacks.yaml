@@ -1,6 +1,6 @@
 
-defaults:
-    - base_callbacks.yaml
+# defaults:
+#     - base_callbacks.yaml
 
 
 # class_counts_stats:
@@ -25,10 +25,10 @@ defaults:
 #     frequency: 50
 
 
-# watch_model_with_wandb:
-#     _target_: imutils.ml.callbacks.wandb_callbacks.WatchModelWithWandb
-#     log: "gradients"
-#     log_freq: 100
+watch_model_with_wandb:
+    _target_: imutils.ml.callbacks.wandb_callbacks.WatchModelWithWandb
+    log: "gradients"
+    log_freq: 100
 
 
 # uploadcheckpointsasartifact:

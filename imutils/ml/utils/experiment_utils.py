@@ -97,7 +97,7 @@ def configure_loggers(cfg, model=None):
             project=wandb_config.project,
             entity=wandb_config.entity,
             tags=cfg.core.tags,
-            log_model=True,
+            log_model="all", #True,
         )
         
         

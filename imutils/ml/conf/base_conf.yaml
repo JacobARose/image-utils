@@ -211,10 +211,10 @@ logging:
         
 hydra:
     run:
-        dir: ./experiments/${now:%Y-%m-%d}/${now:%H-%M-%S}
+        dir: ./hydra_experiments/${now:%Y-%m-%d}/${now:%H-%M-%S}
 
     sweep:
-        dir: ./experiments/multirun/${now:%Y-%m-%d}/${now:%H-%M-%S}/
+        dir: ./hydra_experiments/multirun/${now:%Y-%m-%d}/${now:%H-%M-%S}/
         subdir: ${hydra.job.override_dirname}/seed=${seed} #${hydra.job.num}_${hydra.job.id}
 
     job:

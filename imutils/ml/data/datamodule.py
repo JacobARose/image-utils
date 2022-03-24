@@ -4,6 +4,10 @@ imutils/ml/data/datamodule.py
 Created on: Wednesday March 16th, 2022  
 Created by: Jacob Alexander Rose  
 
+
+- Update (Wednesday March 24th, 2022)
+	- Refactored to make more modular BaseDataset and BaseDataModule, which Herbarium2022Dataset and Herbarium2022DataModule inherit, respectively.
+
 """
 
 from icecream import ic
@@ -118,7 +122,7 @@ class AbstractCatalogDataset(Dataset):
 	
 	
 
-class Herbarium2022Dataset(AbstractCatalogDataset):
+class BaseDataset(AbstractCatalogDataset):
 	catalog_dir: str = os.path.abspath("./data")
 	
 	def __init__(self,
@@ -214,12 +218,8 @@ class Herbarium2022Dataset(AbstractCatalogDataset):
 
 
 
-	
-	
-
-
-class Herbarium2022DataModule(pl.LightningDataModule):
-	dataset_cls = Herbarium2022Dataset
+class BaseDataModule(pl.LightningDataModule):
+	dataset_cls = None #Herbarium2022Dataset
 	train_dataset = None
 	val_dataset = None
 	test_dataset = None
@@ -229,7 +229,7 @@ class Herbarium2022DataModule(pl.LightningDataModule):
 	test_transform = None
 	
 	transform_cfg = DEFAULT_TRANSFORM_CFG
-	
+
 	def __init__(self,
 				 catalog_dir: Optional[str]=None,
 				 label_col="scientificName",
@@ -304,40 +304,7 @@ class Herbarium2022DataModule(pl.LightningDataModule):
 
 
 	def setup(self, stage=None):
-		subsets=[]
-		if stage in ["train", "fit", "all", None]:
-			self.train_dataset = Herbarium2022Dataset(catalog_dir=self.catalog_dir,
-													  subset="train",
-													  label_col=self.label_col,
-													  train_size=self.train_size,
-													  shuffle=self.shuffle,
-													  seed=self.seed,
-													  transform=self.train_transform)
-			subsets.append("train")
-		if stage in ["val", "fit", "all", None]:
-			self.val_dataset = Herbarium2022Dataset(catalog_dir=self.catalog_dir,
-													subset="val",
-													label_col=self.label_col,
-													train_size=self.train_size,
-													shuffle=self.shuffle,
-													seed=self.seed,
-													transform=self.val_transform)
-			subsets.append("val")
-		if stage in ["test", "all", None]:
-			self.test_dataset = Herbarium2022Dataset(catalog_dir=self.catalog_dir,
-													 subset="test",
-													 label_col=self.label_col,
-													 train_size=self.train_size,
-													 shuffle=self.shuffle,
-													 seed=self.seed,
-													 transform=self.test_transform)
-			subsets.append("test")
-			
-		for s in subsets:
-			self.get_dataset_size(subset=s,
-								  verbose=True)
-			
-		self.set_image_reader(self.image_reader)
+		raise NotImplementedError
 
 	def train_dataloader(self):
 		return DataLoader(
@@ -467,3 +434,57 @@ class Herbarium2022DataModule(pl.LightningDataModule):
 		plt.figure(figsize=win_size)
 		plt.imshow(_to_vis(imgs_aug))
 		
+
+
+
+
+class Herbarium2022Dataset(BaseDataset):
+	catalog_dir: str = os.path.abspath("./data")
+
+
+
+
+
+
+
+
+class Herbarium2022DataModule(BaseDataModule):
+	dataset_cls = Herbarium2022Dataset	
+	transform_cfg = DEFAULT_TRANSFORM_CFG
+
+	def setup(self, stage=None):
+		subsets=[]
+		if stage in ["train", "fit", "all", None]:
+			self.train_dataset = Herbarium2022Dataset(catalog_dir=self.catalog_dir,
+													  subset="train",
+													  label_col=self.label_col,
+													  train_size=self.train_size,
+													  shuffle=self.shuffle,
+													  seed=self.seed,
+													  transform=self.train_transform)
+			subsets.append("train")
+		if stage in ["val", "fit", "all", None]:
+			self.val_dataset = Herbarium2022Dataset(catalog_dir=self.catalog_dir,
+													subset="val",
+													label_col=self.label_col,
+													train_size=self.train_size,
+													shuffle=self.shuffle,
+													seed=self.seed,
+													transform=self.val_transform)
+			subsets.append("val")
+		if stage in ["test", "all", None]:
+			self.test_dataset = Herbarium2022Dataset(catalog_dir=self.catalog_dir,
+													 subset="test",
+													 label_col=self.label_col,
+													 train_size=self.train_size,
+													 shuffle=self.shuffle,
+													 seed=self.seed,
+													 transform=self.test_transform)
+			subsets.append("test")
+			
+		for s in subsets:
+			self.get_dataset_size(subset=s,
+								  verbose=True)
+			
+		self.set_image_reader(self.image_reader)
+

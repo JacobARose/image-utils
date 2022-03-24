@@ -1,12 +1,13 @@
 # medium_image_aug_conf.yaml
+preprocess_size: 512
 resolution: 448
 preprocess:
     train:
-        resize: 512
+        resize: ${...preprocess_size}
     val:
-        resize: 512
+        resize: ${...preprocess_size}
     test:
-        resize: 512
+        resize: ${...preprocess_size}
 batch_transform:
     random_flips: False #true
     train:

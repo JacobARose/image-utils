@@ -24,7 +24,7 @@ import os
 # from lightning_hydra_classifiers.utils.metric_utils import get_per_class_metrics, get_scalar_metrics
 # from lightning_hydra_classifiers.utils.logging_utils import get_wandb_logger
 import wandb
-from imutils.ml.utils.model_utils import log_model_summary
+from imutils.ml.utils.model_utils import log_model_summary, count_parameters
 
 __all__ = ["BaseModule", "BaseLightningModule"]
 
@@ -194,9 +194,11 @@ class BaseLightningModule(pl.LightningModule):
         print("on_train_start")
         if self.cfg.train.freeze_backbone:
             layer = self.cfg.train.get("freeze_backbone_up_to", -1)
+            ic(layer)
             self.freeze_up_to(layer,
                               submodule="backbone",
                               verbose=False)    # def on_fit_start(self):
+            count_parameters(self.net, verbose=True)
 
     def on_train_start(self) -> None:
         if self.cfg.logging.log_model_summary:
@@ -206,7 +208,7 @@ class BaseLightningModule(pl.LightningModule):
                      layer: Union[int, str]=None,
                      submodule: Optional[Union[str, int]]=None,
                      verbose: bool=True):
-        print(f"Freezing up to layer={layer} in submodule={submodule}")
+        # print(f"Freezing up to layer={layer} in submodule={submodule}")
         
         net = self.net
         if isinstance(submodule, int):
@@ -215,8 +217,10 @@ class BaseLightningModule(pl.LightningModule):
             net = getattr(self.net, submodule)
         
         if isinstance(layer, int):
+            num_layers = len(list(net.parameters()))
             if layer < 0:
-                layer = len(list(net.parameters())) #+ layer
+                layer = num_layers + layer
+                print(f"Freezing up to {layer} out of {num_layers} layers in submodule={submodule}")
             
         net.requires_grad_(True)
         num_layers = len(list(net.state_dict()))
@@ -228,12 +232,12 @@ class BaseLightningModule(pl.LightningModule):
             elif isinstance(layer, str) and (layer == name):
                 print(f'breaking: {layer}={name}')
                 break
-            if verbose:
-                print(f'Setting to False: {name}')
             param.requires_grad_(False)
             num_frozen += 1
+            if verbose==1:
+                print(f'Setting {name}.requires_grad={param.requires_grad}')
 
-            if verbose:
+            if verbose==2:
                 if isinstance(submodule, str):
                     name = ".".join([submodule, name])
                 print(f"Setting layer:({name}) requires_grad={param.requires_grad}.")

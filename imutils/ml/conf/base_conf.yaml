@@ -15,6 +15,7 @@ core:
         - kaggle
 
 hp:
+    preprocess_size: 256
     resolution: 224
     num_channels: 3
 
@@ -43,6 +44,7 @@ data:
         # test_transform=None,
         # transform_cfg: ${aug.default_image_aug_conf} # null
         transform_cfg:
+            preprocess_size: ${int:${hp.preprocess_size}}
             resolution: ${int:${hp.resolution}}
             
         

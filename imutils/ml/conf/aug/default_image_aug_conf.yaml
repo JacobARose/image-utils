@@ -1,12 +1,22 @@
 # default_image_aug_conf.yaml
+# preprocess:
+#     train:
+#         resize: 512
+#     val:
+#         resize: 256
+#     test:
+#         resize: 256
+
+preprocess_size: 256
 resolution: 224
 preprocess:
     train:
-        resize: 512
+        resize: ${...preprocess_size}
     val:
-        resize: 256
+        resize: ${...preprocess_size}
     test:
-        resize: 256
+        resize: ${...preprocess_size}
+
 batch_transform:
     random_flips: False #true
     train:

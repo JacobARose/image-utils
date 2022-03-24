@@ -442,7 +442,7 @@ export CUDA_VISIBLE_DEVICES=6,7; python run_main.py \
 
 ###############################################
 
-(11: AM 2022-03-23) Experiment #9
+(11:20 AM 2022-03-23) Experiment #9
 export CUDA_VISIBLE_DEVICES=6,7; python run_main.py \
         +train.pl_trainer.limit_train_batches=0.01 \
         +train.pl_trainer.limit_val_batches=0 \
@@ -459,12 +459,104 @@ export CUDA_VISIBLE_DEVICES=6,7; python run_main.py \
         hp.resolution=448 \
         aug@data.datamodule.transform_cfg=medium_image_aug_conf
 
+###############################################
+
+(11:45 AM 2022-03-23) Experiment #10
+export CUDA_VISIBLE_DEVICES=6,7; python run_main.py \
+        +train.pl_trainer.limit_train_batches=0.05 \
+        +train.pl_trainer.limit_val_batches=0 \
+        +train.pl_trainer.limit_test_batches=0 \
+        train.pl_trainer.devices=2 \
+        data.datamodule.num_workers=4 \
+        +train.pl_trainer.max_epochs=30 \
+        train.freeze_backbone_up_to=-3 \
+        +train.pl_trainer.overfit_batches=0.05 \
+        +train.pl_trainer.track_grad_norm=2 \
+        +train.pl_trainer.profiler="advanced" \
+        train.pl_trainer.accumulate_grad_batches=1 \
+        optim.use_lr_scheduler=False \
+        optim.optimizer.lr=1e-2 \
+        data.datamodule.batch_size=128 \
+        hp.resolution=448 \
+        aug@data.datamodule.transform_cfg=medium_image_aug_conf
+        
+###############################################
+
+(12:25 PM 2022-03-23) Experiment #11
+export CUDA_VISIBLE_DEVICES=6,7; python run_main.py \
+        train.pl_trainer.devices=2 \
+        data.datamodule.num_workers=4 \
+        +train.pl_trainer.max_epochs=30 \
+        train.freeze_backbone_up_to=-4 \
+        +train.pl_trainer.profiler="advanced" \
+        train.pl_trainer.accumulate_grad_batches=1 \
+        optim.use_lr_scheduler=False \
+        optim.optimizer.lr=0.5e-3 \
+        data.datamodule.batch_size=128 \
+        hp.resolution=448 \
+        aug@data.datamodule.transform_cfg=medium_image_aug_conf
+
+
+###############################################
+
+(3:00 PM 2022-03-23) Experiment #12
+export CUDA_VISIBLE_DEVICES=6,7; python run_main.py \
+        train.pl_trainer.devices=2 \
+        data.datamodule.num_workers=4 \
+        +train.pl_trainer.max_epochs=30 \
+        train.freeze_backbone_up_to=-4 \
+        +train.pl_trainer.profiler="advanced" \
+        train.pl_trainer.accumulate_grad_batches=1 \
+        optim.use_lr_scheduler=False \
+        optim.optimizer.lr=1e-2 \
+        data.datamodule.batch_size=128 \
+        hp.preprocess_size=256 \
+        hp.resolution=224 \
+        aug@data.datamodule.transform_cfg=default_image_aug_conf
+
+
+###############################################
+
+(3:00 PM 2022-03-23) Experiment #13
+export CUDA_VISIBLE_DEVICES=0,1,2,3; python run_main.py \
+        train.pl_trainer.devices=4 \
+        data.datamodule.num_workers=4 \
+        +train.pl_trainer.max_epochs=30 \
+        train.freeze_backbone_up_to=-4 \
+        +train.pl_trainer.profiler="advanced" \
+        train.pl_trainer.accumulate_grad_batches=1 \
+        optim.use_lr_scheduler=False \
+        optim.optimizer.lr=2e-2 \
+        data.datamodule.batch_size=128 \
+        hp.preprocess_size=256 \
+        hp.resolution=224 \
+        aug@data.datamodule.transform_cfg=default_image_aug_conf
 
 
 
-        -train.callbacks.lr_monitor \
-        -train.callbacks.early_stopping \
-        -train.callbacks.model_checkpoint
+###############################################
+- OOM crash after bsz=128 and accumulate_grad_batches=1, so trying 1/2 the bsz and 2x the accumulate
+(5:00 PM 2022-03-23) Experiment #14
+export CUDA_VISIBLE_DEVICES=0,1,2,3; python run_main.py \
+        train.pl_trainer.devices=4 \
+        data.datamodule.num_workers=4 \
+        +train.pl_trainer.max_epochs=30 \
+        train.freeze_backbone_up_to=-4 \
+        +train.pl_trainer.profiler="advanced" \
+        train.pl_trainer.accumulate_grad_batches=2 \
+        optim.use_lr_scheduler=False \
+        optim.optimizer.lr=1e-3 \
+        optim.optimizer.weight_decay=1e-6 \
+        data.datamodule.batch_size=64 \
+        hp.preprocess_size=256 \
+        hp.resolution=224 \
+        aug@data.datamodule.transform_cfg=default_image_aug_conf \
+        model_cfg.backbone.name=resnext50_32x4d \
+        model_cfg.backbone.pretrained=false \
+        model_cfg.backbone.freeze_backbone=false \
+        train.freeze_backbone_up_to=0 \
+        train.freeze_backbone=false
+
 
 
 

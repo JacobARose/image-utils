@@ -194,7 +194,7 @@ class WatchModelWithWandb(Callback):
 
     def on_train_start(self, trainer, pl_module):
         logger = get_wandb_logger(trainer=trainer)
-        logger.watch(model=trainer.model.net, log=self.log, log_freq=self.log_freq)
+        logger.watch(model=trainer.model, log=self.log, log_freq=self.log_freq)
 
 
 

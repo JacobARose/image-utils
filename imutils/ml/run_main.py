@@ -559,6 +559,53 @@ export CUDA_VISIBLE_DEVICES=0,1,2,3; python run_main.py \
 
 
 
+###############################################
+(4:20 AM 2022-03-24) Experiment #15
+- Restored model checkpointing to code after #14's success.
+
+export CUDA_VISIBLE_DEVICES=0,1,2,3; python run_main.py \
+        train.pl_trainer.devices=4 \
+        data.datamodule.num_workers=4 \
+        +train.pl_trainer.max_epochs=30 \
+        +train.pl_trainer.profiler="advanced" \
+        train.pl_trainer.accumulate_grad_batches=2 \
+        optim.use_lr_scheduler=False \
+        optim.optimizer.lr=5e-3 \
+        optim.optimizer.weight_decay=1e-5 \
+        data.datamodule.batch_size=64 \
+        aug@data.datamodule.transform_cfg=default_image_aug_conf \
+        hp.preprocess_size=256 \
+        hp.resolution=224 \
+        model_cfg.backbone.name=resnext50_32x4d \
+        model_cfg.backbone.pretrained=false \
+        model_cfg.backbone.freeze_backbone=false \
+        train.freeze_backbone_up_to=0 \
+        train.freeze_backbone=false
+
+
+###############################################
+(7:35 AM 2022-03-24) Experiment #15b
+- Performance is slightly worse in Exp #15 compared to Experiment #14 within the first 2 epochs -> Attempting to reduce lr down from 5e-3 (Exp#15) -> 2e-3, vs. 1e-3 (Exp#14)
+
+export CUDA_VISIBLE_DEVICES=0,1,2,3; python run_main.py \
+        train.pl_trainer.devices=4 \
+        data.datamodule.num_workers=4 \
+        +train.pl_trainer.max_epochs=30 \
+        +train.pl_trainer.profiler="advanced" \
+        train.pl_trainer.accumulate_grad_batches=2 \
+        optim.use_lr_scheduler=False \
+        optim.optimizer.lr=2e-3 \
+        optim.optimizer.weight_decay=1e-5 \
+        data.datamodule.batch_size=64 \
+        aug@data.datamodule.transform_cfg=default_image_aug_conf \
+        hp.preprocess_size=256 \
+        hp.resolution=224 \
+        model_cfg.backbone.name=resnext50_32x4d \
+        model_cfg.backbone.pretrained=false \
+        model_cfg.backbone.freeze_backbone=false \
+        train.freeze_backbone_up_to=0 \
+        train.freeze_backbone=false
+
 
 
 

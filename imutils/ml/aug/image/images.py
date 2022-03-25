@@ -123,7 +123,7 @@ class BatchTransform(nn.Module):
 	def forward(self, x: torch.Tensor) -> torch.Tensor:
 		x_out = self.transforms(x)  # BxCxHxW
 		if self._apply_color_jitter:
-			x_out = self.jitter(x_out)
+			x_out = self.jitter(image=x_out)
 		return x_out
 	
 

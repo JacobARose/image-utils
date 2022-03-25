@@ -34,6 +34,7 @@ from torchvision import models
 # from pl_bolts.optimizers.lr_scheduler import linear_warmup_decay
 from imutils.ml.models.base import BaseModule, BaseLightningModule
 from imutils.ml.models.backbones.backbone import build_model
+from imutils.ml.utils.experiment_utils import resolve_config
 # from imutils.ml.utils.model_utils import log_model_summary
 
 from imutils.ml import losses
@@ -55,8 +56,8 @@ class LitClassifier(BaseLightningModule): #pl.LightningModule):
 				 *args, **kwargs) -> None:
 		super().__init__(*args, **kwargs)
 		# import pdb; pdb.set_trace()
-		
-		self.save_hyperparameters(OmegaConf.to_container(cfg, resolve=True))
+		cfg = resolve_config(cfg)
+		self.save_hyperparameters(cfg) #OmegaConf.to_container(cfg, resolve=True))
 		self.cfg = cfg
 		model_cfg = cfg.get("model_cfg", {})
 		self.model_cfg = model_cfg or {}

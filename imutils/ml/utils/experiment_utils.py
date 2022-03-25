@@ -52,13 +52,15 @@ def resolve_config(cfg: DictConfig) -> Dict[str, Any]:
     Tool for ensuring all relative references in a dict-like config instance are resolved, typically prior to import/export.
     """
     try:
-        config = cfg
-        config = asdict(config)
+        cfg = asdict(cfg)
     except TypeError:
-        config = OmegaConf.to_container(config, resolve=True)
+        try:
+            cfg = OmegaConf.to_container(cfg, resolve=True)
+        except ValueError:
+            cfg = dict(cfg)
     finally:
-        config = dict(config)
-    return config
+        cfg = OmegaConf.create(dict(cfg))
+    return cfg
 
 
 

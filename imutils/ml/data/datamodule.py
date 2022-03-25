@@ -87,6 +87,8 @@ class AbstractCatalogDataset(Dataset):
 						subset: str="train") -> Tuple["LabelEncoder", pd.DataFrame]:
 		"""
 		Read the selected data subset into a pd.DataFrame
+		
+		Returns a Tuple containing an sklearn LabelEncoder and a pd.DataFrame of the subset's data catalog
 		"""
 		data = read_encoded_splits(source_dir=self.splits_dir,
 											include=[subset])
@@ -97,6 +99,15 @@ class AbstractCatalogDataset(Dataset):
 
 	
 	def setup(self):
+		"""
+		Assigns the following instance attributes:
+		
+			::self.label_encoder
+			::self.df
+			::self.paths
+			::self.targets
+			::self.num_classes
+		"""
 		data = self.prepare_metadata()
 		if data is None:
 			encoder, data = self.get_data_subset(subset=self.subset)
@@ -199,9 +210,9 @@ class BaseDataset(AbstractCatalogDataset):
 				  "path":path,
 				  "catalog_number":catalog_number
 				 }
-		label = None
+		label = -1
 		if self.is_supervised:
-			label = getattr(sample, self.y_col, None)
+			label = getattr(sample, self.y_col, -1)
 		return image, label, metadata
 		
 	def __getitem__(self, index: int):
@@ -296,15 +307,54 @@ class BaseDataModule(pl.LightningDataModule):
 		cfg = OmegaConf.merge(default_cfg, cfg, kwargs)
 		return cfg
 
-	
-	
 
 	def prepare_data(self):
 		pass
 
-
 	def setup(self, stage=None):
 		raise NotImplementedError
+
+
+	def setup_transforms(self,
+						 transform_cfg: dict=None,
+						 train_transform=None,
+						 val_transform=None,
+						 test_transform=None,
+						 remove_transforms: bool=False):
+		transform_cfg = transform_cfg or {}
+		self.transform_cfg = OmegaConf.merge(self.transform_cfg, transform_cfg)
+		self.remove_transforms = remove_transforms
+		if self.remove_transforms:
+			self.train_transform = None
+			self.val_transform = None
+			self.test_transform = None
+		else:
+			print("self.transform_cfg:"); pp(self.transform_cfg)
+			self.train_transform = (
+				get_default_transforms(mode="train", config=self.transform_cfg)
+				if train_transform is None else train_transform
+			)
+			self.val_transform = (
+				get_default_transforms(mode="val", config=self.transform_cfg)
+				if val_transform is None else val_transform
+			)
+			self.test_transform = (
+				get_default_transforms(mode="test", config=self.transform_cfg)
+				if test_transform is None else test_transform
+			)
+
+
+	def set_image_reader(self,
+						 reader: Callable) -> None:
+		"""
+		Pass in a callable that reads image data from disk,
+		which is assigned to each of this datamodule's datasets, respectively.
+		"""
+		for data in [self.train_dataset, self.val_dataset, self.test_dataset]:
+			if data is None:
+				continue
+			data.set_image_reader(reader)
+
 
 	def train_dataloader(self):
 		return DataLoader(
@@ -379,47 +429,6 @@ class BaseDataModule(pl.LightningDataModule):
 		return num_samples, num_batches
 
 
-		
-	def setup_transforms(self,
-						 transform_cfg: dict=None,
-						 train_transform=None,
-						 val_transform=None,
-						 test_transform=None,
-						 remove_transforms: bool=False):
-		transform_cfg = transform_cfg or {}
-		self.transform_cfg = OmegaConf.merge(self.transform_cfg, transform_cfg)
-		self.remove_transforms = remove_transforms
-		if self.remove_transforms:
-			self.train_transform = None
-			self.val_transform = None
-			self.test_transform = None
-		else:
-			print("self.transform_cfg:"); pp(self.transform_cfg)
-			self.train_transform = (
-				get_default_transforms(mode="train", config=self.transform_cfg)
-				if train_transform is None else train_transform
-			)
-			self.val_transform = (
-				get_default_transforms(mode="val", config=self.transform_cfg)
-				if val_transform is None else val_transform
-			)
-			self.test_transform = (
-				get_default_transforms(mode="test", config=self.transform_cfg)
-				if test_transform is None else test_transform
-			)
-		
-	def set_image_reader(self,
-						 reader: Callable) -> None:
-		"""
-		Pass in a callable that reads image data from disk,
-		which is assigned to each of this datamodule's datasets, respectively.
-		"""
-		for data in [self.train_dataset, self.val_dataset, self.test_dataset]:
-			if data is None:
-				continue
-			data.set_image_reader(reader)
-
-
 
 	def show_batch(self, win_size=(10, 10)):
 		def _to_vis(data):
@@ -436,15 +445,13 @@ class BaseDataModule(pl.LightningDataModule):
 		
 
 
+		
+		
+		
 
 
 class Herbarium2022Dataset(BaseDataset):
 	catalog_dir: str = os.path.abspath("./data")
-
-
-
-
-
 
 
 

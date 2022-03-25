@@ -208,7 +208,7 @@ class WandbModelCheckpoint(ModelCheckpoint):
     def __init__(self, *args, **kwargs):
         if not wandb.run:
             raise Exception('Wandb has not been initialized. Please call wandb.init first.')
-        wandb_dir = wandb.run.dir
+        wandb_dir = os.path.abspath(wandb.run.dir)
         super().__init__(dirpath=os.path.join(wandb_dir, CHECKPOINT_FOLDER), *args, **kwargs)
 
 
@@ -239,7 +239,7 @@ class UploadCheckpointsToWandbAsArtifact(Callback):
     """Upload checkpoints to wandb as an artifact, at the end of run."""
 
     def __init__(self, ckpt_dir: str = "checkpoints/", upload_best_only: bool = False):
-        self.ckpt_dir = ckpt_dir
+        self.ckpt_dir = os.path.abspath(ckpt_dir)
         self.upload_best_only = upload_best_only
 
     def on_train_end(self, trainer, pl_module):

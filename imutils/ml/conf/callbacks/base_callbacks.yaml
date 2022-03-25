@@ -9,6 +9,20 @@ kwargs:
         metric: "val_F1"
         mode: "max"
 
+
+progress_bar:
+    _target_: pytorch_lightning.callbacks.RichProgressBar
+    theme:
+        _target_: pytorch_lightning.callbacks.progress.rich_progress.RichProgressBarTheme
+        progress_bar_complete: '#6206E0'
+        progress_bar_finished: '#6206E0'
+        progress_bar_pulse: '#6206E0'
+        batch_process: 'white'
+        time: 'grey54'
+        processing_speed: 'grey70'
+        # metrics: 'white'
+
+
 lr_monitor:
     _target_: pytorch_lightning.callbacks.LearningRateMonitor
     logging_interval: "step" #null

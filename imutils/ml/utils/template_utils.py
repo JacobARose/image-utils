@@ -64,30 +64,32 @@ def extras(config: DictConfig) -> None:
     # set <config.trainer.fast_dev_run=True> if <config.debug=True>
     if config.get("debug"):
         log.info("Running in debug mode! <config.debug=True>")
-        config.trainer.fast_dev_run = True
+        config.train.pl_trainer.fast_dev_run = True
 
     # force debugger friendly configuration if <config.trainer.fast_dev_run=True>
-    if config.trainer.get("fast_dev_run"):
+    if config.train.pl_trainer.get("fast_dev_run"):
         log.info("Forcing debugger friendly configuration! <config.trainer.fast_dev_run=True>")
         # Debuggers don't like GPUs or multiprocessing
-        if config.trainer.get("gpus"):
-            config.trainer.gpus = 0
-        if config.datamodule.get("num_workers"):
-            config.datamodule.num_workers = 0
+        if config.train.pl_trainer.get("gpus"):
+            config.train.pl_trainer.gpus = 0
+        if config.data.datamodule.get("num_workers"):
+            config.data.datamodule.num_workers = 0
 
     # force multi-gpu friendly configuration if <config.trainer.accelerator=ddp>
-    if config.trainer.get("accelerator") in ["ddp", "ddp_spawn", "dp", "ddp2"]:
+    if config.train.pl_trainer.get("accelerator") in ["ddp", "ddp_spawn", "dp", "ddp2"]:
         log.info("Forcing ddp friendly configuration! <config.trainer.accelerator=ddp>")
         # ddp doesn't like num_workers>0 or pin_memory=True
-        if config.datamodule.get("num_workers"):
+        if config.data.datamodule.get("num_workers"):
 #             config.datamodule.num_workers = 0
-            gpus = config.trainer.get("gpus")
+            gpus = config.train.pl_trainer.get("gpus", 0)
+            gpus = gpus or config.train.pl_trainer.get("devices", 0)
+            print(f"GPUs: {gpus}")
             if isinstance(gpus, list):
-                config.datamodule.num_workers = 4 * len(gpus)
+                config.data.datamodule.num_workers = 4 * len(gpus)
             elif isinstance(gpus, int):
-                config.datamodule.num_workers = 4
-        if config.datamodule.get("pin_memory"):
-            config.datamodule.pin_memory = False
+                config.data.datamodule.num_workers = 4
+        if config.data.datamodule.get("pin_memory"):
+            config.data.datamodule.pin_memory = False
 
     # disable adding new keys to config
     OmegaConf.set_struct(config, True)
@@ -97,12 +99,12 @@ def extras(config: DictConfig) -> None:
 def print_config(
     config: DictConfig,
     fields: Sequence[str] = (
-        "trainer",
+        "train",
         "model",
-        "datamodule",
+        "data",
         "callbacks",
         "logger",
-        "hparams",
+        "hp",
         "seed",
     ),
     resolve: bool = True,
@@ -156,25 +158,25 @@ def log_hyperparameters(
     hparams = {}
 
     # choose which parts of hydra config will be saved to loggers
-    hparams["trainer"] = config["trainer"]
+    hparams["train"] = config["train"]
     hparams["model"] = config["model"]
-    hparams["datamodule"] = config["datamodule"]
-    if "optimizer" in config:
-        hparams["optimizer"] = config["optimizer"]
+    hparams["data"] = config["data"]
+    if "optim" in config:
+        hparams["optim"] = config["optim"]
     if "callbacks" in config:
         hparams["callbacks"] = config["callbacks"]
-    if "hparams" in config:
-        hparams["hparams"] = config["hparams"]
+    if "hp" in config:
+        hparams["hp"] = config["hp"]
 
     # save sizes of each dataset
     # (requires calling `datamodule.setup()` first to initialize datasets)
-    # datamodule.setup()
-    # if hasattr(datamodule, "data_train") and datamodule.data_train:
-    #     hparams["datamodule/train_size"] = len(datamodule.data_train)
-    # if hasattr(datamodule, "data_val") and datamodule.data_val:
-    #     hparams["datamodule/val_size"] = len(datamodule.data_val)
-    # if hasattr(datamodule, "data_test") and datamodule.data_test:
-    #     hparams["datamodule/test_size"] = len(datamodule.data_test)
+    datamodule.setup()
+    if hasattr(datamodule, "data_train") and datamodule.data_train:
+        hparams["datamodule/train_size"] = len(datamodule.data_train)
+    if hasattr(datamodule, "data_val") and datamodule.data_val:
+        hparams["datamodule/val_size"] = len(datamodule.data_val)
+    if hasattr(datamodule, "data_test") and datamodule.data_test:
+        hparams["datamodule/test_size"] = len(datamodule.data_test)
 
     # save number of model parameters
     hparams["model/params_total"] = sum(p.numel() for p in model.parameters())

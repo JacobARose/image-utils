@@ -70,7 +70,7 @@ class LitClassifier(BaseLightningModule): #pl.LightningModule):
 							   head_cfg=self.model_cfg.head)
 
 		if self.cfg.train.freeze_backbone:
-			self.freeze_up_to(layer=-1,
+			self.freeze_up_to(layer=self.cfg.train.get("freeze_backbone_up_to"),
 							  submodule="backbone",
 							  verbose=False)	# def on_fit_start(self):
 
@@ -134,6 +134,7 @@ class LitClassifier(BaseLightningModule): #pl.LightningModule):
 	def training_step_end(self, out):
 		self.train_metric(out["logits"], out["y"])
 		
+		batch_size=len(out["y"])
 		log_dict = {"train_loss": out["loss"].mean()}
 		if "train/F1_top1" in self.train_metric.keys():
 			log_dict["train_F1"] = self.train_metric["train/F1_top1"]
@@ -141,12 +142,14 @@ class LitClassifier(BaseLightningModule): #pl.LightningModule):
 			log_dict,
 			on_step=True,
 			on_epoch=True,
-			prog_bar=True
+			prog_bar=True,
+			batch_size=batch_size
 		)			
 		self.log_dict(
 			self.train_metric,
 			on_step=True,
-			on_epoch=True
+			on_epoch=True,
+			batch_size=batch_size
 		)
 		return out["loss"].mean()
 
@@ -157,15 +160,24 @@ class LitClassifier(BaseLightningModule): #pl.LightningModule):
 	
 	def validation_step_end(self, out):
 		self.val_metric(out["logits"], out["y"])
-
+		batch_size=len(out["y"])
 		log_dict = {
 			"val_loss": out["loss"].mean(),
-			**self.val_metric,
 		}
 		if "val/F1_top1" in self.val_metric.keys():
 			log_dict["val_F1"] = self.val_metric["val/F1_top1"]
 			
-		self.log_dict(log_dict)
+		self.log_dict(log_dict,
+					  on_step=True,
+					  on_epoch=True,
+					  prog_bar=True,
+					  batch_size=batch_size)
+
+		self.log_dict(self.val_metric,
+					  on_step=True,
+					  on_epoch=True,
+					  # prog_bar=True,
+					  batch_size=batch_size)
 		
 		return {
 			# "image": out["x"],
@@ -180,12 +192,14 @@ class LitClassifier(BaseLightningModule): #pl.LightningModule):
 		return {k: out[k] for k in ["logits", "loss", "y"]}
 
 	def test_step_end(self, out):
+		batch_size=len(out["y"])
 		self.test_metric(out["logits"], out["y"])
 		self.log_dict(
 			{
 				"test_loss": out["loss"].mean(),
 				**self.test_metric,
 			},
+			batch_size=batch_size
 		)
 		return {
 			# "image": out["x"],
@@ -193,6 +207,18 @@ class LitClassifier(BaseLightningModule): #pl.LightningModule):
 			"logits": out["logits"],
 			"val_loss": out["loss"].mean(),
 		}
+
+	def predict_step(self, batch: Any, batch_idx: int) -> Dict[str, torch.Tensor]:
+		if len(batch)==3:
+			x, y, metadata = batch[:3]
+			image_idx = metadata.get("image_id")
+		else:
+			x, y = batch[:2]
+			image_idx = torch.arange(0, len(x)) + batch_idx
+
+		y_logit = self(x)
+		return {"image_id":image_idx,
+				"y_logit":y_logit}
 
 
 	def validation_epoch_end(self, outputs: List[Any]) -> None:
@@ -302,28 +328,13 @@ class LitClassifier(BaseLightningModule): #pl.LightningModule):
 			weight_decay=self.cfg.optim.optimizer.weight_decay,
 			_convert_="partial"
 		)
-		return opt
-		# if not self.cfg.optim.use_lr_scheduler:
-			# return opt
 
-		# Handle schedulers if requested
-		# if torch.optim.lr_scheduler.warmup_steps:
-		# 	# Right now this is specific to SimCLR
-		# 	lr_scheduler = {
-		# 		"scheduler": torch.optim.lr_scheduler.LambdaLR(
-		# 			opt,
-		# 			linear_warmup_decay(
-		# 				self.cfg.optim.lr_scheduler.warmup_steps,
-		# 				self.cfg.optim.lr_scheduler.total_steps,
-		# 				cosine=True),
-		# 		),
-		# 		"interval": "step",
-		# 		"frequency": 1,
-		# 	}
-		# else:
-		# 	lr_scheduler = self.cfg.optim.lr_scheduler
-		# scheduler = hydra.utils.instantiate(lr_scheduler, optimizer=opt)
-		# return [opt], [scheduler]
+		out = opt
+		if self.cfg.optim.use_lr_scheduler:
+			lr_scheduler = self.cfg.optim.lr_scheduler
+			scheduler = hydra.utils.instantiate(lr_scheduler, optimizer=opt)
+			out = ([opt], [scheduler])
+		return out
 
 	@staticmethod
 	def exclude_from_wt_decay(named_params: List[Tuple[str, torch.Tensor]],

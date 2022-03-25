@@ -151,6 +151,15 @@ class LabelEncoder(object):
 		assert np.all([label in self.idx2class.values() for label in new_classes])
 		return self
 
+	def transform(self, y):
+		"""Wrapper for inter-operability with sklearn"""
+		return self.encode(y)
+	def inv_transform(self, y):
+		"""Wrapper for inter-operability with sklearn"""
+		return self.decode(y)
+
+
+
 	def encode(self, y, strict: bool=True):
 		if not hasattr(y,"__len__"):
 			y = [y]

@@ -12,6 +12,7 @@ Created by: Jacob Alexander Rose
 
 from icecream import ic
 import jpeg4py as jpeg
+import numpy as np
 from omegaconf import DictConfig, OmegaConf
 import os
 import pandas as pd
@@ -20,8 +21,10 @@ from PIL import Image
 from rich import print as pp
 import multiprocessing as mproc
 import pytorch_lightning as pl
+from sklearn import preprocessing
 from torch.utils.data import DataLoader, Dataset
 from torchvision import transforms as T
+import torchvision
 from typing import *
 
 
@@ -37,6 +40,8 @@ from imutils.ml.aug.image.images import (Preprocess,
 										 get_default_transforms,
 										 DEFAULT_CFG as DEFAULT_TRANSFORM_CFG)
 
+from imutils.ml.utils import label_utils
+
 __all__ = ["Herbarium2022DataModule", "Herbarium2022Dataset", "get_default_transforms"]
 
 
@@ -47,18 +52,35 @@ def read_jpeg(path):
 def read_pil(path):
 	return Image.open(path)
 
+def read_torchvision_img(path):
+    img=torchvision.io.read_image(path)
+    return img
+
+
 default_reader = read_jpeg
 
 
 IMAGE_READERS = {
 	"jpeg.JPEG":read_jpeg,
 	"PIL":read_pil,
+	"torchvision":read_torchvision_img,
 	"default":default_reader
 }
 
 
 
 class AbstractCatalogDataset(Dataset):
+
+	def __init__(self):
+		super().__init__()
+		"""
+		TBD: document these function kwargs
+		
+		"""
+		self.x_col = "path"
+		self.y_col = "y"
+		self.id_col = "image_id"
+	
 	
 	@property
 	def splits_dir(self) -> Path:
@@ -114,13 +136,23 @@ class AbstractCatalogDataset(Dataset):
 		else:
 			encoder = data["label_encoder"]
 			data = data["subsets"][self.subset]
+
+		if isinstance(encoder, preprocessing.LabelEncoder):
+			"""
+			Auto wraps any sklearn LabelEncoder in our custom class.
+			(Added 2022-03-25 - untested)
+			"""
+			encoder = label_utils.LabelEncoder.from_sklearn(encoder)
+
 		setattr(data, "label_encoder", encoder)
 		self.label_encoder = encoder
 		self.df = data
 		
 		if self.shuffle:
 			self.df = self.df.sample(frac=1, random_state=self.seed).reset_index(drop=False)
-			
+
+		if self.id_col in self.df.columns:
+			self.image_ids = self.df[self.id_col]
 		self.paths = self.df[self.x_col]
 
 		if self.is_supervised:
@@ -129,8 +161,12 @@ class AbstractCatalogDataset(Dataset):
 			self.num_classes = len(set(self.df[self.y_col]))
 		else:
 			self.targets = None
-			self.num_classes = -1
+			self.num_classes = -1 # Or 0?
 	
+
+	def get_decoded_targets(self, with_image_ids: bool=True) -> Tuple[str, np.ndarray]:
+		assert self.is_supervised
+		return self.label_encoder.inv_transform(self.targets)
 	
 
 class BaseDataset(AbstractCatalogDataset):
@@ -146,13 +182,28 @@ class BaseDataset(AbstractCatalogDataset):
 				 image_reader: Union[Callable,str]="default", #Image.open,
 				 preprocess: Callable=None,
 				 transform: Callable=None):
+		"""
+		
+		Arguments:
+		
+			catalog_dir: Optional[str]=None,
+				
+			subset: str="train",
+			
+			label_col: str="scientificName",
+				Column containing the fully decoded str labels
+			train_size: float=0.7,
+			shuffle: bool=True,
+			seed: int=14,
+			image_reader: Union[Callable,str]="default", #Image.open,
+			preprocess: Callable=None,
+			transform: Callable=None
+		
+		"""
 		super().__init__()
 		
 		self.catalog_dir = catalog_dir or self.catalog_dir
-		
-		self.x_col = "path"
-		self.y_col = "y"
-		self.id_col = "image_id"
+
 		self.label_col = label_col
 		self.train_size = train_size
 		self.shuffle = shuffle
@@ -202,13 +253,14 @@ class BaseDataset(AbstractCatalogDataset):
 		"""
 		sample = self.parse_sample(index)
 		path = getattr(sample, self.x_col)
-		catalog_number = getattr(sample, self.id_col)
+		image_id = getattr(sample, self.id_col)
 		
 		image = self.reader(path)
 		
 		metadata={
-				  "path":path,
-				  "catalog_number":catalog_number
+			"path":path,
+			"image_id":image_id
+				  # "catalog_number":catalog_number
 				 }
 		label = -1
 		if self.is_supervised:
@@ -368,7 +420,7 @@ class BaseDataModule(pl.LightningDataModule):
 	def val_dataloader(self):
 		return DataLoader(
 			self.val_dataset,
-			batch_size=self.batch_size,
+			batch_size=self.batch_size*2,
 			num_workers=self.num_workers,
 			shuffle=False,
 			pin_memory=self.pin_memory
@@ -377,7 +429,7 @@ class BaseDataModule(pl.LightningDataModule):
 	def test_dataloader(self):
 		return DataLoader(
 			self.test_dataset,
-			batch_size=self.batch_size,
+			batch_size=self.batch_size*2,
 			num_workers=self.num_workers,
 			shuffle=False,
 			pin_memory=self.pin_memory
@@ -427,6 +479,9 @@ class BaseDataModule(pl.LightningDataModule):
 			# print(f"{subset} --> (num_samples: {num_samples:,}), (num_batches: {num_batches:,})")
 			ic(subset, num_samples, num_batches, self.num_classes, self.batch_size)
 		return num_samples, num_batches
+
+
+	
 
 
 

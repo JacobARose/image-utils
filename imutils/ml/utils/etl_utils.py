@@ -21,7 +21,10 @@ import numpy as np
 import pandas as pd
 
 # from lightning_hydra_classifiers.utils.common_utils import LabelEncoder
-from hydra.experimental import compose, initialize, initialize_config_dir
+# from hydra.experimental import compose, initialize, initialize_config_dir
+from hydra import compose, initialize, initialize_config_dir
+
+
 from more_itertools import flatten
 from omegaconf import DictConfig, OmegaConf
 

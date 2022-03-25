@@ -18,6 +18,7 @@ hp:
     preprocess_size: 256
     resolution: 224
     num_channels: 3
+    max_epochs: 30
 
 
 seed: 42
@@ -122,9 +123,7 @@ model_cfg:
 
 optim:
     optimizer:
-        #    Adam-oriented deep learning
         _target_: torch.optim.Adam
-        #    These are all default parameters for the Adam optimizer
         lr: 1e-3    # 0.001
         betas: [ 0.9, 0.999 ]
         eps: 1e-08
@@ -133,11 +132,20 @@ optim:
 
     use_lr_scheduler: True
     lr_scheduler:
-        _target_: torch.optim.lr_scheduler.CosineAnnealingWarmRestarts
-        T_0: 10
-        T_mult: 2
-        eta_min: 0 # min value for the lr
+        _target_: pl_bolts.optimizers.lr_scheduler.LinearWarmupCosineAnnealingLR
+        warmup_epochs: 3
+        max_epochs: ${hp.max_epochs}
+        warmup_start_lr: 1e-05
+        eta_min: 1e-06
         last_epoch: -1
+    
+    
+    # lr_scheduler:
+    #     _target_: torch.optim.lr_scheduler.CosineAnnealingWarmRestarts
+    #     T_0: 10
+    #     T_mult: 2
+    #     eta_min: 0 # min value for the lr
+    #     last_epoch: -1
     
     
     # lr_scheduler:
@@ -165,6 +173,7 @@ train:
         precision: 16
         enable_model_summary: true
         log_gpu_memory: true
+        max_epochs: ${hp.max_epochs}
         # strategy: "dpp_find_unused_parameters"
             
         # max_steps: ${optim.lr_scheduler.total_steps}
@@ -199,8 +208,9 @@ logging:
         project: herbarium2022
         entity: jrose
         name: "${core.name}"
-
+        log_model: true
         watch:
+            
             log: 'all'
             log_freq: 10
 

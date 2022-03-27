@@ -608,31 +608,418 @@ export CUDA_VISIBLE_DEVICES=0,1,2,3; python run_main.py \
 
 
 ###############################################
-(11:30 AM 2022-03-25) Experiment #16
+(11:45 AM 2022-03-25) Experiment #16
 
 - Increasing weight_decay from 1e-5->2e-05
+- lr = 2e-3
+- LinearWarmupCosineAnnealingLR
+		pl_bolts.optimizers.lr_scheduler.LinearWarmupCosineAnnealingLR
+        warmup_epochs: 3
+        max_epochs: ${hp.max_epochs}
+        warmup_start_lr: 1e-04
+        eta_min: 1e-06
+        last_epoch: -1
+
 
 export CUDA_VISIBLE_DEVICES=4,5,6,7; python run_main.py \
-		train.pl_trainer.devices=4 \
-		data.datamodule.num_workers=8 \
-		+train.pl_trainer.max_epochs=30 \
-		+train.pl_trainer.profiler="advanced" \
-		train.pl_trainer.accumulate_grad_batches=2 \
-		optim.use_lr_scheduler=False \
-		optim.optimizer.lr=2e-3 \
-		optim.optimizer.weight_decay=2e-5 \
-		data.datamodule.batch_size=64 \
-		aug@data.datamodule.transform_cfg=default_image_aug_conf \
-		hp.preprocess_size=256 \
-		hp.resolution=224 \
-		model_cfg.backbone.name=resnext50_32x4d \
-		model_cfg.backbone.pretrained=false \
-		model_cfg.backbone.freeze_backbone=false \
-		train.freeze_backbone_up_to=0 \
-		train.freeze_backbone=false
+train.pl_trainer.devices=4 \
+data.datamodule.num_workers=4 \
+train.pl_trainer.max_epochs=30 \
++train.pl_trainer.profiler="advanced" \
+train.pl_trainer.accumulate_grad_batches=2 \
+optim.optimizer.lr=2e-3 \
+optim.optimizer.weight_decay=2e-5 \
+data.datamodule.batch_size=64 \
+aug@data.datamodule.transform_cfg=default_image_aug_conf \
+hp.preprocess_size=256 \
+hp.resolution=224 \
+model_cfg.backbone.name=resnext50_32x4d \
+model_cfg.backbone.pretrained=false \
+model_cfg.backbone.freeze_backbone=false \
+train.freeze_backbone_up_to=0 \
+train.freeze_backbone=false
+
+
+###############################################
+(3:00 PM 2022-03-25) Experiment #16b
+
+- **Decreasing** weight_decay back from 2e-5->5e-06
+- lr = 2e-3
+- LinearWarmupCosineAnnealingLR
+		pl_bolts.optimizers.lr_scheduler.LinearWarmupCosineAnnealingLR
+        warmup_epochs: 3
+        max_epochs: ${hp.max_epochs}
+        warmup_start_lr: 1e-04
+        eta_min: 1e-06
+        last_epoch: -1
+
+
+export CUDA_VISIBLE_DEVICES=4,5,6,7; python run_main.py \
+train.pl_trainer.devices=4 \
+data.datamodule.num_workers=4 \
+train.pl_trainer.max_epochs=30 \
++train.pl_trainer.profiler="advanced" \
+train.pl_trainer.accumulate_grad_batches=2 \
+optim.optimizer.lr=2e-3 \
+optim.optimizer.weight_decay=5e-6 \
+data.datamodule.batch_size=64 \
+aug@data.datamodule.transform_cfg=default_image_aug_conf \
+hp.preprocess_size=256 \
+hp.resolution=224 \
+model_cfg.backbone.name=resnext50_32x4d \
+model_cfg.backbone.pretrained=false \
+model_cfg.backbone.freeze_backbone=false \
+train.freeze_backbone_up_to=0 \
+train.freeze_backbone=false
 
 
 
+###############################################
+(9:30 PM 2022-03-25) Experiment #16c
+
+- DEBUGGING crash at end of Experiment #16b validation stage of epoch 0
+
+export CUDA_VISIBLE_DEVICES=7; python run_main.py \
+train.pl_trainer.devices=1 \
+data.datamodule.num_workers=1 \
+train.pl_trainer.fast_dev_run=true \
+train.pl_trainer.max_epochs=2 \
++train.pl_trainer.profiler="advanced" \
+train.pl_trainer.accumulate_grad_batches=2 \
+optim.optimizer.lr=2e-3 \
+optim.optimizer.weight_decay=5e-6 \
+data.datamodule.batch_size=64 \
+aug@data.datamodule.transform_cfg=default_image_aug_conf \
+hp.preprocess_size=256 \
+hp.resolution=224 \
+model_cfg.backbone.name=resnext50_32x4d \
+model_cfg.backbone.pretrained=false \
+model_cfg.backbone.freeze_backbone=false \
+train.freeze_backbone_up_to=0 \
+train.freeze_backbone=false
+
+###################
+###################
+
+# (11:15 PM 2022-03-25) Experiment #16d
+
+export CUDA_VISIBLE_DEVICES=7; python run_main.py \
+train.pl_trainer.devices=1 \
+data.datamodule.num_workers=1 \
++train.pl_trainer.limit_train_batches=5 \
++train.pl_trainer.limit_val_batches=5 \
+train.pl_trainer.max_epochs=4 \
++train.pl_trainer.profiler="simple" \
+train.pl_trainer.accumulate_grad_batches=1 \
+optim.optimizer.lr=2e-3 \
+optim.optimizer.weight_decay=5e-6 \
+data.datamodule.batch_size=16 \
+aug@data.datamodule.transform_cfg=default_image_aug_conf \
+hp.preprocess_size=256 \
+hp.resolution=224 \
+model_cfg.backbone.name=resnext50_32x4d \
+model_cfg.backbone.pretrained=false \
+model_cfg.backbone.freeze_backbone=false \
+train.freeze_backbone_up_to=0 \
+train.freeze_backbone=false
+
+
+###################
+
+# (11:15 PM 2022-03-25) Experiment #16e
+
+#16d worked without error after tediously passing through using pdb. 
+- Trying the same with num_workers set from 1->4
+- Set limit_train_batches from 5->10
+- Set limit_val_batches from 5->10
+
+
+--
+
+- Might have been caused by accidentally using a strategy='ddp' by default even though devices=1?
+(11:28 PM) -> SUCCESS: It was the problem caused by using "ddp" on 1 gpu!!
+
+export CUDA_VISIBLE_DEVICES=7; python run_main.py \
+train.pl_trainer.devices=1 \
+train.pl_trainer.strategy=null \
+data.datamodule.num_workers=4 \
++train.pl_trainer.limit_train_batches=10 \
++train.pl_trainer.limit_val_batches=10 \
+train.pl_trainer.max_epochs=4 \
++train.pl_trainer.profiler="simple" \
+train.pl_trainer.accumulate_grad_batches=1 \
+optim.optimizer.lr=2e-3 \
+optim.optimizer.weight_decay=5e-6 \
+data.datamodule.batch_size=16 \
+aug@data.datamodule.transform_cfg=default_image_aug_conf \
+hp.preprocess_size=256 \
+hp.resolution=224 \
+model_cfg.backbone.name=resnext50_32x4d \
+model_cfg.backbone.pretrained=false \
+model_cfg.backbone.freeze_backbone=false \
+train.freeze_backbone_up_to=0 \
+train.freeze_backbone=false
+
+
+################################
+
+###############################################
+(11:33 PM 2022-03-25) Experiment #16f
+
+- Repeating settings from Experiment #16b after finding the code bug.
+	- Only change is setting optim.lr_scheduler.warmup_start_lr from 1e-04 -> 1e-03
+
+- **Decreasing** weight_decay back from 2e-5->5e-06
+- lr = 2e-3
+- LinearWarmupCosineAnnealingLR
+		pl_bolts.optimizers.lr_scheduler.LinearWarmupCosineAnnealingLR
+        warmup_epochs: 3
+        max_epochs: ${hp.max_epochs}
+        warmup_start_lr: 1e-04
+        eta_min: 1e-06
+        last_epoch: -1
+
+
+export CUDA_VISIBLE_DEVICES=4,5,6,7; python run_main.py \
+train.pl_trainer.devices=4 \
+data.datamodule.num_workers=4 \
+train.pl_trainer.max_epochs=30 \
++train.pl_trainer.profiler="advanced" \
+train.pl_trainer.accumulate_grad_batches=2 \
+optim.optimizer.lr=2e-3 \
+optim.lr_scheduler.warmup_start_lr=1e-03 \
+optim.optimizer.weight_decay=5e-6 \
+data.datamodule.batch_size=64 \
+aug@data.datamodule.transform_cfg=default_image_aug_conf \
+hp.preprocess_size=256 \
+hp.resolution=224 \
+model_cfg.backbone.name=resnext50_32x4d \
+model_cfg.backbone.pretrained=false \
+model_cfg.backbone.freeze_backbone=false \
+train.freeze_backbone_up_to=0 \
+train.freeze_backbone=false
+
+
+
+###############################################
+(2:50 AM 2022-03-26) Experiment #16g
+- launched @ 3:10 AM
+- Repeating settings from Experiment #16b after finding the code bug.
+	- Only changes are:
+		- setting optim.lr_scheduler.warmup_start_lr from 1e-04 -> 1e-03
+		- Removing preprocess_size in order to (hopefully) only resize images once to the output size/resolution
+		- Switching model=resnext50_32x4d -> model=resnet18
+		- Switching pretrained=false -> pretrained=true
+		- Switching devices=2
+- **Decreasing** weight_decay back from 2e-5->5e-06
+- lr = 2e-3
+- LinearWarmupCosineAnnealingLR
+		pl_bolts.optimizers.lr_scheduler.LinearWarmupCosineAnnealingLR
+        warmup_epochs: 3
+        max_epochs: ${hp.max_epochs}
+        warmup_start_lr: 1e-04
+        eta_min: 1e-06
+        last_epoch: -1
+
+
+export CUDA_VISIBLE_DEVICES=4,5; python run_main.py \
+optim.optimizer.lr=2e-3 \
+optim.lr_scheduler.warmup_start_lr=1e-03 \
+optim.optimizer.weight_decay=5e-6 \
+data.datamodule.batch_size=32 \
+aug@data.datamodule.transform_cfg=default_image_aug_conf \
+hp.resolution=224 \
+model_cfg.backbone.name=resnet18 \
+model_cfg.backbone.pretrained=true \
+model_cfg.backbone.freeze_backbone=false \
+train.freeze_backbone_up_to=0 \
+train.freeze_backbone=false \
+train.pl_trainer.devices=2 \
+data.datamodule.num_workers=4 \
+train.pl_trainer.strategy=null \
+data.datamodule.num_workers=4 \
++train.pl_trainer.limit_train_batches=10 \
++train.pl_trainer.limit_val_batches=10 \
+train.pl_trainer.max_epochs=4 \
++train.pl_trainer.profiler="simple" \
+train.pl_trainer.accumulate_grad_batches=1
+
+
+
+###############################################
+(3:30 AM 2022-03-26) Experiment #16h
+
+- 16g crashed with 2-gpus, now going back to 1.
+
+- Repeating settings from Experiment #16b after finding the code bug.
+	- Only change is setting optim.lr_scheduler.warmup_start_lr from 1e-04 -> 1e-03
+	- Removing preprocess_size in order to (hopefully) only resize images once to the output size/resolution
+	- Switching model=resnext50_32x4d -> model=resnet18
+	- Switching pretrained=false -> pretrained=true
+	- Switching from devices=2 -> devices=1
+- **Decreasing** weight_decay back from 2e-5->5e-06
+- lr = 2e-3
+- LinearWarmupCosineAnnealingLR
+		pl_bolts.optimizers.lr_scheduler.LinearWarmupCosineAnnealingLR
+        warmup_epochs: 3
+        max_epochs: ${hp.max_epochs}
+        warmup_start_lr: 1e-04
+        eta_min: 1e-06
+        last_epoch: -1
+
+
+export CUDA_VISIBLE_DEVICES=4,5; python run_main.py \
+optim.optimizer.lr=2e-3 \
+optim.lr_scheduler.warmup_start_lr=1e-03 \
+optim.optimizer.weight_decay=5e-6 \
+data.datamodule.batch_size=16 \
+aug@data.datamodule.transform_cfg=default_image_aug_conf \
+hp.resolution=224 \
+model_cfg.backbone.name=resnet18 \
+model_cfg.backbone.pretrained=true \
+model_cfg.backbone.freeze_backbone=false \
+train.freeze_backbone_up_to=0 \
+train.freeze_backbone=false \
+train.pl_trainer.devices=2 \
+data.datamodule.num_workers=4 \
++train.pl_trainer.limit_train_batches=25 \
++train.pl_trainer.limit_val_batches=25 \
+train.pl_trainer.max_epochs=2 \
++train.pl_trainer.profiler="simple" \
+train.pl_trainer.accumulate_grad_batches=1
+
+# train.pl_trainer.strategy=null \
+
+
+
+###############################################
+(4:30 AM 2022-03-27) Experiment #16i
+	- finished ~5:30 AM
+	- [Result: PARTIAL SUCCESS] — Managed to get ddp_spawn to make it past epoch 0 validation into epoch 1+
+
+- 16g crashed with 2-gpus, now going back to 1.
+- 16h finished successfully with 1-gpu after compromising on a validation epoch logging issue (~5:30 AM 2022-03-26)
+- Now, #16i will try with 2-gpus again
+
+
+Notable:
+
+- weight_decay=5e-06
+- lr = 2e-3
+- Adding experiment name to wandb config that corresponds to my notes:
+    `core.name="Experiment #16h (2022-03-27)"`
+- Added second `--config-name=dev_conf`
+- Overriding `callbacks=null`
+- Moved `train.freeze_backbone_up_to` and `train.freeze_backbone` to be interpolations of a user-specified value under `hp` (for `hyper-parameters`)
+- Changed default trainer strategy = `ddp_spawn`.
+- LinearWarmupCosineAnnealingLR
+		pl_bolts.optimizers.lr_scheduler.LinearWarmupCosineAnnealingLR
+        warmup_epochs: 3
+        max_epochs: ${hp.max_epochs}
+        warmup_start_lr: 1e-04
+        eta_min: 1e-06
+
+
+export CUDA_VISIBLE_DEVICES=6,7; python run_main.py \
+--config-name=dev_conf \
+'core.name="Experiment #16i (2022-03-27)"' \
+optim.optimizer.lr=2e-3 \
+optim.lr_scheduler.warmup_start_lr=1e-03 \
+optim.optimizer.weight_decay=5e-6 \
+data.datamodule.batch_size=32 \
+aug@data.datamodule.transform_cfg=default_image_aug_conf \
+hp.resolution=224 \
+model_cfg.backbone.name=resnet18 \
+model_cfg.backbone.pretrained=true \
+hp.freeze_backbone_up_to=0 \
+hp.freeze_backbone=false \
+train.pl_trainer.devices=2 \
+data.datamodule.num_workers=4 \
++train.pl_trainer.limit_train_batches=25 \
++train.pl_trainer.limit_val_batches=25 \
+train.pl_trainer.max_epochs=2 \
++train.pl_trainer.profiler="simple" \
+train.pl_trainer.accumulate_grad_batches=1
+
+
+
+
+
+###############################################
+(5:50 AM 2022-03-27) Experiment #16j
+	- finished ~6 AM
+	- [Result: SUCCESS] - Managed to get ddp to make it past epoch 0 validation into epoch 1+, all other settings identical to Experiment #16i
+
+- 16g crashed with 2-gpus, now going back to 1.
+- 16h finished successfully with 1-gpu after compromising on a validation epoch logging issue (~5:30 AM 2022-03-26)
+- 16i got 2-gpus working again by removing some necessary logging & callback code + switching to ddp_spawn.
+- Now, 16j will switch back to ddp, otherwise settingsare identical to Experiment #16i
+
+
+
+Notable:
+	- Switching strategy back from `ddp_spawn` to `ddp`
+	- devices still equals 2.
+
+export CUDA_VISIBLE_DEVICES=6,7; python run_main.py \
+--config-name=dev_conf \
+'core.name="Experiment #16j (2022-03-27)"' \
+optim.optimizer.lr=2e-3 \
+optim.lr_scheduler.warmup_start_lr=1e-03 \
+optim.optimizer.weight_decay=5e-6 \
+data.datamodule.batch_size=32 \
+aug@data.datamodule.transform_cfg=default_image_aug_conf \
+hp.resolution=224 \
+model_cfg.backbone.name=resnet18 \
+model_cfg.backbone.pretrained=true \
+hp.freeze_backbone_up_to=0 \
+hp.freeze_backbone=false \
+train.pl_trainer.devices=2 \
+data.datamodule.num_workers=4 \
++train.pl_trainer.limit_train_batches=25 \
++train.pl_trainer.limit_val_batches=25 \
+train.pl_trainer.max_epochs=2 \
++train.pl_trainer.profiler="simple" \
+train.pl_trainer.accumulate_grad_batches=1
+
+
+
+###############################################
+(6:10 AM 2022-03-27) Experiment #16k
+	- finished ~ AM
+	- [Result: ] - 
+
+- 16g crashed with 2-gpus, now going back to 1.
+- 16h finished successfully with 1-gpu after compromising on a validation epoch logging issue (~5:30 AM 2022-03-26)
+- 16i got 2-gpus working again by removing some necessary logging & callback code + switching to ddp_spawn.
+- 16j switched back to ddp, otherwise settings were identical to Experiment #16i
+
+
+
+Notable:
+	- Switching strategy back from `ddp_spawn` to `ddp`
+	- devices still equals 2.
+
+export CUDA_VISIBLE_DEVICES=6,7; python run_main.py \
+--config-name=dev_conf \
+'core.name="Experiment #16k (2022-03-27)"' \
+optim.optimizer.lr=2e-3 \
+optim.lr_scheduler.warmup_start_lr=1e-03 \
+optim.optimizer.weight_decay=5e-6 \
+data.datamodule.batch_size=32 \
+aug@data.datamodule.transform_cfg=default_image_aug_conf \
+hp.resolution=224 \
+model_cfg.backbone.name=resnet18 \
+model_cfg.backbone.pretrained=true \
+hp.freeze_backbone_up_to=0 \
+hp.freeze_backbone=false \
+train.pl_trainer.devices=2 \
+data.datamodule.num_workers=4 \
++train.pl_trainer.limit_train_batches=25 \
++train.pl_trainer.limit_val_batches=25 \
+train.pl_trainer.max_epochs=2 \
++train.pl_trainer.profiler="simple" \
+train.pl_trainer.accumulate_grad_batches=1
 
 
 
@@ -698,7 +1085,15 @@ def train(cfg: DictConfig) -> None:
 			f"Forcing debugger friendly configuration!"
 		)
 		# Debuggers don't like GPUs nor multiprocessing
-		cfg.train.pl_trainer.gpus = 0
+		if cfg.train.callbacks.get('watch_model_with_wandb') is not None:
+			del cfg.train.callbacks.watch_model_with_wandb
+		if cfg.train.callbacks.get('uploadcheckpointsasartifact') is not None:
+			del cfg.train.callbacks.uploadcheckpointsasartifact
+		if cfg.train.callbacks.get('model_checkpoint') is not None:
+			del cfg.train.callbacks.model_checkpoint
+			
+
+		# cfg.train.pl_trainer.gpus = 0
 		cfg.data.datamodule.num_workers = 0
 		# cfg.data.datamodule.num_workers.train = 0
 		# cfg.data.datamodule.num_workers.val = 0
@@ -758,10 +1153,10 @@ def train(cfg: DictConfig) -> None:
 	# hydra.utils.log.info(f"Starting testing!")
 	# trainer.test(model=model, datamodule=datamodule)
 
-	shutil.copytree(".hydra", Path(wandb_logger.experiment.dir) / "hydra")
 
 	# Logger closing to release resources/avoid multi-run conflicts
 	if wandb_logger is not None:
+		shutil.copytree(".hydra", Path(wandb_logger.experiment.dir, "hydra"))
 		wandb_logger.experiment.finish()
 
 

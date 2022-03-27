@@ -134,24 +134,29 @@ class LitClassifier(BaseLightningModule): #pl.LightningModule):
 	def training_step_end(self, out):
 		self.train_metric(out["logits"], out["y"])
 		
-		batch_size=len(out["y"])
-		log_dict = {"train_loss": out["loss"].mean()}
-		if "train/F1_top1" in self.train_metric.keys():
-			log_dict["train_F1"] = self.train_metric["train/F1_top1"]
+		batch_size=self.batch_size #len(out["y"])
+		loss = out["loss"].mean()
+		log_dict = {
+			"train_loss": loss,
+			**self.train_metric
+		}
+		# if "train/F1_top1" in self.train_metric.keys():
+		# 	log_dict["train_F1"] = self.train_metric["train/F1_top1"]
 		self.log_dict(
 			log_dict,
 			on_step=True,
 			on_epoch=True,
 			prog_bar=True,
 			batch_size=batch_size
-		)			
-		self.log_dict(
-			self.train_metric,
-			on_step=True,
-			on_epoch=True,
-			batch_size=batch_size
 		)
-		return out["loss"].mean()
+		return loss
+		# self.log_dict(
+		# 	self.train_metric,
+		# 	on_step=True,
+		# 	on_epoch=True,
+		# 	batch_size=batch_size
+		# )
+		# return out["loss"].mean()
 
 	def validation_step(self, batch: Any, batch_idx: int) -> Dict[str, torch.Tensor]:
 		x, y = batch[:2]
@@ -160,31 +165,40 @@ class LitClassifier(BaseLightningModule): #pl.LightningModule):
 	
 	def validation_step_end(self, out):
 		self.val_metric(out["logits"], out["y"])
-		batch_size=len(out["y"])
+		batch_size=self.batch_size #len(out["y"])
+		loss = out["loss"].mean()
+		
 		log_dict = {
-			"val_loss": out["loss"].mean(),
+			"val_loss": loss,
+			**self.val_metric
 		}
-		if "val/F1_top1" in self.val_metric.keys():
-			log_dict["val_F1"] = self.val_metric["val/F1_top1"]
-			
+		# if "val/F1_top1" in self.val_metric.keys():
+		# 	log_dict["val_F1"] = self.val_metric["val/F1_top1"]
+		# 	log_dict.update({k:v for k,v in self.val_metric.items() if k != "val/F1_top1"})
+		# elif "val_macro_F1" in self.val_metric.keys():
+		# 	log_dict["val_F1"] = self.val_metric["val_macro_F1"]
+		# 	log_dict.update({k:v for k,v in self.val_metric.items() if k != "val_macro_F1"})
+		# else:
+		# log_dict.update(self.val_metric)
+		# self.log("val_macro_F1", self.val_metric["val_macro_F1"])
 		self.log_dict(log_dict,
-					  on_step=True,
+					  on_step=False, #True,
 					  on_epoch=True,
 					  prog_bar=True,
 					  batch_size=batch_size)
 
-		self.log_dict(self.val_metric,
-					  on_step=True,
-					  on_epoch=True,
-					  # prog_bar=True,
-					  batch_size=batch_size)
+		# self.log_dict(self.val_metric,
+		# 			  on_step=True,
+		# 			  on_epoch=True,
+		# 			  # prog_bar=True,
+		# 			  batch_size=batch_size)
 		
-		return {
-			# "image": out["x"],
-			"y_true": out["y"],
-			"logits": out["logits"],
-			"val_loss": out["loss"].mean(),
-		}
+		# return {
+		# 	# "image": out["x"],
+		# 	"y_true": out["y"],
+		# 	"logits": out["logits"],
+		# 	"val_loss": loss,
+		# }
 
 	def test_step(self, batch: Any, batch_idx: int) -> Dict[str, torch.Tensor]:
 		x, y = batch[:2]

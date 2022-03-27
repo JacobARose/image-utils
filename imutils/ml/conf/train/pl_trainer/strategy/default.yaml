@@ -1,0 +1,3 @@
+# @package train.pl_trainer
+
+strategy: "ddp_spawn"

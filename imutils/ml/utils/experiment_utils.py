@@ -29,7 +29,7 @@ import seaborn as sns
 from sklearn.model_selection import train_test_split
 import json
 import hydra
-from omegaconf import OmegaConf, DictConfig
+from omegaconf import OmegaConf, DictConfig, ListConfig
 import pytorch_lightning as pl
 
 from imutils.ml.utils import template_utils
@@ -66,7 +66,10 @@ def resolve_config(cfg: DictConfig) -> Dict[str, Any]:
 
 def configure_callbacks(cfg) -> List[pl.Callback]:
 	callbacks: List[pl.Callback] = []
-	for k, cb_conf in cfg.callbacks.items():
+	
+	callback_configs = enumerate(cfg.callbacks) if isinstance(cfg.callbacks, ListConfig) else cfg.callbacks.items()
+	
+	for k, cb_conf in callback_configs:
 		if cb_conf is None:
 			continue
 		elif "_target_" in cb_conf:
@@ -92,12 +95,11 @@ def configure_loggers(cfg, model=None):
 	if "wandb" in cfg.logging:
 		hydra.utils.log.info(f"Instantiating <WandbLogger>")
 		wandb_config = cfg.logging.wandb
-		wandb_logger = pl.loggers.WandbLogger(
-			name=wandb_config.get(
-				"name", 
-				(cfg.data.datamodule.get("name") + "__" + cfg.model_cfg.name)
-			),
-            **wandb_config)
+		wandb_logger = pl.loggers.WandbLogger(**wandb_config)
+			# name=wandb_config.get(
+			# 	"name", 
+			# 	(cfg.data.datamodule.get("name") + "__" + cfg.model_cfg.name)
+			# ),
 		# 	project=wandb_config.project,
 		# 	entity=wandb_config.entity,
 		# 	tags=cfg.core.tags,
@@ -170,6 +172,9 @@ def configure_trainer(cfg,
 	trainer_cfg = resolve_config(cfg.train.pl_trainer)
 	kwargs['callbacks'] = callbacks
 	kwargs['logger'] = logger
+	
+	import pdb;pdb.set_trace()
+	
 	trainer: pl.Trainer = hydra.utils.instantiate(trainer_cfg, **kwargs)
 	return trainer
 

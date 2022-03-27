@@ -6,7 +6,7 @@
 
 kwargs:
     monitor:
-        metric: "val_F1"
+        metric: "val_macro_F1"
         mode: "max"
 
 
@@ -22,7 +22,6 @@ progress_bar:
         processing_speed: 'grey70'
         # metrics: 'white'
 
-
 lr_monitor:
     _target_: pytorch_lightning.callbacks.LearningRateMonitor
     logging_interval: "step" #null
@@ -36,7 +35,6 @@ early_stopping:
     verbose: true
     mode: '${..kwargs.monitor.mode}'
     min_delta: 0.05
-
 
 
 model_checkpoint:

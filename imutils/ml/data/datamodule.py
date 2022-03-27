@@ -420,7 +420,7 @@ class BaseDataModule(pl.LightningDataModule):
 	def val_dataloader(self):
 		return DataLoader(
 			self.val_dataset,
-			batch_size=self.batch_size*2,
+			batch_size=self.batch_size,#*2,
 			num_workers=self.num_workers,
 			shuffle=False,
 			pin_memory=self.pin_memory
@@ -429,7 +429,7 @@ class BaseDataModule(pl.LightningDataModule):
 	def test_dataloader(self):
 		return DataLoader(
 			self.test_dataset,
-			batch_size=self.batch_size*2,
+			batch_size=self.batch_size,#*2,
 			num_workers=self.num_workers,
 			shuffle=False,
 			pin_memory=self.pin_memory

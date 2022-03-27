@@ -20,17 +20,18 @@ __all__ = ["get_scalar_metrics", "get_per_class_metrics"]
 
 def get_scalar_metrics(num_classes: int,
                        average: str='macro', 
-                       prefix: str=''
+                       prefix: str='',
+					   delimiter: str="_"
                       ) -> metrics.MetricCollection:
-    default = {'acc_top1': metrics.Accuracy(top_k=1, num_classes=num_classes, average=average),
-               'acc_top3': metrics.Accuracy(top_k=3, num_classes=num_classes, average=average),
-               'F1_top1':  metrics.F1(top_k=1, num_classes=num_classes, average=average),
-               'F1_top3':  metrics.F1(top_k=3, num_classes=num_classes, average=average),
-               'precision_top1': metrics.Precision(top_k=1, num_classes=num_classes, average=average),
-               'recall_top1': metrics.Recall(top_k=1, num_classes=num_classes, average=average)}
+    default = {f'{average}_acc': metrics.Accuracy(top_k=1, num_classes=num_classes, average=average),
+               f'{average}_acc_top3': metrics.Accuracy(top_k=3, num_classes=num_classes, average=average),
+               f'{average}_F1':  metrics.F1(top_k=1, num_classes=num_classes, average=average),
+               f'{average}_F1_top3':  metrics.F1(top_k=3, num_classes=num_classes, average=average),
+               f'{average}_precision': metrics.Precision(top_k=1, num_classes=num_classes, average=average),
+               f'{average}_recall': metrics.Recall(top_k=1, num_classes=num_classes, average=average)}
     if len(prefix)>0:
         for k in list(default.keys()):
-            default[prefix + r'/' + k] = default[k]
+            default[prefix + delimiter + k] = default[k]
             del default[k]
     
     return metrics.MetricCollection(default)

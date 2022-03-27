@@ -1,9 +1,10 @@
 
 defaults:
     - _self_
-    - callbacks@train.callbacks: default
+    # - callbacks@train.callbacks: default
     - aug@data.datamodule.transform_cfg: default_image_aug_conf
-    - train/pl_trainer/strategy@train.pl_trainer.strategy: ddp # dp
+    - train/pl_trainer/strategy@train.pl_trainer: ddp
+    # - train/pl_trainer/strategy@train.pl_trainer: default
     # - override train/callbacks: default
 
 # metadata specialised for each experiment
@@ -19,13 +20,16 @@ hp:
     resolution: 224
     num_channels: 3
     max_epochs: 30
+    freeze_backbone: false
+    freeze_backbone_up_to: -1
 
 
 seed: 42
 run_output_dir: ${hydra:run.dir}
 checkpoint_dir: "${run_output_dir}/ckpts"
-# defaults:
-#    - override hydra/launcher: joblib
+
+
+
 
 data:
     datamodule:
@@ -153,6 +157,12 @@ train:
     deterministic: False
     random_seed: ${seed}
 
+    # callbacks
+    
+    callbacks: #@train.callbacks: default
+        - null
+
+
     # training
 
     pl_trainer:
@@ -173,7 +183,7 @@ train:
         # gradient_clip_val: 10000000.0    # 10.
 
     freeze_backbone: ${hp.freeze_backbone} #TODO: see if this option can be completely replaced with hp.freeze_backbone+model.backbone.freeze_backbone
-    freeze_backbone_up_to: -1
+    freeze_backbone_up_to: ${hp.freeze_backbone_up_to}
 
     # monitor_metric: 'val_loss'
     # monitor_metric_mode: 'min'

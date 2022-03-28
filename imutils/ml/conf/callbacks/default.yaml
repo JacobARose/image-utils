@@ -3,5 +3,5 @@
 defaults:
     - base_callbacks
     - wandb_callbacks
-    - image_stats_callbacks
+    # - image_stats_callbacks
 

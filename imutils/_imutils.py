@@ -24,5 +24,5 @@ SAMPLE_IMAGE_PATHS = [
 ]
 
 print(f"Importing imutils")
-print(f"ASSETS_DIR: {ASSETS_DIR}")
-print(f"SAMPLE_IMAGE_PATHS: {SAMPLE_IMAGE_PATHS}")
+# print(f"ASSETS_DIR: {ASSETS_DIR}")
+# print(f"SAMPLE_IMAGE_PATHS: {SAMPLE_IMAGE_PATHS}")

@@ -9,7 +9,7 @@ Created by: Jacob Alexander Rose
 """
 
 
-
+from icecream import ic
 from rich import print as pp
 from typing import Any, Dict, List, Sequence, Tuple, Union, Optional, Callable
 import hydra
@@ -61,6 +61,7 @@ class LitClassifier(BaseLightningModule): #pl.LightningModule):
 		self.cfg = cfg
 		model_cfg = cfg.get("model_cfg", {})
 		self.model_cfg = model_cfg or {}
+		self.batch_size = cfg.hp.batch_size
 		self.num_classes = num_classes or self.model_cfg.head.get("num_classes")
 		self.name = name or self.model_cfg.get("name")
 		
@@ -128,10 +129,14 @@ class LitClassifier(BaseLightningModule): #pl.LightningModule):
 	def training_step(self, batch: Any, batch_idx: int) -> torch.Tensor:
 
 		x, y = batch[:2]
+		# import pdb; pdb.set_trace()
 		out = self.step(x, y)
+		
+		# print("self.training_step: ", f"device:{torch.cuda.current_device()}, y.shape:{out['y'].shape}, logits.shape:{out['logits'].shape}, loss.shape:{out['loss'].shape}")
 		return {k: out[k] for k in ["logits", "loss", "y"]}
 
 	def training_step_end(self, out):
+		# print("self.training_step_end: ", f"device:{torch.cuda.current_device()}, y.shape:{out['y'].shape}, logits.shape:{out['logits'].shape}, loss.shape:{out['loss'].shape}")
 		self.train_metric(out["logits"], out["y"])
 		
 		batch_size=self.batch_size #len(out["y"])
@@ -140,8 +145,6 @@ class LitClassifier(BaseLightningModule): #pl.LightningModule):
 			"train_loss": loss,
 			**self.train_metric
 		}
-		# if "train/F1_top1" in self.train_metric.keys():
-		# 	log_dict["train_F1"] = self.train_metric["train/F1_top1"]
 		self.log_dict(
 			log_dict,
 			on_step=True,
@@ -150,20 +153,17 @@ class LitClassifier(BaseLightningModule): #pl.LightningModule):
 			batch_size=batch_size
 		)
 		return loss
-		# self.log_dict(
-		# 	self.train_metric,
-		# 	on_step=True,
-		# 	on_epoch=True,
-		# 	batch_size=batch_size
-		# )
-		# return out["loss"].mean()
 
 	def validation_step(self, batch: Any, batch_idx: int) -> Dict[str, torch.Tensor]:
 		x, y = batch[:2]
 		out = self.step(x, y)
+		# self.
+		# print("self.validation_step: ", f"device:{torch.cuda.current_device()}, y.shape:{out['y'].shape}, logits.shape:{out['logits'].shape}, loss.shape:{out['loss'].shape}")
 		return {k: out[k] for k in ["logits", "loss", "y"]}
 	
 	def validation_step_end(self, out):
+		# self.
+		print("self.validation_step_end: ", f"device:{torch.cuda.current_device()}, y.shape:{out['y'].shape}, logits.shape:{out['logits'].shape}, loss.shape:{out['loss'].shape}")
 		self.val_metric(out["logits"], out["y"])
 		batch_size=self.batch_size #len(out["y"])
 		loss = out["loss"].mean()
@@ -234,11 +234,22 @@ class LitClassifier(BaseLightningModule): #pl.LightningModule):
 		return {"image_id":image_idx,
 				"y_logit":y_logit}
 
+	def training_epoch_end(self, outputs: List[Any]) -> None:
+		"""
+		
+		"""
+		info = {k: v.shape for k,v in outputs[0].items()}
+		print("self.training_epoch_end: ", f"device:{torch.cuda.current_device()}, len(outputs)={len(outputs)}, info: {info}")
+
 
 	def validation_epoch_end(self, outputs: List[Any]) -> None:
 		"""
 		
 		"""
+		info = {k: v.shape for k,v in outputs[0].items()}
+		print("self.validation_epoch_end: ", f"device:{torch.cuda.current_device()}, len(outputs)={len(outputs)}, info: {info}")
+
+		
 		if "image" not in outputs:
 			# print(f"Skipping val render_image_predictions due to missing 'image' key in epoch outputs.")
 			return

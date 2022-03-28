@@ -986,19 +986,24 @@ train.pl_trainer.accumulate_grad_batches=1
 
 ###############################################
 (6:10 AM 2022-03-27) Experiment #16k
-	- finished ~ AM
-	- [Result: ] - 
+	- finished ~6:35 AM
+	[Task: Restore metrics logging (on DDP)]
+	— [Result: SUCCESS] — Train and validation metrics all logged to wandb for 2 (shortened) epochs.
+	
 
 - 16g crashed with 2-gpus, now going back to 1.
 - 16h finished successfully with 1-gpu after compromising on a validation epoch logging issue (~5:30 AM 2022-03-26)
 - 16i got 2-gpus working again by removing some necessary logging & callback code + switching to ddp_spawn.
 - 16j switched back to ddp, otherwise settings were identical to Experiment #16i
-
+- 16k will restore metric logging to validation loop
 
 
 Notable:
-	- Switching strategy back from `ddp_spawn` to `ddp`
+	- strategy still set to `ddp`
 	- devices still equals 2.
+	- Restored metric logging functionality to validation steps
+	- moved batch_size specification from data.datamodule.batch_size -> to -> hp.batch_size
+
 
 export CUDA_VISIBLE_DEVICES=6,7; python run_main.py \
 --config-name=dev_conf \
@@ -1006,7 +1011,7 @@ export CUDA_VISIBLE_DEVICES=6,7; python run_main.py \
 optim.optimizer.lr=2e-3 \
 optim.lr_scheduler.warmup_start_lr=1e-03 \
 optim.optimizer.weight_decay=5e-6 \
-data.datamodule.batch_size=32 \
+hp.batch_size=32 \
 aug@data.datamodule.transform_cfg=default_image_aug_conf \
 hp.resolution=224 \
 model_cfg.backbone.name=resnet18 \
@@ -1020,6 +1025,124 @@ data.datamodule.num_workers=4 \
 train.pl_trainer.max_epochs=2 \
 +train.pl_trainer.profiler="simple" \
 train.pl_trainer.accumulate_grad_batches=1
+
+
+
+
+###############################################
+(8:30 AM 2022-03-27) Experiment #16l
+	- finished ~8:50 AM
+	[Task: Restore base callbacks logging (on DDP)]
+	[Result: PARTIAL SUCCESS] — Restored the base_callbacks.yaml (not yet the full default_callbacks.yaml). Callbacks didn’t trigger any major errors, but experiment logging is still not as clean as I’d like 
+	
+
+- 16g crashed with 2-gpus, now going back to 1.
+- 16h finished successfully with 1-gpu after compromising on a validation epoch logging issue (~5:30 AM 2022-03-26)
+- 16i got 2-gpus working again by removing some necessary logging & callback code + switching to ddp_spawn.
+- 16j switched back to ddp, otherwise settings were identical to Experiment #16i
+- 16k restored metric logging to validation loop
+- 16l will restore base_callbacks.yaml to training
+
+base_callbacks:
+	- (Omitted for now) progress_bar
+	- lr_monitor
+	- early_stopping
+	- model_checkpoint
+
+Notable:
+	- strategy still set to `ddp`
+	- devices still equals 2.
+	- Restored metric logging functionality to validation steps
+	- moved batch_size specification from data.datamodule.batch_size -> to -> hp.batch_size
+	- callbacks@train.callbacks: base_callbacks #default
+
+
+export CUDA_VISIBLE_DEVICES=6,7; python run_main.py \
+'core.name="Experiment #16l (2022-03-27)"' \
+optim.optimizer.lr=2e-3 \
+optim.lr_scheduler.warmup_start_lr=1e-03 \
+optim.optimizer.weight_decay=5e-6 \
+hp.batch_size=32 \
+aug@data.datamodule.transform_cfg=default_image_aug_conf \
+hp.resolution=224 \
+model_cfg.backbone.name=resnet18 \
+model_cfg.backbone.pretrained=true \
+hp.freeze_backbone_up_to=0 \
+hp.freeze_backbone=false \
+train.pl_trainer.devices=2 \
+train.pl_trainer.accelerator="gpu" \
+data.datamodule.num_workers=0 \
++train.pl_trainer.limit_train_batches=25 \
++train.pl_trainer.limit_val_batches=25 \
+train.pl_trainer.max_epochs=2 \
++train.pl_trainer.profiler="simple" \
+train.pl_trainer.accumulate_grad_batches=1
+
+
+
+
+###############################################
+(11:45 PM 2022-03-27) Experiment #16m
+	- finished ~ AM
+	[Task: Restore default callbacks logging (on DDP)]
+	[Result: ] —  
+	
+
+- 16g crashed with 2-gpus, now going back to 1.
+- 16h finished successfully with 1-gpu after compromising on a validation epoch logging issue (~5:30 AM 2022-03-26)
+- 16i got 2-gpus working again by removing some necessary logging & callback code + switching to ddp_spawn.
+- 16j switched back to ddp, otherwise settings were identical to Experiment #16i
+- 16k restored metric logging to validation loop
+- 16l restored base_callbacks.yaml to training
+- 16m will restore default_callbacks.yaml to training
+
+
+base_callbacks:
+	- (Omitted for now) progress_bar
+	- lr_monitor
+	- early_stopping
+	- model_checkpoint
+
+wandb_callbacks:
+	- watch_model_with_wandb
+	- uploadcheckpointsasartifact
+	- module_data_monitor
+
+
+Notable:
+	- strategy still set to `ddp`
+	- devices still equals 2.
+	- Restored default callbacks
+	- Restored metric logging functionality to validation steps
+	- moved batch_size specification from data.datamodule.batch_size -> to -> hp.batch_size
+	- callbacks@train.callbacks: default_callbacks #default
+
+
+export CUDA_VISIBLE_DEVICES=6,7; python run_main.py \
+'core.name="Experiment #16l (2022-03-27)"' \
+optim.optimizer.lr=2e-3 \
+optim.lr_scheduler.warmup_start_lr=1e-03 \
+optim.optimizer.weight_decay=5e-6 \
+hp.batch_size=32 \
+aug@data.datamodule.transform_cfg=default_image_aug_conf \
+hp.resolution=224 \
+model_cfg.backbone.name=resnet18 \
+model_cfg.backbone.pretrained=true \
+hp.freeze_backbone_up_to=0 \
+hp.freeze_backbone=false \
+train.pl_trainer.devices=2 \
+train.pl_trainer.accelerator="gpu" \
+data.datamodule.num_workers=0 \
++train.pl_trainer.limit_train_batches=25 \
++train.pl_trainer.limit_val_batches=25 \
+train.pl_trainer.max_epochs=2 \
++train.pl_trainer.profiler="simple" \
+train.pl_trainer.accumulate_grad_batches=1
+
+
+
+
+
 
 
 
@@ -1098,11 +1221,18 @@ def train(cfg: DictConfig) -> None:
 		# cfg.data.datamodule.num_workers.train = 0
 		# cfg.data.datamodule.num_workers.val = 0
 		# cfg.data.datamodule.num_workers.test = 0
+		
+	ic(cfg.run_output_dir)
+	cfg.run_output_dir = os.path.abspath(cfg.run_output_dir)
+	
+	ic(cfg.run_output_dir)
 
 	try:
-		hydra_dir = Path(HydraConfig.get().run.dir)
+		hydra_dir = os.path.abspath(Path(HydraConfig.get().run.dir))
 	except Exception as e:
-		hydra_dir = os.getcwd()
+		hydra_dir = os.path.abspath(os.getcwd())
+		
+	print(f"Using hydra_dir: {hydra_dir}")
 
 	hydra.utils.log.info(f"Instantiating <{cfg.data.datamodule._target_}>")
 	datamodule: pl.LightningDataModule = hydra.utils.instantiate(
@@ -1120,7 +1250,7 @@ def train(cfg: DictConfig) -> None:
 														  loss=cfg.model_cfg.loss)
 
 	logging.warning("2. After model, before trainer")
-	ic(torch.cuda.current_device())	
+	ic(torch.cuda.current_device())
 	ic(torch.cuda.get_device_name(0))
 	
 	wandb_logger = configure_loggers(cfg=cfg, model=model)
@@ -1156,8 +1286,21 @@ def train(cfg: DictConfig) -> None:
 
 	# Logger closing to release resources/avoid multi-run conflicts
 	if wandb_logger is not None:
-		shutil.copytree(".hydra", Path(wandb_logger.experiment.dir, "hydra"))
-		wandb_logger.experiment.finish()
+		try:
+			log_dir = Path(wandb_logger.experiment.dir(), "hydra_cfg")
+			print(f"log_dir = Path(wandb_logger.experiment.dir(), 'hydra_cfg') = {log_dir}")
+		except Exception as e:
+			print(f"Training finished successfully but the last logging step seems to have fucked it all up. Sorry!")
+			log_dir = Path(os.path.abspath(cfg.run_output_dir), "hydra_cfg")
+			print(f"log_dir = Path(cfg.run_output_dir, 'hydra_cfg') = {log_dir}")
+		try:
+			shutil.copytree(".hydra", log_dir)
+		except Exception as e:
+			import pdb; pdb.set_trace()
+			ic(os.path.abspath(".hydra"))
+			ic(os.listdir(".hydra"))
+		finally:
+			wandb_logger.experiment.finish()
 
 
 # dotenv.load_dotenv(override=True)

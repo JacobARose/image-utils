@@ -252,7 +252,7 @@ class BaseLightningModule(pl.LightningModule):
 		model_summary = log_model_summary(model=self.net,
 						input_size=input_size,
 						full_summary=True,
-						working_dir=cfg.run_output_dir,
+						working_dir=os.path.abspath(cfg.run_output_dir),
 						model_name = model_name or cfg.model_cfg.name,
 						verbose=1)
 

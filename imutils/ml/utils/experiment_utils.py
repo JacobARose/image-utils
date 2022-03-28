@@ -173,7 +173,7 @@ def configure_trainer(cfg,
 	kwargs['callbacks'] = callbacks
 	kwargs['logger'] = logger
 	
-	import pdb;pdb.set_trace()
+	# import pdb;pdb.set_trace()
 	
 	trainer: pl.Trainer = hydra.utils.instantiate(trainer_cfg, **kwargs)
 	return trainer

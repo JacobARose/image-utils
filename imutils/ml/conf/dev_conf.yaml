@@ -3,7 +3,7 @@ defaults:
     - _self_
     # - callbacks@train.callbacks: default
     - aug@data.datamodule.transform_cfg: default_image_aug_conf
-    - train/pl_trainer/strategy@train.pl_trainer: ddp
+    - train/pl_trainer/strategy@train.pl_trainer: default
     # - train/pl_trainer/strategy@train.pl_trainer: default
     # - override train/callbacks: default
 

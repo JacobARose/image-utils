@@ -614,11 +614,11 @@ export CUDA_VISIBLE_DEVICES=0,1,2,3; python run_main.py \
 - lr = 2e-3
 - LinearWarmupCosineAnnealingLR
 		pl_bolts.optimizers.lr_scheduler.LinearWarmupCosineAnnealingLR
-        warmup_epochs: 3
-        max_epochs: ${hp.max_epochs}
-        warmup_start_lr: 1e-04
-        eta_min: 1e-06
-        last_epoch: -1
+		warmup_epochs: 3
+		max_epochs: ${hp.max_epochs}
+		warmup_start_lr: 1e-04
+		eta_min: 1e-06
+		last_epoch: -1
 
 
 export CUDA_VISIBLE_DEVICES=4,5,6,7; python run_main.py \
@@ -647,11 +647,11 @@ train.freeze_backbone=false
 - lr = 2e-3
 - LinearWarmupCosineAnnealingLR
 		pl_bolts.optimizers.lr_scheduler.LinearWarmupCosineAnnealingLR
-        warmup_epochs: 3
-        max_epochs: ${hp.max_epochs}
-        warmup_start_lr: 1e-04
-        eta_min: 1e-06
-        last_epoch: -1
+		warmup_epochs: 3
+		max_epochs: ${hp.max_epochs}
+		warmup_start_lr: 1e-04
+		eta_min: 1e-06
+		last_epoch: -1
 
 
 export CUDA_VISIBLE_DEVICES=4,5,6,7; python run_main.py \
@@ -773,11 +773,11 @@ train.freeze_backbone=false
 - lr = 2e-3
 - LinearWarmupCosineAnnealingLR
 		pl_bolts.optimizers.lr_scheduler.LinearWarmupCosineAnnealingLR
-        warmup_epochs: 3
-        max_epochs: ${hp.max_epochs}
-        warmup_start_lr: 1e-04
-        eta_min: 1e-06
-        last_epoch: -1
+		warmup_epochs: 3
+		max_epochs: ${hp.max_epochs}
+		warmup_start_lr: 1e-04
+		eta_min: 1e-06
+		last_epoch: -1
 
 
 export CUDA_VISIBLE_DEVICES=4,5,6,7; python run_main.py \
@@ -815,11 +815,11 @@ train.freeze_backbone=false
 - lr = 2e-3
 - LinearWarmupCosineAnnealingLR
 		pl_bolts.optimizers.lr_scheduler.LinearWarmupCosineAnnealingLR
-        warmup_epochs: 3
-        max_epochs: ${hp.max_epochs}
-        warmup_start_lr: 1e-04
-        eta_min: 1e-06
-        last_epoch: -1
+		warmup_epochs: 3
+		max_epochs: ${hp.max_epochs}
+		warmup_start_lr: 1e-04
+		eta_min: 1e-06
+		last_epoch: -1
 
 
 export CUDA_VISIBLE_DEVICES=4,5; python run_main.py \
@@ -861,11 +861,11 @@ train.pl_trainer.accumulate_grad_batches=1
 - lr = 2e-3
 - LinearWarmupCosineAnnealingLR
 		pl_bolts.optimizers.lr_scheduler.LinearWarmupCosineAnnealingLR
-        warmup_epochs: 3
-        max_epochs: ${hp.max_epochs}
-        warmup_start_lr: 1e-04
-        eta_min: 1e-06
-        last_epoch: -1
+		warmup_epochs: 3
+		max_epochs: ${hp.max_epochs}
+		warmup_start_lr: 1e-04
+		eta_min: 1e-06
+		last_epoch: -1
 
 
 export CUDA_VISIBLE_DEVICES=4,5; python run_main.py \
@@ -907,17 +907,17 @@ Notable:
 - weight_decay=5e-06
 - lr = 2e-3
 - Adding experiment name to wandb config that corresponds to my notes:
-    `core.name="Experiment #16h (2022-03-27)"`
+	`core.name="Experiment #16h (2022-03-27)"`
 - Added second `--config-name=dev_conf`
 - Overriding `callbacks=null`
 - Moved `train.freeze_backbone_up_to` and `train.freeze_backbone` to be interpolations of a user-specified value under `hp` (for `hyper-parameters`)
 - Changed default trainer strategy = `ddp_spawn`.
 - LinearWarmupCosineAnnealingLR
 		pl_bolts.optimizers.lr_scheduler.LinearWarmupCosineAnnealingLR
-        warmup_epochs: 3
-        max_epochs: ${hp.max_epochs}
-        warmup_start_lr: 1e-04
-        eta_min: 1e-06
+		warmup_epochs: 3
+		max_epochs: ${hp.max_epochs}
+		warmup_start_lr: 1e-04
+		eta_min: 1e-06
 
 
 export CUDA_VISIBLE_DEVICES=6,7; python run_main.py \
@@ -1083,10 +1083,15 @@ train.pl_trainer.accumulate_grad_batches=1
 
 ###############################################
 (11:45 PM 2022-03-27) Experiment #16m
-	- finished ~ AM
+	- finished ~2:15 AM 2022-03-28
 	[Task: Restore default callbacks logging (on DDP)]
-	[Result: ] —  
-	
+	[Result: SUCCESS x3] — 
+		(1) Restored the default_callbacks.yaml. 
+		(2) Fixed the problems with recursive experiment dirs. 
+		(3) Solidified my implementation of wandb artifact saving for model checkpoint management.
+
+Note:
+	- Having to do many short runs on this one due to issues being caused by wandb.Artifacts trying to save model checkpoints on more than just the rank=0 device, and finding that they cannot see the checkpoint files for some reason.
 
 - 16g crashed with 2-gpus, now going back to 1.
 - 16h finished successfully with 1-gpu after compromising on a validation epoch logging issue (~5:30 AM 2022-03-26)
@@ -1113,13 +1118,21 @@ Notable:
 	- strategy still set to `ddp`
 	- devices still equals 2.
 	- Restored default callbacks
-	- Restored metric logging functionality to validation steps
-	- moved batch_size specification from data.datamodule.batch_size -> to -> hp.batch_size
 	- callbacks@train.callbacks: default_callbacks #default
+	
+	- Added the following value to cfg.base, which is then referenced by hydra to always use an absolute path instead of a relative path:
+		- experiments_root_dir: "/media/data_cifs/projects/prj_fossils/users/jacob/experiments/2022/herbarium2022"
+	- Altered model_checkpoint filename:
+		- from: 
+			filename: '{epoch:02d}-{val_loss:.3f}-{${..kwargs.monitor.metric}:.3f}'
+		- to:
+			filename: '{epoch:02d}-{val_loss:.3f}-{${..kwargs.monitor.metric}:.3f}/model_weights'
+	- Updated the artifact name & type fields to have slightly different defaults & to be easily configurable
+	- Added @rank_zero_only wrapper for wandb model artifact uploading & for template_utils.finish() helper function.
 
 
 export CUDA_VISIBLE_DEVICES=6,7; python run_main.py \
-'core.name="Experiment #16l (2022-03-27)"' \
+'core.name="Experiment #16m (2022-03-27)"' \
 optim.optimizer.lr=2e-3 \
 optim.lr_scheduler.warmup_start_lr=1e-03 \
 optim.optimizer.weight_decay=5e-6 \
@@ -1133,9 +1146,115 @@ hp.freeze_backbone=false \
 train.pl_trainer.devices=2 \
 train.pl_trainer.accelerator="gpu" \
 data.datamodule.num_workers=0 \
-+train.pl_trainer.limit_train_batches=25 \
-+train.pl_trainer.limit_val_batches=25 \
-train.pl_trainer.max_epochs=2 \
++train.pl_trainer.limit_train_batches=6 \
++train.pl_trainer.limit_val_batches=6 \
+train.pl_trainer.max_epochs=1 \
++train.pl_trainer.profiler="simple" \
+train.pl_trainer.accumulate_grad_batches=1
+
+########
+
+
+
+##########################
+##########################
+### **********************
+##########################
+### **********************
+##########################
+##########################
+
+
+###############################################
+###############################################
+##########################
+### **********************
+# Adding new pretrain execution stage: lr_tune
+### **********************
+##########################
+
+###############################################
+(7:20 AM 2022-03-28) Experiment #17
+	- (7:41 AM Monday) -> Finally got lr_tuner to make it past 0% on the progress bar
+		- Forgot to pass non-default kwargs to lr_find function call:
+				lr_finder = trainer.tuner.lr_find(model, datamodule=datamodule, **tuner_args)
+	- (8:10 AM) -> Set up the lr_tuner to either replace the main cfg.optim.optimizer.lr if using no scheduler, or replace cfg.optim.lr_scheduler.warmup_start_lr if using one.
+		- However, it appears to have almost worked too well! I think I need to wrap the pretrain phase in @rank_zero_only
+			- Despite accidentally running double the lr_tuner stages (1 on each GPU), trainer.fit was able to start successfully.
+	- finished ~8:20 AM 2022-03-28
+	[Task: Get MVP of lr_tuner up and running then launch full training.]
+	[Result: **SUCCESS**] — lr_tuner is working & has an [EXPERIMENTAL] option to either update the main optimizer lr, or the scheduler's warmup_start_lr.
+
+
+Notable:
+	- strategy=`ddp`
+	- devices=2
+
+export CUDA_VISIBLE_DEVICES=6,7; python run_main.py \
+'core.name="Experiment #17 (2022-03-28)"' \
+optim.optimizer.lr=2e-3 \
+optim.use_lr_scheduler=false \
+optim.optimizer.weight_decay=5e-6 \
+hp.batch_size=96 \
+aug@data.datamodule.transform_cfg=default_image_aug_conf \
+hp.resolution=224 \
+model_cfg.backbone.name=resnext50_32x4d \
+model_cfg.backbone.pretrained=true \
+hp.freeze_backbone_up_to=0 \
+hp.freeze_backbone=false \
+train.pl_trainer.devices=2 \
+train.pl_trainer.accelerator="gpu" \
+data.datamodule.num_workers=4 \
+train.pl_trainer.max_epochs=50 \
++train.pl_trainer.profiler="simple" \
+train.pl_trainer.accumulate_grad_batches=1
+
+
+
+###############################################
+##########################
+### **********************
+# Implementing single script that correctly performs in 2 stages:
+	1. pretrain execution stage: lr_tune
+	2. 4-GPU DDP training with lr_scheduler
+### **********************
+##########################
+
+###############################################
+(8:20 AM 2022-03-28) Experiment #18
+	[Task: Get 4-GPU full training launched with the pretrain stage WIP lr_tuner]
+	- (9:21 AM) - Launched again after attempting workaround solution for DDP problems when using an lr_tuner stage to decide the config for all GPUs
+	- (9:32 AM) - PARTIAL SUCCESS - But I had to restart training after batch ~150 or so due to mismatch between current config setup and the command line option I passed.
+		- Launching again, but replacing `optim.optimizer.lr=2e-03` with `hp.lr=2e-03`, which automatically passes on to the former through interpolation.
+	[Result: ] — 
+		(1) 
+		(2) 
+		(3) 
+
+Note:
+
+Notable:
+	- strategy=`ddp`
+	- devices=4
+	- lr_tuner stage sets the optim.lr_scheduler.warmup_start_lr
+	- Added experimental learning rate scaling to new_lr*num_gpus (see pretrain.lr_tuner.run())
+
+
+export CUDA_VISIBLE_DEVICES=4,5,6,7; python run_main.py \
+'core.name="Experiment #18 (2022-03-28)"' \
+optim.optimizer.weight_decay=5e-6 \
+hp.batch_size=96 \
+hp.lr=2e-3 \
+aug@data.datamodule.transform_cfg=default_image_aug_conf \
+hp.resolution=224 \
+model_cfg.backbone.name=resnext50_32x4d \
+model_cfg.backbone.pretrained=true \
+hp.freeze_backbone_up_to=0 \
+hp.freeze_backbone=false \
+train.pl_trainer.devices=4 \
+train.pl_trainer.accelerator="gpu" \
+data.datamodule.num_workers=4 \
+train.pl_trainer.max_epochs=50 \
 +train.pl_trainer.profiler="simple" \
 train.pl_trainer.accumulate_grad_batches=1
 
@@ -1150,36 +1269,23 @@ train.pl_trainer.accumulate_grad_batches=1
 """
 
 
-import logging
-import os
-import shutil
-from pathlib import Path
-from typing import List
+# import logging
+# import os
+# import shutil
+# from pathlib import Path
+# from typing import List
 
 import hydra
 from hydra.core.hydra_config import HydraConfig
-import omegaconf
+from icecream import ic
+# import omegaconf
+import os
 from omegaconf import DictConfig, OmegaConf
+
 import pytorch_lightning as pl
-from pytorch_lightning.callbacks import (
-	EarlyStopping,
-	LearningRateMonitor,
-	ModelCheckpoint,
-	RichProgressBar
-	# ProgressBar,
-	# TQDMProgressBar
-)
-from pytorch_lightning.loggers import WandbLogger
-from rich import print as pp
-import torch
 
 from imutils.ml.utils.common import load_envs
 from imutils.ml.utils import template_utils
-from imutils.ml.utils.experiment_utils import configure_callbacks, configure_loggers, configure_trainer
-import imutils.ml.models.pl.classifier
-
-torch.backends.cudnn.benchmark = True
-
 logging = template_utils.get_logger(__file__)
 
 # Set the cwd to the project root
@@ -1189,15 +1295,8 @@ logging = template_utils.get_logger(__file__)
 load_envs()
 
 
-def train(cfg: DictConfig) -> None:
-	"""
-	Generic train loop
 
-	:param cfg: run configuration, defined by Hydra in /conf
-	"""
-	from icecream import ic
-	
-	OmegaConf.register_new_resolver("int", int)
+def init_cfg(cfg: DictConfig):
 	
 	if cfg.train.deterministic:
 		pl.seed_everything(cfg.train.random_seed)
@@ -1214,100 +1313,115 @@ def train(cfg: DictConfig) -> None:
 			del cfg.train.callbacks.uploadcheckpointsasartifact
 		if cfg.train.callbacks.get('model_checkpoint') is not None:
 			del cfg.train.callbacks.model_checkpoint
-			
-
 		# cfg.train.pl_trainer.gpus = 0
 		cfg.data.datamodule.num_workers = 0
-		# cfg.data.datamodule.num_workers.train = 0
-		# cfg.data.datamodule.num_workers.val = 0
-		# cfg.data.datamodule.num_workers.test = 0
-		
-	ic(cfg.run_output_dir)
+
 	cfg.run_output_dir = os.path.abspath(cfg.run_output_dir)
 	
-	ic(cfg.run_output_dir)
+	return cfg
 
-	try:
-		hydra_dir = os.path.abspath(Path(HydraConfig.get().run.dir))
-	except Exception as e:
-		hydra_dir = os.path.abspath(os.getcwd())
-		
+
+
+
+def run_pretrain(cfg: DictConfig) -> None:
+	"""
+	Generic pretrain loop
+
+	:param cfg: run configuration, defined by Hydra in /conf
+	"""
+	
+	import os
+	
+	cfg = init_cfg(cfg)
+
+	hydra_dir = os.path.abspath(os.getcwd())
+	print(f"Using hydra_dir: {hydra_dir}")
+	hydra.utils.log.info(f"Before pretrain.lr_tuner value of lr: {cfg.optim.optimizer.lr}")	
+	if cfg.execution_list.auto_lr_tune:
+		from imutils.ml import pretrain
+		cfg = pretrain.lr_tuner.run(cfg=cfg)
+						   # datamodule=datamodule)
+						   # model=model)
+	return cfg
+
+
+
+def train(cfg: DictConfig) -> None:
+	"""
+	Generic train loop
+
+	:param cfg: run configuration, defined by Hydra in /conf
+	"""
+	
+	from rich import print as pp
+	# import torch
+	from imutils.ml.utils.experiment_utils import configure_callbacks, configure_loggers, configure_trainer
+	import imutils.ml.models.pl.classifier
+	
+	cfg = init_cfg(cfg)
+
+	hydra_dir = os.path.abspath(os.getcwd())	
 	print(f"Using hydra_dir: {hydra_dir}")
 
-	hydra.utils.log.info(f"Instantiating <{cfg.data.datamodule._target_}>")
-	datamodule: pl.LightningDataModule = hydra.utils.instantiate(
-		cfg.data.datamodule, _recursive_=False
-	)
-	datamodule.setup()
-
-	logging.warning("1. Before model, before trainer")
-	ic(torch.cuda.device_count())
-	ic(torch.cuda.get_device_name(0))
-
-	hydra.utils.log.info(f"Instantiating <{cfg.model_cfg._target_}>")
-	# model: pl.LightningModule = hydra.utils.instantiate(cfg.model, cfg=cfg, _recursive_=False)
-	model = imutils.ml.models.pl.classifier.LitClassifier(cfg=cfg, #model_cfg=cfg.model_cfg,
-														  loss=cfg.model_cfg.loss)
-
-	logging.warning("2. After model, before trainer")
-	ic(torch.cuda.current_device())
-	ic(torch.cuda.get_device_name(0))
 	
-	wandb_logger = configure_loggers(cfg=cfg, model=model)
-	# Instantiate the callbacks
-	callbacks: List[pl.Callback] = configure_callbacks(cfg=cfg.train)	
-	hydra.utils.log.info(f"Instantiating the Trainer")
-	pp(OmegaConf.to_container(cfg.train.pl_trainer))
-	
-	trainer = configure_trainer(cfg,
-								callbacks=callbacks,
-								logger=wandb_logger)
+	if cfg.execution_list.model_fit:
+		
+		hydra.utils.log.info(f"Instantiating <{cfg.data.datamodule._target_}>")
+		datamodule: pl.LightningDataModule = hydra.utils.instantiate(
+			cfg.data.datamodule, _recursive_=False
+		)
+		datamodule.setup()
+		hydra.utils.log.info(f"Instantiating <{cfg.model_cfg._target_}> before trainer.fit()")
+		# model: pl.LightningModule = hydra.utils.instantiate(cfg.model, cfg=cfg, _recursive_=False)
+		model = imutils.ml.models.pl.classifier.LitClassifier(cfg=cfg, #model_cfg=cfg.model_cfg,
+															  loss=cfg.model_cfg.loss)
 
-	logging.warning("3. After model, after trainer, before fit")
-	ic(torch.cuda.current_device())
+		ic(model.lr, cfg.hp.lr, cfg.optim.optimizer.lr)
+		
+		loggers = configure_loggers(cfg=cfg, model=model)
+		# Instantiate the callbacks
+		callbacks: List[pl.Callback] = configure_callbacks(cfg=cfg.train)	
+		hydra.utils.log.info(f"Instantiating the Trainer")
+		pp(OmegaConf.to_container(cfg.train.pl_trainer))	
+		trainer = configure_trainer(cfg,
+									callbacks=callbacks,
+									logger=loggers)
 
-	ic(os.environ.get("WORLD_SIZE"))
-	ic(os.environ.get("NODE_RANK"))
-	
 	# num_samples = len(datamodule.train_dataset)
-	num_classes = cfg.model_cfg.head.num_classes
-	batch_size = datamodule.batch_size #["train"]
+		num_classes = cfg.model_cfg.head.num_classes
+		batch_size = datamodule.batch_size #["train"]
+		hydra.utils.log.info("Starting training with {} classes and batches of {} images".format(
+			num_classes,
+			batch_size))
+		trainer.fit(model=model, datamodule=datamodule)
 
-	hydra.utils.log.info("Starting training with {} classes and batches of {} images".format(
-		num_classes,
-		batch_size))
 
-	trainer.fit(model=model, datamodule=datamodule)
+	template_utils.finish(
+		config=cfg,
+		logger=loggers)
 
-	print(f"Skipping testing for now, must run predict on unlabeled test set")
+	# if args.train:
+	#	 trainer.fit(model, dm)
+	# if args.test:
+	#	 ckpt_path = (
+	#		 checkpoint_callback.best_model_path if args.train else cfg.model.checkpoint
+	#	 )
+	#	 trainer.test(model=model, datamodule=dm)
+
+	# print(f"Skipping testing for now, must run predict on unlabeled test set")
 	# hydra.utils.log.info(f"Starting testing!")
 	# trainer.test(model=model, datamodule=datamodule)
+	# print(f"SUCCESS: Made it to the other side of experiment finished.", f"device:{torch.cuda.current_device()}")
 
 
-	# Logger closing to release resources/avoid multi-run conflicts
-	if wandb_logger is not None:
-		try:
-			log_dir = Path(wandb_logger.experiment.dir(), "hydra_cfg")
-			print(f"log_dir = Path(wandb_logger.experiment.dir(), 'hydra_cfg') = {log_dir}")
-		except Exception as e:
-			print(f"Training finished successfully but the last logging step seems to have fucked it all up. Sorry!")
-			log_dir = Path(os.path.abspath(cfg.run_output_dir), "hydra_cfg")
-			print(f"log_dir = Path(cfg.run_output_dir, 'hydra_cfg') = {log_dir}")
-		try:
-			shutil.copytree(".hydra", log_dir)
-		except Exception as e:
-			import pdb; pdb.set_trace()
-			ic(os.path.abspath(".hydra"))
-			ic(os.listdir(".hydra"))
-		finally:
-			wandb_logger.experiment.finish()
+
 
 
 # dotenv.load_dotenv(override=True)
 
 # @hydra.main(config_path="configs/", config_name="multi-gpu")
 @hydra.main(config_path="conf", config_name="base_conf")
-def main(cfg: omegaconf.DictConfig):
+def main(cfg: DictConfig):
 
 	# Imports should be nested inside @hydra.main to optimize tab completion
 	# Read more here: https://github.com/facebookresearch/hydra/issues/934
@@ -1321,16 +1435,22 @@ def main(cfg: omegaconf.DictConfig):
 	# - forcing multi-gpu friendly configuration
 	# You can safely get rid of this line if you don't want those
 	# template_utils.extras(cfg)
-	omegaconf.OmegaConf.set_struct(cfg, False)
+	template_utils.initialize_config(cfg)
+	# OmegaConf.set_struct(cfg, False)
 
 	# Pretty print config using Rich library
-	if cfg.get("print_config"):
+	if cfg.get("print_config_only"):
 		template_utils.print_config(cfg, resolve=True)
+		return
 
+	cfg = run_pretrain(cfg=cfg)
+	
 	return train(cfg)
-		
-		
-		
+
+# def initialize_config(cfg: DictConfig):
+# 	OmegaConf.set_struct(cfg, False)
+# 	OmegaConf.register_new_resolver("int", int)
+# 	return cfg
 		
 
 # @hydra.main(config_path="conf", config_name="base_conf")

@@ -61,6 +61,7 @@ class LitClassifier(BaseLightningModule): #pl.LightningModule):
 		self.cfg = cfg
 		model_cfg = cfg.get("model_cfg", {})
 		self.model_cfg = model_cfg or {}
+		self.lr = cfg.hp.lr
 		self.batch_size = cfg.hp.batch_size
 		self.num_classes = num_classes or self.model_cfg.head.get("num_classes")
 		self.name = name or self.model_cfg.get("name")
@@ -163,7 +164,7 @@ class LitClassifier(BaseLightningModule): #pl.LightningModule):
 	
 	def validation_step_end(self, out):
 		# self.
-		print("self.validation_step_end: ", f"device:{torch.cuda.current_device()}, y.shape:{out['y'].shape}, logits.shape:{out['logits'].shape}, loss.shape:{out['loss'].shape}")
+		# print("self.validation_step_end: ", f"device:{torch.cuda.current_device()}, y.shape:{out['y'].shape}, logits.shape:{out['logits'].shape}, loss.shape:{out['loss'].shape}")
 		self.val_metric(out["logits"], out["y"])
 		batch_size=self.batch_size #len(out["y"])
 		loss = out["loss"].mean()

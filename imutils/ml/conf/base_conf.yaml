@@ -1,7 +1,9 @@
 
 defaults:
     - _self_
-    - callbacks@train.callbacks: base_callbacks #default
+    - pretrain@pretrain.lr_tuner: lr_tuner
+    - data/datamodule@data: base_datamodule
+    - callbacks@train.callbacks: default #base_callbacks #
     - aug@data.datamodule.transform_cfg: default_image_aug_conf
     - train/pl_trainer/strategy@train.pl_trainer: ddp # dp
     # - override train/callbacks: default
@@ -10,9 +12,15 @@ defaults:
 core:
     name: "${data.datamodule.name}__${model_cfg.name}"
     version: 0.0.1
+    experiments_root_dir: "/media/data_cifs/projects/prj_fossils/users/jacob/experiments/2022/herbarium2022"
     tags:
         - herbarium2022
         - kaggle
+
+execution_list:
+    auto_lr_tune: true
+    model_fit: true
+
 
 hp:
     batch_size: 128
@@ -20,6 +28,7 @@ hp:
     resolution: 224
     num_channels: 3
     max_epochs: 30
+    lr: 1e-3    # 0.001
     freeze_backbone: false
     freeze_backbone_up_to: -1
 
@@ -28,66 +37,6 @@ run_output_dir: ${hydra:run.dir}
 checkpoint_dir: "${run_output_dir}/ckpts"
 # defaults:
 #    - override hydra/launcher: joblib
-
-data:
-    datamodule:
-        _target_: imutils.ml.data.datamodule.Herbarium2022DataModule
-        name: "herbarium2022"
-        catalog_dir: "/media/data/jacob/GitHub/image-utils/imutils/big/data"
-        # catalog_dir: "/media/data_cifs/projects/prj_fossils/data/raw_data/herbarium-2022-fgvc9_resize"
-        label_col: "scientificName"
-        train_size: 0.7
-        shuffle: true
-        seed: 14
-        batch_size: ${hp.batch_size}
-        num_workers: 4
-        pin_memory: true
-        # train_transform: None
-        # val_transform=None,
-        # test_transform=None,
-        # transform_cfg: ${aug.default_image_aug_conf} # null
-        transform_cfg:
-            preprocess_size: ${int:${hp.preprocess_size}}
-            resolution: ${int:${hp.resolution}}
-            
-        
-        remove_transforms: false
-        image_reader: "default"
-        datasets:
-            herbarium2022:
-                train:
-                    _target_: imutils.ml.data.datamodule.Herbarium2022Dataset
-                    catalog_dir: "/media/data_cifs/projects/prj_fossils/data/raw_data/herbarium-2022-fgvc9_resize"
-                    subset: "train"
-                    label_col: "scientificName"
-                    train_size: 0.7
-                    shuffle: true
-                    seed: ${data.datamodule.seed}
-                val:
-                    _target_: imutils.ml.data.datamodule.Herbarium2022Dataset
-                    catalog_dir: "/media/data_cifs/projects/prj_fossils/data/raw_data/herbarium-2022-fgvc9_resize"
-                    subset: "val"
-                    label_col: "scientificName"
-                    train_size: 0.7
-                    shuffle: false
-                    seed: ${data.datamodule.seed}
-                test:
-                    _target_: imutils.ml.data.datamodule.Herbarium2022Dataset
-                    catalog_dir: "/media/data_cifs/projects/prj_fossils/data/raw_data/herbarium-2022-fgvc9_resize"
-                    subset: "train"
-                    label_col: "scientificName"
-                    train_size: 0.7
-                    shuffle: true
-                    seed: ${data.datamodule.seed}
-
-        # num_workers:
-        #     train: 4
-        #     val: 4
-        #     test: 4
-        # batch_size:
-        #     train: 256    # 240    # 128
-        #     val: 256 # 240    # 128
-        #     test: 256    # 128
 
 
 model_cfg:
@@ -126,7 +75,7 @@ model_cfg:
 optim:
     optimizer:
         _target_: torch.optim.Adam
-        lr: 1e-3    # 0.001
+        lr: ${hp.lr} #1e-3    # 0.001
         betas: [ 0.9, 0.999 ]
         eps: 1e-08
         weight_decay: 0.0
@@ -212,13 +161,13 @@ logging:
     #     logging_interval: step
     #     log_momentum: False
 
-        
+
 hydra:
     run:
-        dir: ./hydra_experiments/${now:%Y-%m-%d}/${now:%H-%M-%S}
+        dir: ${core.experiments_root_dir}/hydra_experiments/${now:%Y-%m-%d}/${now:%H-%M-%S}
 
     sweep:
-        dir: ./hydra_experiments/multirun/${now:%Y-%m-%d}/${now:%H-%M-%S}/
+        dir: ${core.experiments_root_dir}/hydra_experiments/multirun/${now:%Y-%m-%d}/${now:%H-%M-%S}/
         subdir: ${hydra.job.override_dirname}/seed=${seed} #${hydra.job.num}_${hydra.job.id}
 
     job:

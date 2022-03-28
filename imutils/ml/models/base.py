@@ -191,7 +191,7 @@ class BaseLightningModule(pl.LightningModule):
 	# def on_fit_start(self) -> None:
 	#	 import pdb; pdb.set_trace()
 	def on_train_epoch_start(self) -> None:
-		print("on_train_start")
+		# print("on_train_start")
 		if self.cfg.train.freeze_backbone:
 			layer = self.cfg.train.get("freeze_backbone_up_to", -1)
 			ic(layer)

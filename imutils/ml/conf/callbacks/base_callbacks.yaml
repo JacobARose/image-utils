@@ -45,7 +45,7 @@ model_checkpoint:
     mode: '${..kwargs.monitor.mode}'
     verbose: true
     dirpath: '${checkpoint_dir}'
-    filename: '{epoch:02d}-{val_loss:.3f}-{${..kwargs.monitor.metric}:.3f}'
+    filename: '{epoch:02d}-{val_loss:.3f}-{${..kwargs.monitor.metric}:.3f}/model_weights'
     save_weights_only: true
 
 

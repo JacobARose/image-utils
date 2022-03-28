@@ -1,0 +1,23 @@
+
+# imutils/conf/pretrain/lr_tuner.yaml
+
+hparams_path: "${run_output_dir}/pretrain/lr_tuner_hparams.yaml"
+
+tuner:
+    min_lr: 1e-08
+    max_lr: 1.0
+    num_training: 100
+    mode: 'exponential'
+    early_stop_threshold: 10.0
+    
+
+pl_trainer:
+    _target_: pytorch_lightning.Trainer
+    precision: 16
+    enable_progress_bar: true
+    devices: 1
+    accelerator: "gpu"
+    deterministic: true
+    benchmark: true
+    auto_select_gpus: true
+    auto_lr_find: true

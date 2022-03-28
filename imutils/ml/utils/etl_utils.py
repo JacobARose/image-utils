@@ -1,5 +1,5 @@
 """
-image-utils/imutils/utils/etl_utils.py
+image-utils/imutils/ml/utils/etl_utils.py
 
 
 Contains class definition for **Extract**, a collection of class methods related to saving/reading common experiment related objects to/from disk.
@@ -36,8 +36,10 @@ __all__ = ["save_config", "load_config",
 		  "Extract", "Transform", "Load", "ETL"]
 
 
-
-OmegaConf.register_new_resolver("int", int)
+try:
+	OmegaConf.register_new_resolver("int", int)
+except:
+	pass
 
 
 def save_config(config: DictConfig, config_path: str):

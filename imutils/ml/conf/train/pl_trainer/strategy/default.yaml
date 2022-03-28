@@ -1,3 +1,4 @@
 # @package train.pl_trainer
 
-strategy: "ddp_spawn"
+defaults:
+    - ddp_spawn # dp

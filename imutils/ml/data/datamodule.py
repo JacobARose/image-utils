@@ -88,6 +88,14 @@ class AbstractCatalogDataset(Dataset):
 									train_size=self.train_size)
 	
 	@property
+	def split_file_path(self) -> Path:
+		"""
+		Should return the path of this subset's on-disk csv catalog file. I emphasize should.
+		"""
+		return self.splits_dir / f"{self.subset}_metadata.csv"
+	
+	
+	@property
 	def already_built(self) -> bool:
 		return check_already_built(self.splits_dir)
 

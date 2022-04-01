@@ -1227,11 +1227,6 @@ train.pl_trainer.accumulate_grad_batches=1
 	- (9:32 AM) - PARTIAL SUCCESS - But I had to restart training after batch ~150 or so due to mismatch between current config setup and the command line option I passed.
 		- Launching again, but replacing `optim.optimizer.lr=2e-03` with `hp.lr=2e-03`, which automatically passes on to the former through interpolation.
 	[Result: ] — 
-		(1) 
-		(2) 
-		(3) 
-
-Note:
 
 Notable:
 	- strategy=`ddp`
@@ -1260,6 +1255,26 @@ train.pl_trainer.accumulate_grad_batches=1
 
 
 
+
+export CUDA_VISIBLE_DEVICES=0,1,2,3; python run_main.py \
+'core.name="Experiment #20 (2022-04-01)"' \
+optim.optimizer.weight_decay=5e-6 \
+hp.batch_size=32 \
+hp.lr=2e-3 \
+data/datamodule@data=herbarium2022-res_512_datamodule \
+aug@data.datamodule.transform_cfg=medium_image_aug_conf \
+hp.preprocess_size=512 \
+hp.resolution=448 \
+model_cfg.backbone.name=resnext50_32x4d \
+model_cfg.backbone.pretrained=true \
+hp.freeze_backbone_up_to=0 \
+hp.freeze_backbone=false \
+train.pl_trainer.devices=4 \
+train.pl_trainer.accelerator="gpu" \
+data.datamodule.num_workers=4 \
+train.pl_trainer.max_epochs=50 \
++train.pl_trainer.profiler="simple" \
+train.pl_trainer.accumulate_grad_batches=2
 
 
 

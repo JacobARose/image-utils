@@ -37,8 +37,10 @@ from imutils.ml.models.backbones.backbone import build_model
 from imutils.ml.utils.experiment_utils import resolve_config
 # from imutils.ml.utils.model_utils import log_model_summary
 
-from imutils.ml import losses
-nn = losses.nn
+from imutils.ml.utils.toolbox.nn.loss import LabelSmoothingLoss
+
+# from imutils.ml import losses
+# nn = losses.nn
 
 __all__ = ["LitClassifier"]
 
@@ -229,7 +231,7 @@ class LitClassifier(BaseLightningModule): #pl.LightningModule):
 			image_idx = metadata.get("image_id")
 		else:
 			x, y = batch[:2]
-			image_idx = torch.arange(0, len(x)) + batch_idx
+			image_idx = torch.arange(0, len(x)) + batch_idx*self.batch_size
 
 		y_logit = self(x)
 		return {"image_id":image_idx,
@@ -242,6 +244,14 @@ class LitClassifier(BaseLightningModule): #pl.LightningModule):
 		info = {k: v.shape for k,v in outputs[0].items()}
 		print("self.training_epoch_end: ", f"device:{torch.cuda.current_device()}, len(outputs)={len(outputs)}, info: {info}")
 
+		# losses = []
+		# for o in outputs:
+		# 	losses.append(o["loss"])
+		# losses = torch.stack(losses)
+		losses = torch.stack([o["loss"] for o in outputs])
+		print(f"self.validation_epoch_end (torch.stack the losses): losses.shape = {losses.shape}")
+		
+
 
 	def validation_epoch_end(self, outputs: List[Any]) -> None:
 		"""
@@ -249,7 +259,19 @@ class LitClassifier(BaseLightningModule): #pl.LightningModule):
 		"""
 		info = {k: v.shape for k,v in outputs[0].items()}
 		print("self.validation_epoch_end: ", f"device:{torch.cuda.current_device()}, len(outputs)={len(outputs)}, info: {info}")
-
+		
+		# losses = torch.stack([o["loss"] for o in outputs])
+		losses = []
+		y = []
+		logits = []
+		for o in outputs:
+			losses.append(o["loss"])
+			y.append(o["y"])
+			logits = [o["logits"]]
+		losses = torch.stack(losses)
+		y = torch.cat(y)
+		logits = torch.cat(logits)
+		print(f"self.validation_epoch_end (torch.stack the losses): losses.shape = {losses.shape}, y.shape = {y.shape}, logits.shape = {logits.shape}")
 		
 		if "image" not in outputs:
 			# print(f"Skipping val render_image_predictions due to missing 'image' key in epoch outputs.")

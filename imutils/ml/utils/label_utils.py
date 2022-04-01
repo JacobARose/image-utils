@@ -25,8 +25,16 @@ import seaborn as sns
 from sklearn.model_selection import train_test_split
 import json
 from sklearn import preprocessing
+
+
+from imutils.ml.utils.toolbox.nn import functional as BF
+from imutils.ml.utils.toolbox.nn.loss import LabelSmoothingLoss
+
+
 from imutils.ml.utils import template_utils
 logging = template_utils.get_logger(__name__)
+
+
 
 
 __all__ = ["LabelEncoder"] #, "trainval_split", "trainvaltest_split", "DataSplitter",
@@ -229,6 +237,15 @@ class LabelEncoder(object):
 	def getstate(self):
 		return {"class2idx": self.class2idx,
 				"replacements": self.replacements}
+
+	def calculate_class_counts(y: Sequence) -> Tuple[np.ndarray]:
+		"""
+		Returns a Tuple of np.ndarrays, the first has unique classes, the second has class counts.
+		"""
+		
+		classes, counts = BF.class_counts(y)
+		return classes, counts
+	
 	
 	def __repr__(self):
 		disp = f"""<{str(type(self)).strip("'>").split('.')[-1]}>:\n"""

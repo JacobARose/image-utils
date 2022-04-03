@@ -67,11 +67,6 @@ from torchvision import transforms, utils
 from torchvision.datasets import ImageFolder
 from tqdm.auto import tqdm, trange
 
-# import json
-# import sys
-# from dataclasses import asdict, dataclass
-# from typing import *
-
 
 seed = 334455
 random.seed(seed)
@@ -80,7 +75,6 @@ pd.set_option("display.max_columns", 500)
 pd.set_option("display.max_colwidth", 200)
 
 from pandarallel import pandarallel
-
 from imutils.catalog_registry import available_datasets
 from imutils.utils.dataset_management_utils import (
     CleverCrop,
@@ -89,8 +83,6 @@ from imutils.utils.dataset_management_utils import (
 )
 
 tqdm.pandas()
-# plt.style.use("seaborn-pastel")
-
 
 clever_crop = CleverCrop()
 

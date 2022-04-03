@@ -9,10 +9,12 @@ import numbers
 from torch import nn
 from imutils.ml.utils.toolbox.nn.operators import SwishOP
 from torch.nn import functional as F
+import pandas as pd
+from typing import *
 
 
-def logits_distribution(pred, target, classes):
-	one_hot = F.one_hot(target, num_classes=classes).bool()
+def logits_distribution(pred, target, num_classes):
+	one_hot = F.one_hot(target, num_classes=num_classes).bool()
 	return torch.where(one_hot, pred, -1 * pred)
 
 
@@ -49,9 +51,8 @@ def logits_nll_loss(input, target, weight=None, reduction='mean'):
 	return reducing(ret, reduction)
 
 
-import pandas as pd
-from typing import *
-	
+
+
 def sequence2np(seq: Sequence) -> np.ndarray:
 	"""
 	Converts any sequence to np.ndarray, throws an error if unable.
@@ -80,12 +81,33 @@ def class_counts(y: Sequence) -> Tuple[np.ndarray]:
 	return classes, class_counts
 
 
-def class_balanced_weight(beta, samples_per_class):
+def class_balanced_weight(beta: float, samples_per_class: Sequence) -> torch.Tensor:
+	"""
+	
+	"""
 	assert 0 <= beta < 1, 'Wrong rang of beta {}'.format(beta)
 	samples_per_class = sequence2np(seq=samples_per_class)
 
 	balanced_matrix = (1 - beta) / (1 - np.power(beta, samples_per_class))
 	return torch.Tensor(balanced_matrix)
+
+
+def class_balanced_cross_entropy_loss(y_logits, y_true, weights, reduction: str="mean"):
+	"""
+	Wrapper for passing "weights" into basic torch function cross_entropy implementation.
+	
+	Functional implementation of the class-balanced cross entropy loss, parameterized by scalar argument `beta` within [0.0,1).
+	
+	Currently, requires the targets (y_true) to be in the form of integer indices of shape= (N,), which rules out using techniques like LabelSmoothing, which requires the ability to provide targets of shape= (N,C) with float values between [0.0,1.0]. Written for Pytorch 1.7.0.
+	"""
+	
+	return F.cross_entropy(input=y_logits,
+						   target=y_true,
+						   weight=weights,
+						   reduction=reduction)
+	
+	
+	
 
 
 def swish(x, beta=1.0):
@@ -108,7 +130,7 @@ def mish(x):
 
 
 @torch.no_grad()
-def smooth_one_hot(true_labels: torch.Tensor, classes: int, smoothing=0.0):
+def smooth_one_hot(true_labels: torch.Tensor, num_classes: int, smoothing: float=0.0) -> torch.Tensor:
 	"""
 	if smoothing == 0, it's one-hot method
 	if 0 < smoothing < 1, it's smooth method
@@ -116,10 +138,10 @@ def smooth_one_hot(true_labels: torch.Tensor, classes: int, smoothing=0.0):
 	"""
 	# assert 0 <= smoothing < 1
 	confidence = 1.0 - smoothing
-	label_shape = torch.Size((true_labels.size(0), classes))
+	label_shape = torch.Size((true_labels.size(0), num_classes))
 
 	smooth_label = torch.empty(size=label_shape, device=true_labels.device)
-	smooth_label.fill_(smoothing / (classes - 1))
+	smooth_label.fill_(smoothing / (num_classes - 1))
 	smooth_label.scatter_(1, true_labels.data.unsqueeze(1), confidence)
 	return smooth_label
 

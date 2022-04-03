@@ -27,6 +27,7 @@ hp:
     preprocess_size: 256
     resolution: 224
     num_channels: 3
+    warmup_epochs: 3
     max_epochs: 30
     lr: 1e-3    # 0.001
     freeze_backbone: false
@@ -84,7 +85,7 @@ optim:
     use_lr_scheduler: True
     lr_scheduler:
         _target_: pl_bolts.optimizers.lr_scheduler.LinearWarmupCosineAnnealingLR
-        warmup_epochs: 3
+        warmup_epochs: ${hp.warmup_epochs}
         max_epochs: ${hp.max_epochs}
         warmup_start_lr: 1e-04
         eta_min: 1e-06
@@ -139,6 +140,7 @@ train:
 logging:
 
     log_model_summary: true
+    log_dataset_summary: true
 
     n_elements_to_log: 32
     normalize_visualization: True

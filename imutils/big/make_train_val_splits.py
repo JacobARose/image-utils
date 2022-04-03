@@ -98,6 +98,7 @@ def format_output_cols(df: pd.DataFrame):
 				 'genus_id', 'institution_id', 'image_id', 'file_name',
 				 'license', 'scientificName', 'family', 'genus', 'species', 'authors',
 				 'collectionCode']
+	col_order = [col for col in col_order if col in df.columns]
 	return df[col_order]
 
 
@@ -167,6 +168,7 @@ def make_encode_save_splits(source_dir: str, #DATA_DIR,
 							train_size=0.7,
 							seed = 14):
 	save_dir = Path(save_dir)
+	os.makedirs(save_dir, exist_ok=True)
 	
 	df_train, df_test = read_all_from_csv(root_dir=source_dir)
 	
@@ -225,8 +227,11 @@ def find_data_splits_dir(source_dir: str,
 	"""
 	Given a base path of `source_dir`, construct the correct data split dir path using chosen train_size.
 	"""
-	out_dir = Path(source_dir)
 	
+	if f"train_size={train_size:.1f}" in str(source_dir):
+		return source_dir
+
+	out_dir = Path(source_dir)
 	if "splits" in os.listdir(str(out_dir)):
 		out_dir = out_dir / "splits"
 		
@@ -295,10 +300,14 @@ def main(source_dir: str, #=DATA_DIR,
 	# if splits_dir is None:
 	#	 splits_dir = Path(source_dir, "splits", f"train_size-{train_size}")
 	#	 os.makedirs(splits_dir, exist_ok=True)
+	# import pdb; pdb.set_trace()
 
-	if not check_already_built(splits_dir):
+	if True: #not check_already_built(splits_dir):
 		print(f"Making & saving train-val-test splits in the following directory:",
 			  '\n' + str(splits_dir))
+		if not os.path.exists(splits_dir):
+			print(f"Creating directory structure")
+			os.makedirs(splits_dir, exist_ok=True)
 	
 		data = make_encode_save_splits(source_dir=source_dir,
 									   save_dir=splits_dir,

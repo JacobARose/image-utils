@@ -260,13 +260,25 @@ def init(config: DictConfig):
 #		 import wandb
 #		 wandb.run = None
 
-def write_ckpts_info2yaml(cfg: DictConfig):
+
+def find_ckpt_callback(callbacks: List[pl.Callback]=None):
+	for cb in callbacks:
+		if isinstance(cb, pl.callbacks.ModelCheckpoint):
+			return cb
+	return None
+
+
+
+def write_ckpts_info2yaml(cfg: DictConfig,
+						  callbacks: List[pl.Callback]=None):
 	# save top weights paths to yaml
 	if "model_checkpoint" in cfg.train.callbacks:
 		ckpts_info_path = os.path.join(
 			cfg.train.callbacks.model_checkpoint.dirpath, "best_ckpts_meta.yaml"
 		)
-		checkpoint_callback.to_yaml(filepath=ckpts_info_path)
+		cb = find_ckpt_callback(callbacks)
+		if isinstance(cb, pl.callbacks.ModelCheckpoint):
+			cb.to_yaml(filepath=ckpts_info_path)
 		if os.path.isfile(ckpts_info_path):
 			print(f"Find a listing of the path(s) best ckpt(s) located at: {ckpts_info_path} ")
 		else:
@@ -282,15 +294,16 @@ import shutil
 @rank_zero_only
 def finish(
 	config: DictConfig,
-	logger: List[pl.loggers.LightningLoggerBase]
+	logger: List[pl.loggers.LightningLoggerBase],
 	# model: pl.LightningModule=None,
 	# datamodule: pl.LightningDataModule=None,
 	# trainer: pl.Trainer=None,
-	# callbacks: List[pl.Callback]=None
+	callbacks: List[pl.Callback]=None
 ) -> None:
 	"""Perform some simple reporting hooks for the end of common workflows + Makes sure everything closed properly."""
 	
-	write_ckpts_info2yaml(cfg=config)
+	write_ckpts_info2yaml(cfg=config,
+						  callbacks=callbacks)
 	
 	wandb_logger = get_wandb_logger(logger)
 	if wandb_logger is None:

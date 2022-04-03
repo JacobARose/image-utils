@@ -19,16 +19,16 @@ make_herbarium_2022_catalog_df.py
 # FLORISSANT_ROOT = "/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_1/images/Fossil/Florissant_Fossil/original/full/jpg"
 
 # with open(os.path.join(HERBARIUM_ROOT, "train_metadata.json")) as fp:
-#     train_data = json.load(fp)
+#	 train_data = json.load(fp)
 
 # with open(os.path.join(HERBARIUM_ROOT, "test_metadata.json")) as fp:
-#     test_data = json.load(fp)
+#	 test_data = json.load(fp)
 
 # for k,v in train_data.items():
-#     print(k, f"| Total:{len(v)}")
-#     print("First:", v[0])
-#     print("Last:", v[-1])
-#     print("="*15+"\n")
+#	 print(k, f"| Total:{len(v)}")
+#	 print("First:", v[0])
+#	 print("Last:", v[-1])
+#	 print("="*15+"\n")
 
 # assert len(train_data["annotations"]) == len(train_data["images"])
 
@@ -49,201 +49,205 @@ HERBARIUM_ROOT_DEFAULT = "/media/data_cifs/projects/prj_fossils/data/raw_data/he
 
 
 def optimize_dtypes_train(df: pd.DataFrame) -> pd.DataFrame:
-    """
-    Convert column dtypes to optimal type for herbarium train metadata df.
-    """
+	"""
+	Convert column dtypes to optimal type for herbarium train metadata df.
+	"""
 
-    # Reduce total df size by optimizing dtypes per column
-    cat_cols = ['genus_id', 'institution_id', 'category_id',
-                'scientificName', 'family', 'genus', 'species','Species',
-                'collectionCode', 'license', 'authors']
-    if "y" in df.columns:
-        cat_cols.append("y")
-    
-    str_cols = ['image_id', 'file_name', 'path']
-    col_dtypes = {c:"category" for c in cat_cols}
-    col_dtypes.update({c:"string" for c in str_cols})
+	# Reduce total df size by optimizing dtypes per column
+	cat_cols = ['genus_id', 'institution_id', 'category_id',
+				'scientificName', 'family', 'genus', 'species','Species',
+				'collectionCode', 'license', 'authors']
+	if "y" in df.columns:
+		cat_cols.append("y")
+	
+	str_cols = ['image_id', 'file_name', 'path']
+	col_dtypes = {c:"category" for c in cat_cols if c in df.columns}
+	col_dtypes.update({c:"string" for c in str_cols})
 
-    # df = df.convert_dtypes()
-    df = df.astype(col_dtypes)
-    return df
+	# df = df.convert_dtypes()
+	df = df.astype(col_dtypes)
+	return df
 
 
 def optimize_dtypes_test(df: pd.DataFrame) -> pd.DataFrame:
-    """
-    Convert column dtypes to optimal type for herbarium test metadata df.
-    """    
-    # Reduce total df size by optimizing dtypes per column
-    df = df.astype({'image_id':"string",
-                    'file_name':"string",
-                    'license':"category",
-                    'path':"string"})
-    return df
+	"""
+	Convert column dtypes to optimal type for herbarium test metadata df.
+	"""
+	dtypes_test = {'image_id':"string",
+					'file_name':"string",
+					'license':"category",
+					'path':"string"}
+	dtypes_test= {col:dtype for col, dtype in dtypes_test.items() if col in df.columns}
+	# Reduce total df size by optimizing dtypes per column
+	df = df.astype(dtypes_test)
+	return df
 
 
 def read_train_df_from_csv(train_path,
-                           nrows: Optional[int]=None
-                           ) -> pd.DataFrame:
-    
-    df = pd.read_csv(train_path, index_col=0, nrows=nrows)
-    df = optimize_dtypes_train(df)
-    return df
+						   nrows: Optional[int]=None
+						   ) -> pd.DataFrame:
+	
+	df = pd.read_csv(train_path, index_col=0, nrows=nrows)
+	df = optimize_dtypes_train(df)
+	return df
 
 
 def read_test_df_from_csv(test_path,
-                          nrows: Optional[int]=None
-                          ) -> pd.DataFrame:
-    
-    df = pd.read_csv(test_path, index_col=0, nrows=nrows)
-    df = optimize_dtypes_test(df)
-    return df
+						  nrows: Optional[int]=None
+						  ) -> pd.DataFrame:
+	
+	df = pd.read_csv(test_path, index_col=0, nrows=nrows)
+	df = optimize_dtypes_test(df)
+	return df
 
 
 def read_all_from_csv(root_dir: str) -> Tuple[pd.DataFrame]:
-    """
-    Read the train_metadata.csv and test_metadata.csv files from `root_dir`
-    
-    Note: This is prior to any train-val splits.
-    """
-    train_path = Path(root_dir, "train_metadata.csv")
-    test_path = Path(root_dir, "test_metadata.csv")
-    
-    train_df = read_train_df_from_csv(train_path)
-    test_df = read_test_df_from_csv(test_path)
+	"""
+	Read the train_metadata.csv and test_metadata.csv files from `root_dir`
+	
+	Note: This is prior to any train-val splits.
+	"""
+	train_path = Path(root_dir, "train_metadata.csv")
+	test_path = Path(root_dir, "test_metadata.csv")
+	
+	train_df = read_train_df_from_csv(train_path)
+	test_df = read_test_df_from_csv(test_path)
 
-    return train_df, test_df
-    
+	return train_df, test_df
+	
 
 ###################################
 ###################################
 
 class HerbariumMetadata:
-    
-    TRAIN_KEYS = ['annotations', 'images', 'categories', 'genera', 'institutions', 'distances', 'license']
-    TEST_KEYS = ['image_id', 'file_name', 'license']
-    
-    def __init__(self,
-                 herbarium_root: str=HERBARIUM_ROOT_DEFAULT):
-        self.herbarium_root = herbarium_root
-        
-    
+	
+	TRAIN_KEYS = ['annotations', 'images', 'categories', 'genera', 'institutions', 'distances', 'license']
+	TEST_KEYS = ['image_id', 'file_name', 'license']
+	
+	def __init__(self,
+				 herbarium_root: str=HERBARIUM_ROOT_DEFAULT):
+		self.herbarium_root = herbarium_root
+		
+	
 
-    def get_train_df(self) -> pd.DataFrame:
+	def get_train_df(self) -> pd.DataFrame:
 
-        metadata_path = Path(self.herbarium_root, "train_metadata.json")
+		metadata_path = Path(self.herbarium_root, "train_metadata.json")
 
-        with open(os.path.join(metadata_path)) as fp:
-            train_data = json.load(fp)
+		with open(os.path.join(metadata_path)) as fp:
+			train_data = json.load(fp)
 
-        assert all([k in train_data.keys() for k in self.TRAIN_KEYS])
+		assert all([k in train_data.keys() for k in self.TRAIN_KEYS])
 
-        train_annotations = pd.DataFrame(train_data['annotations'])
+		train_annotations = pd.DataFrame(train_data['annotations'])
 
-        train_categories = pd.DataFrame(train_data['categories']).set_index("category_id")
-        train_genera = pd.DataFrame(train_data['genera']).set_index("genus_id")
-        train_institutions = pd.DataFrame(train_data['institutions']).set_index("institution_id")
-        train_images = pd.DataFrame(train_data['images']).set_index("image_id")
+		train_categories = pd.DataFrame(train_data['categories']).set_index("category_id")
+		train_genera = pd.DataFrame(train_data['genera']).set_index("genus_id")
+		train_institutions = pd.DataFrame(train_data['institutions']).set_index("institution_id")
+		train_images = pd.DataFrame(train_data['images']).set_index("image_id")
 
-        df_train = pd.merge(train_annotations, train_images, how="left", right_index=True, left_on="image_id")
-        df_train = pd.merge(df_train, train_categories, how="left", right_index=True, left_on="category_id")
-        df_train = pd.merge(df_train, train_institutions, how="left", right_index=True, left_on="institution_id")
+		df_train = pd.merge(train_annotations, train_images, how="left", right_index=True, left_on="image_id")
+		df_train = pd.merge(df_train, train_categories, how="left", right_index=True, left_on="category_id")
+		df_train = pd.merge(df_train, train_institutions, how="left", right_index=True, left_on="institution_id")
 
-        df_train = df_train.assign(
-            Species = df_train.apply(lambda x: " ".join([x.genus, x.species]), axis=1),
-            path=df_train.file_name.apply(lambda x: str(Path(self.herbarium_root, "train_images", x)))
-        )
+		df_train = df_train.assign(
+			Species = df_train.apply(lambda x: " ".join([x.genus, x.species]), axis=1),
+			path=df_train.file_name.apply(lambda x: str(Path(self.herbarium_root, "train_images", x)))
+		)
 
-        df_train = optimize_dtypes_train(df_train)
+		df_train = optimize_dtypes_train(df_train)
 
-        print(f"training images: {len(df_train)}")
+		print(f"training images: {len(df_train)}")
 
-        return df_train
+		return df_train
 
-    
-    def get_test_df(self) -> pd.DataFrame:
+	
+	def get_test_df(self) -> pd.DataFrame:
 
-        metadata_path = Path(self.herbarium_root, "test_metadata.json")
+		metadata_path = Path(self.herbarium_root, "test_metadata.json")
 
-        with open(os.path.join(metadata_path)) as fp:
-            test_data = json.load(fp)
+		with open(os.path.join(metadata_path)) as fp:
+			test_data = json.load(fp)
 
-        assert all([k in test_data[0].keys() for k in self.TEST_KEYS])
+		assert all([k in test_data[0].keys() for k in self.TEST_KEYS])
 
-        df_test = pd.DataFrame(test_data)
-        df_test = df_test.assign(path=df_test.file_name.apply(lambda x: str(Path(self.herbarium_root, "test_images", x))))
+		df_test = pd.DataFrame(test_data)
+		df_test = df_test.assign(path=df_test.file_name.apply(lambda x: str(Path(self.herbarium_root, "test_images", x))))
 
-        df_test = optimize_dtypes_test(df_test)
-        print(f"test images: {len(df_test)}")
+		df_test = optimize_dtypes_test(df_test)
+		print(f"test images: {len(df_test)}")
 
-        return df_test
+		return df_test
 
 
-    def extract_metadata(self) -> Tuple[pd.DataFrame]:
+	def extract_metadata(self) -> Tuple[pd.DataFrame]:
 
-        df_train = self.get_train_df()
-        df_test = self.get_test_df()
+		df_train = self.get_train_df()
+		df_test = self.get_test_df()
 
-        return df_train, df_test
-    
-    
-    def write_herbarium_metadata2disk(
-        self,
-        output_dir: str=None
-    ) -> Tuple[Path]:
-        """
-        Reads json metadata files from `root_dir`, parses into train & test dataframes, then writes to disk as csv files.
-        """
-        assert os.path.isdir(output_dir)
+		return df_train, df_test
+	
+	
+	def write_herbarium_metadata2disk(
+		self,
+		output_dir: str=None
+	) -> Tuple[Path]:
+		"""
+		Reads json metadata files from `root_dir`, parses into train & test dataframes, then writes to disk as csv files.
+		"""
+		assert os.path.isdir(output_dir)
 
-        # df_train, df_test = extract_metadata(root_dir = root_dir)
-        train_path = Path(output_dir, "train_metadata.csv")
-        test_path = Path(output_dir, "test_metadata.csv")
+		# df_train, df_test = extract_metadata(root_dir = root_dir)
+		train_path = Path(output_dir, "train_metadata.csv")
+		test_path = Path(output_dir, "test_metadata.csv")
 
-        if os.path.exists(train_path):
-            print(train_path, "already exists, skipping write process.",
-                  "Delete the existing file if intention is to refresh dataset.")
-            print(f"Reading train data from: {train_path}")
-            # df_train = read_train_df_from_csv(train_path)
-        else:
-            print(f"Writing train data to: {train_path}")
-            df_train = self.get_train_df()
-            df_train.to_csv(train_path)
+		if os.path.exists(train_path):
+			print(train_path, "already exists, skipping write process.",
+				  "Delete the existing file if intention is to refresh dataset.")
+			print(f"Reading train data from: {train_path}")
+			# df_train = read_train_df_from_csv(train_path)
+		else:
+			print(f"Writing train data to: {train_path}")
+			df_train = self.get_train_df()
+			df_train.to_csv(train_path)
 
-        if os.path.exists(test_path):
-            print(test_path, "already exists, skipping write process.",
-                  "Delete the existing file if intention is to refresh dataset.")
-            print(f"Reading test data from: {test_path}")
-            # df_test = read_test_df_from_csv(test_path)
-        else:
-            print(f"Writing test data to: {test_path}")
-            df_test = self.get_test_df()
-            df_test.to_csv(test_path)
+		if os.path.exists(test_path):
+			print(test_path, "already exists, skipping write process.",
+				  "Delete the existing file if intention is to refresh dataset.")
+			print(f"Reading test data from: {test_path}")
+			# df_test = read_test_df_from_csv(test_path)
+		else:
+			print(f"Writing test data to: {test_path}")
+			df_test = self.get_test_df()
+			df_test.to_csv(test_path)
 
-        return train_path, test_path
+		return train_path, test_path
 
 
 
 
 def parse_args() -> argparse.Namespace:
-    
-    parser = argparse.ArgumentParser("""Generate train_metadata.csv and test_metadata.csv from Herbarium 2022 original json metadatab splits.""")
-    parser.add_argument(
-        "--target_dir", default="./data", help="directory where catalog csv files are written"
-    )
-    parser.add_argument(
-        "--herbarium_source_dir",
-        default=HERBARIUM_ROOT_DEFAULT,
-        help="Source directory containing original herbarium 2022 dataset, as accessed by kaggle.",
-    )
-    args = parser.parse_args()
-    # WORKING_DIR = "/media/data/jacob/GitHub/image-utils/notebooks/herbarium_2022/"
-    # OUTPUT_DIR = os.path.join(WORKING_DIR, "outputs")
-    # DATA_DIR = os.path.join(WORKING_DIR, "data")
-    os.makedirs(args.target_dir, exist_ok=True)    
-    
+	
+	parser = argparse.ArgumentParser(
+		"""Generate train_metadata.csv and test_metadata.csv from Herbarium 2022 original json metadatab splits."""
+	)
+	parser.add_argument(
+		"--target_dir", default="./data", help="directory where catalog csv files are written"
+	)
+	parser.add_argument(
+		"--herbarium_source_dir",
+		default=HERBARIUM_ROOT_DEFAULT,
+		help="Source directory containing original herbarium 2022 dataset, as accessed by kaggle.",
+	)
+	args = parser.parse_args()
+	# WORKING_DIR = "/media/data/jacob/GitHub/image-utils/notebooks/herbarium_2022/"
+	# OUTPUT_DIR = os.path.join(WORKING_DIR, "outputs")
+	# DATA_DIR = os.path.join(WORKING_DIR, "data")
+	os.makedirs(args.target_dir, exist_ok=True)	
 	
 	
-    return args
+	
+	return args
 
 
 
@@ -253,35 +257,35 @@ def parse_args() -> argparse.Namespace:
 
 
 if __name__=="__main__":
-    
-    args = parse_args()
-    
-    metadata = HerbariumMetadata(herbarium_root=args.herbarium_source_dir)
-    
-    train_path, test_path = metadata.write_herbarium_metadata2disk(output_dir=args.target_dir)
+	
+	args = parse_args()
+	
+	metadata = HerbariumMetadata(herbarium_root=args.herbarium_source_dir)
+	
+	train_path, test_path = metadata.write_herbarium_metadata2disk(output_dir=args.target_dir)
 
-    # train_df, test_df = read_all_from_csv(root_dir=HERBARIUM_ROOT)
+	# train_df, test_df = read_all_from_csv(root_dir=HERBARIUM_ROOT)
 
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 ################################################################
 
 ################
@@ -292,35 +296,35 @@ from PIL import Image
 
 
 class SupervisedImageDataset(torch.utils.data.Dataset):
-    def __init__(self, 
-                 df: pd.DataFrame,
-                 path_col: str="path",
-                 label_col: str="Family"):
-        self.df = df
-        self.path_col = path_col
-        self.label_col = label_col
-        self._create_labels()
+	def __init__(self, 
+				 df: pd.DataFrame,
+				 path_col: str="path",
+				 label_col: str="Family"):
+		self.df = df
+		self.path_col = path_col
+		self.label_col = label_col
+		self._create_labels()
 
-    def __len__(self):
-        return len(self.df)
+	def __len__(self):
+		return len(self.df)
 
-    def __getitem__(self, index):
-        row = self.df.iloc[index]
-        return (
-            # torchvision.transforms.functional.to_tensor(Image.open(row[self.path_col])),
-            Image.open(row.loc[self.path_col]).convert('RGB'),
-            row["int_labels"],
-        )
-    
-    def _create_labels(self):
-        
-        self.classnames = list(set(self.df[self.label_col]))
-        print(f"Found {len(self.classnames)} unique labels")
+	def __getitem__(self, index):
+		row = self.df.iloc[index]
+		return (
+			# torchvision.transforms.functional.to_tensor(Image.open(row[self.path_col])),
+			Image.open(row.loc[self.path_col]).convert('RGB'),
+			row["int_labels"],
+		)
+	
+	def _create_labels(self):
+		
+		self.classnames = list(set(self.df[self.label_col]))
+		print(f"Found {len(self.classnames)} unique labels")
 
-        self.label2int = {l:i for i,l in enumerate(self.classnames)}
-        self.int2label = {i:l for l,i in self.label2int.items()}
-        
-        self.df.loc["int_labels"] = self.df[self.label_col].apply(lambda x: self.label2int[x])
+		self.label2int = {l:i for i,l in enumerate(self.classnames)}
+		self.int2label = {i:l for l,i in self.label2int.items()}
+		
+		self.df.loc["int_labels"] = self.df[self.label_col].apply(lambda x: self.label2int[x])
 
 
 # ## Can we stratify by genus or Family while classifying species?
@@ -335,9 +339,9 @@ class SupervisedImageDataset(torch.utils.data.Dataset):
 # y = df_train[label_col].values
 
 # x_train, x_val, y_train, y_val = train_test_split(x, y,
-#                                                   stratify=y,
-#                                                   train_size=train_size,
-#                                                   random_state=seed)
+#												   stratify=y,
+#												   train_size=train_size,
+#												   random_state=seed)
 # train_data = df_train.iloc[x_train,:]
 # val_data = df_train.iloc[x_val,:]
 
@@ -353,36 +357,36 @@ class SupervisedImageDataset(torch.utils.data.Dataset):
 
 
 def categorical_order(values, order=None):
-    """Return a list of unique data values.
+	"""Return a list of unique data values.
 
-    Determine an ordered list of levels in ``values``.
+	Determine an ordered list of levels in ``values``.
 
-    Parameters
-    ----------
-    values : list, array, Categorical, or Series
-        Vector of "categorical" values
-    order : list-like, optional
-        Desired order of category levels to override the order determined
-        from the ``values`` object.
+	Parameters
+	----------
+	values : list, array, Categorical, or Series
+		Vector of "categorical" values
+	order : list-like, optional
+		Desired order of category levels to override the order determined
+		from the ``values`` object.
 
-    Returns
-    -------
-    order : list
-        Ordered list of category levels
+	Returns
+	-------
+	order : list
+		Ordered list of category levels
 
-    """
-    if order is None:
-        if hasattr(values, "categories"):
-            order = values.categories
-        else:
-            try:
-                order = values.cat.categories
-            except (TypeError, AttributeError):
-                try:
-                    order = values.unique()
-                except AttributeError:
-                    order = pd.unique(values)
+	"""
+	if order is None:
+		if hasattr(values, "categories"):
+			order = values.categories
+		else:
+			try:
+				order = values.cat.categories
+			except (TypeError, AttributeError):
+				try:
+					order = values.unique()
+				except AttributeError:
+					order = pd.unique(values)
 
-    return list(order)
+	return list(order)
 
 

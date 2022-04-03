@@ -199,10 +199,18 @@ class BaseLightningModule(pl.LightningModule):
 							  submodule="backbone",
 							  verbose=False)	# def on_fit_start(self):
 			count_parameters(self.net, verbose=True)
+		if self._initial_logging and self.cfg.logging.get("log_dataset_summary", False):
+			if not hasattr(self, "datamodule"):
+				return
+			self._initial_logging = False
+			for subset in ["train", "val", "test"]:
+				self.datamodule.get_dataset_size(subset, verbose=True)
 
 	def on_train_start(self) -> None:
+		self._initial_logging = True
 		if self.cfg.logging.log_model_summary:
 			self.summarize_model(f"{self.name}/init")
+
 	
 	def freeze_up_to(self, 
 					 layer: Union[int, str]=None,

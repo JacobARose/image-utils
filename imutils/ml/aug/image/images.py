@@ -152,8 +152,11 @@ def get_default_transforms(
 	
 	config = OmegaConf.merge(DEFAULT_CFG, config)
 	
-	preprocess_transforms = Preprocess(mode=mode, 
-									   resize=config["preprocess"][mode]["resize"])
+	if config["preprocess"][mode].get("resize", None):
+		preprocess_transforms = Preprocess(mode=mode, 
+										   resize=config["preprocess"][mode]["resize"])
+	else:
+		preprocess_transforms = T.ToTensor()
 	
 	if mode == "train":
 		random_resize_crop = config["batch_transform"]["train"]["random_resize_crop"]

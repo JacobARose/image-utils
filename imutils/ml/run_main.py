@@ -1254,16 +1254,53 @@ train.pl_trainer.max_epochs=50 \
 train.pl_trainer.accumulate_grad_batches=1
 
 
+#####################
+Experiment #20:
 
+Switching source images from res=960 to res=512 on-disk.
 
 export CUDA_VISIBLE_DEVICES=0,1,2,3; python run_main.py \
 'core.name="Experiment #20 (2022-04-01)"' \
 optim.optimizer.weight_decay=5e-6 \
-hp.batch_size=32 \
+hp.batch_size=24 \
 hp.lr=2e-3 \
 data/datamodule@data=herbarium2022-res_512_datamodule \
 aug@data.datamodule.transform_cfg=medium_image_aug_conf \
 hp.preprocess_size=512 \
+hp.resolution=448 \
+model_cfg.backbone.name=resnext50_32x4d \
+model_cfg.backbone.pretrained=true \
+hp.freeze_backbone_up_to=0 \
+hp.freeze_backbone=false \
+train.pl_trainer.devices=4 \
+train.pl_trainer.accelerator="gpu" \
+data.datamodule.num_workers=4 \
+train.pl_trainer.max_epochs=50 \
++train.pl_trainer.profiler="simple" \
+train.pl_trainer.accumulate_grad_batches=2
+
+###################
+Experiment #21:
+
+- Extending warmup epochs from 3 to 5
+- Setting hp.preprocess_size=None
+
+Observations:
+
+ - Note: It looks like the lr_tuner did not result in an identical warmup_start_lr between Exp #20 and #21, indicating a potential replicability problem.
+	 #20: warmup_start_lr = 1.208e-5 (About 437% the magnitude of #21)
+	 #21: warmup_start_lr = 2.767e-6 (Only about 23% the magnitude of #20)
+
+
+export CUDA_VISIBLE_DEVICES=0,1,2,3; python run_main.py \
+'core.name="Experiment #21 (2022-04-01)"' \
+hp.warmup_epochs=5 \
+optim.optimizer.weight_decay=5e-6 \
+hp.batch_size=24 \
+hp.lr=2e-3 \
+data/datamodule@data=herbarium2022-res_512_datamodule \
+aug@data.datamodule.transform_cfg=medium_image_aug_conf \
+hp.preprocess_size=None \
 hp.resolution=448 \
 model_cfg.backbone.name=resnext50_32x4d \
 model_cfg.backbone.pretrained=true \
@@ -1413,7 +1450,8 @@ def train(cfg: DictConfig) -> None:
 
 	template_utils.finish(
 		config=cfg,
-		logger=loggers)
+		logger=loggers,
+		callbacks=callbacks)
 
 	# if args.train:
 	#	 trainer.fit(model, dm)

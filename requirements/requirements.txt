@@ -1,22 +1,27 @@
 
-lightning-bolts
+albumentations
+captum
+colorama
+dask[all]
+einops
+fastai
+ffcv
 kornia
-
+lightning-bolts
+pytorch_lightning
 attrs
 icecream
-opencv-python
+jpeg4py
 # =======
-# git+https://github.com/JacobARose/lightning-hydra-classifiers.git
 # -e git+https://github.com/JacobARose/solo-learn.git@ffcv
 
-hydra-core>=1.1
+hydra-core==1.1.1
 matplotlib
 modin
 more_itertools
 munch
-# numpy==1.19
 omegaconf
-#opencv-python-headless
+opencv-python
 pandarallel
 pandas
 Pillow
@@ -24,26 +29,32 @@ rich
 # =======
 antlr4-python3-runtime
 iniconfig
+plotly
 pluggy
 plumbum
 prettytable
 py
 pytest
 python-dotenv
+PyYAML
 flake8
 pre-commit
+ray
 Sphinx
 scikit-learn
 scikit-image
 seaborn
 stuf
+tensorflow==2.8
+timm
 toml
 toolz
 torchinfo
+torchmetrics
 torch-summary
 
 # Corresponds to torchdatasets==0.2.0 except includes minor fix to allow torch<1.9
-# git+git://github.com/szymonmaszke/torchdatasets.git@0389feea2c23657440f9ba9a1af976f436aa3440
+# # git+git://github.com/szymonmaszke/torchdatasets.git@0389feea2c23657440f9ba9a1af976f436aa3440
 swifter
 tqdm
 wandb

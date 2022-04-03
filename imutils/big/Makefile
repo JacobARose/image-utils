@@ -1,9 +1,10 @@
 .PHONY: help
 
-OUT_DIR = "./data"
-TRAIN_SIZE = 0.6
-SEED = 14
-SPLITS_DIR = ${OUT_DIR}/splits/train_size-${TRAIN_SIZE}
+SEED=14
+#TRAIN_SIZE=0.8
+HERBARIUM_ROOT_DEFAULT="/media/data_cifs/projects/prj_fossils/data/raw_data/herbarium-2022-fgvc9_resize"
+CATALOG_DIR="${HERBARIUM_ROOT_DEFAULT}/catalogs"
+SPLITS_DIR = ${CATALOG_DIR}/splits/train_size-${TRAIN_SIZE}
 
 help:
 	@echo "    all"
@@ -23,7 +24,9 @@ $(catalog_files): catalog
 	#echo "Made catalog"
 	
 catalog:
-	python ./make_herbarium_2022_catalog_df.py --target_dir ${OUT_DIR}
+	python ./make_herbarium_2022_catalog_df.py \
+		--herbarium_source_dir ${HERBARIUM_ROOT_DEFAULT} \
+		--target_dir ${CATALOG_DIR}
 
 
 splits_files := $(SPLITS_DIR)/train.csv $(SPLITS_DIR)/val.csv $(SPLITS_DIR)/test.csv
@@ -35,7 +38,7 @@ $(splits_files): splits
 
 splits: $(catalog_files)
 	python ./make_train_val_splits.py \
-		--source_dir ${OUT_DIR} \
+		--source_dir ${CATALOG_DIR} \
 		--splits_dir ${SPLITS_DIR} \
 		--train_size ${TRAIN_SIZE} \
 		--seed ${SEED}

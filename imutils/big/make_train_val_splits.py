@@ -332,23 +332,31 @@ def main(source_dir: str, #=DATA_DIR,
 
 
 
-HERBARIUM_ROOT = "/media/data_cifs/projects/prj_fossils/data/raw_data/herbarium-2022-fgvc9_resize"
+# HERBARIUM_ROOT = "/media/data_cifs/projects/prj_fossils/data/raw_data/herbarium-2022-fgvc9_resize"
 # WORKING_DIR = "/media/data/jacob/GitHub/image-utils/notebooks/herbarium_2022/"
 # OUTPUT_DIR = os.path.join(WORKING_DIR, "outputs")
 # DATA_DIR = os.path.join(WORKING_DIR, "data")
 
 
+from dotenv import load_dotenv
+load_dotenv()
+
+HERBARIUM_ROOT_DEFAULT = os.environ.get("HERBARIUM_ROOT_DEFAULT")
+CATALOG_DIR = os.environ.get("CATALOG_DIR")
+SPLITS_DIR = os.environ.get("SPLITS_DIR")
+
+
 	
 def parse_args() -> argparse.Namespace:
 	
-	parser = argparse.ArgumentParser("""Generate sharded dataset from supervised image dataset.""")
+	parser = argparse.ArgumentParser("""Generate train-val splits dataset from Herbarium 2022 train dataset.""")
 	parser.add_argument(
-		"--source_dir", default="./data", help="directory where catalog csv files are read, followed by splitting"
+		"--source_dir", default=CATALOG_DIR, help="directory where catalog csv files are read, followed by splitting"
 	)
 	parser.add_argument(
 		"--splits_dir",
-		default=None,
-		help="Target directory in which to save the csv files for each split.",
+		default=None, #SPLITS_DIR,
+		help="Target directory in which to save the csv files for each split. ",
 	)
 	parser.add_argument(
 		"--train_size",
@@ -368,9 +376,17 @@ def parse_args() -> argparse.Namespace:
 	
 	assert os.path.isdir(args.source_dir)
 	
+	train_size_str = f"train_size-{args.train_size:.1f}"
+	
 	if args.splits_dir is None:
-		args.splits_dir = Path(args.source_dir, "splits")
-		args.splits_dir = args.splits_dir / f"train_size-{args.train_size:.1f}"
+		if SPLITS_DIR is None:
+			args.splits_dir = SPLITS_DIR
+		else:
+			args.splits_dir = Path(args.source_dir, "splits")
+			args.splits_dir = args.splits_dir / train_size_str
+	# elif train_size_str not in args.splits_dir:
+		
+	print(f"Using args.splits_dir: {args.splits_dir}")
 	os.makedirs(args.splits_dir, exist_ok=True)
 	
 	return args

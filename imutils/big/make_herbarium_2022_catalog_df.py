@@ -43,9 +43,14 @@ import matplotlib.pyplot as plt
 from pprint import pprint as pp
 
 
-HERBARIUM_ROOT_DEFAULT = "/media/data_cifs/projects/prj_fossils/data/raw_data/herbarium-2022-fgvc9_resize"
+# HERBARIUM_ROOT_DEFAULT = "/media/data_cifs/projects/prj_fossils/data/raw_data/herbarium-2022-fgvc9_resize"
 
+from dotenv import load_dotenv
+load_dotenv()
 
+HERBARIUM_ROOT_DEFAULT = os.environ["HERBARIUM_ROOT_DEFAULT"]
+CATALOG_DIR = os.environ["CATALOG_DIR"]
+SPLITS_DIR = os.environ["SPLITS_DIR"]
 
 
 def optimize_dtypes_train(df: pd.DataFrame) -> pd.DataFrame:
@@ -229,10 +234,19 @@ class HerbariumMetadata:
 def parse_args() -> argparse.Namespace:
 	
 	parser = argparse.ArgumentParser(
-		"""Generate train_metadata.csv and test_metadata.csv from Herbarium 2022 original json metadatab splits."""
+		"""Generate train_metadata.csv and test_metadata.csv from Herbarium 2022 original json metadata splits in train_metadata.json and test_metadata.json. Defaults to generating outputs within a `catalogs/` subdir of the location of the input json files.
+		
+		Inputs:
+		* train_metadata.json
+		* test_metadata.json		
+		
+		Outputs:
+		* train_metadata.csv 
+		* test_metadata.csv
+		"""
 	)
 	parser.add_argument(
-		"--target_dir", default="./data", help="directory where catalog csv files are written"
+		"--target_dir", default=CATALOG_DIR, help="directory where catalog csv files are written"
 	)
 	parser.add_argument(
 		"--herbarium_source_dir",

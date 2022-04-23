@@ -23,7 +23,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 import numbers
-from typing import Union, List, Any, Tuple, Dict, Optional, Sequence
+from typing import *
 import collections
 import seaborn as sns
 from sklearn.model_selection import train_test_split
@@ -33,7 +33,6 @@ from omegaconf import OmegaConf, DictConfig, ListConfig
 import pytorch_lightning as pl
 
 from imutils.ml.utils import template_utils
-
 # from lightning_hydra_classifiers.utils import template_utils
 # from lightning_hydra_classifiers.utils.plot_utils import colorbar
 # from lightning_hydra_classifiers.utils.dataset_management_utils import LabelEncoder
@@ -42,7 +41,13 @@ from imutils.ml.utils import template_utils
 log = template_utils.get_logger(__name__)
 log.setLevel("DEBUG")
 
-__all__ = ["load_data", "resolve_config", "configure_callbacks", "configure_loggers", "configure_trainer", "configure_model"]
+__all__ = ["load_data", 
+		   "resolve_config", 
+		   "configure_callbacks", 
+		   "configure_loggers",
+		   "configure_trainer", 
+		   "configure_model",
+		   "configure_loss_func"]
 
 
 
@@ -74,6 +79,10 @@ def configure_callbacks(cfg) -> List[pl.Callback]:
 			continue
 		elif "_target_" in cb_conf:
 			log.info(f"Instantiating callback <{cb_conf._target_}>")
+			
+			if k == "module_data_monitor":
+				cb_conf = OmegaConf.to_container(cb_conf, resolve=True)
+			
 			callbacks.append(hydra.utils.instantiate(cb_conf))
 	return callbacks
 
@@ -114,6 +123,30 @@ def configure_loggers(cfg, model=None):
 		#	 )
 
 	return wandb_logger
+
+
+def configure_loss_func(cfg,
+					    **kwargs) -> Callable:
+	"""
+	Singular function for organizing custom instantiation workflows for different categories of loss function, as some require different kinds of dynamically created kwargs that are difficult or impossible to specify completely within config files.
+	
+	
+	Currently tested for:
+		* torch.nn.CrossEntropyLoss
+		* imutils.ml.utils.toolbox.nn.loss.CBCrossEntropyLoss
+	"""
+	import hydra
+	
+	if cfg.model_cfg.loss._target_ == "imutils.ml.utils.toolbox.nn.loss.CBCrossEntropyLoss":
+		assert "targets" in kwargs, "Class-Balanced-Cross-Entropy Loss requires user to pass a `targets` as a kwarg"
+		loss = hydra.utils.instantiate(cfg.model_cfg.loss, targets=kwargs["targets"])
+	else:
+		loss = hydra.utils.instantiate(cfg.model_cfg.loss)
+		
+	return loss
+
+
+
 
 
 
@@ -185,50 +218,57 @@ def configure_trainer(cfg,
 
 
 
-def configure_model(config: argparse.Namespace,
-					label_encoder: Optional["LabelEncoder"]=None
-				   ) -> Tuple["LightningClassifier", argparse.Namespace]:
+def configure_model(cfg: argparse.Namespace,
+					loss_func: Optional[Callable]=None
+				   ) -> "LightningClassifier":
 
-	model, config.model = build_model_or_load_from_checkpoint(ckpt_path=config.model.ckpt_path,
-															  ckpt_dir=config.model.ckpt_dir,
-															  ckpt_mode=config.model.ckpt_mode,
-															  config=config.model)
-	if hasattr(model, "label_encoder"):
-		label_encoder = model.label_encoder
-	if label_encoder is not None:
-		model.label_encoder = label_encoder
+	from imutils.ml.models.pl.classifier import LitClassifier
+	import hydra
 
-	return model, config
+	hydra.utils.log.info(f"Instantiating <{cfg.model_cfg._target_}>")
+	if cfg.hp.load_from_checkpoint:
+		hydra.utils.log.info(f"Loading from pretrained checkpoint: {cfg.ckpt_path}")
 
-
-def load_data(config: argparse.Namespace,
-			  task_id: int=0
-			 ) -> "DataModule":
-	
-	if not getattr(config.data, "experiment", [None]):
-		config.data.experiment = None
-
-	if config.debug == True:
-		log.warning(f"Debug mode activated, loading CIFAR10 datamodule")
-		datamodule = CIFAR10DataModule(task_id=task_id,
-									   batch_size=config.data.batch_size,
-									   image_size=config.data.image_size,
-									   image_buffer_size=config.data.image_buffer_size,
-									   num_workers=config.data.num_workers,
-									   pin_memory=config.data.pin_memory,
-									   experiment_config=config.data.experiment)
+		model = LitClassifier.load_from_checkpoint(
+			checkpoint_path=cfg.ckpt_path,
+			cfg=cfg,
+			loss_func=loss_func)
 	else:
-#		 print(f"Creating datamodule: config=")
-#		 pp(OmegaConf.to_container(config, resolve=True))
-		datamodule = MultiTaskDataModule(task_id=task_id,
-										 batch_size=config.data.batch_size,
-										 image_size=config.data.image_size,
-										 image_buffer_size=config.data.image_buffer_size,
-										 num_workers=config.data.num_workers,
-										 pin_memory=config.data.pin_memory,
-										 experiment_config=config.data.experiment)
-	datamodule.setup()
-	return datamodule
+		model = LitClassifier(
+			cfg=cfg,
+			loss_func=loss_func)
+
+	return model
+
+
+# def load_data(config: argparse.Namespace,
+# 			  task_id: int=0
+# 			 ) -> "DataModule":
+	
+# 	if not getattr(config.data, "experiment", [None]):
+# 		config.data.experiment = None
+
+# 	if config.debug == True:
+# 		log.warning(f"Debug mode activated, loading CIFAR10 datamodule")
+# 		datamodule = CIFAR10DataModule(task_id=task_id,
+# 									   batch_size=config.data.batch_size,
+# 									   image_size=config.data.image_size,
+# 									   image_buffer_size=config.data.image_buffer_size,
+# 									   num_workers=config.data.num_workers,
+# 									   pin_memory=config.data.pin_memory,
+# 									   experiment_config=config.data.experiment)
+# 	else:
+# #		 print(f"Creating datamodule: config=")
+# #		 pp(OmegaConf.to_container(config, resolve=True))
+# 		datamodule = MultiTaskDataModule(task_id=task_id,
+# 										 batch_size=config.data.batch_size,
+# 										 image_size=config.data.image_size,
+# 										 image_buffer_size=config.data.image_buffer_size,
+# 										 num_workers=config.data.num_workers,
+# 										 pin_memory=config.data.pin_memory,
+# 										 experiment_config=config.data.experiment)
+# 	datamodule.setup()
+# 	return datamodule
 
 
 

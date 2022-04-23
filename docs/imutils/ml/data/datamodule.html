@@ -24,7 +24,14 @@
 <section id="section-intro">
 <p>imutils/ml/data/datamodule.py</p>
 <p>Created on: Wednesday March 16th, 2022<br>
-Created by: Jacob Alexander Rose</p>
+Created by: Jacob Alexander Rose
+</p>
+<ul>
+<li>Update (Wednesday March 24th, 2022)
+- Refactored to make more modular BaseDataset and BaseDataModule, which Herbarium2022Dataset and Herbarium2022DataModule inherit, respectively.</li>
+<li>Update (Wednesday April 6th, 2022)
+- Wonky refactor to add ExtantLeavesDataset and ExtantLeavesDataModule to definitions. Involed some blurring of abstractions &ndash; will need to refactor the base class AbstractCatalogDataset.</li>
+</ul>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -35,18 +42,30 @@ imutils/ml/data/datamodule.py
 Created on: Wednesday March 16th, 2022  
 Created by: Jacob Alexander Rose  
 
+
+- Update (Wednesday March 24th, 2022)
+        - Refactored to make more modular BaseDataset and BaseDataModule, which Herbarium2022Dataset and Herbarium2022DataModule inherit, respectively.
+- Update (Wednesday April 6th, 2022)
+        - Wonky refactor to add ExtantLeavesDataset and ExtantLeavesDataModule to definitions. Involed some blurring of abstractions -- will need to refactor the base class AbstractCatalogDataset.
 &#34;&#34;&#34;
 
+
+import matplotlib.pyplot as plt
+from icecream import ic
 import jpeg4py as jpeg
+import numpy as np
 from omegaconf import DictConfig, OmegaConf
 import os
 import pandas as pd
 from pathlib import Path
 from PIL import Image
+from rich import print as pp
 import multiprocessing as mproc
 import pytorch_lightning as pl
+from sklearn import preprocessing
 from torch.utils.data import DataLoader, Dataset
 from torchvision import transforms as T
+import torchvision
 from typing import *
 
 
@@ -62,8 +81,20 @@ from imutils.ml.aug.image.images import (Preprocess,
                                                                                  get_default_transforms,
                                                                                  DEFAULT_CFG as DEFAULT_TRANSFORM_CFG)
 
-__all__ = [&#34;Herbarium2022DataModule&#34;, &#34;Herbarium2022Dataset&#34;, &#34;get_default_transforms&#34;]
+from imutils.ml.utils import label_utils
 
+__all__ = [&#34;Herbarium2022DataModule&#34;, 
+                   &#34;Herbarium2022Dataset&#34;,
+                   &#34;ExtantLeavesDataset&#34;, 
+                   &#34;ExtantLeavesDataModule&#34;,
+                   &#34;get_default_transforms&#34;]
+
+import torch
+
+def tensor_to_image(x: torch.Tensor) -&gt; np.ndarray:
+        if x.ndim==3:
+                return x.permute(1,2,0)
+        return x.permute(0, 2, 3, 1)
 
 
 def read_jpeg(path):
@@ -72,15 +103,47 @@ def read_jpeg(path):
 def read_pil(path):
         return Image.open(path)
 
+def read_torchvision_img(path):
+        img=torchvision.io.read_image(path)
+        return img
+
+
 default_reader = read_jpeg
 
 
+IMAGE_READERS = {
+        &#34;jpeg.JPEG&#34;:read_jpeg,
+        &#34;PIL&#34;:read_pil,
+        &#34;torchvision&#34;:read_torchvision_img,
+        &#34;default&#34;:default_reader
+}
+
+
+
 class AbstractCatalogDataset(Dataset):
+
+        def __init__(self):
+                super().__init__()
+                &#34;&#34;&#34;
+                TBD: document these function kwargs
+                
+                &#34;&#34;&#34;
+                self.x_col = &#34;path&#34;
+                self.y_col = &#34;y&#34;
+                self.id_col = &#34;image_id&#34;
         
         @property
         def splits_dir(self) -&gt; Path:
                 return find_data_splits_dir(source_dir=self.catalog_dir,
                                                                         train_size=self.train_size)
+        
+        @property
+        def split_file_path(self) -&gt; Path:
+                &#34;&#34;&#34;
+                Should return the path of this subset&#39;s on-disk csv catalog file. I emphasize should.
+                &#34;&#34;&#34;
+                return self.splits_dir / f&#34;{self.subset}_metadata.csv&#34;
+        
         
         @property
         def already_built(self) -&gt; bool:
@@ -89,8 +152,7 @@ class AbstractCatalogDataset(Dataset):
         
         def prepare_metadata(self):
 
-                if not self.already_built:
-                        
+                if not self.already_built:              
                         data = make_train_val_splits(source_dir=self.catalog_dir,
                                                                                  splits_dir=self.splits_dir,
                                                                                  label_col=self.label_col,
@@ -104,6 +166,8 @@ class AbstractCatalogDataset(Dataset):
                                                 subset: str=&#34;train&#34;) -&gt; Tuple[&#34;LabelEncoder&#34;, pd.DataFrame]:
                 &#34;&#34;&#34;
                 Read the selected data subset into a pd.DataFrame
+                
+                Returns a Tuple containing an sklearn LabelEncoder and a pd.DataFrame of the subset&#39;s data catalog
                 &#34;&#34;&#34;
                 data = read_encoded_splits(source_dir=self.splits_dir,
                                                                                         include=[subset])
@@ -114,19 +178,38 @@ class AbstractCatalogDataset(Dataset):
 
         
         def setup(self):
+                &#34;&#34;&#34;
+                Assigns the following instance attributes:
+                
+                        ::self.label_encoder
+                        ::self.df
+                        ::self.paths
+                        ::self.targets
+                        ::self.num_classes
+                &#34;&#34;&#34;
                 data = self.prepare_metadata()
                 if data is None:
                         encoder, data = self.get_data_subset(subset=self.subset)
                 else:
                         encoder = data[&#34;label_encoder&#34;]
                         data = data[&#34;subsets&#34;][self.subset]
+
+                if isinstance(encoder, preprocessing.LabelEncoder):
+                        &#34;&#34;&#34;
+                        Auto wraps any sklearn LabelEncoder in our custom class.
+                        (Added 2022-03-25 - untested)
+                        &#34;&#34;&#34;
+                        encoder = label_utils.LabelEncoder.from_sklearn(encoder)
+
                 setattr(data, &#34;label_encoder&#34;, encoder)
                 self.label_encoder = encoder
                 self.df = data
                 
                 if self.shuffle:
                         self.df = self.df.sample(frac=1, random_state=self.seed).reset_index(drop=False)
-                        
+
+                if self.id_col in self.df.columns:
+                        self.image_ids = self.df[self.id_col]
                 self.paths = self.df[self.x_col]
 
                 if self.is_supervised:
@@ -135,11 +218,15 @@ class AbstractCatalogDataset(Dataset):
                         self.num_classes = len(set(self.df[self.y_col]))
                 else:
                         self.targets = None
-                        self.num_classes = -1
-        
+                        self.num_classes = -1 # Or 0?
         
 
-class Herbarium2022Dataset(AbstractCatalogDataset):
+        def get_decoded_targets(self, with_image_ids: bool=True) -&gt; Tuple[str, np.ndarray]:
+                assert self.is_supervised
+                return self.label_encoder.inv_transform(self.targets)
+        
+
+class BaseDataset(AbstractCatalogDataset):
         catalog_dir: str = os.path.abspath(&#34;./data&#34;)
         
         def __init__(self,
@@ -149,22 +236,37 @@ class Herbarium2022Dataset(AbstractCatalogDataset):
                                  train_size: float=0.7,
                                  shuffle: bool=True,
                                  seed: int=14,
-                                 image_reader: Callable=default_reader, #Image.open,
+                                 image_reader: Union[Callable,str]=&#34;default&#34;, #Image.open,
                                  preprocess: Callable=None,
                                  transform: Callable=None):
+                &#34;&#34;&#34;
+                
+                Arguments:
+                
+                        catalog_dir: Optional[str]=None,
+                                
+                        subset: str=&#34;train&#34;,
+                        
+                        label_col: str=&#34;scientificName&#34;,
+                                Column containing the fully decoded str labels
+                        train_size: float=0.7,
+                        shuffle: bool=True,
+                        seed: int=14,
+                        image_reader: Union[Callable,str]=&#34;default&#34;, #Image.open,
+                        preprocess: Callable=None,
+                        transform: Callable=None
+                
+                &#34;&#34;&#34;
+                super().__init__()
                 
                 self.catalog_dir = catalog_dir or self.catalog_dir
-                
-                self.x_col = &#34;path&#34;
-                self.y_col = &#34;y&#34;
-                self.id_col = &#34;image_id&#34;
+
                 self.label_col = label_col
                 self.train_size = train_size
                 self.shuffle = shuffle
                 self.seed = seed
                 self.subset = subset
                 self.is_supervised = bool(subset != &#34;test&#34;)
-
                 self.set_image_reader(image_reader)
                 self.preprocess = preprocess
                 self.transform = transform
@@ -176,12 +278,35 @@ class Herbarium2022Dataset(AbstractCatalogDataset):
                                  **kwargs):
                 cfg = OmegaConf.merge(cfg, kwargs)
                 return cls(**cfg)
+
+
+        def get_cfg(self,
+                                 cfg: DictConfig=None,
+                                 **kwargs):
+                cfg=cfg or {}
+                default_cfg = DictConfig(dict(                  
+                        catalog_dir=self.catalog_dir or None,
+                        subset=self.subset or &#34;train&#34;,
+                        label_col=self.label_col or &#34;scientificName&#34;,
+                        train_size=self.train_size or 0.7,
+                        shuffle=self.shuffle,
+                        seed=self.seed or 14))
                 
+                cfg = OmegaConf.merge(default_cfg, cfg, kwargs)
+                return cfg
+
         def __len__(self):
                 return len(self.df)
         
         def set_image_reader(self,
-                                                 reader: Callable) -&gt; None:
+                                                 reader: Union[Callable,str]) -&gt; None:
+                if isinstance(reader, str):
+                        if reader not in IMAGE_READERS:
+                                print(f&#34;specified image_reader is invalid, using default jpeg.JPEG&#34;)
+                        reader = IMAGE_READERS.get(reader, IMAGE_READERS[&#34;default&#34;])
+                elif not isinstance(reader, Callable):
+                        raise InvalidArgument
+                
                 self.reader = reader
         
         def parse_sample(self, index: int):
@@ -200,17 +325,18 @@ class Herbarium2022Dataset(AbstractCatalogDataset):
                 &#34;&#34;&#34;
                 sample = self.parse_sample(index)
                 path = getattr(sample, self.x_col)
-                catalog_number = getattr(sample, self.id_col)
+                image_id = getattr(sample, self.id_col)
                 
                 image = self.reader(path)
                 
                 metadata={
-                                  &#34;path&#34;:path,
-                                  &#34;catalog_number&#34;:catalog_number
+                        &#34;path&#34;:path,
+                        &#34;image_id&#34;:image_id
+                                  # &#34;catalog_number&#34;:catalog_number
                                  }
-                label = None
+                label = -1
                 if self.is_supervised:
-                        label = getattr(sample, self.y_col, None)
+                        label = getattr(sample, self.y_col, -1)
                 return image, label, metadata
                 
         def __getitem__(self, index: int):
@@ -227,12 +353,8 @@ class Herbarium2022Dataset(AbstractCatalogDataset):
 
 
 
-        
-        
-
-
-class Herbarium2022DataModule(pl.LightningDataModule):
-        dataset_cls = Herbarium2022Dataset
+class BaseDataModule(pl.LightningDataModule):
+        dataset_cls = None #Herbarium2022Dataset
         train_dataset = None
         val_dataset = None
         test_dataset = None
@@ -242,42 +364,46 @@ class Herbarium2022DataModule(pl.LightningDataModule):
         test_transform = None
         
         transform_cfg = DEFAULT_TRANSFORM_CFG
-        
-        def __init__(self,
-                                 catalog_dir: Optional[str]=None,
-                                 label_col=&#34;scientificName&#34;,
-                                 train_size=0.7,
-                                 shuffle: bool=True,
-                                 seed=14,
-                                 batch_size: int = 128,
-                                 num_workers: int = None,
-                                 pin_memory: bool=True,
-                                 train_transform=None,
-                                 val_transform=None,
-                                 test_transform=None,
-                                 transform_cfg=None,
-                                 remove_transforms: bool=False,
-                                 image_reader: Callable=default_reader, #Image.open,
-        ):
-                super().__init__()
-                
-                self.catalog_dir = catalog_dir
-                
-                self.label_col = label_col
-                self.train_size = train_size
-                self.shuffle = shuffle
-                self.seed = seed
-                self.batch_size = batch_size
-                self.num_workers = num_workers if num_workers is not None else mproc.cpu_count()
-                self.pin_memory = pin_memory
-                self.image_reader = image_reader
 
-                self.setup_transforms(transform_cfg=transform_cfg,
-                                                          train_transform=train_transform,
-                                                          val_transform=val_transform,
-                                                          test_transform=test_transform,
-                                                          remove_transforms=remove_transforms)
-                self.cfg = self.get_cfg()
+#       def __init__(self,
+#                                catalog_dir: Optional[str]=None,
+#                                label_col=&#34;scientificName&#34;,
+#                                train_size=0.7,
+#                                shuffle: bool=True,
+#                                seed=14,
+#                                batch_size: int = 128,
+#                                num_workers: int = None,
+#                                pin_memory: bool=True,
+#                                persistent_workers: Optional[bool]=False,
+#                                train_transform=None,
+#                                val_transform=None,
+#                                test_transform=None,
+#                                transform_cfg=None,
+#                                remove_transforms: bool=False,
+#                                image_reader: Callable=&#34;default&#34;, #Image.open,
+#                                **kwargs
+#       ):
+#               super().__init__()
+                
+#               self.catalog_dir = catalog_dir
+                
+#               self.label_col = label_col
+#               self.train_size = train_size
+#               self.shuffle = shuffle
+#               self.seed = seed
+#               self.batch_size = batch_size
+#               self.num_workers = num_workers if num_workers is not None else mproc.cpu_count()
+#               self.pin_memory = pin_memory
+#               self.persistent_workers = persistent_workers
+#               self.image_reader = image_reader
+
+#               self.setup_transforms(transform_cfg=transform_cfg,
+#                                                         train_transform=train_transform,
+#                                                         val_transform=val_transform,
+#                                                         test_transform=test_transform,
+#                                                         remove_transforms=remove_transforms)
+#               self.cfg = self.get_cfg()
+#               self.kwargs = kwargs
                 
 
         @classmethod
@@ -288,9 +414,9 @@ class Herbarium2022DataModule(pl.LightningDataModule):
                 return cls(**cfg)
 
         def get_cfg(self,
-                                 cfg: DictConfig,
+                                 cfg: DictConfig=None,
                                  **kwargs):
-                
+                cfg=cfg or {}
                 default_cfg = DictConfig(dict(
                         catalog_dir=self.catalog_dir or None,
                         label_col=self.label_col or &#34;scientificName&#34;,
@@ -307,47 +433,54 @@ class Herbarium2022DataModule(pl.LightningDataModule):
                 cfg = OmegaConf.merge(default_cfg, cfg, kwargs)
                 return cfg
 
-        
-        
 
         def prepare_data(self):
                 pass
 
-        @property
-        def num_classes(self) -&gt; int:
-                assert self.train_dataset and self.valid_dataset
-                return max(self.train_dataset.num_classes, self.valid_dataset.num_classes)
-
         def setup(self, stage=None):
-                if stage in [&#34;train&#34;, &#34;all&#34;, None]:
-                        self.train_dataset = Herbarium2022Dataset(catalog_dir=self.catalog_dir,
-                                                                                                          subset=&#34;train&#34;,
-                                                                                                          label_col=self.label_col,
-                                                                                                          train_size=self.train_size,
-                                                                                                          shuffle=self.shuffle,
-                                                                                                          seed=self.seed,
-                                                                                                          transform=self.train_transform)
-                        print(f&#34;training dataset length: {len(self.train_dataset)}&#34;)
-                if stage in [&#34;val&#34;, &#34;all&#34;, None]:
-                        self.val_dataset = Herbarium2022Dataset(catalog_dir=self.catalog_dir,
-                                                                                                        subset=&#34;val&#34;,
-                                                                                                        label_col=self.label_col,
-                                                                                                        train_size=self.train_size,
-                                                                                                        shuffle=self.shuffle,
-                                                                                                        seed=self.seed,
-                                                                                                        transform=self.val_transform)
-                        print(f&#34;validation dataset length: {len(self.val_dataset)}&#34;)
-                if stage in [&#34;test&#34;, &#34;all&#34;, None]:
-                        self.test_dataset = Herbarium2022Dataset(catalog_dir=self.catalog_dir,
-                                                                                                         subset=&#34;test&#34;,
-                                                                                                         label_col=self.label_col,
-                                                                                                         train_size=self.train_size,
-                                                                                                         shuffle=self.shuffle,
-                                                                                                         seed=self.seed,
-                                                                                                         transform=self.test_transform)
-                        print(f&#34;test dataset length: {len(self.test_dataset)}&#34;)
-                        
-                self.set_image_reader(self.image_reader)
+                raise NotImplementedError
+
+
+        def setup_transforms(self,
+                                                 transform_cfg: dict=None,
+                                                 train_transform=None,
+                                                 val_transform=None,
+                                                 test_transform=None,
+                                                 remove_transforms: bool=False):
+                transform_cfg = transform_cfg or {}
+                self.transform_cfg = OmegaConf.merge(self.transform_cfg, transform_cfg)
+                self.remove_transforms = remove_transforms
+                if self.remove_transforms:
+                        self.train_transform = None
+                        self.val_transform = None
+                        self.test_transform = None
+                else:
+                        print(&#34;self.transform_cfg:&#34;); pp(self.transform_cfg)
+                        self.train_transform = (
+                                get_default_transforms(mode=&#34;train&#34;, config=self.transform_cfg)
+                                if train_transform is None else train_transform
+                        )
+                        self.val_transform = (
+                                get_default_transforms(mode=&#34;val&#34;, config=self.transform_cfg)
+                                if val_transform is None else val_transform
+                        )
+                        self.test_transform = (
+                                get_default_transforms(mode=&#34;test&#34;, config=self.transform_cfg)
+                                if test_transform is None else test_transform
+                        )
+
+
+        def set_image_reader(self,
+                                                 reader: Callable) -&gt; None:
+                &#34;&#34;&#34;
+                Pass in a callable that reads image data from disk,
+                which is assigned to each of this datamodule&#39;s datasets, respectively.
+                &#34;&#34;&#34;
+                for data in [self.train_dataset, self.val_dataset, self.test_dataset]:
+                        if data is None:
+                                continue
+                        data.set_image_reader(reader)
+
 
         def train_dataloader(self):
                 return DataLoader(
@@ -355,22 +488,24 @@ class Herbarium2022DataModule(pl.LightningDataModule):
                         batch_size=self.batch_size,
                         num_workers=self.num_workers,
                         shuffle=True,
-                        pin_memory=self.pin_memory
+                        pin_memory=self.pin_memory,
+                        persistent_workers=self.persistent_workers
                 )
 
         def val_dataloader(self):
                 return DataLoader(
                         self.val_dataset,
-                        batch_size=self.batch_size,
+                        batch_size=self.batch_size,#*2,
                         num_workers=self.num_workers,
                         shuffle=False,
-                        pin_memory=self.pin_memory
+                        pin_memory=self.pin_memory,
+                        persistent_workers=self.persistent_workers
                 )
 
         def test_dataloader(self):
                 return DataLoader(
                         self.test_dataset,
-                        batch_size=self.batch_size,
+                        batch_size=self.batch_size,#*2,
                         num_workers=self.num_workers,
                         shuffle=False,
                         pin_memory=self.pin_memory
@@ -397,60 +532,462 @@ class Herbarium2022DataModule(pl.LightningDataModule):
                         return self.test_dataset
                 else:
                         return None
-                
-        def setup_transforms(self,
-                                                 transform_cfg: dict=None,
-                                                 train_transform=None,
-                                                 val_transform=None,
-                                                 test_transform=None,
-                                                 remove_transforms: bool=False):
-                transform_cfg = transform_cfg or {}
-                self.transform_cfg = OmegaConf.merge(self.transform_cfg, transform_cfg)
-                self.remove_transforms = remove_transforms
-                if self.remove_transforms:
-                        self.train_transform = None
-                        self.val_transform = None
-                        self.test_transform = None
-                else:
-                        self.train_transform = (
-                                get_default_transforms(mode=&#34;train&#34;, config=self.transform_cfg)
-                                if train_transform is None else train_transform
-                        )
-                        self.val_transform = (
-                                get_default_transforms(mode=&#34;val&#34;, config=self.transform_cfg)
-                                if val_transform is None else val_transform
-                        )
-                        self.test_transform = (
-                                get_default_transforms(mode=&#34;test&#34;, config=self.transform_cfg)
-                                if test_transform is None else test_transform
-                        )
-                
-        def set_image_reader(self,
-                                                 reader: Callable) -&gt; None:
-                &#34;&#34;&#34;
-                Pass in a callable that reads image data from disk,
-                which is assigned to each of this datamodule&#39;s datasets, respectively.
-                &#34;&#34;&#34;
-                for data in [self.train_dataset, self.val_dataset, self.test_dataset]:
-                        if data is None:
-                                pass
-                        data.set_image_reader(reader)
+
+        @property
+        def num_classes(self) -&gt; int:
+                assert self.train_dataset and self.val_dataset
+                return max(self.train_dataset.num_classes, self.val_dataset.num_classes)
+
+        def num_samples(self, 
+                                        subset: str=&#34;train&#34;):
+                return len(self.get_dataset(subset=subset))
+        
+        def num_batches(self, 
+                                        subset: str=&#34;train&#34;):
+                return len(self.get_dataloader(subset=subset))
+        
+        def get_dataset_size(self, 
+                                                subset: str=&#34;train&#34;,
+                                                verbose: bool=False):
+                num_samples = self.num_samples(subset) # len(datamodule.get_dataset(subset=subset))
+                num_batches = self.num_batches(subset) # len(datamodule.get_dataloader(subset=subset))
+                if verbose:
+                        # print(f&#34;{subset} --&gt; (num_samples: {num_samples:,}), (num_batches: {num_batches:,})&#34;)
+                        ic(subset, num_samples, num_batches, self.num_classes, self.batch_size)
+                return num_samples, num_batches
 
 
 
         def show_batch(self, win_size=(10, 10)):
                 def _to_vis(data):
-                        return tensor_to_image(torchvision.utils.make_grid(data, nrow=8))
+                        return tensor_to_image(torchvision.utils.make_grid(data, nrow=8, normalize=True))
+                transform_cfg = self.transform_cfg
 
                 # get a batch from the training set: try with `val_datlaoader` :)
-                imgs, labels = next(iter(self.train_dataloader()))
-                imgs_aug = self.transform(imgs)  # apply transforms
+                # train_transform = self.train_transform
+                bsz = self.batch_size
+
+                self.setup_transforms(remove_transforms=True)
+                imgs = [self.train_dataset[i][0] for i in range(bsz)]
+                
+                self.setup_transforms(transform_cfg=self.transform_cfg)
+                batch = next(iter(self.train_dataloader()))
+                imgs_aug, labels = batch[:2]
+                # imgs_aug = train_transform(imgs.numpy())  # apply transforms
                 # use matplotlib to visualize
                 plt.figure(figsize=win_size)
                 plt.imshow(_to_vis(imgs))
                 plt.figure(figsize=win_size)
                 plt.imshow(_to_vis(imgs_aug))
-                </code></pre>
+                
+
+
+##############################
+##############################
+
+
+class Herbarium2022Dataset(BaseDataset):
+        catalog_dir: str = os.path.abspath(&#34;./data&#34;)
+
+
+
+class Herbarium2022DataModule(BaseDataModule):
+        dataset_cls = Herbarium2022Dataset
+        transform_cfg = DEFAULT_TRANSFORM_CFG
+
+
+        def __init__(self,
+                                 catalog_dir: Optional[str]=None,
+                                 label_col=&#34;scientificName&#34;,
+                                 train_size=0.7,
+                                 shuffle: bool=True,
+                                 seed=14,
+                                 batch_size: int = 128,
+                                 num_workers: int = None,
+                                 pin_memory: bool=True,
+                                 persistent_workers: Optional[bool]=False,
+                                 train_transform=None,
+                                 val_transform=None,
+                                 test_transform=None,
+                                 transform_cfg=None,
+                                 remove_transforms: bool=False,
+                                 image_reader: Callable=&#34;default&#34;, #Image.open,
+                                 **kwargs
+        ):
+                super().__init__()
+                
+                self.catalog_dir = catalog_dir
+                
+                self.label_col = label_col
+                self.train_size = train_size
+                self.shuffle = shuffle
+                self.seed = seed
+                self.batch_size = batch_size
+                self.num_workers = num_workers if num_workers is not None else mproc.cpu_count()
+                self.pin_memory = pin_memory
+                self.persistent_workers = persistent_workers
+                self.image_reader = image_reader
+
+                self.setup_transforms(transform_cfg=transform_cfg,
+                                                          train_transform=train_transform,
+                                                          val_transform=val_transform,
+                                                          test_transform=test_transform,
+                                                          remove_transforms=remove_transforms)
+                self.cfg = self.get_cfg()
+                self.kwargs = kwargs
+
+
+
+        def setup(self, stage=None):
+                subsets=[]
+                if stage in [&#34;train&#34;, &#34;fit&#34;, &#34;all&#34;, None]:
+                        self.train_dataset = Herbarium2022Dataset(catalog_dir=self.catalog_dir,
+                                                                                                          subset=&#34;train&#34;,
+                                                                                                          label_col=self.label_col,
+                                                                                                          train_size=self.train_size,
+                                                                                                          shuffle=self.shuffle,
+                                                                                                          seed=self.seed,
+                                                                                                          transform=self.train_transform)
+                        subsets.append(&#34;train&#34;)
+                if stage in [&#34;val&#34;, &#34;fit&#34;, &#34;all&#34;, None]:
+                        self.val_dataset = Herbarium2022Dataset(catalog_dir=self.catalog_dir,
+                                                                                                        subset=&#34;val&#34;,
+                                                                                                        label_col=self.label_col,
+                                                                                                        train_size=self.train_size,
+                                                                                                        shuffle=self.shuffle,
+                                                                                                        seed=self.seed,
+                                                                                                        transform=self.val_transform)
+                        subsets.append(&#34;val&#34;)
+                if stage in [&#34;test&#34;, &#34;all&#34;, None]:
+                        self.test_dataset = Herbarium2022Dataset(catalog_dir=self.catalog_dir,
+                                                                                                         subset=&#34;test&#34;,
+                                                                                                         label_col=self.label_col,
+                                                                                                         train_size=self.train_size,
+                                                                                                         shuffle=self.shuffle,
+                                                                                                         seed=self.seed,
+                                                                                                         transform=self.test_transform)
+                        subsets.append(&#34;test&#34;)
+                        
+                for s in subsets:
+                        self.get_dataset_size(subset=s,
+                                                                  verbose=True)
+                        
+                self.set_image_reader(self.image_reader)
+
+
+
+
+
+
+
+
+
+
+
+
+#################
+##################
+
+
+
+
+
+
+
+
+
+
+
+
+
+from imutils.big import make_train_val_test_splits as leavesdb_utils
+from imutils.big.make_train_val_test_splits import main as make_train_val_test_splits
+
+                
+class ExtantLeavesDataset(BaseDataset):
+        catalog_dir: str = &#34;/media/data_cifs/projects/prj_fossils/users/jacob/data/leavesdb-v1_1/Extant_Leaves_family_10_512/splits/splits=(0.5,0.2,0.3)&#34;
+
+        def __init__(self,
+                                 catalog_dir: Optional[str]=None,
+                                 subset: str=&#34;train&#34;,
+                                 label_col: str=&#34;family&#34;,
+                                 splits: float=(0.5,0.2,0.3),
+                                 shuffle: bool=True,
+                                 seed: int=14,
+                                 image_reader: Union[Callable,str]=&#34;default&#34;, #Image.open,
+                                 preprocess: Callable=None,
+                                 transform: Callable=None):
+                &#34;&#34;&#34;
+                
+                Arguments:
+                
+                        catalog_dir: Optional[str]=None,
+                                
+                        subset: str=&#34;train&#34;,
+                        
+                        label_col: str=&#34;family&#34;,
+                                Column containing the fully decoded str labels
+                        splits: float=(0.5,0.2,0.3),
+                        shuffle: bool=True,
+                        seed: int=14,
+                        image_reader: Union[Callable,str]=&#34;default&#34;, #Image.open,
+                        preprocess: Callable=None,
+                        transform: Callable=None
+                
+                &#34;&#34;&#34;
+                # super().__init__()
+                self.x_col = &#34;path&#34;
+                self.y_col = &#34;y&#34;
+                self.id_col = &#34;catalog_number&#34;
+
+                self.catalog_dir = catalog_dir or self.catalog_dir
+
+                self.label_col = label_col
+                self.splits = splits
+                self.shuffle = shuffle
+                self.seed = seed
+                self.subset = subset
+                self.is_supervised = bool(subset != &#34;test&#34;)
+                self.set_image_reader(image_reader)
+                self.preprocess = preprocess
+                self.transform = transform
+                self.setup()
+                                
+        @classmethod
+        def from_cfg(cls,
+                                 cfg: DictConfig,
+                                 **kwargs):
+                cfg = OmegaConf.merge(cfg, kwargs)
+                return cls(**cfg)
+
+
+        def get_cfg(self,
+                                 cfg: DictConfig=None,
+                                 **kwargs):
+                cfg=cfg or {}
+                default_cfg = DictConfig(dict(                  
+                        catalog_dir=self.catalog_dir or None,
+                        subset=self.subset or &#34;train&#34;,
+                        label_col=self.label_col or &#34;family&#34;,
+                        splits=self.splits or (0.5,0.2,0.3),
+                        shuffle=self.shuffle,
+                        seed=self.seed or 14))
+                
+                cfg = OmegaConf.merge(default_cfg, cfg, kwargs)
+                return cfg
+
+
+        @property
+        def splits_dir(self) -&gt; Path:
+                return leavesdb_utils.find_data_splits_dir(source_dir=self.catalog_dir,
+                                                                                                   splits=self.splits)
+        
+        @property
+        def split_file_path(self) -&gt; Path:
+                &#34;&#34;&#34;
+                Should return the path of this subset&#39;s on-disk csv catalog file. I emphasize should.
+                &#34;&#34;&#34;
+                return self.splits_dir / f&#34;{self.subset}_metadata.csv&#34;
+        
+        
+        @property
+        def already_built(self) -&gt; bool:
+                return leavesdb_utils.check_already_built(self.splits_dir)
+
+        
+        def prepare_metadata(self):
+
+                if not self.already_built:
+                        
+                        data = make_train_val_test_splits(source_dir=self.catalog_dir,
+                                                                                 splits_dir=self.splits_dir,
+                                                                                 label_col=self.label_col,
+                                                                                 splits=args.splits,
+                                                                                 seed=self.seed)
+                        return data
+
+
+        def get_data_subset(self,
+                                                subset: str=&#34;train&#34;) -&gt; Tuple[&#34;LabelEncoder&#34;, pd.DataFrame]:
+                &#34;&#34;&#34;
+                Read the selected data subset into a pd.DataFrame
+                
+                Returns a Tuple containing an sklearn LabelEncoder and a pd.DataFrame of the subset&#39;s data catalog
+                &#34;&#34;&#34;
+                data = leavesdb_utils.read_encoded_splits(source_dir=self.splits_dir,
+                                                                                                  include=[subset])
+                encoder = data[&#34;label_encoder&#34;]
+                data = data[&#34;subsets&#34;][subset]
+                
+                return encoder, data
+
+        
+        def setup(self):
+                &#34;&#34;&#34;
+                Assigns the following instance attributes:
+                
+                        ::self.label_encoder
+                        ::self.df
+                        ::self.paths
+                        ::self.targets
+                        ::self.num_classes
+                &#34;&#34;&#34;
+                data = self.prepare_metadata()
+                if data is None:
+                        encoder, data = self.get_data_subset(subset=self.subset)
+                else:
+                        encoder = data[&#34;label_encoder&#34;]
+                        data = data[&#34;subsets&#34;][self.subset]
+
+                if isinstance(encoder, preprocessing.LabelEncoder):
+                        &#34;&#34;&#34;
+                        Auto wraps any sklearn LabelEncoder in our custom class.
+                        (Added 2022-03-25 - untested)
+                        &#34;&#34;&#34;
+                        encoder = label_utils.LabelEncoder.from_sklearn(encoder)
+
+                setattr(data, &#34;label_encoder&#34;, encoder)
+                self.label_encoder = encoder
+                self.df = data
+                
+                if self.shuffle:
+                        self.df = self.df.sample(frac=1, random_state=self.seed).reset_index(drop=False)
+
+                if self.id_col in self.df.columns:
+                        self.image_ids = self.df[self.id_col]
+                self.paths = self.df[self.x_col]
+
+                if self.is_supervised:
+                        # self.imgs = 
+                        self.targets = self.df[self.y_col]
+                        self.num_classes = len(set(self.df[self.y_col]))
+                else:
+                        self.targets = None
+                        self.num_classes = -1 # Or 0?
+
+
+class ExtantLeavesDataModule(BaseDataModule):
+        dataset_cls = ExtantLeavesDataset       
+        transform_cfg = DEFAULT_TRANSFORM_CFG
+
+
+        def __init__(self,
+                                 catalog_dir: Optional[str]=None,
+                                 label_col=&#34;family&#34;,
+                                 splits: Tuple[float]=(0.5,0.2,0.3),
+                                 shuffle: bool=True,
+                                 seed=14,
+                                 batch_size: int = 128,
+                                 num_workers: int = None,
+                                 pin_memory: bool=True,
+                                 persistent_workers: Optional[bool]=False,
+                                 train_transform=None,
+                                 val_transform=None,
+                                 test_transform=None,
+                                 transform_cfg=None,
+                                 remove_transforms: bool=False,
+                                 image_reader: Callable=&#34;default&#34;, #Image.open,
+                                 **kwargs
+        ):
+                super().__init__()
+                
+                self.catalog_dir = catalog_dir
+                
+                self.label_col = label_col
+                self.splits = splits
+                self.shuffle = shuffle
+                self.seed = seed
+                self.batch_size = batch_size
+                self.num_workers = num_workers if num_workers is not None else mproc.cpu_count()
+                self.pin_memory = pin_memory
+                self.persistent_workers = persistent_workers
+                self.image_reader = image_reader
+
+                self.setup_transforms(transform_cfg=transform_cfg,
+                                                          train_transform=train_transform,
+                                                          val_transform=val_transform,
+                                                          test_transform=test_transform,
+                                                          remove_transforms=remove_transforms)
+                self.cfg = self.get_cfg()
+                self.kwargs = kwargs
+                
+
+        @classmethod
+        def from_cfg(cls,
+                                 cfg: DictConfig,
+                                 **kwargs):
+                cfg = OmegaConf.merge(cfg, kwargs)
+                return cls(**cfg)
+
+        def get_cfg(self,
+                                 cfg: DictConfig=None,
+                                 **kwargs):
+                cfg=cfg or {}
+                default_cfg = DictConfig(dict(
+                        catalog_dir=self.catalog_dir or None,
+                        label_col=self.label_col or &#34;family&#34;,
+                        splits=self.splits or (0.5,0.2,0.3),
+                        shuffle=self.shuffle,
+                        seed=self.seed or 14,
+                        batch_size = self.batch_size or 128,
+                        num_workers = self.num_workers or None,
+                        pin_memory=self.pin_memory,
+                        transform_cfg=self.transform_cfg,
+                        remove_transforms=self.remove_transforms,
+                ))
+                
+                cfg = OmegaConf.merge(default_cfg, cfg, kwargs)
+                return cfg
+
+
+        def setup(self, stage=None):
+                subsets=[]
+                if stage in [&#34;train&#34;, &#34;fit&#34;, &#34;all&#34;, None]:
+                        self.train_dataset = self.dataset_cls(catalog_dir=self.catalog_dir,
+                                                                                                          subset=&#34;train&#34;,
+                                                                                                          label_col=self.label_col,
+                                                                                                          splits=self.splits,
+                                                                                                          shuffle=self.shuffle,
+                                                                                                          seed=self.seed,
+                                                                                                          transform=self.train_transform)
+                        subsets.append(&#34;train&#34;)
+                if stage in [&#34;val&#34;, &#34;fit&#34;, &#34;all&#34;, None]:
+                        self.val_dataset = self.dataset_cls(catalog_dir=self.catalog_dir,
+                                                                                                        subset=&#34;val&#34;,
+                                                                                                        label_col=self.label_col,
+                                                                                                        splits=self.splits,
+                                                                                                        shuffle=self.shuffle,
+                                                                                                        seed=self.seed,
+                                                                                                        transform=self.val_transform)
+                        subsets.append(&#34;val&#34;)
+                if stage in [&#34;test&#34;, &#34;all&#34;, None]:
+                        self.test_dataset = self.dataset_cls(catalog_dir=self.catalog_dir,
+                                                                                                         subset=&#34;test&#34;,
+                                                                                                         label_col=self.label_col,
+                                                                                                         splits=self.splits,
+                                                                                                         shuffle=self.shuffle,
+                                                                                                         seed=self.seed,
+                                                                                                         transform=self.test_transform)
+                        subsets.append(&#34;test&#34;)
+                        
+                for s in subsets:
+                        self.get_dataset_size(subset=s,
+                                                                  verbose=True)
+                        
+                self.set_image_reader(self.image_reader)
+
+
+
+
+
+
+# class AutoDataModule:
+#       &#34;&#34;&#34;
+        
+        
+#       &#34;&#34;&#34;
+        
+#       def __init__(self)</code></pre>
 </details>
 </section>
 <section>
@@ -461,7 +998,7 @@ class Herbarium2022DataModule(pl.LightningDataModule):
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
 <dt id="imutils.ml.data.datamodule.get_default_transforms"><code class="name flex">
-<span>def <span class="ident">get_default_transforms</span></span>(<span>mode: str = 'train', config={'preprocess': {'train': {'resize': 512}, 'val': {'resize': 256}}, 'batch_transform': {'train': {'random_resize_crop': 224}, 'val': {'center_crop': 224}}, 'normalize': ([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])}) ‑> Tuple[Callable]</span>
+<span>def <span class="ident">get_default_transforms</span></span>(<span>mode: str = 'train', compose: bool = True, config={'preprocess': {'train': {'resize': 512}, 'val': {'resize': 256}, 'test': {'resize': 256}}, 'batch_transform': {'train': {'random_resize_crop': 224}, 'val': {'center_crop': 224}, 'test': {'center_crop': 224}}, 'normalize': ([0.485, 0.456, 0.406], [0.229, 0.224, 0.225]), 'apply_color_transform': False, 'random_flips': True, 'skip_augmentations': False}) ‑> Tuple[Callable]</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -471,33 +1008,64 @@ class Herbarium2022DataModule(pl.LightningDataModule):
 </summary>
 <pre><code class="python">def get_default_transforms(
                 mode: str=&#34;train&#34;,
+                compose: bool=True,
                 config = dict(
                         preprocess={
                                 &#39;train&#39;: {&#39;resize&#39;: 512},
-                                &#39;val&#39;: {&#39;resize&#39;: 256}},
+                                &#39;val&#39;: {&#39;resize&#39;: 256},
+                                &#39;test&#39;: {&#39;resize&#39;: 256}},
 
                         batch_transform={
                                 &#39;train&#39;: {&#39;random_resize_crop&#39;: 224}, 
-                                &#39;val&#39;: {&#39;center_crop&#39;: 224}},
+                                &#39;val&#39;: {&#39;center_crop&#39;: 224},
+                                &#39;test&#39;: {&#39;center_crop&#39;: 224}},
                         normalize=(
                                 [0.485, 0.456, 0.406],
                                 [0.229, 0.224, 0.225]
-                        )
+                        ),
+                        apply_color_transform=False,
+                        random_flips=True,
+                        skip_augmentations=False
                 )
         ) -&gt; Tuple[Callable]:
         
         config = OmegaConf.merge(DEFAULT_CFG, config)
         
-        preprocess_transforms = Preprocess(mode=mode, 
-                                                                           resize=config[&#34;preprocess&#34;][mode][&#34;resize&#34;])
+        if config[&#34;preprocess&#34;][mode].get(&#34;resize&#34;, None):
+                preprocess_transforms = Preprocess(mode=mode, 
+                                                                                   resize=config[&#34;preprocess&#34;][mode][&#34;resize&#34;])
+        else:
+                preprocess_transforms = T.ToTensor()
+        
+        if mode == &#34;train&#34;:
+                random_resize_crop = config[&#34;batch_transform&#34;][&#34;train&#34;][&#34;random_resize_crop&#34;]
+                center_crop = None
+        else:
+                random_resize_crop = None
+                center_crop = config[&#34;batch_transform&#34;][mode][&#34;center_crop&#34;]
+        apply_color_jitter = config.get(&#34;apply_color_transform&#34;, False)
+        random_flips = config.get(&#34;random_flips&#34;, True)
+        skip_augmentations = config.get(&#34;skip_augmentations&#34;, False)
+        normalize = config.get(&#34;normalize&#34;, 
+                                                   (
+                [0,0,0],
+                [1,1,1]
+        )
+                                                  )
         
         batch_transforms = BatchTransform(mode=mode,
-                                                                           random_resize_crop=None, #config[&#34;batch_transform&#34;][&#34;val&#34;][&#34;random_resize_crop&#34;],
-                                                                           center_crop=None, #config[&#34;batch_transform&#34;][&#34;val&#34;][&#34;center_crop&#34;],
-                                                                           apply_color_jitter = False,
-                                                                           normalize = normalize)
+                                                                           random_resize_crop=random_resize_crop,
+                                                                           center_crop=center_crop,
+                                                                           apply_color_jitter = apply_color_jitter,
+                                                                           random_flips = random_flips,
+                                                                           normalize = normalize,
+                                                                           skip_augmentations=skip_augmentations)
         
-        return preprocess_transforms, batch_transforms</code></pre>
+        transforms = (preprocess_transforms, 
+                                  batch_transforms)
+        if compose:
+                transforms = T.Compose(transforms)
+        return transforms</code></pre>
 </details>
 </dd>
 </dl>
@@ -505,9 +1073,9 @@ class Herbarium2022DataModule(pl.LightningDataModule):
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt id="imutils.ml.data.datamodule.Herbarium2022DataModule"><code class="flex name class">
-<span>class <span class="ident">Herbarium2022DataModule</span></span>
-<span>(</span><span>catalog_dir: Optional[str] = None, label_col='scientificName', train_size=0.7, shuffle: bool = True, seed=14, batch_size: int = 128, num_workers: int = None, pin_memory: bool = True, train_transform=None, val_transform=None, test_transform=None, transform_cfg=None, remove_transforms: bool = False, image_reader: Callable = &lt;function read_jpeg&gt;)</span>
+<dt id="imutils.ml.data.datamodule.ExtantLeavesDataModule"><code class="flex name class">
+<span>class <span class="ident">ExtantLeavesDataModule</span></span>
+<span>(</span><span>catalog_dir: Optional[str] = None, label_col='family', splits: Tuple[float] = (0.5, 0.2, 0.3), shuffle: bool = True, seed=14, batch_size: int = 128, num_workers: int = None, pin_memory: bool = True, persistent_workers: Optional[bool] = False, train_transform=None, val_transform=None, test_transform=None, transform_cfg=None, remove_transforms: bool = False, image_reader: Callable = 'default', **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>A DataModule standardizes the training, val, test splits, data preparation and transforms. The main
@@ -550,45 +1118,41 @@ advantage is consistent data splits, data preparation and transforms across mode
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class Herbarium2022DataModule(pl.LightningDataModule):
-        dataset_cls = Herbarium2022Dataset
-        train_dataset = None
-        val_dataset = None
-        test_dataset = None
-        
-        train_transform = None
-        val_transform = None
-        test_transform = None
-        
+<pre><code class="python">class ExtantLeavesDataModule(BaseDataModule):
+        dataset_cls = ExtantLeavesDataset       
         transform_cfg = DEFAULT_TRANSFORM_CFG
-        
+
+
         def __init__(self,
                                  catalog_dir: Optional[str]=None,
-                                 label_col=&#34;scientificName&#34;,
-                                 train_size=0.7,
+                                 label_col=&#34;family&#34;,
+                                 splits: Tuple[float]=(0.5,0.2,0.3),
                                  shuffle: bool=True,
                                  seed=14,
                                  batch_size: int = 128,
                                  num_workers: int = None,
                                  pin_memory: bool=True,
+                                 persistent_workers: Optional[bool]=False,
                                  train_transform=None,
                                  val_transform=None,
                                  test_transform=None,
                                  transform_cfg=None,
                                  remove_transforms: bool=False,
-                                 image_reader: Callable=default_reader, #Image.open,
+                                 image_reader: Callable=&#34;default&#34;, #Image.open,
+                                 **kwargs
         ):
                 super().__init__()
                 
                 self.catalog_dir = catalog_dir
                 
                 self.label_col = label_col
-                self.train_size = train_size
+                self.splits = splits
                 self.shuffle = shuffle
                 self.seed = seed
                 self.batch_size = batch_size
                 self.num_workers = num_workers if num_workers is not None else mproc.cpu_count()
                 self.pin_memory = pin_memory
+                self.persistent_workers = persistent_workers
                 self.image_reader = image_reader
 
                 self.setup_transforms(transform_cfg=transform_cfg,
@@ -597,6 +1161,7 @@ advantage is consistent data splits, data preparation and transforms across mode
                                                           test_transform=test_transform,
                                                           remove_transforms=remove_transforms)
                 self.cfg = self.get_cfg()
+                self.kwargs = kwargs
                 
 
         @classmethod
@@ -607,13 +1172,13 @@ advantage is consistent data splits, data preparation and transforms across mode
                 return cls(**cfg)
 
         def get_cfg(self,
-                                 cfg: DictConfig,
+                                 cfg: DictConfig=None,
                                  **kwargs):
-                
+                cfg=cfg or {}
                 default_cfg = DictConfig(dict(
                         catalog_dir=self.catalog_dir or None,
-                        label_col=self.label_col or &#34;scientificName&#34;,
-                        train_size=self.train_size or 0.7,
+                        label_col=self.label_col or &#34;family&#34;,
+                        splits=self.splits or (0.5,0.2,0.3),
                         shuffle=self.shuffle,
                         seed=self.seed or 14,
                         batch_size = self.batch_size or 128,
@@ -626,19 +1191,703 @@ advantage is consistent data splits, data preparation and transforms across mode
                 cfg = OmegaConf.merge(default_cfg, cfg, kwargs)
                 return cfg
 
-        
-        
-
-        def prepare_data(self):
-                pass
-
-        @property
-        def num_classes(self) -&gt; int:
-                assert self.train_dataset and self.valid_dataset
-                return max(self.train_dataset.num_classes, self.valid_dataset.num_classes)
 
         def setup(self, stage=None):
-                if stage in [&#34;train&#34;, &#34;all&#34;, None]:
+                subsets=[]
+                if stage in [&#34;train&#34;, &#34;fit&#34;, &#34;all&#34;, None]:
+                        self.train_dataset = self.dataset_cls(catalog_dir=self.catalog_dir,
+                                                                                                          subset=&#34;train&#34;,
+                                                                                                          label_col=self.label_col,
+                                                                                                          splits=self.splits,
+                                                                                                          shuffle=self.shuffle,
+                                                                                                          seed=self.seed,
+                                                                                                          transform=self.train_transform)
+                        subsets.append(&#34;train&#34;)
+                if stage in [&#34;val&#34;, &#34;fit&#34;, &#34;all&#34;, None]:
+                        self.val_dataset = self.dataset_cls(catalog_dir=self.catalog_dir,
+                                                                                                        subset=&#34;val&#34;,
+                                                                                                        label_col=self.label_col,
+                                                                                                        splits=self.splits,
+                                                                                                        shuffle=self.shuffle,
+                                                                                                        seed=self.seed,
+                                                                                                        transform=self.val_transform)
+                        subsets.append(&#34;val&#34;)
+                if stage in [&#34;test&#34;, &#34;all&#34;, None]:
+                        self.test_dataset = self.dataset_cls(catalog_dir=self.catalog_dir,
+                                                                                                         subset=&#34;test&#34;,
+                                                                                                         label_col=self.label_col,
+                                                                                                         splits=self.splits,
+                                                                                                         shuffle=self.shuffle,
+                                                                                                         seed=self.seed,
+                                                                                                         transform=self.test_transform)
+                        subsets.append(&#34;test&#34;)
+                        
+                for s in subsets:
+                        self.get_dataset_size(subset=s,
+                                                                  verbose=True)
+                        
+                self.set_image_reader(self.image_reader)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>imutils.ml.data.datamodule.BaseDataModule</li>
+<li>pytorch_lightning.core.datamodule.LightningDataModule</li>
+<li>pytorch_lightning.core.hooks.CheckpointHooks</li>
+<li>pytorch_lightning.core.hooks.DataHooks</li>
+<li>pytorch_lightning.core.mixins.hparams_mixin.HyperparametersMixin</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="imutils.ml.data.datamodule.ExtantLeavesDataModule.dataset_cls"><code class="name">var <span class="ident">dataset_cls</span></code></dt>
+<dd>
+<div class="desc"><p>An abstract class representing a :class:<code>Dataset</code>.</p>
+<p>All datasets that represent a map from keys to data samples should subclass
+it. All subclasses should overwrite :meth:<code>__getitem__</code>, supporting fetching a
+data sample for a given key. Subclasses could also optionally overwrite
+:meth:<code>__len__</code>, which is expected to return the size of the dataset by many
+:class:<code>~torch.utils.data.Sampler</code> implementations and the default options
+of :class:<code>~torch.utils.data.DataLoader</code>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>:class:<code>~torch.utils.data.DataLoader</code> by default constructs a index
+sampler that yields integral indices.
+To make it work with a map-style
+dataset with non-integral indices/keys, a custom sampler must be provided.</p>
+</div></div>
+</dd>
+<dt id="imutils.ml.data.datamodule.ExtantLeavesDataModule.name"><code class="name">var <span class="ident">name</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="imutils.ml.data.datamodule.ExtantLeavesDataModule.transform_cfg"><code class="name">var <span class="ident">transform_cfg</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Static methods</h3>
+<dl>
+<dt id="imutils.ml.data.datamodule.ExtantLeavesDataModule.from_cfg"><code class="name flex">
+<span>def <span class="ident">from_cfg</span></span>(<span>cfg: omegaconf.dictconfig.DictConfig, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@classmethod
+def from_cfg(cls,
+                         cfg: DictConfig,
+                         **kwargs):
+        cfg = OmegaConf.merge(cfg, kwargs)
+        return cls(**cfg)</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="imutils.ml.data.datamodule.ExtantLeavesDataModule.get_cfg"><code class="name flex">
+<span>def <span class="ident">get_cfg</span></span>(<span>self, cfg: omegaconf.dictconfig.DictConfig = None, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_cfg(self,
+                         cfg: DictConfig=None,
+                         **kwargs):
+        cfg=cfg or {}
+        default_cfg = DictConfig(dict(
+                catalog_dir=self.catalog_dir or None,
+                label_col=self.label_col or &#34;family&#34;,
+                splits=self.splits or (0.5,0.2,0.3),
+                shuffle=self.shuffle,
+                seed=self.seed or 14,
+                batch_size = self.batch_size or 128,
+                num_workers = self.num_workers or None,
+                pin_memory=self.pin_memory,
+                transform_cfg=self.transform_cfg,
+                remove_transforms=self.remove_transforms,
+        ))
+        
+        cfg = OmegaConf.merge(default_cfg, cfg, kwargs)
+        return cfg</code></pre>
+</details>
+</dd>
+<dt id="imutils.ml.data.datamodule.ExtantLeavesDataModule.setup"><code class="name flex">
+<span>def <span class="ident">setup</span></span>(<span>self, stage=None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Called at the beginning of fit (train + validate), validate, test, and predict. This is a good hook when
+you need to build models dynamically or adjust something about them. This hook is called on every process
+when using DDP.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>stage</code></strong></dt>
+<dd>either <code>'fit'</code>, <code>'validate'</code>, <code>'test'</code>, or <code>'predict'</code></dd>
+</dl>
+<p>Example::</p>
+<pre><code>class LitModel(...):
+    def __init__(self):
+        self.l1 = None
+
+    def prepare_data(self):
+        download_data()
+        tokenize()
+
+        # don't do this
+        self.something = else
+
+    def setup(stage):
+        data = Load_data(...)
+        self.l1 = nn.Linear(28, data.num_classes)
+</code></pre></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def setup(self, stage=None):
+        subsets=[]
+        if stage in [&#34;train&#34;, &#34;fit&#34;, &#34;all&#34;, None]:
+                self.train_dataset = self.dataset_cls(catalog_dir=self.catalog_dir,
+                                                                                                  subset=&#34;train&#34;,
+                                                                                                  label_col=self.label_col,
+                                                                                                  splits=self.splits,
+                                                                                                  shuffle=self.shuffle,
+                                                                                                  seed=self.seed,
+                                                                                                  transform=self.train_transform)
+                subsets.append(&#34;train&#34;)
+        if stage in [&#34;val&#34;, &#34;fit&#34;, &#34;all&#34;, None]:
+                self.val_dataset = self.dataset_cls(catalog_dir=self.catalog_dir,
+                                                                                                subset=&#34;val&#34;,
+                                                                                                label_col=self.label_col,
+                                                                                                splits=self.splits,
+                                                                                                shuffle=self.shuffle,
+                                                                                                seed=self.seed,
+                                                                                                transform=self.val_transform)
+                subsets.append(&#34;val&#34;)
+        if stage in [&#34;test&#34;, &#34;all&#34;, None]:
+                self.test_dataset = self.dataset_cls(catalog_dir=self.catalog_dir,
+                                                                                                 subset=&#34;test&#34;,
+                                                                                                 label_col=self.label_col,
+                                                                                                 splits=self.splits,
+                                                                                                 shuffle=self.shuffle,
+                                                                                                 seed=self.seed,
+                                                                                                 transform=self.test_transform)
+                subsets.append(&#34;test&#34;)
+                
+        for s in subsets:
+                self.get_dataset_size(subset=s,
+                                                          verbose=True)
+                
+        self.set_image_reader(self.image_reader)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="imutils.ml.data.datamodule.ExtantLeavesDataset"><code class="flex name class">
+<span>class <span class="ident">ExtantLeavesDataset</span></span>
+<span>(</span><span>catalog_dir: Optional[str] = None, subset: str = 'train', label_col: str = 'family', splits: float = (0.5, 0.2, 0.3), shuffle: bool = True, seed: int = 14, image_reader: Union[Callable, str] = 'default', preprocess: Callable = None, transform: Callable = None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>An abstract class representing a :class:<code>Dataset</code>.</p>
+<p>All datasets that represent a map from keys to data samples should subclass
+it. All subclasses should overwrite :meth:<code>__getitem__</code>, supporting fetching a
+data sample for a given key. Subclasses could also optionally overwrite
+:meth:<code>__len__</code>, which is expected to return the size of the dataset by many
+:class:<code>~torch.utils.data.Sampler</code> implementations and the default options
+of :class:<code>~torch.utils.data.DataLoader</code>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>:class:<code>~torch.utils.data.DataLoader</code> by default constructs a index
+sampler that yields integral indices.
+To make it work with a map-style
+dataset with non-integral indices/keys, a custom sampler must be provided.</p>
+</div>
+<h2 id="arguments">Arguments</h2>
+<p>catalog_dir: Optional[str]=None,</p>
+<p>subset: str="train",</p>
+<p>label_col: str="family",
+Column containing the fully decoded str labels
+splits: float=(0.5,0.2,0.3),
+shuffle: bool=True,
+seed: int=14,
+image_reader: Union[Callable,str]="default", #Image.open,
+preprocess: Callable=None,
+transform: Callable=None</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class ExtantLeavesDataset(BaseDataset):
+        catalog_dir: str = &#34;/media/data_cifs/projects/prj_fossils/users/jacob/data/leavesdb-v1_1/Extant_Leaves_family_10_512/splits/splits=(0.5,0.2,0.3)&#34;
+
+        def __init__(self,
+                                 catalog_dir: Optional[str]=None,
+                                 subset: str=&#34;train&#34;,
+                                 label_col: str=&#34;family&#34;,
+                                 splits: float=(0.5,0.2,0.3),
+                                 shuffle: bool=True,
+                                 seed: int=14,
+                                 image_reader: Union[Callable,str]=&#34;default&#34;, #Image.open,
+                                 preprocess: Callable=None,
+                                 transform: Callable=None):
+                &#34;&#34;&#34;
+                
+                Arguments:
+                
+                        catalog_dir: Optional[str]=None,
+                                
+                        subset: str=&#34;train&#34;,
+                        
+                        label_col: str=&#34;family&#34;,
+                                Column containing the fully decoded str labels
+                        splits: float=(0.5,0.2,0.3),
+                        shuffle: bool=True,
+                        seed: int=14,
+                        image_reader: Union[Callable,str]=&#34;default&#34;, #Image.open,
+                        preprocess: Callable=None,
+                        transform: Callable=None
+                
+                &#34;&#34;&#34;
+                # super().__init__()
+                self.x_col = &#34;path&#34;
+                self.y_col = &#34;y&#34;
+                self.id_col = &#34;catalog_number&#34;
+
+                self.catalog_dir = catalog_dir or self.catalog_dir
+
+                self.label_col = label_col
+                self.splits = splits
+                self.shuffle = shuffle
+                self.seed = seed
+                self.subset = subset
+                self.is_supervised = bool(subset != &#34;test&#34;)
+                self.set_image_reader(image_reader)
+                self.preprocess = preprocess
+                self.transform = transform
+                self.setup()
+                                
+        @classmethod
+        def from_cfg(cls,
+                                 cfg: DictConfig,
+                                 **kwargs):
+                cfg = OmegaConf.merge(cfg, kwargs)
+                return cls(**cfg)
+
+
+        def get_cfg(self,
+                                 cfg: DictConfig=None,
+                                 **kwargs):
+                cfg=cfg or {}
+                default_cfg = DictConfig(dict(                  
+                        catalog_dir=self.catalog_dir or None,
+                        subset=self.subset or &#34;train&#34;,
+                        label_col=self.label_col or &#34;family&#34;,
+                        splits=self.splits or (0.5,0.2,0.3),
+                        shuffle=self.shuffle,
+                        seed=self.seed or 14))
+                
+                cfg = OmegaConf.merge(default_cfg, cfg, kwargs)
+                return cfg
+
+
+        @property
+        def splits_dir(self) -&gt; Path:
+                return leavesdb_utils.find_data_splits_dir(source_dir=self.catalog_dir,
+                                                                                                   splits=self.splits)
+        
+        @property
+        def split_file_path(self) -&gt; Path:
+                &#34;&#34;&#34;
+                Should return the path of this subset&#39;s on-disk csv catalog file. I emphasize should.
+                &#34;&#34;&#34;
+                return self.splits_dir / f&#34;{self.subset}_metadata.csv&#34;
+        
+        
+        @property
+        def already_built(self) -&gt; bool:
+                return leavesdb_utils.check_already_built(self.splits_dir)
+
+        
+        def prepare_metadata(self):
+
+                if not self.already_built:
+                        
+                        data = make_train_val_test_splits(source_dir=self.catalog_dir,
+                                                                                 splits_dir=self.splits_dir,
+                                                                                 label_col=self.label_col,
+                                                                                 splits=args.splits,
+                                                                                 seed=self.seed)
+                        return data
+
+
+        def get_data_subset(self,
+                                                subset: str=&#34;train&#34;) -&gt; Tuple[&#34;LabelEncoder&#34;, pd.DataFrame]:
+                &#34;&#34;&#34;
+                Read the selected data subset into a pd.DataFrame
+                
+                Returns a Tuple containing an sklearn LabelEncoder and a pd.DataFrame of the subset&#39;s data catalog
+                &#34;&#34;&#34;
+                data = leavesdb_utils.read_encoded_splits(source_dir=self.splits_dir,
+                                                                                                  include=[subset])
+                encoder = data[&#34;label_encoder&#34;]
+                data = data[&#34;subsets&#34;][subset]
+                
+                return encoder, data
+
+        
+        def setup(self):
+                &#34;&#34;&#34;
+                Assigns the following instance attributes:
+                
+                        ::self.label_encoder
+                        ::self.df
+                        ::self.paths
+                        ::self.targets
+                        ::self.num_classes
+                &#34;&#34;&#34;
+                data = self.prepare_metadata()
+                if data is None:
+                        encoder, data = self.get_data_subset(subset=self.subset)
+                else:
+                        encoder = data[&#34;label_encoder&#34;]
+                        data = data[&#34;subsets&#34;][self.subset]
+
+                if isinstance(encoder, preprocessing.LabelEncoder):
+                        &#34;&#34;&#34;
+                        Auto wraps any sklearn LabelEncoder in our custom class.
+                        (Added 2022-03-25 - untested)
+                        &#34;&#34;&#34;
+                        encoder = label_utils.LabelEncoder.from_sklearn(encoder)
+
+                setattr(data, &#34;label_encoder&#34;, encoder)
+                self.label_encoder = encoder
+                self.df = data
+                
+                if self.shuffle:
+                        self.df = self.df.sample(frac=1, random_state=self.seed).reset_index(drop=False)
+
+                if self.id_col in self.df.columns:
+                        self.image_ids = self.df[self.id_col]
+                self.paths = self.df[self.x_col]
+
+                if self.is_supervised:
+                        # self.imgs = 
+                        self.targets = self.df[self.y_col]
+                        self.num_classes = len(set(self.df[self.y_col]))
+                else:
+                        self.targets = None
+                        self.num_classes = -1 # Or 0?</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>imutils.ml.data.datamodule.BaseDataset</li>
+<li>imutils.ml.data.datamodule.AbstractCatalogDataset</li>
+<li>torch.utils.data.dataset.Dataset</li>
+<li>typing.Generic</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="imutils.ml.data.datamodule.ExtantLeavesDataset.catalog_dir"><code class="name">var <span class="ident">catalog_dir</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Static methods</h3>
+<dl>
+<dt id="imutils.ml.data.datamodule.ExtantLeavesDataset.from_cfg"><code class="name flex">
+<span>def <span class="ident">from_cfg</span></span>(<span>cfg: omegaconf.dictconfig.DictConfig, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@classmethod
+def from_cfg(cls,
+                         cfg: DictConfig,
+                         **kwargs):
+        cfg = OmegaConf.merge(cfg, kwargs)
+        return cls(**cfg)</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Instance variables</h3>
+<dl>
+<dt id="imutils.ml.data.datamodule.ExtantLeavesDataset.already_built"><code class="name">var <span class="ident">already_built</span> : bool</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def already_built(self) -&gt; bool:
+        return leavesdb_utils.check_already_built(self.splits_dir)</code></pre>
+</details>
+</dd>
+<dt id="imutils.ml.data.datamodule.ExtantLeavesDataset.split_file_path"><code class="name">var <span class="ident">split_file_path</span> : pathlib.Path</code></dt>
+<dd>
+<div class="desc"><p>Should return the path of this subset's on-disk csv catalog file. I emphasize should.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def split_file_path(self) -&gt; Path:
+        &#34;&#34;&#34;
+        Should return the path of this subset&#39;s on-disk csv catalog file. I emphasize should.
+        &#34;&#34;&#34;
+        return self.splits_dir / f&#34;{self.subset}_metadata.csv&#34;</code></pre>
+</details>
+</dd>
+<dt id="imutils.ml.data.datamodule.ExtantLeavesDataset.splits_dir"><code class="name">var <span class="ident">splits_dir</span> : pathlib.Path</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def splits_dir(self) -&gt; Path:
+        return leavesdb_utils.find_data_splits_dir(source_dir=self.catalog_dir,
+                                                                                           splits=self.splits)</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="imutils.ml.data.datamodule.ExtantLeavesDataset.get_cfg"><code class="name flex">
+<span>def <span class="ident">get_cfg</span></span>(<span>self, cfg: omegaconf.dictconfig.DictConfig = None, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_cfg(self,
+                         cfg: DictConfig=None,
+                         **kwargs):
+        cfg=cfg or {}
+        default_cfg = DictConfig(dict(                  
+                catalog_dir=self.catalog_dir or None,
+                subset=self.subset or &#34;train&#34;,
+                label_col=self.label_col or &#34;family&#34;,
+                splits=self.splits or (0.5,0.2,0.3),
+                shuffle=self.shuffle,
+                seed=self.seed or 14))
+        
+        cfg = OmegaConf.merge(default_cfg, cfg, kwargs)
+        return cfg</code></pre>
+</details>
+</dd>
+<dt id="imutils.ml.data.datamodule.ExtantLeavesDataset.get_data_subset"><code class="name flex">
+<span>def <span class="ident">get_data_subset</span></span>(<span>self, subset: str = 'train') ‑> Tuple[LabelEncoder, pandas.core.frame.DataFrame]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Read the selected data subset into a pd.DataFrame</p>
+<p>Returns a Tuple containing an sklearn LabelEncoder and a pd.DataFrame of the subset's data catalog</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_data_subset(self,
+                                        subset: str=&#34;train&#34;) -&gt; Tuple[&#34;LabelEncoder&#34;, pd.DataFrame]:
+        &#34;&#34;&#34;
+        Read the selected data subset into a pd.DataFrame
+        
+        Returns a Tuple containing an sklearn LabelEncoder and a pd.DataFrame of the subset&#39;s data catalog
+        &#34;&#34;&#34;
+        data = leavesdb_utils.read_encoded_splits(source_dir=self.splits_dir,
+                                                                                          include=[subset])
+        encoder = data[&#34;label_encoder&#34;]
+        data = data[&#34;subsets&#34;][subset]
+        
+        return encoder, data</code></pre>
+</details>
+</dd>
+<dt id="imutils.ml.data.datamodule.ExtantLeavesDataset.prepare_metadata"><code class="name flex">
+<span>def <span class="ident">prepare_metadata</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def prepare_metadata(self):
+
+        if not self.already_built:
+                
+                data = make_train_val_test_splits(source_dir=self.catalog_dir,
+                                                                         splits_dir=self.splits_dir,
+                                                                         label_col=self.label_col,
+                                                                         splits=args.splits,
+                                                                         seed=self.seed)
+                return data</code></pre>
+</details>
+</dd>
+<dt id="imutils.ml.data.datamodule.ExtantLeavesDataset.setup"><code class="name flex">
+<span>def <span class="ident">setup</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Assigns the following instance attributes:</p>
+<pre><code>    ::self.label_encoder
+    ::self.df
+    ::self.paths
+    ::self.targets
+    ::self.num_classes
+</code></pre></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def setup(self):
+        &#34;&#34;&#34;
+        Assigns the following instance attributes:
+        
+                ::self.label_encoder
+                ::self.df
+                ::self.paths
+                ::self.targets
+                ::self.num_classes
+        &#34;&#34;&#34;
+        data = self.prepare_metadata()
+        if data is None:
+                encoder, data = self.get_data_subset(subset=self.subset)
+        else:
+                encoder = data[&#34;label_encoder&#34;]
+                data = data[&#34;subsets&#34;][self.subset]
+
+        if isinstance(encoder, preprocessing.LabelEncoder):
+                &#34;&#34;&#34;
+                Auto wraps any sklearn LabelEncoder in our custom class.
+                (Added 2022-03-25 - untested)
+                &#34;&#34;&#34;
+                encoder = label_utils.LabelEncoder.from_sklearn(encoder)
+
+        setattr(data, &#34;label_encoder&#34;, encoder)
+        self.label_encoder = encoder
+        self.df = data
+        
+        if self.shuffle:
+                self.df = self.df.sample(frac=1, random_state=self.seed).reset_index(drop=False)
+
+        if self.id_col in self.df.columns:
+                self.image_ids = self.df[self.id_col]
+        self.paths = self.df[self.x_col]
+
+        if self.is_supervised:
+                # self.imgs = 
+                self.targets = self.df[self.y_col]
+                self.num_classes = len(set(self.df[self.y_col]))
+        else:
+                self.targets = None
+                self.num_classes = -1 # Or 0?</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="imutils.ml.data.datamodule.Herbarium2022DataModule"><code class="flex name class">
+<span>class <span class="ident">Herbarium2022DataModule</span></span>
+<span>(</span><span>catalog_dir: Optional[str] = None, label_col='scientificName', train_size=0.7, shuffle: bool = True, seed=14, batch_size: int = 128, num_workers: int = None, pin_memory: bool = True, persistent_workers: Optional[bool] = False, train_transform=None, val_transform=None, test_transform=None, transform_cfg=None, remove_transforms: bool = False, image_reader: Callable = 'default', **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>A DataModule standardizes the training, val, test splits, data preparation and transforms. The main
+advantage is consistent data splits, data preparation and transforms across models.</p>
+<p>Example::</p>
+<pre><code>class MyDataModule(LightningDataModule):
+    def __init__(self):
+        super().__init__()
+    def prepare_data(self):
+        # download, split, etc...
+        # only called on 1 GPU/TPU in distributed
+    def setup(self, stage):
+        # make assignments here (val/train/test split)
+        # called on every process in DDP
+    def train_dataloader(self):
+        train_split = Dataset(...)
+        return DataLoader(train_split)
+    def val_dataloader(self):
+        val_split = Dataset(...)
+        return DataLoader(val_split)
+    def test_dataloader(self):
+        test_split = Dataset(...)
+        return DataLoader(test_split)
+    def teardown(self):
+        # clean up after fit or test
+        # called on every process in DDP
+</code></pre>
+<p>A DataModule implements 6 key methods:</p>
+<ul>
+<li><strong>prepare_data</strong> (things to do on 1 GPU/TPU not on every GPU/TPU in distributed mode).</li>
+<li><strong>setup</strong>
+(things to do on every accelerator in distributed mode).</li>
+<li><strong>train_dataloader</strong> the training dataloader.</li>
+<li><strong>val_dataloader</strong> the val dataloader(s).</li>
+<li><strong>test_dataloader</strong> the test dataloader(s).</li>
+<li><strong>teardown</strong> (things to do on every accelerator in distributed mode when finished)</li>
+</ul>
+<p>This allows you to share a full dataset without explaining how to download, split, transform, and process the data</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Herbarium2022DataModule(BaseDataModule):
+        dataset_cls = Herbarium2022Dataset
+        transform_cfg = DEFAULT_TRANSFORM_CFG
+
+
+        def __init__(self,
+                                 catalog_dir: Optional[str]=None,
+                                 label_col=&#34;scientificName&#34;,
+                                 train_size=0.7,
+                                 shuffle: bool=True,
+                                 seed=14,
+                                 batch_size: int = 128,
+                                 num_workers: int = None,
+                                 pin_memory: bool=True,
+                                 persistent_workers: Optional[bool]=False,
+                                 train_transform=None,
+                                 val_transform=None,
+                                 test_transform=None,
+                                 transform_cfg=None,
+                                 remove_transforms: bool=False,
+                                 image_reader: Callable=&#34;default&#34;, #Image.open,
+                                 **kwargs
+        ):
+                super().__init__()
+                
+                self.catalog_dir = catalog_dir
+                
+                self.label_col = label_col
+                self.train_size = train_size
+                self.shuffle = shuffle
+                self.seed = seed
+                self.batch_size = batch_size
+                self.num_workers = num_workers if num_workers is not None else mproc.cpu_count()
+                self.pin_memory = pin_memory
+                self.persistent_workers = persistent_workers
+                self.image_reader = image_reader
+
+                self.setup_transforms(transform_cfg=transform_cfg,
+                                                          train_transform=train_transform,
+                                                          val_transform=val_transform,
+                                                          test_transform=test_transform,
+                                                          remove_transforms=remove_transforms)
+                self.cfg = self.get_cfg()
+                self.kwargs = kwargs
+
+
+
+        def setup(self, stage=None):
+                subsets=[]
+                if stage in [&#34;train&#34;, &#34;fit&#34;, &#34;all&#34;, None]:
                         self.train_dataset = Herbarium2022Dataset(catalog_dir=self.catalog_dir,
                                                                                                           subset=&#34;train&#34;,
                                                                                                           label_col=self.label_col,
@@ -646,8 +1895,8 @@ advantage is consistent data splits, data preparation and transforms across mode
                                                                                                           shuffle=self.shuffle,
                                                                                                           seed=self.seed,
                                                                                                           transform=self.train_transform)
-                        print(f&#34;training dataset length: {len(self.train_dataset)}&#34;)
-                if stage in [&#34;val&#34;, &#34;all&#34;, None]:
+                        subsets.append(&#34;train&#34;)
+                if stage in [&#34;val&#34;, &#34;fit&#34;, &#34;all&#34;, None]:
                         self.val_dataset = Herbarium2022Dataset(catalog_dir=self.catalog_dir,
                                                                                                         subset=&#34;val&#34;,
                                                                                                         label_col=self.label_col,
@@ -655,7 +1904,7 @@ advantage is consistent data splits, data preparation and transforms across mode
                                                                                                         shuffle=self.shuffle,
                                                                                                         seed=self.seed,
                                                                                                         transform=self.val_transform)
-                        print(f&#34;validation dataset length: {len(self.val_dataset)}&#34;)
+                        subsets.append(&#34;val&#34;)
                 if stage in [&#34;test&#34;, &#34;all&#34;, None]:
                         self.test_dataset = Herbarium2022Dataset(catalog_dir=self.catalog_dir,
                                                                                                          subset=&#34;test&#34;,
@@ -664,114 +1913,17 @@ advantage is consistent data splits, data preparation and transforms across mode
                                                                                                          shuffle=self.shuffle,
                                                                                                          seed=self.seed,
                                                                                                          transform=self.test_transform)
-                        print(f&#34;test dataset length: {len(self.test_dataset)}&#34;)
+                        subsets.append(&#34;test&#34;)
                         
-                self.set_image_reader(self.image_reader)
-
-        def train_dataloader(self):
-                return DataLoader(
-                        self.train_dataset,
-                        batch_size=self.batch_size,
-                        num_workers=self.num_workers,
-                        shuffle=True,
-                        pin_memory=self.pin_memory
-                )
-
-        def val_dataloader(self):
-                return DataLoader(
-                        self.val_dataset,
-                        batch_size=self.batch_size,
-                        num_workers=self.num_workers,
-                        shuffle=False,
-                        pin_memory=self.pin_memory
-                )
-
-        def test_dataloader(self):
-                return DataLoader(
-                        self.test_dataset,
-                        batch_size=self.batch_size,
-                        num_workers=self.num_workers,
-                        shuffle=False,
-                        pin_memory=self.pin_memory
-                )
-
-        def get_dataloader(self,
-                                           subset:str=&#34;train&#34;):
-                if subset == &#34;train&#34;:
-                        return self.train_dataloader()
-                elif subset == &#34;val&#34;:
-                        return self.val_dataloader()
-                elif subset == &#34;test&#34;:
-                        return self.test_dataloader()
-                else:
-                        return None
-
-        def get_dataset(self,
-                                           subset:str=&#34;train&#34;):
-                if subset == &#34;train&#34;:
-                        return self.train_dataset
-                elif subset == &#34;val&#34;:
-                        return self.val_dataset
-                elif subset == &#34;test&#34;:
-                        return self.test_dataset
-                else:
-                        return None
-                
-        def setup_transforms(self,
-                                                 transform_cfg: dict=None,
-                                                 train_transform=None,
-                                                 val_transform=None,
-                                                 test_transform=None,
-                                                 remove_transforms: bool=False):
-                transform_cfg = transform_cfg or {}
-                self.transform_cfg = OmegaConf.merge(self.transform_cfg, transform_cfg)
-                self.remove_transforms = remove_transforms
-                if self.remove_transforms:
-                        self.train_transform = None
-                        self.val_transform = None
-                        self.test_transform = None
-                else:
-                        self.train_transform = (
-                                get_default_transforms(mode=&#34;train&#34;, config=self.transform_cfg)
-                                if train_transform is None else train_transform
-                        )
-                        self.val_transform = (
-                                get_default_transforms(mode=&#34;val&#34;, config=self.transform_cfg)
-                                if val_transform is None else val_transform
-                        )
-                        self.test_transform = (
-                                get_default_transforms(mode=&#34;test&#34;, config=self.transform_cfg)
-                                if test_transform is None else test_transform
-                        )
-                
-        def set_image_reader(self,
-                                                 reader: Callable) -&gt; None:
-                &#34;&#34;&#34;
-                Pass in a callable that reads image data from disk,
-                which is assigned to each of this datamodule&#39;s datasets, respectively.
-                &#34;&#34;&#34;
-                for data in [self.train_dataset, self.val_dataset, self.test_dataset]:
-                        if data is None:
-                                pass
-                        data.set_image_reader(reader)
-
-
-
-        def show_batch(self, win_size=(10, 10)):
-                def _to_vis(data):
-                        return tensor_to_image(torchvision.utils.make_grid(data, nrow=8))
-
-                # get a batch from the training set: try with `val_datlaoader` :)
-                imgs, labels = next(iter(self.train_dataloader()))
-                imgs_aug = self.transform(imgs)  # apply transforms
-                # use matplotlib to visualize
-                plt.figure(figsize=win_size)
-                plt.imshow(_to_vis(imgs))
-                plt.figure(figsize=win_size)
-                plt.imshow(_to_vis(imgs_aug))</code></pre>
+                for s in subsets:
+                        self.get_dataset_size(subset=s,
+                                                                  verbose=True)
+                        
+                self.set_image_reader(self.image_reader)</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
+<li>imutils.ml.data.datamodule.BaseDataModule</li>
 <li>pytorch_lightning.core.datamodule.LightningDataModule</li>
 <li>pytorch_lightning.core.hooks.CheckpointHooks</li>
 <li>pytorch_lightning.core.hooks.DataHooks</li>
@@ -800,220 +1952,13 @@ dataset with non-integral indices/keys, a custom sampler must be provided.</p>
 <dd>
 <div class="desc"></div>
 </dd>
-<dt id="imutils.ml.data.datamodule.Herbarium2022DataModule.test_dataset"><code class="name">var <span class="ident">test_dataset</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="imutils.ml.data.datamodule.Herbarium2022DataModule.test_transform"><code class="name">var <span class="ident">test_transform</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="imutils.ml.data.datamodule.Herbarium2022DataModule.train_dataset"><code class="name">var <span class="ident">train_dataset</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="imutils.ml.data.datamodule.Herbarium2022DataModule.train_transform"><code class="name">var <span class="ident">train_transform</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
 <dt id="imutils.ml.data.datamodule.Herbarium2022DataModule.transform_cfg"><code class="name">var <span class="ident">transform_cfg</span></code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
-<dt id="imutils.ml.data.datamodule.Herbarium2022DataModule.val_dataset"><code class="name">var <span class="ident">val_dataset</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="imutils.ml.data.datamodule.Herbarium2022DataModule.val_transform"><code class="name">var <span class="ident">val_transform</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-</dl>
-<h3>Static methods</h3>
-<dl>
-<dt id="imutils.ml.data.datamodule.Herbarium2022DataModule.from_cfg"><code class="name flex">
-<span>def <span class="ident">from_cfg</span></span>(<span>cfg: omegaconf.dictconfig.DictConfig, **kwargs)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@classmethod
-def from_cfg(cls,
-                         cfg: DictConfig,
-                         **kwargs):
-        cfg = OmegaConf.merge(cfg, kwargs)
-        return cls(**cfg)</code></pre>
-</details>
-</dd>
-</dl>
-<h3>Instance variables</h3>
-<dl>
-<dt id="imutils.ml.data.datamodule.Herbarium2022DataModule.num_classes"><code class="name">var <span class="ident">num_classes</span> : int</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@property
-def num_classes(self) -&gt; int:
-        assert self.train_dataset and self.valid_dataset
-        return max(self.train_dataset.num_classes, self.valid_dataset.num_classes)</code></pre>
-</details>
-</dd>
 </dl>
 <h3>Methods</h3>
 <dl>
-<dt id="imutils.ml.data.datamodule.Herbarium2022DataModule.get_cfg"><code class="name flex">
-<span>def <span class="ident">get_cfg</span></span>(<span>self, cfg: omegaconf.dictconfig.DictConfig, **kwargs)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def get_cfg(self,
-                         cfg: DictConfig,
-                         **kwargs):
-        
-        default_cfg = DictConfig(dict(
-                catalog_dir=self.catalog_dir or None,
-                label_col=self.label_col or &#34;scientificName&#34;,
-                train_size=self.train_size or 0.7,
-                shuffle=self.shuffle,
-                seed=self.seed or 14,
-                batch_size = self.batch_size or 128,
-                num_workers = self.num_workers or None,
-                pin_memory=self.pin_memory,
-                transform_cfg=self.transform_cfg,
-                remove_transforms=self.remove_transforms,
-        ))
-        
-        cfg = OmegaConf.merge(default_cfg, cfg, kwargs)
-        return cfg</code></pre>
-</details>
-</dd>
-<dt id="imutils.ml.data.datamodule.Herbarium2022DataModule.get_dataloader"><code class="name flex">
-<span>def <span class="ident">get_dataloader</span></span>(<span>self, subset: str = 'train')</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def get_dataloader(self,
-                                   subset:str=&#34;train&#34;):
-        if subset == &#34;train&#34;:
-                return self.train_dataloader()
-        elif subset == &#34;val&#34;:
-                return self.val_dataloader()
-        elif subset == &#34;test&#34;:
-                return self.test_dataloader()
-        else:
-                return None</code></pre>
-</details>
-</dd>
-<dt id="imutils.ml.data.datamodule.Herbarium2022DataModule.get_dataset"><code class="name flex">
-<span>def <span class="ident">get_dataset</span></span>(<span>self, subset: str = 'train')</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def get_dataset(self,
-                                   subset:str=&#34;train&#34;):
-        if subset == &#34;train&#34;:
-                return self.train_dataset
-        elif subset == &#34;val&#34;:
-                return self.val_dataset
-        elif subset == &#34;test&#34;:
-                return self.test_dataset
-        else:
-                return None</code></pre>
-</details>
-</dd>
-<dt id="imutils.ml.data.datamodule.Herbarium2022DataModule.prepare_data"><code class="name flex">
-<span>def <span class="ident">prepare_data</span></span>(<span>self)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Use this to download and prepare data.</p>
-<div class="admonition warning">
-<p class="admonition-title">Warning:&ensp;DO NOT set state to the model (use <code>setup</code> instead)</p>
-<p>since this is NOT called on every GPU in DDP/TPU</p>
-</div>
-<p>Example::</p>
-<pre><code>def prepare_data(self):
-    # good
-    download_data()
-    tokenize()
-    etc()
-
-    # bad
-    self.split = data_split
-    self.some_state = some_other_state()
-</code></pre>
-<p>In DDP prepare_data can be called in two ways (using Trainer(prepare_data_per_node)):</p>
-<ol>
-<li>Once per node. This is the default and is only called on LOCAL_RANK=0.</li>
-<li>Once in total. Only called on GLOBAL_RANK=0.</li>
-</ol>
-<p>Example::</p>
-<pre><code># DEFAULT
-# called once per node on LOCAL_RANK=0 of that node
-Trainer(prepare_data_per_node=True)
-
-# call on GLOBAL_RANK=0 (great for shared file systems)
-Trainer(prepare_data_per_node=False)
-</code></pre>
-<h2 id="note">Note</h2>
-<p>Setting <code>prepare_data_per_node</code> with the trainer flag is deprecated and will be removed in v1.7.0.
-Please set <code>prepare_data_per_node</code> in LightningDataModule or LightningModule directly instead.</p>
-<p>This is called before requesting the dataloaders:</p>
-<p>.. code-block:: python</p>
-<pre><code>model.prepare_data()
-initialize_distributed()
-model.setup(stage)
-model.train_dataloader()
-model.val_dataloader()
-model.test_dataloader()
-</code></pre></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def prepare_data(self):
-        pass</code></pre>
-</details>
-</dd>
-<dt id="imutils.ml.data.datamodule.Herbarium2022DataModule.set_image_reader"><code class="name flex">
-<span>def <span class="ident">set_image_reader</span></span>(<span>self, reader: Callable) ‑> None</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Pass in a callable that reads image data from disk,
-which is assigned to each of this datamodule's datasets, respectively.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def set_image_reader(self,
-                                         reader: Callable) -&gt; None:
-        &#34;&#34;&#34;
-        Pass in a callable that reads image data from disk,
-        which is assigned to each of this datamodule&#39;s datasets, respectively.
-        &#34;&#34;&#34;
-        for data in [self.train_dataset, self.val_dataset, self.test_dataset]:
-                if data is None:
-                        pass
-                data.set_image_reader(reader)</code></pre>
-</details>
-</dd>
 <dt id="imutils.ml.data.datamodule.Herbarium2022DataModule.setup"><code class="name flex">
 <span>def <span class="ident">setup</span></span>(<span>self, stage=None)</span>
 </code></dt>
@@ -1047,7 +1992,8 @@ when using DDP.</p>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def setup(self, stage=None):
-        if stage in [&#34;train&#34;, &#34;all&#34;, None]:
+        subsets=[]
+        if stage in [&#34;train&#34;, &#34;fit&#34;, &#34;all&#34;, None]:
                 self.train_dataset = Herbarium2022Dataset(catalog_dir=self.catalog_dir,
                                                                                                   subset=&#34;train&#34;,
                                                                                                   label_col=self.label_col,
@@ -1055,8 +2001,8 @@ when using DDP.</p>
                                                                                                   shuffle=self.shuffle,
                                                                                                   seed=self.seed,
                                                                                                   transform=self.train_transform)
-                print(f&#34;training dataset length: {len(self.train_dataset)}&#34;)
-        if stage in [&#34;val&#34;, &#34;all&#34;, None]:
+                subsets.append(&#34;train&#34;)
+        if stage in [&#34;val&#34;, &#34;fit&#34;, &#34;all&#34;, None]:
                 self.val_dataset = Herbarium2022Dataset(catalog_dir=self.catalog_dir,
                                                                                                 subset=&#34;val&#34;,
                                                                                                 label_col=self.label_col,
@@ -1064,7 +2010,7 @@ when using DDP.</p>
                                                                                                 shuffle=self.shuffle,
                                                                                                 seed=self.seed,
                                                                                                 transform=self.val_transform)
-                print(f&#34;validation dataset length: {len(self.val_dataset)}&#34;)
+                subsets.append(&#34;val&#34;)
         if stage in [&#34;test&#34;, &#34;all&#34;, None]:
                 self.test_dataset = Herbarium2022Dataset(catalog_dir=self.catalog_dir,
                                                                                                  subset=&#34;test&#34;,
@@ -1073,287 +2019,20 @@ when using DDP.</p>
                                                                                                  shuffle=self.shuffle,
                                                                                                  seed=self.seed,
                                                                                                  transform=self.test_transform)
-                print(f&#34;test dataset length: {len(self.test_dataset)}&#34;)
+                subsets.append(&#34;test&#34;)
+                
+        for s in subsets:
+                self.get_dataset_size(subset=s,
+                                                          verbose=True)
                 
         self.set_image_reader(self.image_reader)</code></pre>
-</details>
-</dd>
-<dt id="imutils.ml.data.datamodule.Herbarium2022DataModule.setup_transforms"><code class="name flex">
-<span>def <span class="ident">setup_transforms</span></span>(<span>self, transform_cfg: dict = None, train_transform=None, val_transform=None, test_transform=None, remove_transforms: bool = False)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def setup_transforms(self,
-                                         transform_cfg: dict=None,
-                                         train_transform=None,
-                                         val_transform=None,
-                                         test_transform=None,
-                                         remove_transforms: bool=False):
-        transform_cfg = transform_cfg or {}
-        self.transform_cfg = OmegaConf.merge(self.transform_cfg, transform_cfg)
-        self.remove_transforms = remove_transforms
-        if self.remove_transforms:
-                self.train_transform = None
-                self.val_transform = None
-                self.test_transform = None
-        else:
-                self.train_transform = (
-                        get_default_transforms(mode=&#34;train&#34;, config=self.transform_cfg)
-                        if train_transform is None else train_transform
-                )
-                self.val_transform = (
-                        get_default_transforms(mode=&#34;val&#34;, config=self.transform_cfg)
-                        if val_transform is None else val_transform
-                )
-                self.test_transform = (
-                        get_default_transforms(mode=&#34;test&#34;, config=self.transform_cfg)
-                        if test_transform is None else test_transform
-                )</code></pre>
-</details>
-</dd>
-<dt id="imutils.ml.data.datamodule.Herbarium2022DataModule.show_batch"><code class="name flex">
-<span>def <span class="ident">show_batch</span></span>(<span>self, win_size=(10, 10))</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def show_batch(self, win_size=(10, 10)):
-        def _to_vis(data):
-                return tensor_to_image(torchvision.utils.make_grid(data, nrow=8))
-
-        # get a batch from the training set: try with `val_datlaoader` :)
-        imgs, labels = next(iter(self.train_dataloader()))
-        imgs_aug = self.transform(imgs)  # apply transforms
-        # use matplotlib to visualize
-        plt.figure(figsize=win_size)
-        plt.imshow(_to_vis(imgs))
-        plt.figure(figsize=win_size)
-        plt.imshow(_to_vis(imgs_aug))</code></pre>
-</details>
-</dd>
-<dt id="imutils.ml.data.datamodule.Herbarium2022DataModule.test_dataloader"><code class="name flex">
-<span>def <span class="ident">test_dataloader</span></span>(<span>self)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Implement one or multiple PyTorch DataLoaders for testing.</p>
-<p>The dataloader you return will not be reloaded unless you set
-:paramref:<code>~pytorch_lightning.trainer.Trainer.reload_dataloaders_every_n_epochs</code> to
-a postive integer.</p>
-<p>For data processing use the following pattern:</p>
-<pre><code>- download in :meth:&lt;code&gt;prepare\_data&lt;/code&gt;
-- process and split in :meth:&lt;code&gt;setup&lt;/code&gt;
-</code></pre>
-<p>However, the above are only necessary for distributed processing.</p>
-<div class="admonition warning">
-<p class="admonition-title">Warning:&ensp;do not assign state in prepare_data</p>
-</div>
-<ul>
-<li>:meth:<code>~pytorch_lightning.trainer.Trainer.fit</code></li>
-<li>&hellip;</li>
-<li>:meth:<code>prepare_data</code></li>
-<li>:meth:<code>setup</code></li>
-<li>:meth:<code>train_dataloader</code></li>
-<li>:meth:<code>val_dataloader</code></li>
-<li>:meth:<code>test_dataloader</code></li>
-</ul>
-<h2 id="note">Note</h2>
-<p>Lightning adds the correct sampler for distributed and arbitrary hardware.
-There is no need to set it yourself.</p>
-<h2 id="return">Return</h2>
-<p>A :class:<code>torch.utils.data.DataLoader</code> or a sequence of them specifying testing samples.</p>
-<p>Example::</p>
-<pre><code>def test_dataloader(self):
-    transform = transforms.Compose([transforms.ToTensor(),
-                                    transforms.Normalize((0.5,), (1.0,))])
-    dataset = MNIST(root='/path/to/mnist/', train=False, transform=transform,
-                    download=True)
-    loader = torch.utils.data.DataLoader(
-        dataset=dataset,
-        batch_size=self.batch_size,
-        shuffle=False
-    )
-
-    return loader
-
-# can also return multiple dataloaders
-def test_dataloader(self):
-    return [loader_a, loader_b, ..., loader_n]
-</code></pre>
-<h2 id="note_1">Note</h2>
-<p>If you don't need a test dataset and a :meth:<code>test_step</code>, you don't need to implement
-this method.</p>
-<h2 id="note_2">Note</h2>
-<p>In the case where you return multiple test dataloaders, the :meth:<code>test_step</code>
-will have an argument <code>dataloader_idx</code> which matches the order here.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def test_dataloader(self):
-        return DataLoader(
-                self.test_dataset,
-                batch_size=self.batch_size,
-                num_workers=self.num_workers,
-                shuffle=False,
-                pin_memory=self.pin_memory
-        )</code></pre>
-</details>
-</dd>
-<dt id="imutils.ml.data.datamodule.Herbarium2022DataModule.train_dataloader"><code class="name flex">
-<span>def <span class="ident">train_dataloader</span></span>(<span>self)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Implement one or more PyTorch DataLoaders for training.</p>
-<h2 id="return">Return</h2>
-<p>A collection of :class:<code>torch.utils.data.DataLoader</code> specifying training samples.
-In the case of multiple dataloaders, please see this :ref:<code>page &lt;multiple-training-dataloaders&gt;</code>.</p>
-<p>The dataloader you return will not be reloaded unless you set
-:paramref:<code>~pytorch_lightning.trainer.Trainer.reload_dataloaders_every_n_epochs</code> to
-a positive integer.</p>
-<p>For data processing use the following pattern:</p>
-<pre><code>- download in :meth:&lt;code&gt;prepare\_data&lt;/code&gt;
-- process and split in :meth:&lt;code&gt;setup&lt;/code&gt;
-</code></pre>
-<p>However, the above are only necessary for distributed processing.</p>
-<div class="admonition warning">
-<p class="admonition-title">Warning:&ensp;do not assign state in prepare_data</p>
-</div>
-<ul>
-<li>:meth:<code>~pytorch_lightning.trainer.Trainer.fit</code></li>
-<li>&hellip;</li>
-<li>:meth:<code>prepare_data</code></li>
-<li>:meth:<code>setup</code></li>
-<li>:meth:<code>train_dataloader</code></li>
-</ul>
-<h2 id="note">Note</h2>
-<p>Lightning adds the correct sampler for distributed and arbitrary hardware.
-There is no need to set it yourself.</p>
-<p>Example::</p>
-<pre><code># single dataloader
-def train_dataloader(self):
-    transform = transforms.Compose([transforms.ToTensor(),
-                                    transforms.Normalize((0.5,), (1.0,))])
-    dataset = MNIST(root='/path/to/mnist/', train=True, transform=transform,
-                    download=True)
-    loader = torch.utils.data.DataLoader(
-        dataset=dataset,
-        batch_size=self.batch_size,
-        shuffle=True
-    )
-    return loader
-
-# multiple dataloaders, return as list
-def train_dataloader(self):
-    mnist = MNIST(...)
-    cifar = CIFAR(...)
-    mnist_loader = torch.utils.data.DataLoader(
-        dataset=mnist, batch_size=self.batch_size, shuffle=True
-    )
-    cifar_loader = torch.utils.data.DataLoader(
-        dataset=cifar, batch_size=self.batch_size, shuffle=True
-    )
-    # each batch will be a list of tensors: [batch_mnist, batch_cifar]
-    return [mnist_loader, cifar_loader]
-
-# multiple dataloader, return as dict
-def train_dataloader(self):
-    mnist = MNIST(...)
-    cifar = CIFAR(...)
-    mnist_loader = torch.utils.data.DataLoader(
-        dataset=mnist, batch_size=self.batch_size, shuffle=True
-    )
-    cifar_loader = torch.utils.data.DataLoader(
-        dataset=cifar, batch_size=self.batch_size, shuffle=True
-    )
-    # each batch will be a dict of tensors: {'mnist': batch_mnist, 'cifar': batch_cifar}
-    return {'mnist': mnist_loader, 'cifar': cifar_loader}
-</code></pre></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def train_dataloader(self):
-        return DataLoader(
-                self.train_dataset,
-                batch_size=self.batch_size,
-                num_workers=self.num_workers,
-                shuffle=True,
-                pin_memory=self.pin_memory
-        )</code></pre>
-</details>
-</dd>
-<dt id="imutils.ml.data.datamodule.Herbarium2022DataModule.val_dataloader"><code class="name flex">
-<span>def <span class="ident">val_dataloader</span></span>(<span>self)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Implement one or multiple PyTorch DataLoaders for validation.</p>
-<p>The dataloader you return will not be reloaded unless you set
-:paramref:<code>~pytorch_lightning.trainer.Trainer.reload_dataloaders_every_n_epochs</code> to
-a positive integer.</p>
-<p>It's recommended that all data downloads and preparation happen in :meth:<code>prepare_data</code>.</p>
-<ul>
-<li>:meth:<code>~pytorch_lightning.trainer.Trainer.fit</code></li>
-<li>&hellip;</li>
-<li>:meth:<code>prepare_data</code></li>
-<li>:meth:<code>train_dataloader</code></li>
-<li>:meth:<code>val_dataloader</code></li>
-<li>:meth:<code>test_dataloader</code></li>
-</ul>
-<h2 id="note">Note</h2>
-<p>Lightning adds the correct sampler for distributed and arbitrary hardware
-There is no need to set it yourself.</p>
-<h2 id="return">Return</h2>
-<p>A :class:<code>torch.utils.data.DataLoader</code> or a sequence of them specifying validation samples.</p>
-<p>Examples::</p>
-<pre><code>def val_dataloader(self):
-    transform = transforms.Compose([transforms.ToTensor(),
-                                    transforms.Normalize((0.5,), (1.0,))])
-    dataset = MNIST(root='/path/to/mnist/', train=False,
-                    transform=transform, download=True)
-    loader = torch.utils.data.DataLoader(
-        dataset=dataset,
-        batch_size=self.batch_size,
-        shuffle=False
-    )
-
-    return loader
-
-# can also return multiple dataloaders
-def val_dataloader(self):
-    return [loader_a, loader_b, ..., loader_n]
-</code></pre>
-<h2 id="note_1">Note</h2>
-<p>If you don't need a validation dataset and a :meth:<code>validation_step</code>, you don't need to
-implement this method.</p>
-<h2 id="note_2">Note</h2>
-<p>In the case where you return multiple validation dataloaders, the :meth:<code>validation_step</code>
-will have an argument <code>dataloader_idx</code> which matches the order here.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def val_dataloader(self):
-        return DataLoader(
-                self.val_dataset,
-                batch_size=self.batch_size,
-                num_workers=self.num_workers,
-                shuffle=False,
-                pin_memory=self.pin_memory
-        )</code></pre>
 </details>
 </dd>
 </dl>
 </dd>
 <dt id="imutils.ml.data.datamodule.Herbarium2022Dataset"><code class="flex name class">
 <span>class <span class="ident">Herbarium2022Dataset</span></span>
-<span>(</span><span>catalog_dir: Optional[str] = None, subset: str = 'train', label_col: str = 'scientificName', train_size: float = 0.7, shuffle: bool = True, seed: int = 14, image_reader: Callable = &lt;function read_jpeg&gt;, preprocess: Callable = None, transform: Callable = None)</span>
+<span>(</span><span>catalog_dir: Optional[str] = None, subset: str = 'train', label_col: str = 'scientificName', train_size: float = 0.7, shuffle: bool = True, seed: int = 14, image_reader: Union[Callable, str] = 'default', preprocess: Callable = None, transform: Callable = None)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>An abstract class representing a :class:<code>Dataset</code>.</p>
@@ -1369,99 +2048,28 @@ of :class:<code>~torch.utils.data.DataLoader</code>.</p>
 sampler that yields integral indices.
 To make it work with a map-style
 dataset with non-integral indices/keys, a custom sampler must be provided.</p>
-</div></div>
+</div>
+<h2 id="arguments">Arguments</h2>
+<p>catalog_dir: Optional[str]=None,</p>
+<p>subset: str="train",</p>
+<p>label_col: str="scientificName",
+Column containing the fully decoded str labels
+train_size: float=0.7,
+shuffle: bool=True,
+seed: int=14,
+image_reader: Union[Callable,str]="default", #Image.open,
+preprocess: Callable=None,
+transform: Callable=None</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class Herbarium2022Dataset(AbstractCatalogDataset):
-        catalog_dir: str = os.path.abspath(&#34;./data&#34;)
-        
-        def __init__(self,
-                                 catalog_dir: Optional[str]=None,
-                                 subset: str=&#34;train&#34;,
-                                 label_col: str=&#34;scientificName&#34;,
-                                 train_size: float=0.7,
-                                 shuffle: bool=True,
-                                 seed: int=14,
-                                 image_reader: Callable=default_reader, #Image.open,
-                                 preprocess: Callable=None,
-                                 transform: Callable=None):
-                
-                self.catalog_dir = catalog_dir or self.catalog_dir
-                
-                self.x_col = &#34;path&#34;
-                self.y_col = &#34;y&#34;
-                self.id_col = &#34;image_id&#34;
-                self.label_col = label_col
-                self.train_size = train_size
-                self.shuffle = shuffle
-                self.seed = seed
-                self.subset = subset
-                self.is_supervised = bool(subset != &#34;test&#34;)
-
-                self.set_image_reader(image_reader)
-                self.preprocess = preprocess
-                self.transform = transform
-                self.setup()
-                                
-        @classmethod
-        def from_cfg(cls,
-                                 cfg: DictConfig,
-                                 **kwargs):
-                cfg = OmegaConf.merge(cfg, kwargs)
-                return cls(**cfg)
-                
-        def __len__(self):
-                return len(self.df)
-        
-        def set_image_reader(self,
-                                                 reader: Callable) -&gt; None:
-                self.reader = reader
-        
-        def parse_sample(self, index: int):
-                return self.df.iloc[index, :]
-                
-        def fetch_item(self, index: int) -&gt; Tuple[str]:
-                &#34;&#34;&#34;
-                Returns identically-structured namedtuple as __getitem__, with the following differences:
-                        - PIL Image (or raw bytes) as returned by self.reader function w/o any transforms
-                                vs.
-                          torch.Tensor after all transformssx
-                        - target text label vs, target int label
-                        - image path
-                        - image catalog_number
-                
-                &#34;&#34;&#34;
-                sample = self.parse_sample(index)
-                path = getattr(sample, self.x_col)
-                catalog_number = getattr(sample, self.id_col)
-                
-                image = self.reader(path)
-                
-                metadata={
-                                  &#34;path&#34;:path,
-                                  &#34;catalog_number&#34;:catalog_number
-                                 }
-                label = None
-                if self.is_supervised:
-                        label = getattr(sample, self.y_col, None)
-                return image, label, metadata
-                
-        def __getitem__(self, index: int):
-                
-                image, label, metadata = self.fetch_item(index)
-                
-                if self.preprocess is not None:
-                        image = self.preprocess(image)
-                
-                if self.transform is not None:
-                        image = self.transform(image)
-                
-                return image, label, metadata</code></pre>
+<pre><code class="python">class Herbarium2022Dataset(BaseDataset):
+        catalog_dir: str = os.path.abspath(&#34;./data&#34;)</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
+<li>imutils.ml.data.datamodule.BaseDataset</li>
 <li>imutils.ml.data.datamodule.AbstractCatalogDataset</li>
 <li>torch.utils.data.dataset.Dataset</li>
 <li>typing.Generic</li>
@@ -1471,98 +2079,6 @@ dataset with non-integral indices/keys, a custom sampler must be provided.</p>
 <dt id="imutils.ml.data.datamodule.Herbarium2022Dataset.catalog_dir"><code class="name">var <span class="ident">catalog_dir</span> : str</code></dt>
 <dd>
 <div class="desc"></div>
-</dd>
-</dl>
-<h3>Static methods</h3>
-<dl>
-<dt id="imutils.ml.data.datamodule.Herbarium2022Dataset.from_cfg"><code class="name flex">
-<span>def <span class="ident">from_cfg</span></span>(<span>cfg: omegaconf.dictconfig.DictConfig, **kwargs)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@classmethod
-def from_cfg(cls,
-                         cfg: DictConfig,
-                         **kwargs):
-        cfg = OmegaConf.merge(cfg, kwargs)
-        return cls(**cfg)</code></pre>
-</details>
-</dd>
-</dl>
-<h3>Methods</h3>
-<dl>
-<dt id="imutils.ml.data.datamodule.Herbarium2022Dataset.fetch_item"><code class="name flex">
-<span>def <span class="ident">fetch_item</span></span>(<span>self, index: int) ‑> Tuple[str]</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Returns identically-structured namedtuple as <strong>getitem</strong>, with the following differences:
-- PIL Image (or raw bytes) as returned by self.reader function w/o any transforms
-vs.
-torch.Tensor after all transformssx
-- target text label vs, target int label
-- image path
-- image catalog_number</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def fetch_item(self, index: int) -&gt; Tuple[str]:
-        &#34;&#34;&#34;
-        Returns identically-structured namedtuple as __getitem__, with the following differences:
-                - PIL Image (or raw bytes) as returned by self.reader function w/o any transforms
-                        vs.
-                  torch.Tensor after all transformssx
-                - target text label vs, target int label
-                - image path
-                - image catalog_number
-        
-        &#34;&#34;&#34;
-        sample = self.parse_sample(index)
-        path = getattr(sample, self.x_col)
-        catalog_number = getattr(sample, self.id_col)
-        
-        image = self.reader(path)
-        
-        metadata={
-                          &#34;path&#34;:path,
-                          &#34;catalog_number&#34;:catalog_number
-                         }
-        label = None
-        if self.is_supervised:
-                label = getattr(sample, self.y_col, None)
-        return image, label, metadata</code></pre>
-</details>
-</dd>
-<dt id="imutils.ml.data.datamodule.Herbarium2022Dataset.parse_sample"><code class="name flex">
-<span>def <span class="ident">parse_sample</span></span>(<span>self, index: int)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def parse_sample(self, index: int):
-        return self.df.iloc[index, :]</code></pre>
-</details>
-</dd>
-<dt id="imutils.ml.data.datamodule.Herbarium2022Dataset.set_image_reader"><code class="name flex">
-<span>def <span class="ident">set_image_reader</span></span>(<span>self, reader: Callable) ‑> None</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def set_image_reader(self,
-                                         reader: Callable) -&gt; None:
-        self.reader = reader</code></pre>
-</details>
 </dd>
 </dl>
 </dd>
@@ -1588,40 +2104,43 @@ torch.Tensor after all transformssx
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
 <li>
-<h4><code><a title="imutils.ml.data.datamodule.Herbarium2022DataModule" href="#imutils.ml.data.datamodule.Herbarium2022DataModule">Herbarium2022DataModule</a></code></h4>
+<h4><code><a title="imutils.ml.data.datamodule.ExtantLeavesDataModule" href="#imutils.ml.data.datamodule.ExtantLeavesDataModule">ExtantLeavesDataModule</a></code></h4>
 <ul class="two-column">
+<li><code><a title="imutils.ml.data.datamodule.ExtantLeavesDataModule.dataset_cls" href="#imutils.ml.data.datamodule.ExtantLeavesDataModule.dataset_cls">dataset_cls</a></code></li>
+<li><code><a title="imutils.ml.data.datamodule.ExtantLeavesDataModule.from_cfg" href="#imutils.ml.data.datamodule.ExtantLeavesDataModule.from_cfg">from_cfg</a></code></li>
+<li><code><a title="imutils.ml.data.datamodule.ExtantLeavesDataModule.get_cfg" href="#imutils.ml.data.datamodule.ExtantLeavesDataModule.get_cfg">get_cfg</a></code></li>
+<li><code><a title="imutils.ml.data.datamodule.ExtantLeavesDataModule.name" href="#imutils.ml.data.datamodule.ExtantLeavesDataModule.name">name</a></code></li>
+<li><code><a title="imutils.ml.data.datamodule.ExtantLeavesDataModule.setup" href="#imutils.ml.data.datamodule.ExtantLeavesDataModule.setup">setup</a></code></li>
+<li><code><a title="imutils.ml.data.datamodule.ExtantLeavesDataModule.transform_cfg" href="#imutils.ml.data.datamodule.ExtantLeavesDataModule.transform_cfg">transform_cfg</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="imutils.ml.data.datamodule.ExtantLeavesDataset" href="#imutils.ml.data.datamodule.ExtantLeavesDataset">ExtantLeavesDataset</a></code></h4>
+<ul class="two-column">
+<li><code><a title="imutils.ml.data.datamodule.ExtantLeavesDataset.already_built" href="#imutils.ml.data.datamodule.ExtantLeavesDataset.already_built">already_built</a></code></li>
+<li><code><a title="imutils.ml.data.datamodule.ExtantLeavesDataset.catalog_dir" href="#imutils.ml.data.datamodule.ExtantLeavesDataset.catalog_dir">catalog_dir</a></code></li>
+<li><code><a title="imutils.ml.data.datamodule.ExtantLeavesDataset.from_cfg" href="#imutils.ml.data.datamodule.ExtantLeavesDataset.from_cfg">from_cfg</a></code></li>
+<li><code><a title="imutils.ml.data.datamodule.ExtantLeavesDataset.get_cfg" href="#imutils.ml.data.datamodule.ExtantLeavesDataset.get_cfg">get_cfg</a></code></li>
+<li><code><a title="imutils.ml.data.datamodule.ExtantLeavesDataset.get_data_subset" href="#imutils.ml.data.datamodule.ExtantLeavesDataset.get_data_subset">get_data_subset</a></code></li>
+<li><code><a title="imutils.ml.data.datamodule.ExtantLeavesDataset.prepare_metadata" href="#imutils.ml.data.datamodule.ExtantLeavesDataset.prepare_metadata">prepare_metadata</a></code></li>
+<li><code><a title="imutils.ml.data.datamodule.ExtantLeavesDataset.setup" href="#imutils.ml.data.datamodule.ExtantLeavesDataset.setup">setup</a></code></li>
+<li><code><a title="imutils.ml.data.datamodule.ExtantLeavesDataset.split_file_path" href="#imutils.ml.data.datamodule.ExtantLeavesDataset.split_file_path">split_file_path</a></code></li>
+<li><code><a title="imutils.ml.data.datamodule.ExtantLeavesDataset.splits_dir" href="#imutils.ml.data.datamodule.ExtantLeavesDataset.splits_dir">splits_dir</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="imutils.ml.data.datamodule.Herbarium2022DataModule" href="#imutils.ml.data.datamodule.Herbarium2022DataModule">Herbarium2022DataModule</a></code></h4>
+<ul class="">
 <li><code><a title="imutils.ml.data.datamodule.Herbarium2022DataModule.dataset_cls" href="#imutils.ml.data.datamodule.Herbarium2022DataModule.dataset_cls">dataset_cls</a></code></li>
-<li><code><a title="imutils.ml.data.datamodule.Herbarium2022DataModule.from_cfg" href="#imutils.ml.data.datamodule.Herbarium2022DataModule.from_cfg">from_cfg</a></code></li>
-<li><code><a title="imutils.ml.data.datamodule.Herbarium2022DataModule.get_cfg" href="#imutils.ml.data.datamodule.Herbarium2022DataModule.get_cfg">get_cfg</a></code></li>
-<li><code><a title="imutils.ml.data.datamodule.Herbarium2022DataModule.get_dataloader" href="#imutils.ml.data.datamodule.Herbarium2022DataModule.get_dataloader">get_dataloader</a></code></li>
-<li><code><a title="imutils.ml.data.datamodule.Herbarium2022DataModule.get_dataset" href="#imutils.ml.data.datamodule.Herbarium2022DataModule.get_dataset">get_dataset</a></code></li>
 <li><code><a title="imutils.ml.data.datamodule.Herbarium2022DataModule.name" href="#imutils.ml.data.datamodule.Herbarium2022DataModule.name">name</a></code></li>
-<li><code><a title="imutils.ml.data.datamodule.Herbarium2022DataModule.num_classes" href="#imutils.ml.data.datamodule.Herbarium2022DataModule.num_classes">num_classes</a></code></li>
-<li><code><a title="imutils.ml.data.datamodule.Herbarium2022DataModule.prepare_data" href="#imutils.ml.data.datamodule.Herbarium2022DataModule.prepare_data">prepare_data</a></code></li>
-<li><code><a title="imutils.ml.data.datamodule.Herbarium2022DataModule.set_image_reader" href="#imutils.ml.data.datamodule.Herbarium2022DataModule.set_image_reader">set_image_reader</a></code></li>
 <li><code><a title="imutils.ml.data.datamodule.Herbarium2022DataModule.setup" href="#imutils.ml.data.datamodule.Herbarium2022DataModule.setup">setup</a></code></li>
-<li><code><a title="imutils.ml.data.datamodule.Herbarium2022DataModule.setup_transforms" href="#imutils.ml.data.datamodule.Herbarium2022DataModule.setup_transforms">setup_transforms</a></code></li>
-<li><code><a title="imutils.ml.data.datamodule.Herbarium2022DataModule.show_batch" href="#imutils.ml.data.datamodule.Herbarium2022DataModule.show_batch">show_batch</a></code></li>
-<li><code><a title="imutils.ml.data.datamodule.Herbarium2022DataModule.test_dataloader" href="#imutils.ml.data.datamodule.Herbarium2022DataModule.test_dataloader">test_dataloader</a></code></li>
-<li><code><a title="imutils.ml.data.datamodule.Herbarium2022DataModule.test_dataset" href="#imutils.ml.data.datamodule.Herbarium2022DataModule.test_dataset">test_dataset</a></code></li>
-<li><code><a title="imutils.ml.data.datamodule.Herbarium2022DataModule.test_transform" href="#imutils.ml.data.datamodule.Herbarium2022DataModule.test_transform">test_transform</a></code></li>
-<li><code><a title="imutils.ml.data.datamodule.Herbarium2022DataModule.train_dataloader" href="#imutils.ml.data.datamodule.Herbarium2022DataModule.train_dataloader">train_dataloader</a></code></li>
-<li><code><a title="imutils.ml.data.datamodule.Herbarium2022DataModule.train_dataset" href="#imutils.ml.data.datamodule.Herbarium2022DataModule.train_dataset">train_dataset</a></code></li>
-<li><code><a title="imutils.ml.data.datamodule.Herbarium2022DataModule.train_transform" href="#imutils.ml.data.datamodule.Herbarium2022DataModule.train_transform">train_transform</a></code></li>
 <li><code><a title="imutils.ml.data.datamodule.Herbarium2022DataModule.transform_cfg" href="#imutils.ml.data.datamodule.Herbarium2022DataModule.transform_cfg">transform_cfg</a></code></li>
-<li><code><a title="imutils.ml.data.datamodule.Herbarium2022DataModule.val_dataloader" href="#imutils.ml.data.datamodule.Herbarium2022DataModule.val_dataloader">val_dataloader</a></code></li>
-<li><code><a title="imutils.ml.data.datamodule.Herbarium2022DataModule.val_dataset" href="#imutils.ml.data.datamodule.Herbarium2022DataModule.val_dataset">val_dataset</a></code></li>
-<li><code><a title="imutils.ml.data.datamodule.Herbarium2022DataModule.val_transform" href="#imutils.ml.data.datamodule.Herbarium2022DataModule.val_transform">val_transform</a></code></li>
 </ul>
 </li>
 <li>
 <h4><code><a title="imutils.ml.data.datamodule.Herbarium2022Dataset" href="#imutils.ml.data.datamodule.Herbarium2022Dataset">Herbarium2022Dataset</a></code></h4>
 <ul class="">
 <li><code><a title="imutils.ml.data.datamodule.Herbarium2022Dataset.catalog_dir" href="#imutils.ml.data.datamodule.Herbarium2022Dataset.catalog_dir">catalog_dir</a></code></li>
-<li><code><a title="imutils.ml.data.datamodule.Herbarium2022Dataset.fetch_item" href="#imutils.ml.data.datamodule.Herbarium2022Dataset.fetch_item">fetch_item</a></code></li>
-<li><code><a title="imutils.ml.data.datamodule.Herbarium2022Dataset.from_cfg" href="#imutils.ml.data.datamodule.Herbarium2022Dataset.from_cfg">from_cfg</a></code></li>
-<li><code><a title="imutils.ml.data.datamodule.Herbarium2022Dataset.parse_sample" href="#imutils.ml.data.datamodule.Herbarium2022Dataset.parse_sample">parse_sample</a></code></li>
-<li><code><a title="imutils.ml.data.datamodule.Herbarium2022Dataset.set_image_reader" href="#imutils.ml.data.datamodule.Herbarium2022Dataset.set_image_reader">set_image_reader</a></code></li>
 </ul>
 </li>
 </ul>

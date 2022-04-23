@@ -1,0 +1,67 @@
+# @package data
+
+## conf/data/datasets/base_extant_leaves_dataset.yaml
+
+
+name: "extant_leaves_family_10_512"
+catalog_dir: "/media/data_cifs/projects/prj_fossils/users/jacob/data/leavesdb-v1_1/${.name}/splits/splits=(0.5,0.2,0.3)"
+# num_classes: 94
+
+
+num_classes: 
+    Species: 0
+    genus: 0
+    family: 94
+    institution_id: 48
+
+
+
+datasets:
+    x_col: "path"
+    y_col: "y"
+    id_col: "catalog_number"
+    label_col: "family"
+    smallest_taxon_col: "Species"
+    splits:
+        - 0.5
+        - 0.2
+        - 0.3
+    seed: 14
+
+    train:
+        _target_: imutils.ml.data.datamodule.ExtantLeavesDataset
+        catalog_dir: ${...catalog_dir}
+        subset: "train"
+        x_col: ${..x_col}
+        y_col: ${..y_col}
+        id_col: ${..id_col}
+        label_col: ${..label_col}
+        smallest_taxon_col: ${..smallest_taxon_col}
+        splits: ${..splits}
+        shuffle: false
+        seed: ${..seed}
+
+    val:
+        _target_: imutils.ml.data.datamodule.ExtantLeavesDataset
+        catalog_dir: ${...catalog_dir}
+        subset: "val"
+        x_col: ${..x_col}
+        y_col: ${..y_col}
+        id_col: ${..id_col}
+        label_col: ${..label_col}
+        smallest_taxon_col: ${..smallest_taxon_col}
+        splits: ${..splits}
+        shuffle: false
+        seed: ${..seed}
+    test:
+        _target_: imutils.ml.data.datamodule.ExtantLeavesDataset
+        catalog_dir: ${...catalog_dir}
+        subset: "test"
+        x_col: ${..x_col}
+        y_col: ${..y_col}
+        id_col: ${..id_col}
+        label_col: ${..label_col}
+        smallest_taxon_col: ${..smallest_taxon_col}
+        splits: ${..splits}
+        shuffle: false
+        seed: ${..seed}

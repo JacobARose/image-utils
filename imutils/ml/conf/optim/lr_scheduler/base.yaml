@@ -1,0 +1,5 @@
+# @package optim.lr_scheduler
+
+
+defaults:
+    - LinearWarmupCosineAnnealingLR

@@ -1,0 +1,2239 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.10.0" />
+<title>imutils.ml.callbacks.wandb_callbacks API documentation</title>
+<meta name="description" content="" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>imutils.ml.callbacks.wandb_callbacks</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">import glob
+import os
+from typing import List, Dict, Optional
+
+import matplotlib.pyplot as plt
+import seaborn as sns
+import numpy as np
+from rich import print as pp
+import torch
+import wandb
+import pandas as pd
+# from torchmetrics import metrics
+from torch.utils.data import DataLoader #,Dataset, Subset, random_split
+from pytorch_lightning import Callback, Trainer, LightningDataModule
+from pytorch_lightning.loggers import LoggerCollection, WandbLogger
+from sklearn import metrics
+from sklearn.metrics import f1_score, precision_score, recall_score, confusion_matrix
+
+from pathlib import Path
+# from sklearn.metrics import confusion_matrix
+import plotly.graph_objs as go
+from plotly.subplots import make_subplots
+
+import matplotlib.pyplot as plt
+from sklearn.metrics import classification_report
+
+
+from imutils.ml.utils.plot_utils import plot_confusion_matrix
+
+
+
+
+class ImagePredictionLogger(Callback):
+        def __init__(self, 
+                                 datamodule: LightningDataModule,
+                                 log_every_n_epochs: int=1,
+                                 subset: str=&#39;val&#39;,
+                                 max_samples_per_epoch: int=64,
+                                 fix_catalog_number: bool=False):
+                super().__init__()
+                self.max_samples_per_epoch = max_samples_per_epoch
+                self.log_every = log_every_n_epochs
+                self.subset = subset
+                self.datamodule = datamodule
+                self.classes = self.datamodule.classes
+                self.fix_catalog_number = fix_catalog_number
+                self.reset_iterator()
+                
+#        def on_validation_epoch_end(self, trainer, model):
+#                print(&#39;Inside hook: on_validation_epoch_end(self, trainer, model)&#39;)
+                
+        def reset_iterator(self):
+                self.datamodule.return_paths = True
+                stage = &#39;test&#39; if self.subset==&#39;test&#39; else &#39;fit&#39;
+                self.datamodule.setup(stage=stage)
+                self.data_iterator = iter(self.datamodule.get_dataloader(self.subset))
+                
+        def on_validation_epoch_end(self, trainer, model):
+#                self.datamodule.batch_size = self.max_samples_per_epoch
+#                self.datamodule.return_paths = True
+#                stage = &#39;test&#39; if self.subset==&#39;test&#39; else &#39;fit&#39;
+#                self.datamodule.setup(stage=stage)
+#                x, y, paths = next(iter(self.datamodule.get_dataloader(self.subset)))
+                x, y, paths = [], [], []
+                for idx, batch in enumerate(self.data_iterator):
+                        x_batch, y_batch = batch[:2]
+                        x.append(x_batch.detach().cpu().numpy())
+                        y.append(y_batch.detach().cpu().numpy())
+
+                        if idx*x_batch.shape[0] &gt;= self.max_samples_per_epoch:
+                                break
+                if len(x)==0:
+                        self.reset_iterator()
+                        return
+                x = torch.cat(x, 0)
+                y = torch.cat(y, 0)
+
+                self.current_epoch = trainer.current_epoch
+                skip_epoch = self.current_epoch % self.log_every &gt; 0
+                if skip_epoch:
+                        print(f&#39;Current epoch: {self.current_epoch}. Skipping Image Prediction logging.&#39;)
+                        return
+                print(f&#39;Current epoch: {self.current_epoch}.\nInitiating Image Prediction Artifact creation.&#39;)
+                # Get model prediction
+                if model.training:
+                        training = True
+                        subset=&#39;train&#39;
+                elif self.subset==&#34;test&#34;:
+                        training = False
+                        subset=&#39;test&#39;
+                else:
+                        training = False
+                        subset=&#39;val&#39;
+
+                
+                model.eval()
+                logits = model.cpu()(x)
+                preds = torch.argmax(logits, -1).detach().cpu().numpy()
+                scores = logits.softmax(1).detach().cpu().numpy()
+                
+                columns = [&#39;catalog_number&#39;,
+                                   &#39;image&#39;,
+                                   &#39;guess&#39;,
+                                   &#39;truth&#39;]
+                for j, class_name in enumerate(self.classes):
+                        columns.append(f&#39;score_{class_name}&#39;)
+
+                x = x.permute(0,2,3,1)
+                prediction_rows = []
+                x = (255 * (x - x.min()) / (x.max() - x.min())).numpy().astype(np.uint8)
+                for i in range(len(preds)):
+                        labels = get_labels_from_filepath(path=paths[i],
+                                                                                fix_catalog_number=self.fix_catalog_number)             
+                        row = [
+                                        labels[&#39;catalog_number&#39;],
+                                        wandb.Image(x[i,...]),
+                                        self.classes[preds[i]],
+                                        self.classes[y[i]]
+                        ]
+                        
+                        for j, score_j in enumerate(scores[i,:].tolist()):
+                                row.append(np.round(score_j, 4))
+                        prediction_rows.append(row)
+                        
+                prediction_table = wandb.Table(data=prediction_rows, columns=columns)
+                prediction_artifact = wandb.Artifact(f&#34;{self.subset}_predictions&#34; + wandb.run.id, 
+                                                                                         type=&#34;predictions&#34;)
+                prediction_artifact.add(prediction_table, f&#34;{self.subset}_predictions&#34;)
+                wandb.run.log_artifact(prediction_artifact)
+                
+                if training:
+                        model.train()
+                model.cuda()
+
+                
+###################################
+###################################
+
+
+
+import pl_bolts
+from torch import nn
+from rich import print as pp
+from omegaconf import ListConfig, OmegaConf
+from typing import *
+
+class ModuleDataMonitor(pl_bolts.callbacks.ModuleDataMonitor):
+
+
+        def __init__(self,
+                                 submodules: Optional[Union[bool, List[str]]] = None,
+                                 log_every_n_steps: int = None
+                                ):
+                if isinstance(submodules, ListConfig):
+                        submodules = OmegaConf.to_container(submodules, resolve=True)
+                        print(&#34;type(submodules): &#34;, type(submodules))
+                        submodules = list(submodules)
+                self._train_batch_idx = 0
+                super().__init__(submodules=submodules,
+                                                 log_every_n_steps=log_every_n_steps)
+
+        def _get_submodule_names(self, root_module: nn.Module) -&gt; List[str]:
+                # default is the root module only
+                # import pdb; pdb.set_trace()
+                names = super()._get_submodule_names(root_module=root_module)
+                print(f&#34;ModuleDataMonitor is now tracking the following submodules:&#34;)
+                pp(names)
+
+                return names
+        
+
+
+def get_wandb_logger(trainer: Trainer) -&gt; WandbLogger:
+        print(type(trainer.logger))
+        
+        if isinstance(trainer.logger, WandbLogger):
+                return trainer.logger
+
+        if isinstance(trainer.logger, LoggerCollection):
+                for logger in trainer.logger:
+                        if isinstance(logger, WandbLogger):
+                                return logger
+
+        raise Exception(
+                &#34;You are using wandb related callback, but WandbLogger was not found for some reason...&#34;
+        )
+
+
+class WatchModelWithWandb(Callback):
+        &#34;&#34;&#34;Make WandbLogger watch model at the beginning of the run.&#34;&#34;&#34;
+
+        def __init__(self, log: str = &#34;gradients&#34;, log_freq: int = 100):
+                self.log = log
+                self.log_freq = log_freq
+
+        def on_train_start(self, trainer, pl_module):
+                logger = get_wandb_logger(trainer=trainer)
+                logger.watch(model=trainer.model, log=self.log, log_freq=self.log_freq)
+
+
+from pytorch_lightning.utilities import rank_zero_only
+from pytorch_lightning.callbacks import ModelCheckpoint
+import wandb
+import os
+
+CHECKPOINT_FOLDER = &#39;checkpoints&#39;
+
+class WandbModelCheckpoint(ModelCheckpoint):
+        def __init__(self, *args, **kwargs):
+                if not wandb.run:
+                        raise Exception(&#39;Wandb has not been initialized. Please call wandb.init first.&#39;)
+                wandb_dir = os.path.abspath(wandb.run.dir)
+                super().__init__(dirpath=os.path.join(wandb_dir, CHECKPOINT_FOLDER), *args, **kwargs)
+
+
+
+
+
+
+
+
+class UploadCodeToWandbAsArtifact(Callback):
+        &#34;&#34;&#34;Upload all *.py files to wandb as an artifact, at the beginning of the run.&#34;&#34;&#34;
+
+        def __init__(self, code_dir: str):
+                self.code_dir = code_dir
+
+        def on_train_start(self, trainer, pl_module):
+                logger = get_wandb_logger(trainer=trainer)
+                experiment = logger.experiment
+
+                code = wandb.Artifact(&#34;project-source&#34;, type=&#34;code&#34;)
+                for path in glob.glob(os.path.join(self.code_dir, &#34;**/*.py&#34;), recursive=True):
+                        code.add_file(path)
+
+                experiment.use_artifact(code)
+
+
+class UploadCheckpointsToWandbAsArtifact(Callback):
+        &#34;&#34;&#34;Upload checkpoints to wandb as an artifact, at the end of run.&#34;&#34;&#34;
+        
+        def __init__(self,
+                                 ckpt_dir: str = &#34;checkpoints/&#34;, 
+                                 upload_best_only: bool = False,
+                                 artifact_name: str=&#34;model-weights&#34;,
+                                 artifact_type: str=&#34;checkpoints&#34;):
+                self.ckpt_dir = os.path.abspath(ckpt_dir)
+                self.upload_best_only = upload_best_only
+                self.artifact_name=artifact_name
+                self.artifact_type=artifact_type
+
+        def on_train_end(self, trainer, pl_module):
+                
+                self.create_and_use_artifact(trainer=trainer)
+
+        @rank_zero_only
+        def create_and_use_artifact(self, trainer):
+                &#34;&#34;&#34;
+                My attempt to isolate wandb model artifact creation within a rank_zero_only method.
+                &#34;&#34;&#34;
+                logger = get_wandb_logger(trainer=trainer)
+                experiment = logger.experiment
+                
+                ckpts = wandb.Artifact(self.artifact_name, type=self.artifact_type)
+
+                if self.upload_best_only:
+                        
+                        if not os.path.isfile(trainer.checkpoint_callback.best_model_path):
+                                print(f&#34;WARNING: For some reason, this isnt a file -&gt; trainer.checkpoint_callback.best_model_path={trainer.checkpoint_callback.best_model_path}. Artifact upload failed.&#34;)                              
+                                print(&#34;self.on_train_end: &#34;, f&#34;device:{torch.cuda.current_device()}&#34;)
+                                print(&#34;os.path.dirname(trainer.checkpoint_callback.best_model_path):&#34;, 
+                                          os.path.dirname(trainer.checkpoint_callback.best_model_path))
+                                print(&#34;os.path.basename(trainer.checkpoint_callback.best_model_path):&#34;, 
+                                          os.path.basename(trainer.checkpoint_callback.best_model_path))
+                                print(f&#34;Inspecting os.listdir(os.path.dirname(trainer.checkpoint_callback.best_model_path)):&#34;)
+                                pp(os.listdir(os.path.dirname(trainer.checkpoint_callback.best_model_path)))
+                                import pdb; pdb.set_trace()
+                                return
+                        
+                        print(&#34;Potentially successfully adding file to artifact, instead&#34;)
+                        print(&#34;self.on_train_end: &#34;, f&#34;device:{torch.cuda.current_device()}&#34;)
+                        ckpts.add_file(trainer.checkpoint_callback.best_model_path)
+                        print(f&#34;ckpts artifact has had file added. Device: {torch.cuda.current_device()}&#34;)
+                else:
+                        paths = list(glob.glob(os.path.join(self.ckpt_dir, &#34;**/*.ckpt&#34;), recursive=True))
+                        for path in paths:
+                                ckpts.add_file(path)
+                        print(f&#34;ckpts artifact has had {len(paths)} files added. Device: {torch.cuda.current_device()}&#34;)
+
+                experiment.use_artifact(ckpts)
+
+
+class LogPerClassMetricsToWandb(Callback):
+        &#34;&#34;&#34;Generate f1, precision, recall heatmap every epoch and send it to wandb.
+        Expects validation step to return predictions and targets.
+        &#34;&#34;&#34;
+
+        def __init__(self,
+                                 class_names: List[str] = None,
+                                 logits_key: str=&#34;logits&#34;,
+                                 true_labels_key: str=&#34;y_true&#34;):
+                self.class_names = class_names
+                self.logits_key = logits_key
+                self.true_labels_key = true_labels_key
+                self.preds = []
+                self.targets = []
+                self.path = []
+                self.catalog_number = []
+                self.ready = True
+                
+                self.annotation_class_name_max_len = 125
+
+        def on_sanity_check_start(self, trainer, pl_module):
+                self.ready = False
+
+        def on_sanity_check_end(self, trainer, pl_module):
+                &#34;&#34;&#34;Start executing this callback only after all validation sanity checks end.&#34;&#34;&#34;
+                self.ready = True
+
+        def on_validation_batch_end(
+                self, trainer, pl_module, outputs, batch, batch_idx, dataloader_idx
+        ):
+                &#34;&#34;&#34;Gather data from single batch.&#34;&#34;&#34;
+                if not isinstance(outputs, dict):
+                        return
+                if &#39;log&#39; in outputs.keys():
+                        outputs = outputs[&#39;log&#39;]
+                elif &#39;hidden&#39; in outputs.keys():
+                        outputs = outputs[&#39;hidden&#39;]
+                if self.ready:
+                        self.path.extend(getattr(batch, &#34;path&#34;, []))
+                        self.catalog_number.extend(getattr(batch, &#34;catalog_number&#34;, []))
+                        self.preds.append(outputs[self.logits_key].detach().cpu())
+                        self.targets.append(outputs[self.true_labels_key].detach().cpu())
+
+        def on_validation_epoch_end(self, trainer, pl_module):
+                &#34;&#34;&#34;Generate f1, precision and recall heatmap,
+                then generate confusion matrix.&#34;&#34;&#34;
+                if self.ready and len(self.preds) and len(self.targets):
+                        wandb_logger = get_wandb_logger(trainer=trainer)
+                        rank = pl_module.global_rank
+#                        print(f&#39;Rank: {rank}&#39;)
+#                        print(f&#34;wandb_logger.experiment={wandb_logger.experiment}&#34;)
+#                        print(f&#34;dir(wandb_logger.experiment)={dir(wandb_logger.experiment)}&#34;)
+#                        print(f&#34;wandb_logger.experiment.disabled={wandb_logger.experiment.disabled}&#34;)
+#                        print(f&#34;wandb_logger.experiment.id={wandb_logger.experiment.id}&#34;)
+#                        print(f&#34;wandb_logger.experiment.name={wandb_logger.experiment.name}&#34;)
+#                        if
+                        if (rank &gt; 0) or (wandb_logger is None) or (wandb_logger.experiment.id is None):
+                                print(f&#34;(wandb_logger.experiment.id is None) = {(wandb_logger.experiment.id is None)}&#34;)
+                                print(f&#34;Rank&gt;0, skipping per class metrics\n&#34;, &#34;=&#34;*20)
+                                return
+
+
+                        preds = torch.cat(self.preds).numpy() #.cpu().numpy()
+                        targets = torch.cat(self.targets).numpy() #.cpu().numpy()
+                        
+#                        print(f&#34;preds.shape={preds.shape}&#34;)
+#                        print(f&#34;targets.shape={targets.shape}&#34;)
+                        
+                        # self._log_classification_report(preds, targets, logger=wandb_logger)
+                
+#                        self._log_per_class_scores(preds, targets, logger=wandb_logger)
+                        self._log_confusion_matrix(preds, targets, logger=wandb_logger, epoch=trainer.current_epoch)
+                        wandb_logger.experiment.log({f&#34;current_epoch&#34;: trainer.current_epoch})
+                        
+#                        print(&#34;num_validation_samples: &#34;, len(preds))
+                        self.preds.clear()
+                        self.targets.clear()
+                        self.preds = []
+                        self.targets = []
+                        self.path = []
+                        self.catalog_number = []
+                        
+        def _log_confusion_matrix(self, preds: np.ndarray, targets: np.ndarray, logger, epoch: Optional[int]=0):
+                &#34;&#34;&#34;
+                Generate confusion_matrix heatmap
+                &#34;&#34;&#34;
+                
+                sns_context = &#34;poster&#34;
+                sns_style = &#34;seaborn-bright&#34;
+                cmap=&#34;YlGnBu_r&#34;
+                sns.set_context(context=sns_context, font_scale=0.7)
+                plt.style.use(sns_style)
+                
+                # if targets.ndim &gt;= 2:
+                #        targets = np.argmax(targets, axis=1)
+                if preds.ndim &gt;= 2:
+                        preds = np.argmax(preds, axis=1)
+                
+                confusion_matrix = pd.DataFrame(metrics.confusion_matrix(y_true=targets, y_pred=preds))
+                confusion_matrix.index.name = &#34;True&#34;
+                confusion_matrix = confusion_matrix.T
+                confusion_matrix.index.name = &#34;Predicted&#34;
+                confusion_matrix = confusion_matrix.T
+                
+                try:
+                        plot_confusion_matrix(cm=confusion_matrix, title=None)
+                        print(f&#34;val/confusion_matrix/{logger.experiment.name}&#34;)
+                        # current_epoch = self.current_epoch
+                        logger.experiment.log({
+                                f&#34;val/confusion_matrix/{logger.experiment.name}&#34;: wandb.Image(plt),
+                                &#34;current_epoch&#34;:epoch}, commit=False)
+#                        logger.experiment.log({f&#34;val/confusion_matrix_png/{logger.experiment.name}&#34;: wandb.Image()}, commit=False)
+
+                except Exception as e:
+                        print(e)
+                        print(&#39;continuing anyway&#39;)
+
+                plt.clf()
+                plt.close(plt.gcf())
+                        
+                        
+                        
+                        
+        def _log_classification_report(self, preds: np.ndarray, targets: np.ndarray, logger):
+                
+
+#                true = np.random.randint(0, num_classes, size=num_samples)
+#                pred = np.random.randint(0, num_classes, size=num_samples)
+#                labels = np.arange(num_classes)
+#                target_names = [r.get_random_word() for _ in range(num_classes)]
+                # target_names = list(&#34;ABCDEFGHI&#34;)
+
+                clf_report = classification_report(targets,
+                                                                                   preds,
+                                                                                   zero_division=0,
+                                                                                   output_dict=True)
+                
+                
+                # table = wandb.Table(data=[(label,
+
+                sns.set_theme(context=&#34;talk&#34;)
+                fig, ax = plt.subplots(1,2, figsize=(18,30))
+
+                sns.heatmap(pd.DataFrame(clf_report).iloc[:-1, :].T, annot=True, annot_kws={&#34;fontsize&#34;:6}, ax=ax[0])
+                sns.heatmap(pd.DataFrame(clf_report).iloc[-1:, :-3].T, annot=True, annot_kws={&#34;fontsize&#34;:6}, ax=ax[1])
+
+#                fig = plt.figure(figsize=(15,29))
+#                sns.heatmap(pd.DataFrame(clf_report).iloc[:, :].T, annot=True, annot_kws={&#34;fontsize&#34;:7})
+                logger.experiment.log({f&#34;val/classification_report&#34;: wandb.Image(plt)}, commit=False)
+#                logger.experiment.log({f&#34;val/classification_report&#34;: wandb.Image(fig)}, commit=False)
+                plt.clf()
+                plt.close(fig)
+                        
+                        
+                        
+        def _log_per_class_scores(self, preds: np.ndarray, targets: np.ndarray, logger):
+                &#34;&#34;&#34;
+                Generate f1, precision and recall heatmap
+                &#34;&#34;&#34;
+                sns_context = &#34;poster&#34;
+                sns_style = &#34;seaborn-bright&#34;
+                cmap=&#34;YlGnBu_r&#34;
+                sns.set_context(context=sns_context, font_scale=0.7)
+                plt.style.use(sns_style)
+                
+                from icecream import ic
+                ic(preds.ndim, targets.ndim)
+                # if targets.ndim &gt;= 2:
+                #        targets = np.argmax(targets, axis=1)
+                if preds.ndim &gt;= 2:
+                        preds = np.argmax(preds, axis=1)
+
+                f1 = f1_score(preds, targets, average=None, zero_division=0)
+                r = recall_score(preds, targets, average=None, zero_division=0)
+                p = precision_score(preds, targets, average=None, zero_division=0)
+
+                
+                class_indices, support = np.unique(targets, return_counts=True)
+                
+                num_classes = len(self.class_names)
+#                print(f1.shape, r.shape, p.shape, support.shape)
+                
+                if len(support) &lt; num_classes:
+                        f1_full = np.zeros(num_classes)
+                        r_full = np.zeros_like(f1_full)
+                        p_full = np.zeros_like(f1_full)
+                        support_full = np.zeros_like(f1_full)
+                        
+#                        for i, support_class_i in zip(class_indices, support):
+                        for i, class_i in enumerate(class_indices):
+
+#                                if class_i &gt;= len(support)-1:
+#                                        break
+                                f1_full[class_i] = f1[i]
+                                r_full[class_i] = r[i]
+                                p_full[class_i] = p[i]
+                                support_full[class_i] = support[i]
+                        f1 = f1_full
+                        r = r_full
+                        p = p_full
+                        support = support_full
+                        
+                        
+                data = [f1, p, r, support]
+                
+#                for d in data:
+#                        print(f&#34;len(d)={len(d)}&#34;)
+                w = int(len(self.class_names)//10) + 10
+                h = 10
+                plt.figure(figsize=(w, h))
+                annot = bool(len(self.class_names) &lt; self.annotation_class_name_max_len)
+                xticklabels = self.class_names if annot else []
+                yticklabels=[&#34;F1&#34;, &#34;Precision&#34;, &#34;Recall&#34;, &#34;Support&#34;]
+
+                g = sns.heatmap(data.T,
+                                                annot=annot,
+                                                vmin=0.0, vmax=1.0,
+                                                linewidths=1, annot_kws={&#34;size&#34;: 8}, fmt=&#34;.2f&#34;, cmap=cmap,
+                                                yticklabels=yticklabels,
+                                                xticklabels=xticklabels)
+                plt.suptitle(f&#34;(M={num_classes}) per-class F1_Precision_Recall -- heatmap&#34;)
+                g.set_xticklabels(g.get_xticklabels(), rotation=45, horizontalalignment=&#39;right&#39;, fontsize=&#39;medium&#39;, fontweight=&#39;light&#39;)
+                g.set_yticklabels(g.get_yticklabels(), rotation=45, horizontalalignment=&#39;right&#39;, fontsize=&#39;medium&#39;, fontweight=&#39;light&#39;)
+                plt.subplots_adjust(bottom=0.2, top=0.95, wspace=None, hspace=0.07)
+                try:
+                        logger.experiment.log({f&#34;val/per_class/f1_p_r_heatmap&#34;: wandb.Image(plt.gcf())}, commit=False)
+                except Exception as e:
+                        print(e)
+                        logger.experiment.log({f&#34;val/per_class/f1_p_r_heatmap&#34;: wandb.Image(plt)}, commit=False)
+                        print(&#39;retry successful&#39;)
+                plt.clf()
+                plt.close(fig)
+                
+#                import pdb; pdb.set_trace()
+                
+                logger.experiment.log({f&#34;val/per_class/f1_p_r_table&#34;: 
+                                                           wandb.Table(dataframe=pd.DataFrame(np.stack(data).T,
+                                                                                                                                  index=xticklabels,
+                                                                                                                                  columns=yticklabels).T
+                                                                                  )
+                                                          }, commit=False)
+                
+                num_samples = len(preds)
+                idx = list(range(len(self.class_names)))
+                
+                for j, metric in enumerate([&#34;F1&#34;, &#34;Precision&#34;, &#34;Recall&#34;]):
+#                        print(f&#34;metric={metric},&#34;, f&#34;len(data[j])={len(data[j])}&#34;)
+                        metric_data = pd.DataFrame(data[j]).T.to_records()
+#                        print(f&#34;val/per_class/{metric}_distributions: metric_data[0].shape={metric_data.shape}&#34;)
+                        logger.experiment.log({f&#34;val/per_class/{metric}_distributions&#34; : wandb.plot.line_series(xs=idx,
+                                                                                                                                                                                                  ys=metric_data,
+                                                                                                                                                                                                  keys=self.class_names,
+                                                                                                                                                                                                  title=f&#34;per-class {metric} -- time series&#34;,
+                                                                                                                                                                                                  xname=&#34;family&#34;)},
+                                                                                                                                                                                                  commit=False)
+
+                
+                
+                
+                
+###################################################
+
+
+# source: https://colab.research.google.com/drive/1k89TDv8ybckgfVByUIhY6peBjtNGBH-k?usp=sharing#scrollTo=RO1MSGLeAzWp
+class WandbClassificationCallback(Callback):
+
+        def __init__(self, monitor=&#39;val_loss&#39;, verbose=0, mode=&#39;auto&#39;,
+                                 save_weights_only=False, log_weights=False, log_gradients=False,
+                                 save_model=True, training_data=None, validation_data=None,
+                                 labels=[], data_type=None, predictions=1, generator=None,
+                                 input_type=None, output_type=None, log_evaluation=False,
+                                 validation_steps=None, class_colors=None, log_batch_frequency=None,
+                                 log_best_prefix=&#34;best_&#34;, 
+                                 log_confusion_matrix=False,
+                                 confusion_examples=0, confusion_classes=5):
+                
+                super().__init__(monitor=monitor,
+                                                verbose=verbose, 
+                                                mode=mode,
+                                                save_weights_only=save_weights_only,
+                                                log_weights=log_weights,
+                                                log_gradients=log_gradients,
+                                                save_model=save_model,
+                                                training_data=training_data,
+                                                validation_data=validation_data,
+                                                labels=labels,
+                                                data_type=data_type,
+                                                predictions=predictions,
+                                                generator=generator,
+                                                input_type=input_type,
+                                                output_type=output_type,
+                                                log_evaluation=log_evaluation,
+                                                validation_steps=validation_steps,
+                                                class_colors=class_colors,
+                                                log_batch_frequency=log_batch_frequency,
+                                                log_best_prefix=log_best_prefix)
+                                                
+                self.log_confusion_matrix = log_confusion_matrix
+                self.confusion_examples = confusion_examples
+                self.confusion_classes = confusion_classes
+                           
+        def on_epoch_end(self, epoch, logs={}):
+                if self.generator:
+                        self.validation_data = next(self.generator)
+
+                if self.log_weights:
+                        wandb.log(self._log_weights(), commit=False)
+
+                if self.log_gradients:
+                        wandb.log(self._log_gradients(), commit=False)
+                
+                if self.log_confusion_matrix:
+                        if self.validation_data is None:
+                                wandb.termwarn(
+                                        &#34;No validation_data set, pass a generator to the callback.&#34;)
+                        elif self.validation_data and len(self.validation_data) &gt; 0:
+                                wandb.log(self._log_confusion_matrix(), commit=False)                                   
+
+                if self.input_type in (&#34;image&#34;, &#34;images&#34;, &#34;segmentation_mask&#34;) or self.output_type in (&#34;image&#34;, &#34;images&#34;, &#34;segmentation_mask&#34;):
+                        if self.validation_data is None:
+                                wandb.termwarn(
+                                        &#34;No validation_data set, pass a generator to the callback.&#34;)
+                        elif self.validation_data and len(self.validation_data) &gt; 0:
+                                if self.confusion_examples &gt; 0:
+                                        wandb.log({&#39;confusion_examples&#39;: self._log_confusion_examples(
+                                                                                                        confusion_classes=self.confusion_classes,
+                                                                                                        max_confused_examples=self.confusion_examples)}, commit=False)
+                                if self.predictions &gt; 0:
+                                        wandb.log({&#34;examples&#34;: self._log_images(
+                                                num_images=self.predictions)}, commit=False)
+
+                wandb.log({&#39;epoch&#39;: epoch}, commit=False)
+                wandb.log(logs, commit=True)
+
+                self.current = logs.get(self.monitor)
+                if self.current and self.monitor_op(self.current, self.best):
+                        if self.log_best_prefix:
+                                wandb.run.summary[&#34;%s%s&#34; % (self.log_best_prefix, self.monitor)] = self.current
+                                wandb.run.summary[&#34;%s%s&#34; % (self.log_best_prefix, &#34;epoch&#34;)] = epoch
+                                if self.verbose and not self.save_model:
+                                        print(&#39;Epoch %05d: %s improved from %0.5f to %0.5f&#39; % (
+                                                epoch, self.monitor, self.best, self.current))
+                        if self.save_model:
+                                self._save_model(epoch)
+                        self.best = self.current
+                
+        def _log_confusion_matrix(self):
+                x_val = self.validation_data[0]
+                y_val = self.validation_data[1]
+                y_val = np.argmax(y_val, axis=1)
+                y_pred = np.argmax(self.model.predict(x_val), axis=1)
+
+                confmatrix = confusion_matrix(y_pred, y_val, labels=range(len(self.labels)))
+                confdiag = np.eye(len(confmatrix)) * confmatrix
+                np.fill_diagonal(confmatrix, 0)
+
+                confmatrix = confmatrix.astype(&#39;float&#39;)
+                n_confused = np.sum(confmatrix)
+                confmatrix[confmatrix == 0] = np.nan
+                confmatrix = go.Heatmap({&#39;coloraxis&#39;: &#39;coloraxis1&#39;, &#39;x&#39;: self.labels, &#39;y&#39;: self.labels, &#39;z&#39;: confmatrix,
+                                                                 &#39;hoverongaps&#39;:False, &#39;hovertemplate&#39;: &#39;Predicted %{y}&lt;br&gt;Instead of %{x}&lt;br&gt;On %{z} examples&lt;extra&gt;&lt;/extra&gt;&#39;})
+
+                confdiag = confdiag.astype(&#39;float&#39;)
+                n_right = np.sum(confdiag)
+                confdiag[confdiag == 0] = np.nan
+                confdiag = go.Heatmap({&#39;coloraxis&#39;: &#39;coloraxis2&#39;, &#39;x&#39;: self.labels, &#39;y&#39;: self.labels, &#39;z&#39;: confdiag,
+                                                           &#39;hoverongaps&#39;:False, &#39;hovertemplate&#39;: &#39;Predicted %{y} just right&lt;br&gt;On %{z} examples&lt;extra&gt;&lt;/extra&gt;&#39;})
+
+                fig = go.Figure((confdiag, confmatrix))
+                transparent = &#39;rgba(0, 0, 0, 0)&#39;
+                n_total = n_right + n_confused
+                fig.update_layout({&#39;coloraxis1&#39;: {&#39;colorscale&#39;: [[0, transparent], [0, &#39;rgba(180, 0, 0, 0.05)&#39;], [1, f&#39;rgba(180, 0, 0, {max(0.2, (n_confused/n_total) ** 0.5)})&#39;]], &#39;showscale&#39;: False}})
+                fig.update_layout({&#39;coloraxis2&#39;: {&#39;colorscale&#39;: [[0, transparent], [0, f&#39;rgba(0, 180, 0, {min(0.8, (n_right/n_total) ** 2)})&#39;], [1, &#39;rgba(0, 180, 0, 1)&#39;]], &#39;showscale&#39;: False}})
+
+                xaxis = {&#39;title&#39;:{&#39;text&#39;:&#39;y_true&#39;}, &#39;showticklabels&#39;:False}
+                yaxis = {&#39;title&#39;:{&#39;text&#39;:&#39;y_pred&#39;}, &#39;showticklabels&#39;:False}
+
+                fig.update_layout(title={&#39;text&#39;:&#39;Confusion matrix&#39;, &#39;x&#39;:0.5}, paper_bgcolor=transparent, plot_bgcolor=transparent, xaxis=xaxis, yaxis=yaxis)
+                
+                return {&#39;confusion_matrix&#39;: wandb.data_types.Plotly(fig)}
+
+        def _log_confusion_examples(self, rescale=255, confusion_classes=5, max_confused_examples=3):
+                        x_val = self.validation_data[0]
+                        y_val = self.validation_data[1]
+                        y_val = np.argmax(y_val, axis=1)
+                        y_pred = np.argmax(self.model.predict(x_val), axis=1)
+
+                        # Grayscale to rgb
+                        if x_val.shape[-1] == 1:
+                                x_val = np.concatenate((x_val, x_val, x_val), axis=-1)
+
+                        confmatrix = confusion_matrix(y_pred, y_val, labels=range(len(self.labels)))
+                        np.fill_diagonal(confmatrix, 0)
+
+                        def example_image(class_index, x_val=x_val, y_pred=y_pred, y_val=y_val, labels=self.labels, rescale=rescale):
+                                image = None
+                                title_text = &#39;No example found&#39;
+                                color = &#39;red&#39;
+
+                                right_predicted_images = x_val[np.logical_and(y_pred==class_index, y_val==class_index)]
+                                if len(right_predicted_images) &gt; 0:
+                                        image = rescale * right_predicted_images[0]
+                                        title_text = &#39;Predicted right&#39;
+                                        color = &#39;rgb(46, 184, 46)&#39;
+                                else:
+                                        ground_truth_images = x_val[y_val==class_index]
+                                        if len(ground_truth_images) &gt; 0:
+                                                image = rescale * ground_truth_images[0]
+                                                title_text = &#39;Example&#39;
+                                                color = &#39;rgb(255, 204, 0)&#39;
+
+                                return image, title_text, color
+
+                        n_cols = max_confused_examples + 2
+                        subplot_titles = [&#34;&#34;] * n_cols
+                        subplot_titles[-2:] = [&#34;y_true&#34;, &#34;y_pred&#34;]
+                        subplot_titles[max_confused_examples//2] = &#34;confused_predictions&#34;
+                        
+                        n_rows = min(len(confmatrix[confmatrix &gt; 0]), confusion_classes)
+                        fig = make_subplots(rows=n_rows, cols=n_cols, subplot_titles=subplot_titles)
+                        for class_rank in range(1, n_rows+1):
+                                indx = np.argmax(confmatrix)
+                                indx = np.unravel_index(indx, shape=confmatrix.shape)
+                                if confmatrix[indx] == 0:
+                                        break
+                                confmatrix[indx] = 0
+
+                                class_pred, class_true = indx[0], indx[1]
+                                mask = np.logical_and(y_pred==class_pred, y_val==class_true)
+                                confused_images = x_val[mask]
+
+                                # Confused images
+                                n_images_confused = min(max_confused_examples, len(confused_images))
+                                for j in range(n_images_confused):
+                                        fig.add_trace(go.Image(z=rescale*confused_images[j],
+                                                                                name=f&#39;Predicted: {self.labels[class_pred]} | Instead of: {self.labels[class_true]}&#39;,
+                                                                                hoverinfo=&#39;name&#39;, hoverlabel={&#39;namelength&#39; :-1}),
+                                                                row=class_rank, col=j+1)
+                                        fig.update_xaxes(showline=True, linewidth=5, linecolor=&#39;red&#39;, row=class_rank, col=j+1, mirror=True)
+                                        fig.update_yaxes(showline=True, linewidth=5, linecolor=&#39;red&#39;, row=class_rank, col=j+1, mirror=True)
+
+                                # Comparaison images
+                                for i, class_index in enumerate((class_true, class_pred)):
+                                        col = n_images_confused+i+1
+                                        image, title_text, color = example_image(class_index)
+                                        fig.add_trace(go.Image(z=image, name=self.labels[class_index], hoverinfo=&#39;name&#39;, hoverlabel={&#39;namelength&#39; :-1}), row=class_rank, col=col)       
+                                        fig.update_xaxes(showline=True, linewidth=5, linecolor=color, row=class_rank, col=col, mirror=True, title_text=title_text)
+                                        fig.update_yaxes(showline=True, linewidth=5, linecolor=color, row=class_rank, col=col, mirror=True, title_text=self.labels[class_index])
+
+                        fig.update_xaxes(showticklabels=False)
+                        fig.update_yaxes(showticklabels=False)
+                        
+                        return wandb.data_types.Plotly(fig)</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="imutils.ml.callbacks.wandb_callbacks.get_wandb_logger"><code class="name flex">
+<span>def <span class="ident">get_wandb_logger</span></span>(<span>trainer: pytorch_lightning.trainer.trainer.Trainer) ‑> pytorch_lightning.loggers.wandb.WandbLogger</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_wandb_logger(trainer: Trainer) -&gt; WandbLogger:
+        print(type(trainer.logger))
+        
+        if isinstance(trainer.logger, WandbLogger):
+                return trainer.logger
+
+        if isinstance(trainer.logger, LoggerCollection):
+                for logger in trainer.logger:
+                        if isinstance(logger, WandbLogger):
+                                return logger
+
+        raise Exception(
+                &#34;You are using wandb related callback, but WandbLogger was not found for some reason...&#34;
+        )</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="imutils.ml.callbacks.wandb_callbacks.ImagePredictionLogger"><code class="flex name class">
+<span>class <span class="ident">ImagePredictionLogger</span></span>
+<span>(</span><span>datamodule: pytorch_lightning.core.datamodule.LightningDataModule, log_every_n_epochs: int = 1, subset: str = 'val', max_samples_per_epoch: int = 64, fix_catalog_number: bool = False)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Abstract base class used to build new callbacks.</p>
+<p>Subclass this class and override any of the relevant hooks</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class ImagePredictionLogger(Callback):
+        def __init__(self, 
+                                 datamodule: LightningDataModule,
+                                 log_every_n_epochs: int=1,
+                                 subset: str=&#39;val&#39;,
+                                 max_samples_per_epoch: int=64,
+                                 fix_catalog_number: bool=False):
+                super().__init__()
+                self.max_samples_per_epoch = max_samples_per_epoch
+                self.log_every = log_every_n_epochs
+                self.subset = subset
+                self.datamodule = datamodule
+                self.classes = self.datamodule.classes
+                self.fix_catalog_number = fix_catalog_number
+                self.reset_iterator()
+                
+#        def on_validation_epoch_end(self, trainer, model):
+#                print(&#39;Inside hook: on_validation_epoch_end(self, trainer, model)&#39;)
+                
+        def reset_iterator(self):
+                self.datamodule.return_paths = True
+                stage = &#39;test&#39; if self.subset==&#39;test&#39; else &#39;fit&#39;
+                self.datamodule.setup(stage=stage)
+                self.data_iterator = iter(self.datamodule.get_dataloader(self.subset))
+                
+        def on_validation_epoch_end(self, trainer, model):
+#                self.datamodule.batch_size = self.max_samples_per_epoch
+#                self.datamodule.return_paths = True
+#                stage = &#39;test&#39; if self.subset==&#39;test&#39; else &#39;fit&#39;
+#                self.datamodule.setup(stage=stage)
+#                x, y, paths = next(iter(self.datamodule.get_dataloader(self.subset)))
+                x, y, paths = [], [], []
+                for idx, batch in enumerate(self.data_iterator):
+                        x_batch, y_batch = batch[:2]
+                        x.append(x_batch.detach().cpu().numpy())
+                        y.append(y_batch.detach().cpu().numpy())
+
+                        if idx*x_batch.shape[0] &gt;= self.max_samples_per_epoch:
+                                break
+                if len(x)==0:
+                        self.reset_iterator()
+                        return
+                x = torch.cat(x, 0)
+                y = torch.cat(y, 0)
+
+                self.current_epoch = trainer.current_epoch
+                skip_epoch = self.current_epoch % self.log_every &gt; 0
+                if skip_epoch:
+                        print(f&#39;Current epoch: {self.current_epoch}. Skipping Image Prediction logging.&#39;)
+                        return
+                print(f&#39;Current epoch: {self.current_epoch}.\nInitiating Image Prediction Artifact creation.&#39;)
+                # Get model prediction
+                if model.training:
+                        training = True
+                        subset=&#39;train&#39;
+                elif self.subset==&#34;test&#34;:
+                        training = False
+                        subset=&#39;test&#39;
+                else:
+                        training = False
+                        subset=&#39;val&#39;
+
+                
+                model.eval()
+                logits = model.cpu()(x)
+                preds = torch.argmax(logits, -1).detach().cpu().numpy()
+                scores = logits.softmax(1).detach().cpu().numpy()
+                
+                columns = [&#39;catalog_number&#39;,
+                                   &#39;image&#39;,
+                                   &#39;guess&#39;,
+                                   &#39;truth&#39;]
+                for j, class_name in enumerate(self.classes):
+                        columns.append(f&#39;score_{class_name}&#39;)
+
+                x = x.permute(0,2,3,1)
+                prediction_rows = []
+                x = (255 * (x - x.min()) / (x.max() - x.min())).numpy().astype(np.uint8)
+                for i in range(len(preds)):
+                        labels = get_labels_from_filepath(path=paths[i],
+                                                                                fix_catalog_number=self.fix_catalog_number)             
+                        row = [
+                                        labels[&#39;catalog_number&#39;],
+                                        wandb.Image(x[i,...]),
+                                        self.classes[preds[i]],
+                                        self.classes[y[i]]
+                        ]
+                        
+                        for j, score_j in enumerate(scores[i,:].tolist()):
+                                row.append(np.round(score_j, 4))
+                        prediction_rows.append(row)
+                        
+                prediction_table = wandb.Table(data=prediction_rows, columns=columns)
+                prediction_artifact = wandb.Artifact(f&#34;{self.subset}_predictions&#34; + wandb.run.id, 
+                                                                                         type=&#34;predictions&#34;)
+                prediction_artifact.add(prediction_table, f&#34;{self.subset}_predictions&#34;)
+                wandb.run.log_artifact(prediction_artifact)
+                
+                if training:
+                        model.train()
+                model.cuda()</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>pytorch_lightning.callbacks.base.Callback</li>
+<li>abc.ABC</li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="imutils.ml.callbacks.wandb_callbacks.ImagePredictionLogger.on_validation_epoch_end"><code class="name flex">
+<span>def <span class="ident">on_validation_epoch_end</span></span>(<span>self, trainer, model)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Called when the val epoch ends.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">        def on_validation_epoch_end(self, trainer, model):
+#                self.datamodule.batch_size = self.max_samples_per_epoch
+#                self.datamodule.return_paths = True
+#                stage = &#39;test&#39; if self.subset==&#39;test&#39; else &#39;fit&#39;
+#                self.datamodule.setup(stage=stage)
+#                x, y, paths = next(iter(self.datamodule.get_dataloader(self.subset)))
+                x, y, paths = [], [], []
+                for idx, batch in enumerate(self.data_iterator):
+                        x_batch, y_batch = batch[:2]
+                        x.append(x_batch.detach().cpu().numpy())
+                        y.append(y_batch.detach().cpu().numpy())
+
+                        if idx*x_batch.shape[0] &gt;= self.max_samples_per_epoch:
+                                break
+                if len(x)==0:
+                        self.reset_iterator()
+                        return
+                x = torch.cat(x, 0)
+                y = torch.cat(y, 0)
+
+                self.current_epoch = trainer.current_epoch
+                skip_epoch = self.current_epoch % self.log_every &gt; 0
+                if skip_epoch:
+                        print(f&#39;Current epoch: {self.current_epoch}. Skipping Image Prediction logging.&#39;)
+                        return
+                print(f&#39;Current epoch: {self.current_epoch}.\nInitiating Image Prediction Artifact creation.&#39;)
+                # Get model prediction
+                if model.training:
+                        training = True
+                        subset=&#39;train&#39;
+                elif self.subset==&#34;test&#34;:
+                        training = False
+                        subset=&#39;test&#39;
+                else:
+                        training = False
+                        subset=&#39;val&#39;
+
+                
+                model.eval()
+                logits = model.cpu()(x)
+                preds = torch.argmax(logits, -1).detach().cpu().numpy()
+                scores = logits.softmax(1).detach().cpu().numpy()
+                
+                columns = [&#39;catalog_number&#39;,
+                                   &#39;image&#39;,
+                                   &#39;guess&#39;,
+                                   &#39;truth&#39;]
+                for j, class_name in enumerate(self.classes):
+                        columns.append(f&#39;score_{class_name}&#39;)
+
+                x = x.permute(0,2,3,1)
+                prediction_rows = []
+                x = (255 * (x - x.min()) / (x.max() - x.min())).numpy().astype(np.uint8)
+                for i in range(len(preds)):
+                        labels = get_labels_from_filepath(path=paths[i],
+                                                                                fix_catalog_number=self.fix_catalog_number)             
+                        row = [
+                                        labels[&#39;catalog_number&#39;],
+                                        wandb.Image(x[i,...]),
+                                        self.classes[preds[i]],
+                                        self.classes[y[i]]
+                        ]
+                        
+                        for j, score_j in enumerate(scores[i,:].tolist()):
+                                row.append(np.round(score_j, 4))
+                        prediction_rows.append(row)
+                        
+                prediction_table = wandb.Table(data=prediction_rows, columns=columns)
+                prediction_artifact = wandb.Artifact(f&#34;{self.subset}_predictions&#34; + wandb.run.id, 
+                                                                                         type=&#34;predictions&#34;)
+                prediction_artifact.add(prediction_table, f&#34;{self.subset}_predictions&#34;)
+                wandb.run.log_artifact(prediction_artifact)
+                
+                if training:
+                        model.train()
+                model.cuda()</code></pre>
+</details>
+</dd>
+<dt id="imutils.ml.callbacks.wandb_callbacks.ImagePredictionLogger.reset_iterator"><code class="name flex">
+<span>def <span class="ident">reset_iterator</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def reset_iterator(self):
+        self.datamodule.return_paths = True
+        stage = &#39;test&#39; if self.subset==&#39;test&#39; else &#39;fit&#39;
+        self.datamodule.setup(stage=stage)
+        self.data_iterator = iter(self.datamodule.get_dataloader(self.subset))</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="imutils.ml.callbacks.wandb_callbacks.LogPerClassMetricsToWandb"><code class="flex name class">
+<span>class <span class="ident">LogPerClassMetricsToWandb</span></span>
+<span>(</span><span>class_names: List[str] = None, logits_key: str = 'logits', true_labels_key: str = 'y_true')</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Generate f1, precision, recall heatmap every epoch and send it to wandb.
+Expects validation step to return predictions and targets.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class LogPerClassMetricsToWandb(Callback):
+        &#34;&#34;&#34;Generate f1, precision, recall heatmap every epoch and send it to wandb.
+        Expects validation step to return predictions and targets.
+        &#34;&#34;&#34;
+
+        def __init__(self,
+                                 class_names: List[str] = None,
+                                 logits_key: str=&#34;logits&#34;,
+                                 true_labels_key: str=&#34;y_true&#34;):
+                self.class_names = class_names
+                self.logits_key = logits_key
+                self.true_labels_key = true_labels_key
+                self.preds = []
+                self.targets = []
+                self.path = []
+                self.catalog_number = []
+                self.ready = True
+                
+                self.annotation_class_name_max_len = 125
+
+        def on_sanity_check_start(self, trainer, pl_module):
+                self.ready = False
+
+        def on_sanity_check_end(self, trainer, pl_module):
+                &#34;&#34;&#34;Start executing this callback only after all validation sanity checks end.&#34;&#34;&#34;
+                self.ready = True
+
+        def on_validation_batch_end(
+                self, trainer, pl_module, outputs, batch, batch_idx, dataloader_idx
+        ):
+                &#34;&#34;&#34;Gather data from single batch.&#34;&#34;&#34;
+                if not isinstance(outputs, dict):
+                        return
+                if &#39;log&#39; in outputs.keys():
+                        outputs = outputs[&#39;log&#39;]
+                elif &#39;hidden&#39; in outputs.keys():
+                        outputs = outputs[&#39;hidden&#39;]
+                if self.ready:
+                        self.path.extend(getattr(batch, &#34;path&#34;, []))
+                        self.catalog_number.extend(getattr(batch, &#34;catalog_number&#34;, []))
+                        self.preds.append(outputs[self.logits_key].detach().cpu())
+                        self.targets.append(outputs[self.true_labels_key].detach().cpu())
+
+        def on_validation_epoch_end(self, trainer, pl_module):
+                &#34;&#34;&#34;Generate f1, precision and recall heatmap,
+                then generate confusion matrix.&#34;&#34;&#34;
+                if self.ready and len(self.preds) and len(self.targets):
+                        wandb_logger = get_wandb_logger(trainer=trainer)
+                        rank = pl_module.global_rank
+#                        print(f&#39;Rank: {rank}&#39;)
+#                        print(f&#34;wandb_logger.experiment={wandb_logger.experiment}&#34;)
+#                        print(f&#34;dir(wandb_logger.experiment)={dir(wandb_logger.experiment)}&#34;)
+#                        print(f&#34;wandb_logger.experiment.disabled={wandb_logger.experiment.disabled}&#34;)
+#                        print(f&#34;wandb_logger.experiment.id={wandb_logger.experiment.id}&#34;)
+#                        print(f&#34;wandb_logger.experiment.name={wandb_logger.experiment.name}&#34;)
+#                        if
+                        if (rank &gt; 0) or (wandb_logger is None) or (wandb_logger.experiment.id is None):
+                                print(f&#34;(wandb_logger.experiment.id is None) = {(wandb_logger.experiment.id is None)}&#34;)
+                                print(f&#34;Rank&gt;0, skipping per class metrics\n&#34;, &#34;=&#34;*20)
+                                return
+
+
+                        preds = torch.cat(self.preds).numpy() #.cpu().numpy()
+                        targets = torch.cat(self.targets).numpy() #.cpu().numpy()
+                        
+#                        print(f&#34;preds.shape={preds.shape}&#34;)
+#                        print(f&#34;targets.shape={targets.shape}&#34;)
+                        
+                        # self._log_classification_report(preds, targets, logger=wandb_logger)
+                
+#                        self._log_per_class_scores(preds, targets, logger=wandb_logger)
+                        self._log_confusion_matrix(preds, targets, logger=wandb_logger, epoch=trainer.current_epoch)
+                        wandb_logger.experiment.log({f&#34;current_epoch&#34;: trainer.current_epoch})
+                        
+#                        print(&#34;num_validation_samples: &#34;, len(preds))
+                        self.preds.clear()
+                        self.targets.clear()
+                        self.preds = []
+                        self.targets = []
+                        self.path = []
+                        self.catalog_number = []
+                        
+        def _log_confusion_matrix(self, preds: np.ndarray, targets: np.ndarray, logger, epoch: Optional[int]=0):
+                &#34;&#34;&#34;
+                Generate confusion_matrix heatmap
+                &#34;&#34;&#34;
+                
+                sns_context = &#34;poster&#34;
+                sns_style = &#34;seaborn-bright&#34;
+                cmap=&#34;YlGnBu_r&#34;
+                sns.set_context(context=sns_context, font_scale=0.7)
+                plt.style.use(sns_style)
+                
+                # if targets.ndim &gt;= 2:
+                #        targets = np.argmax(targets, axis=1)
+                if preds.ndim &gt;= 2:
+                        preds = np.argmax(preds, axis=1)
+                
+                confusion_matrix = pd.DataFrame(metrics.confusion_matrix(y_true=targets, y_pred=preds))
+                confusion_matrix.index.name = &#34;True&#34;
+                confusion_matrix = confusion_matrix.T
+                confusion_matrix.index.name = &#34;Predicted&#34;
+                confusion_matrix = confusion_matrix.T
+                
+                try:
+                        plot_confusion_matrix(cm=confusion_matrix, title=None)
+                        print(f&#34;val/confusion_matrix/{logger.experiment.name}&#34;)
+                        # current_epoch = self.current_epoch
+                        logger.experiment.log({
+                                f&#34;val/confusion_matrix/{logger.experiment.name}&#34;: wandb.Image(plt),
+                                &#34;current_epoch&#34;:epoch}, commit=False)
+#                        logger.experiment.log({f&#34;val/confusion_matrix_png/{logger.experiment.name}&#34;: wandb.Image()}, commit=False)
+
+                except Exception as e:
+                        print(e)
+                        print(&#39;continuing anyway&#39;)
+
+                plt.clf()
+                plt.close(plt.gcf())
+                        
+                        
+                        
+                        
+        def _log_classification_report(self, preds: np.ndarray, targets: np.ndarray, logger):
+                
+
+#                true = np.random.randint(0, num_classes, size=num_samples)
+#                pred = np.random.randint(0, num_classes, size=num_samples)
+#                labels = np.arange(num_classes)
+#                target_names = [r.get_random_word() for _ in range(num_classes)]
+                # target_names = list(&#34;ABCDEFGHI&#34;)
+
+                clf_report = classification_report(targets,
+                                                                                   preds,
+                                                                                   zero_division=0,
+                                                                                   output_dict=True)
+                
+                
+                # table = wandb.Table(data=[(label,
+
+                sns.set_theme(context=&#34;talk&#34;)
+                fig, ax = plt.subplots(1,2, figsize=(18,30))
+
+                sns.heatmap(pd.DataFrame(clf_report).iloc[:-1, :].T, annot=True, annot_kws={&#34;fontsize&#34;:6}, ax=ax[0])
+                sns.heatmap(pd.DataFrame(clf_report).iloc[-1:, :-3].T, annot=True, annot_kws={&#34;fontsize&#34;:6}, ax=ax[1])
+
+#                fig = plt.figure(figsize=(15,29))
+#                sns.heatmap(pd.DataFrame(clf_report).iloc[:, :].T, annot=True, annot_kws={&#34;fontsize&#34;:7})
+                logger.experiment.log({f&#34;val/classification_report&#34;: wandb.Image(plt)}, commit=False)
+#                logger.experiment.log({f&#34;val/classification_report&#34;: wandb.Image(fig)}, commit=False)
+                plt.clf()
+                plt.close(fig)
+                        
+                        
+                        
+        def _log_per_class_scores(self, preds: np.ndarray, targets: np.ndarray, logger):
+                &#34;&#34;&#34;
+                Generate f1, precision and recall heatmap
+                &#34;&#34;&#34;
+                sns_context = &#34;poster&#34;
+                sns_style = &#34;seaborn-bright&#34;
+                cmap=&#34;YlGnBu_r&#34;
+                sns.set_context(context=sns_context, font_scale=0.7)
+                plt.style.use(sns_style)
+                
+                from icecream import ic
+                ic(preds.ndim, targets.ndim)
+                # if targets.ndim &gt;= 2:
+                #        targets = np.argmax(targets, axis=1)
+                if preds.ndim &gt;= 2:
+                        preds = np.argmax(preds, axis=1)
+
+                f1 = f1_score(preds, targets, average=None, zero_division=0)
+                r = recall_score(preds, targets, average=None, zero_division=0)
+                p = precision_score(preds, targets, average=None, zero_division=0)
+
+                
+                class_indices, support = np.unique(targets, return_counts=True)
+                
+                num_classes = len(self.class_names)
+#                print(f1.shape, r.shape, p.shape, support.shape)
+                
+                if len(support) &lt; num_classes:
+                        f1_full = np.zeros(num_classes)
+                        r_full = np.zeros_like(f1_full)
+                        p_full = np.zeros_like(f1_full)
+                        support_full = np.zeros_like(f1_full)
+                        
+#                        for i, support_class_i in zip(class_indices, support):
+                        for i, class_i in enumerate(class_indices):
+
+#                                if class_i &gt;= len(support)-1:
+#                                        break
+                                f1_full[class_i] = f1[i]
+                                r_full[class_i] = r[i]
+                                p_full[class_i] = p[i]
+                                support_full[class_i] = support[i]
+                        f1 = f1_full
+                        r = r_full
+                        p = p_full
+                        support = support_full
+                        
+                        
+                data = [f1, p, r, support]
+                
+#                for d in data:
+#                        print(f&#34;len(d)={len(d)}&#34;)
+                w = int(len(self.class_names)//10) + 10
+                h = 10
+                plt.figure(figsize=(w, h))
+                annot = bool(len(self.class_names) &lt; self.annotation_class_name_max_len)
+                xticklabels = self.class_names if annot else []
+                yticklabels=[&#34;F1&#34;, &#34;Precision&#34;, &#34;Recall&#34;, &#34;Support&#34;]
+
+                g = sns.heatmap(data.T,
+                                                annot=annot,
+                                                vmin=0.0, vmax=1.0,
+                                                linewidths=1, annot_kws={&#34;size&#34;: 8}, fmt=&#34;.2f&#34;, cmap=cmap,
+                                                yticklabels=yticklabels,
+                                                xticklabels=xticklabels)
+                plt.suptitle(f&#34;(M={num_classes}) per-class F1_Precision_Recall -- heatmap&#34;)
+                g.set_xticklabels(g.get_xticklabels(), rotation=45, horizontalalignment=&#39;right&#39;, fontsize=&#39;medium&#39;, fontweight=&#39;light&#39;)
+                g.set_yticklabels(g.get_yticklabels(), rotation=45, horizontalalignment=&#39;right&#39;, fontsize=&#39;medium&#39;, fontweight=&#39;light&#39;)
+                plt.subplots_adjust(bottom=0.2, top=0.95, wspace=None, hspace=0.07)
+                try:
+                        logger.experiment.log({f&#34;val/per_class/f1_p_r_heatmap&#34;: wandb.Image(plt.gcf())}, commit=False)
+                except Exception as e:
+                        print(e)
+                        logger.experiment.log({f&#34;val/per_class/f1_p_r_heatmap&#34;: wandb.Image(plt)}, commit=False)
+                        print(&#39;retry successful&#39;)
+                plt.clf()
+                plt.close(fig)
+                
+#                import pdb; pdb.set_trace()
+                
+                logger.experiment.log({f&#34;val/per_class/f1_p_r_table&#34;: 
+                                                           wandb.Table(dataframe=pd.DataFrame(np.stack(data).T,
+                                                                                                                                  index=xticklabels,
+                                                                                                                                  columns=yticklabels).T
+                                                                                  )
+                                                          }, commit=False)
+                
+                num_samples = len(preds)
+                idx = list(range(len(self.class_names)))
+                
+                for j, metric in enumerate([&#34;F1&#34;, &#34;Precision&#34;, &#34;Recall&#34;]):
+#                        print(f&#34;metric={metric},&#34;, f&#34;len(data[j])={len(data[j])}&#34;)
+                        metric_data = pd.DataFrame(data[j]).T.to_records()
+#                        print(f&#34;val/per_class/{metric}_distributions: metric_data[0].shape={metric_data.shape}&#34;)
+                        logger.experiment.log({f&#34;val/per_class/{metric}_distributions&#34; : wandb.plot.line_series(xs=idx,
+                                                                                                                                                                                                  ys=metric_data,
+                                                                                                                                                                                                  keys=self.class_names,
+                                                                                                                                                                                                  title=f&#34;per-class {metric} -- time series&#34;,
+                                                                                                                                                                                                  xname=&#34;family&#34;)},
+                                                                                                                                                                                                  commit=False)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>pytorch_lightning.callbacks.base.Callback</li>
+<li>abc.ABC</li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="imutils.ml.callbacks.wandb_callbacks.LogPerClassMetricsToWandb.on_sanity_check_end"><code class="name flex">
+<span>def <span class="ident">on_sanity_check_end</span></span>(<span>self, trainer, pl_module)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Start executing this callback only after all validation sanity checks end.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def on_sanity_check_end(self, trainer, pl_module):
+        &#34;&#34;&#34;Start executing this callback only after all validation sanity checks end.&#34;&#34;&#34;
+        self.ready = True</code></pre>
+</details>
+</dd>
+<dt id="imutils.ml.callbacks.wandb_callbacks.LogPerClassMetricsToWandb.on_sanity_check_start"><code class="name flex">
+<span>def <span class="ident">on_sanity_check_start</span></span>(<span>self, trainer, pl_module)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Called when the validation sanity check starts.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def on_sanity_check_start(self, trainer, pl_module):
+        self.ready = False</code></pre>
+</details>
+</dd>
+<dt id="imutils.ml.callbacks.wandb_callbacks.LogPerClassMetricsToWandb.on_validation_batch_end"><code class="name flex">
+<span>def <span class="ident">on_validation_batch_end</span></span>(<span>self, trainer, pl_module, outputs, batch, batch_idx, dataloader_idx)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Gather data from single batch.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def on_validation_batch_end(
+        self, trainer, pl_module, outputs, batch, batch_idx, dataloader_idx
+):
+        &#34;&#34;&#34;Gather data from single batch.&#34;&#34;&#34;
+        if not isinstance(outputs, dict):
+                return
+        if &#39;log&#39; in outputs.keys():
+                outputs = outputs[&#39;log&#39;]
+        elif &#39;hidden&#39; in outputs.keys():
+                outputs = outputs[&#39;hidden&#39;]
+        if self.ready:
+                self.path.extend(getattr(batch, &#34;path&#34;, []))
+                self.catalog_number.extend(getattr(batch, &#34;catalog_number&#34;, []))
+                self.preds.append(outputs[self.logits_key].detach().cpu())
+                self.targets.append(outputs[self.true_labels_key].detach().cpu())</code></pre>
+</details>
+</dd>
+<dt id="imutils.ml.callbacks.wandb_callbacks.LogPerClassMetricsToWandb.on_validation_epoch_end"><code class="name flex">
+<span>def <span class="ident">on_validation_epoch_end</span></span>(<span>self, trainer, pl_module)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Generate f1, precision and recall heatmap,
+then generate confusion matrix.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">        def on_validation_epoch_end(self, trainer, pl_module):
+                &#34;&#34;&#34;Generate f1, precision and recall heatmap,
+                then generate confusion matrix.&#34;&#34;&#34;
+                if self.ready and len(self.preds) and len(self.targets):
+                        wandb_logger = get_wandb_logger(trainer=trainer)
+                        rank = pl_module.global_rank
+#                        print(f&#39;Rank: {rank}&#39;)
+#                        print(f&#34;wandb_logger.experiment={wandb_logger.experiment}&#34;)
+#                        print(f&#34;dir(wandb_logger.experiment)={dir(wandb_logger.experiment)}&#34;)
+#                        print(f&#34;wandb_logger.experiment.disabled={wandb_logger.experiment.disabled}&#34;)
+#                        print(f&#34;wandb_logger.experiment.id={wandb_logger.experiment.id}&#34;)
+#                        print(f&#34;wandb_logger.experiment.name={wandb_logger.experiment.name}&#34;)
+#                        if
+                        if (rank &gt; 0) or (wandb_logger is None) or (wandb_logger.experiment.id is None):
+                                print(f&#34;(wandb_logger.experiment.id is None) = {(wandb_logger.experiment.id is None)}&#34;)
+                                print(f&#34;Rank&gt;0, skipping per class metrics\n&#34;, &#34;=&#34;*20)
+                                return
+
+
+                        preds = torch.cat(self.preds).numpy() #.cpu().numpy()
+                        targets = torch.cat(self.targets).numpy() #.cpu().numpy()
+                        
+#                        print(f&#34;preds.shape={preds.shape}&#34;)
+#                        print(f&#34;targets.shape={targets.shape}&#34;)
+                        
+                        # self._log_classification_report(preds, targets, logger=wandb_logger)
+                
+#                        self._log_per_class_scores(preds, targets, logger=wandb_logger)
+                        self._log_confusion_matrix(preds, targets, logger=wandb_logger, epoch=trainer.current_epoch)
+                        wandb_logger.experiment.log({f&#34;current_epoch&#34;: trainer.current_epoch})
+                        
+#                        print(&#34;num_validation_samples: &#34;, len(preds))
+                        self.preds.clear()
+                        self.targets.clear()
+                        self.preds = []
+                        self.targets = []
+                        self.path = []
+                        self.catalog_number = []</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="imutils.ml.callbacks.wandb_callbacks.ModuleDataMonitor"><code class="flex name class">
+<span>class <span class="ident">ModuleDataMonitor</span></span>
+<span>(</span><span>submodules: Union[bool, List[str], None] = None, log_every_n_steps: int = None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Abstract base class used to build new callbacks.</p>
+<p>Subclass this class and override any of the relevant hooks</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>submodules</code></strong></dt>
+<dd>If <code>True</code>, logs the in- and output histograms of every submodule in the
+LightningModule, including the root module itself.
+This parameter can also take a list of names of specifc submodules (see example below).
+Default: <code>None</code>, logs only the in- and output of the root module.</dd>
+<dt><strong><code>log_every_n_steps</code></strong></dt>
+<dd>The interval at which histograms should be logged. This defaults to the
+interval defined in the Trainer. Use this to override the Trainer default.</dd>
+</dl>
+<h2 id="note">Note</h2>
+<p>A too low value for <code>log_every_n_steps</code> may have a significant performance impact
+especially when many submodules are involved, since the logging occurs during the forward pass.
+It should only be used for debugging purposes.</p>
+<h2 id="example">Example</h2>
+<p>.. code-block:: python</p>
+<pre><code># log the in- and output histograms of the &lt;code&gt;forward&lt;/code&gt; in LightningModule
+trainer = Trainer(callbacks=[ModuleDataMonitor()])
+
+# all submodules in LightningModule
+trainer = Trainer(callbacks=[ModuleDataMonitor(submodules=True)])
+
+# specific submodules
+trainer = Trainer(callbacks=[ModuleDataMonitor(submodules=["generator", "generator.conv1"])])
+</code></pre></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class ModuleDataMonitor(pl_bolts.callbacks.ModuleDataMonitor):
+
+
+        def __init__(self,
+                                 submodules: Optional[Union[bool, List[str]]] = None,
+                                 log_every_n_steps: int = None
+                                ):
+                if isinstance(submodules, ListConfig):
+                        submodules = OmegaConf.to_container(submodules, resolve=True)
+                        print(&#34;type(submodules): &#34;, type(submodules))
+                        submodules = list(submodules)
+                self._train_batch_idx = 0
+                super().__init__(submodules=submodules,
+                                                 log_every_n_steps=log_every_n_steps)
+
+        def _get_submodule_names(self, root_module: nn.Module) -&gt; List[str]:
+                # default is the root module only
+                # import pdb; pdb.set_trace()
+                names = super()._get_submodule_names(root_module=root_module)
+                print(f&#34;ModuleDataMonitor is now tracking the following submodules:&#34;)
+                pp(names)
+
+                return names</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>pl_bolts.callbacks.data_monitor.ModuleDataMonitor</li>
+<li>pl_bolts.callbacks.data_monitor.DataMonitorBase</li>
+<li>pytorch_lightning.callbacks.base.Callback</li>
+<li>abc.ABC</li>
+</ul>
+</dd>
+<dt id="imutils.ml.callbacks.wandb_callbacks.UploadCheckpointsToWandbAsArtifact"><code class="flex name class">
+<span>class <span class="ident">UploadCheckpointsToWandbAsArtifact</span></span>
+<span>(</span><span>ckpt_dir: str = 'checkpoints/', upload_best_only: bool = False, artifact_name: str = 'model-weights', artifact_type: str = 'checkpoints')</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Upload checkpoints to wandb as an artifact, at the end of run.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class UploadCheckpointsToWandbAsArtifact(Callback):
+        &#34;&#34;&#34;Upload checkpoints to wandb as an artifact, at the end of run.&#34;&#34;&#34;
+        
+        def __init__(self,
+                                 ckpt_dir: str = &#34;checkpoints/&#34;, 
+                                 upload_best_only: bool = False,
+                                 artifact_name: str=&#34;model-weights&#34;,
+                                 artifact_type: str=&#34;checkpoints&#34;):
+                self.ckpt_dir = os.path.abspath(ckpt_dir)
+                self.upload_best_only = upload_best_only
+                self.artifact_name=artifact_name
+                self.artifact_type=artifact_type
+
+        def on_train_end(self, trainer, pl_module):
+                
+                self.create_and_use_artifact(trainer=trainer)
+
+        @rank_zero_only
+        def create_and_use_artifact(self, trainer):
+                &#34;&#34;&#34;
+                My attempt to isolate wandb model artifact creation within a rank_zero_only method.
+                &#34;&#34;&#34;
+                logger = get_wandb_logger(trainer=trainer)
+                experiment = logger.experiment
+                
+                ckpts = wandb.Artifact(self.artifact_name, type=self.artifact_type)
+
+                if self.upload_best_only:
+                        
+                        if not os.path.isfile(trainer.checkpoint_callback.best_model_path):
+                                print(f&#34;WARNING: For some reason, this isnt a file -&gt; trainer.checkpoint_callback.best_model_path={trainer.checkpoint_callback.best_model_path}. Artifact upload failed.&#34;)                              
+                                print(&#34;self.on_train_end: &#34;, f&#34;device:{torch.cuda.current_device()}&#34;)
+                                print(&#34;os.path.dirname(trainer.checkpoint_callback.best_model_path):&#34;, 
+                                          os.path.dirname(trainer.checkpoint_callback.best_model_path))
+                                print(&#34;os.path.basename(trainer.checkpoint_callback.best_model_path):&#34;, 
+                                          os.path.basename(trainer.checkpoint_callback.best_model_path))
+                                print(f&#34;Inspecting os.listdir(os.path.dirname(trainer.checkpoint_callback.best_model_path)):&#34;)
+                                pp(os.listdir(os.path.dirname(trainer.checkpoint_callback.best_model_path)))
+                                import pdb; pdb.set_trace()
+                                return
+                        
+                        print(&#34;Potentially successfully adding file to artifact, instead&#34;)
+                        print(&#34;self.on_train_end: &#34;, f&#34;device:{torch.cuda.current_device()}&#34;)
+                        ckpts.add_file(trainer.checkpoint_callback.best_model_path)
+                        print(f&#34;ckpts artifact has had file added. Device: {torch.cuda.current_device()}&#34;)
+                else:
+                        paths = list(glob.glob(os.path.join(self.ckpt_dir, &#34;**/*.ckpt&#34;), recursive=True))
+                        for path in paths:
+                                ckpts.add_file(path)
+                        print(f&#34;ckpts artifact has had {len(paths)} files added. Device: {torch.cuda.current_device()}&#34;)
+
+                experiment.use_artifact(ckpts)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>pytorch_lightning.callbacks.base.Callback</li>
+<li>abc.ABC</li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="imutils.ml.callbacks.wandb_callbacks.UploadCheckpointsToWandbAsArtifact.create_and_use_artifact"><code class="name flex">
+<span>def <span class="ident">create_and_use_artifact</span></span>(<span>self, trainer)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>My attempt to isolate wandb model artifact creation within a rank_zero_only method.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@rank_zero_only
+def create_and_use_artifact(self, trainer):
+        &#34;&#34;&#34;
+        My attempt to isolate wandb model artifact creation within a rank_zero_only method.
+        &#34;&#34;&#34;
+        logger = get_wandb_logger(trainer=trainer)
+        experiment = logger.experiment
+        
+        ckpts = wandb.Artifact(self.artifact_name, type=self.artifact_type)
+
+        if self.upload_best_only:
+                
+                if not os.path.isfile(trainer.checkpoint_callback.best_model_path):
+                        print(f&#34;WARNING: For some reason, this isnt a file -&gt; trainer.checkpoint_callback.best_model_path={trainer.checkpoint_callback.best_model_path}. Artifact upload failed.&#34;)                              
+                        print(&#34;self.on_train_end: &#34;, f&#34;device:{torch.cuda.current_device()}&#34;)
+                        print(&#34;os.path.dirname(trainer.checkpoint_callback.best_model_path):&#34;, 
+                                  os.path.dirname(trainer.checkpoint_callback.best_model_path))
+                        print(&#34;os.path.basename(trainer.checkpoint_callback.best_model_path):&#34;, 
+                                  os.path.basename(trainer.checkpoint_callback.best_model_path))
+                        print(f&#34;Inspecting os.listdir(os.path.dirname(trainer.checkpoint_callback.best_model_path)):&#34;)
+                        pp(os.listdir(os.path.dirname(trainer.checkpoint_callback.best_model_path)))
+                        import pdb; pdb.set_trace()
+                        return
+                
+                print(&#34;Potentially successfully adding file to artifact, instead&#34;)
+                print(&#34;self.on_train_end: &#34;, f&#34;device:{torch.cuda.current_device()}&#34;)
+                ckpts.add_file(trainer.checkpoint_callback.best_model_path)
+                print(f&#34;ckpts artifact has had file added. Device: {torch.cuda.current_device()}&#34;)
+        else:
+                paths = list(glob.glob(os.path.join(self.ckpt_dir, &#34;**/*.ckpt&#34;), recursive=True))
+                for path in paths:
+                        ckpts.add_file(path)
+                print(f&#34;ckpts artifact has had {len(paths)} files added. Device: {torch.cuda.current_device()}&#34;)
+
+        experiment.use_artifact(ckpts)</code></pre>
+</details>
+</dd>
+<dt id="imutils.ml.callbacks.wandb_callbacks.UploadCheckpointsToWandbAsArtifact.on_train_end"><code class="name flex">
+<span>def <span class="ident">on_train_end</span></span>(<span>self, trainer, pl_module)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Called when the train ends.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def on_train_end(self, trainer, pl_module):
+        
+        self.create_and_use_artifact(trainer=trainer)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="imutils.ml.callbacks.wandb_callbacks.UploadCodeToWandbAsArtifact"><code class="flex name class">
+<span>class <span class="ident">UploadCodeToWandbAsArtifact</span></span>
+<span>(</span><span>code_dir: str)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Upload all *.py files to wandb as an artifact, at the beginning of the run.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class UploadCodeToWandbAsArtifact(Callback):
+        &#34;&#34;&#34;Upload all *.py files to wandb as an artifact, at the beginning of the run.&#34;&#34;&#34;
+
+        def __init__(self, code_dir: str):
+                self.code_dir = code_dir
+
+        def on_train_start(self, trainer, pl_module):
+                logger = get_wandb_logger(trainer=trainer)
+                experiment = logger.experiment
+
+                code = wandb.Artifact(&#34;project-source&#34;, type=&#34;code&#34;)
+                for path in glob.glob(os.path.join(self.code_dir, &#34;**/*.py&#34;), recursive=True):
+                        code.add_file(path)
+
+                experiment.use_artifact(code)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>pytorch_lightning.callbacks.base.Callback</li>
+<li>abc.ABC</li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="imutils.ml.callbacks.wandb_callbacks.UploadCodeToWandbAsArtifact.on_train_start"><code class="name flex">
+<span>def <span class="ident">on_train_start</span></span>(<span>self, trainer, pl_module)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Called when the train begins.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def on_train_start(self, trainer, pl_module):
+        logger = get_wandb_logger(trainer=trainer)
+        experiment = logger.experiment
+
+        code = wandb.Artifact(&#34;project-source&#34;, type=&#34;code&#34;)
+        for path in glob.glob(os.path.join(self.code_dir, &#34;**/*.py&#34;), recursive=True):
+                code.add_file(path)
+
+        experiment.use_artifact(code)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="imutils.ml.callbacks.wandb_callbacks.WandbClassificationCallback"><code class="flex name class">
+<span>class <span class="ident">WandbClassificationCallback</span></span>
+<span>(</span><span>monitor='val_loss', verbose=0, mode='auto', save_weights_only=False, log_weights=False, log_gradients=False, save_model=True, training_data=None, validation_data=None, labels=[], data_type=None, predictions=1, generator=None, input_type=None, output_type=None, log_evaluation=False, validation_steps=None, class_colors=None, log_batch_frequency=None, log_best_prefix='best_', log_confusion_matrix=False, confusion_examples=0, confusion_classes=5)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Abstract base class used to build new callbacks.</p>
+<p>Subclass this class and override any of the relevant hooks</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class WandbClassificationCallback(Callback):
+
+        def __init__(self, monitor=&#39;val_loss&#39;, verbose=0, mode=&#39;auto&#39;,
+                                 save_weights_only=False, log_weights=False, log_gradients=False,
+                                 save_model=True, training_data=None, validation_data=None,
+                                 labels=[], data_type=None, predictions=1, generator=None,
+                                 input_type=None, output_type=None, log_evaluation=False,
+                                 validation_steps=None, class_colors=None, log_batch_frequency=None,
+                                 log_best_prefix=&#34;best_&#34;, 
+                                 log_confusion_matrix=False,
+                                 confusion_examples=0, confusion_classes=5):
+                
+                super().__init__(monitor=monitor,
+                                                verbose=verbose, 
+                                                mode=mode,
+                                                save_weights_only=save_weights_only,
+                                                log_weights=log_weights,
+                                                log_gradients=log_gradients,
+                                                save_model=save_model,
+                                                training_data=training_data,
+                                                validation_data=validation_data,
+                                                labels=labels,
+                                                data_type=data_type,
+                                                predictions=predictions,
+                                                generator=generator,
+                                                input_type=input_type,
+                                                output_type=output_type,
+                                                log_evaluation=log_evaluation,
+                                                validation_steps=validation_steps,
+                                                class_colors=class_colors,
+                                                log_batch_frequency=log_batch_frequency,
+                                                log_best_prefix=log_best_prefix)
+                                                
+                self.log_confusion_matrix = log_confusion_matrix
+                self.confusion_examples = confusion_examples
+                self.confusion_classes = confusion_classes
+                           
+        def on_epoch_end(self, epoch, logs={}):
+                if self.generator:
+                        self.validation_data = next(self.generator)
+
+                if self.log_weights:
+                        wandb.log(self._log_weights(), commit=False)
+
+                if self.log_gradients:
+                        wandb.log(self._log_gradients(), commit=False)
+                
+                if self.log_confusion_matrix:
+                        if self.validation_data is None:
+                                wandb.termwarn(
+                                        &#34;No validation_data set, pass a generator to the callback.&#34;)
+                        elif self.validation_data and len(self.validation_data) &gt; 0:
+                                wandb.log(self._log_confusion_matrix(), commit=False)                                   
+
+                if self.input_type in (&#34;image&#34;, &#34;images&#34;, &#34;segmentation_mask&#34;) or self.output_type in (&#34;image&#34;, &#34;images&#34;, &#34;segmentation_mask&#34;):
+                        if self.validation_data is None:
+                                wandb.termwarn(
+                                        &#34;No validation_data set, pass a generator to the callback.&#34;)
+                        elif self.validation_data and len(self.validation_data) &gt; 0:
+                                if self.confusion_examples &gt; 0:
+                                        wandb.log({&#39;confusion_examples&#39;: self._log_confusion_examples(
+                                                                                                        confusion_classes=self.confusion_classes,
+                                                                                                        max_confused_examples=self.confusion_examples)}, commit=False)
+                                if self.predictions &gt; 0:
+                                        wandb.log({&#34;examples&#34;: self._log_images(
+                                                num_images=self.predictions)}, commit=False)
+
+                wandb.log({&#39;epoch&#39;: epoch}, commit=False)
+                wandb.log(logs, commit=True)
+
+                self.current = logs.get(self.monitor)
+                if self.current and self.monitor_op(self.current, self.best):
+                        if self.log_best_prefix:
+                                wandb.run.summary[&#34;%s%s&#34; % (self.log_best_prefix, self.monitor)] = self.current
+                                wandb.run.summary[&#34;%s%s&#34; % (self.log_best_prefix, &#34;epoch&#34;)] = epoch
+                                if self.verbose and not self.save_model:
+                                        print(&#39;Epoch %05d: %s improved from %0.5f to %0.5f&#39; % (
+                                                epoch, self.monitor, self.best, self.current))
+                        if self.save_model:
+                                self._save_model(epoch)
+                        self.best = self.current
+                
+        def _log_confusion_matrix(self):
+                x_val = self.validation_data[0]
+                y_val = self.validation_data[1]
+                y_val = np.argmax(y_val, axis=1)
+                y_pred = np.argmax(self.model.predict(x_val), axis=1)
+
+                confmatrix = confusion_matrix(y_pred, y_val, labels=range(len(self.labels)))
+                confdiag = np.eye(len(confmatrix)) * confmatrix
+                np.fill_diagonal(confmatrix, 0)
+
+                confmatrix = confmatrix.astype(&#39;float&#39;)
+                n_confused = np.sum(confmatrix)
+                confmatrix[confmatrix == 0] = np.nan
+                confmatrix = go.Heatmap({&#39;coloraxis&#39;: &#39;coloraxis1&#39;, &#39;x&#39;: self.labels, &#39;y&#39;: self.labels, &#39;z&#39;: confmatrix,
+                                                                 &#39;hoverongaps&#39;:False, &#39;hovertemplate&#39;: &#39;Predicted %{y}&lt;br&gt;Instead of %{x}&lt;br&gt;On %{z} examples&lt;extra&gt;&lt;/extra&gt;&#39;})
+
+                confdiag = confdiag.astype(&#39;float&#39;)
+                n_right = np.sum(confdiag)
+                confdiag[confdiag == 0] = np.nan
+                confdiag = go.Heatmap({&#39;coloraxis&#39;: &#39;coloraxis2&#39;, &#39;x&#39;: self.labels, &#39;y&#39;: self.labels, &#39;z&#39;: confdiag,
+                                                           &#39;hoverongaps&#39;:False, &#39;hovertemplate&#39;: &#39;Predicted %{y} just right&lt;br&gt;On %{z} examples&lt;extra&gt;&lt;/extra&gt;&#39;})
+
+                fig = go.Figure((confdiag, confmatrix))
+                transparent = &#39;rgba(0, 0, 0, 0)&#39;
+                n_total = n_right + n_confused
+                fig.update_layout({&#39;coloraxis1&#39;: {&#39;colorscale&#39;: [[0, transparent], [0, &#39;rgba(180, 0, 0, 0.05)&#39;], [1, f&#39;rgba(180, 0, 0, {max(0.2, (n_confused/n_total) ** 0.5)})&#39;]], &#39;showscale&#39;: False}})
+                fig.update_layout({&#39;coloraxis2&#39;: {&#39;colorscale&#39;: [[0, transparent], [0, f&#39;rgba(0, 180, 0, {min(0.8, (n_right/n_total) ** 2)})&#39;], [1, &#39;rgba(0, 180, 0, 1)&#39;]], &#39;showscale&#39;: False}})
+
+                xaxis = {&#39;title&#39;:{&#39;text&#39;:&#39;y_true&#39;}, &#39;showticklabels&#39;:False}
+                yaxis = {&#39;title&#39;:{&#39;text&#39;:&#39;y_pred&#39;}, &#39;showticklabels&#39;:False}
+
+                fig.update_layout(title={&#39;text&#39;:&#39;Confusion matrix&#39;, &#39;x&#39;:0.5}, paper_bgcolor=transparent, plot_bgcolor=transparent, xaxis=xaxis, yaxis=yaxis)
+                
+                return {&#39;confusion_matrix&#39;: wandb.data_types.Plotly(fig)}
+
+        def _log_confusion_examples(self, rescale=255, confusion_classes=5, max_confused_examples=3):
+                        x_val = self.validation_data[0]
+                        y_val = self.validation_data[1]
+                        y_val = np.argmax(y_val, axis=1)
+                        y_pred = np.argmax(self.model.predict(x_val), axis=1)
+
+                        # Grayscale to rgb
+                        if x_val.shape[-1] == 1:
+                                x_val = np.concatenate((x_val, x_val, x_val), axis=-1)
+
+                        confmatrix = confusion_matrix(y_pred, y_val, labels=range(len(self.labels)))
+                        np.fill_diagonal(confmatrix, 0)
+
+                        def example_image(class_index, x_val=x_val, y_pred=y_pred, y_val=y_val, labels=self.labels, rescale=rescale):
+                                image = None
+                                title_text = &#39;No example found&#39;
+                                color = &#39;red&#39;
+
+                                right_predicted_images = x_val[np.logical_and(y_pred==class_index, y_val==class_index)]
+                                if len(right_predicted_images) &gt; 0:
+                                        image = rescale * right_predicted_images[0]
+                                        title_text = &#39;Predicted right&#39;
+                                        color = &#39;rgb(46, 184, 46)&#39;
+                                else:
+                                        ground_truth_images = x_val[y_val==class_index]
+                                        if len(ground_truth_images) &gt; 0:
+                                                image = rescale * ground_truth_images[0]
+                                                title_text = &#39;Example&#39;
+                                                color = &#39;rgb(255, 204, 0)&#39;
+
+                                return image, title_text, color
+
+                        n_cols = max_confused_examples + 2
+                        subplot_titles = [&#34;&#34;] * n_cols
+                        subplot_titles[-2:] = [&#34;y_true&#34;, &#34;y_pred&#34;]
+                        subplot_titles[max_confused_examples//2] = &#34;confused_predictions&#34;
+                        
+                        n_rows = min(len(confmatrix[confmatrix &gt; 0]), confusion_classes)
+                        fig = make_subplots(rows=n_rows, cols=n_cols, subplot_titles=subplot_titles)
+                        for class_rank in range(1, n_rows+1):
+                                indx = np.argmax(confmatrix)
+                                indx = np.unravel_index(indx, shape=confmatrix.shape)
+                                if confmatrix[indx] == 0:
+                                        break
+                                confmatrix[indx] = 0
+
+                                class_pred, class_true = indx[0], indx[1]
+                                mask = np.logical_and(y_pred==class_pred, y_val==class_true)
+                                confused_images = x_val[mask]
+
+                                # Confused images
+                                n_images_confused = min(max_confused_examples, len(confused_images))
+                                for j in range(n_images_confused):
+                                        fig.add_trace(go.Image(z=rescale*confused_images[j],
+                                                                                name=f&#39;Predicted: {self.labels[class_pred]} | Instead of: {self.labels[class_true]}&#39;,
+                                                                                hoverinfo=&#39;name&#39;, hoverlabel={&#39;namelength&#39; :-1}),
+                                                                row=class_rank, col=j+1)
+                                        fig.update_xaxes(showline=True, linewidth=5, linecolor=&#39;red&#39;, row=class_rank, col=j+1, mirror=True)
+                                        fig.update_yaxes(showline=True, linewidth=5, linecolor=&#39;red&#39;, row=class_rank, col=j+1, mirror=True)
+
+                                # Comparaison images
+                                for i, class_index in enumerate((class_true, class_pred)):
+                                        col = n_images_confused+i+1
+                                        image, title_text, color = example_image(class_index)
+                                        fig.add_trace(go.Image(z=image, name=self.labels[class_index], hoverinfo=&#39;name&#39;, hoverlabel={&#39;namelength&#39; :-1}), row=class_rank, col=col)       
+                                        fig.update_xaxes(showline=True, linewidth=5, linecolor=color, row=class_rank, col=col, mirror=True, title_text=title_text)
+                                        fig.update_yaxes(showline=True, linewidth=5, linecolor=color, row=class_rank, col=col, mirror=True, title_text=self.labels[class_index])
+
+                        fig.update_xaxes(showticklabels=False)
+                        fig.update_yaxes(showticklabels=False)
+                        
+                        return wandb.data_types.Plotly(fig)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>pytorch_lightning.callbacks.base.Callback</li>
+<li>abc.ABC</li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="imutils.ml.callbacks.wandb_callbacks.WandbClassificationCallback.on_epoch_end"><code class="name flex">
+<span>def <span class="ident">on_epoch_end</span></span>(<span>self, epoch, logs={})</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Called when either of train/val/test epoch ends.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def on_epoch_end(self, epoch, logs={}):
+        if self.generator:
+                self.validation_data = next(self.generator)
+
+        if self.log_weights:
+                wandb.log(self._log_weights(), commit=False)
+
+        if self.log_gradients:
+                wandb.log(self._log_gradients(), commit=False)
+        
+        if self.log_confusion_matrix:
+                if self.validation_data is None:
+                        wandb.termwarn(
+                                &#34;No validation_data set, pass a generator to the callback.&#34;)
+                elif self.validation_data and len(self.validation_data) &gt; 0:
+                        wandb.log(self._log_confusion_matrix(), commit=False)                                   
+
+        if self.input_type in (&#34;image&#34;, &#34;images&#34;, &#34;segmentation_mask&#34;) or self.output_type in (&#34;image&#34;, &#34;images&#34;, &#34;segmentation_mask&#34;):
+                if self.validation_data is None:
+                        wandb.termwarn(
+                                &#34;No validation_data set, pass a generator to the callback.&#34;)
+                elif self.validation_data and len(self.validation_data) &gt; 0:
+                        if self.confusion_examples &gt; 0:
+                                wandb.log({&#39;confusion_examples&#39;: self._log_confusion_examples(
+                                                                                                confusion_classes=self.confusion_classes,
+                                                                                                max_confused_examples=self.confusion_examples)}, commit=False)
+                        if self.predictions &gt; 0:
+                                wandb.log({&#34;examples&#34;: self._log_images(
+                                        num_images=self.predictions)}, commit=False)
+
+        wandb.log({&#39;epoch&#39;: epoch}, commit=False)
+        wandb.log(logs, commit=True)
+
+        self.current = logs.get(self.monitor)
+        if self.current and self.monitor_op(self.current, self.best):
+                if self.log_best_prefix:
+                        wandb.run.summary[&#34;%s%s&#34; % (self.log_best_prefix, self.monitor)] = self.current
+                        wandb.run.summary[&#34;%s%s&#34; % (self.log_best_prefix, &#34;epoch&#34;)] = epoch
+                        if self.verbose and not self.save_model:
+                                print(&#39;Epoch %05d: %s improved from %0.5f to %0.5f&#39; % (
+                                        epoch, self.monitor, self.best, self.current))
+                if self.save_model:
+                        self._save_model(epoch)
+                self.best = self.current</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="imutils.ml.callbacks.wandb_callbacks.WandbModelCheckpoint"><code class="flex name class">
+<span>class <span class="ident">WandbModelCheckpoint</span></span>
+<span>(</span><span>*args, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Save the model periodically by monitoring a quantity. Every metric logged with
+:meth:<code>~pytorch_lightning.core.lightning.log</code> or :meth:<code>~pytorch_lightning.core.lightning.log_dict</code> in
+LightningModule is a candidate for the monitor key. For more information, see
+:ref:<code>weights_loading</code>.</p>
+<p>After training finishes, use :attr:<code>best_model_path</code> to retrieve the path to the
+best checkpoint file and :attr:<code>best_model_score</code> to retrieve its score.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>dirpath</code></strong></dt>
+<dd>
+<p>directory to save the model file.</p>
+<p>Example::</p>
+<pre><code># custom path
+# saves a file like: my/path/epoch=0-step=10.ckpt
+&gt;&gt;&gt; checkpoint_callback = ModelCheckpoint(dirpath='my/path/')
+</code></pre>
+<p>By default, dirpath is <code>None</code> and will be set at runtime to the location
+specified by :class:<code>~pytorch_lightning.trainer.trainer.Trainer</code>'s
+:paramref:<code>~pytorch_lightning.trainer.trainer.Trainer.default_root_dir</code> or
+:paramref:<code>~pytorch_lightning.trainer.trainer.Trainer.weights_save_path</code> arguments,
+and if the Trainer uses a logger, the path will also contain logger name and version.</p>
+</dd>
+<dt><strong><code>filename</code></strong></dt>
+<dd>
+<p>checkpoint filename. Can contain named formatting options to be auto-filled.</p>
+<p>Example::</p>
+<pre><code># save any arbitrary metrics like &lt;code&gt;val\_loss&lt;/code&gt;, etc. in name
+# saves a file like: my/path/epoch=2-val_loss=0.02-other_metric=0.03.ckpt
+&gt;&gt;&gt; checkpoint_callback = ModelCheckpoint(
+...     dirpath='my/path',
+...     filename='{epoch}-{val_loss:.2f}-{other_metric:.2f}'
+... )
+</code></pre>
+<p>By default, filename is <code>None</code> and will be set to <code>'{epoch}-{step}'</code>.</p>
+</dd>
+<dt><strong><code>monitor</code></strong></dt>
+<dd>quantity to monitor. By default it is <code>None</code> which saves a checkpoint only for the last epoch.</dd>
+<dt><strong><code>verbose</code></strong></dt>
+<dd>verbosity mode. Default: <code>False</code>.</dd>
+<dt><strong><code>save_last</code></strong></dt>
+<dd>When <code>True</code>, always saves the model at the end of the epoch to
+a file <code>last.ckpt</code>. Default: <code>None</code>.</dd>
+<dt><strong><code>save_top_k</code></strong></dt>
+<dd>if <code>save_top_k == k</code>,
+the best k models according to
+the quantity monitored will be saved.
+if <code>save_top_k == 0</code>, no models are saved.
+if <code>save_top_k == -1</code>, all models are saved.
+Please note that the monitors are checked every <code>every_n_epochs</code> epochs.
+if <code>save_top_k &gt;= 2</code> and the callback is called multiple
+times inside an epoch, the name of the saved file will be
+appended with a version count starting with <code>v1</code>.</dd>
+<dt><strong><code>mode</code></strong></dt>
+<dd>one of {min, max}.
+If <code>save_top_k != 0</code>, the decision to overwrite the current save file is made
+based on either the maximization or the minimization of the monitored quantity.
+For <code>'val_acc'</code>, this should be <code>'max'</code>, for <code>'val_loss'</code> this should be <code>'min'</code>, etc.</dd>
+<dt><strong><code>auto_insert_metric_name</code></strong></dt>
+<dd>When <code>True</code>, the checkpoints filenames will contain the metric name.
+For example, <code>filename='checkpoint_{epoch:02d}-{acc:02d}</code> with epoch 1 and acc 80 will resolve to
+<code>checkpoint_epoch=01-acc=80.ckp</code>. Is useful to set it to <code>False</code> when metric names contain <code>/</code>
+as this will result in extra folders.</dd>
+<dt><strong><code>save_weights_only</code></strong></dt>
+<dd>if <code>True</code>, then only the model's weights will be
+saved (<code>model.save_weights(filepath)</code>), else the full model
+is saved (<code>model.save(filepath)</code>).</dd>
+<dt><strong><code>every_n_train_steps</code></strong></dt>
+<dd>Number of training steps between checkpoints.
+If <code>every_n_train_steps == None or every_n_train_steps == 0</code>, we skip saving during training.
+To disable, set <code>every_n_train_steps = 0</code>. This value must be <code>None</code> or non-negative.
+This must be mutually exclusive with <code>train_time_interval</code> and <code>every_n_epochs</code>.</dd>
+<dt><strong><code>train_time_interval</code></strong></dt>
+<dd>Checkpoints are monitored at the specified time interval.
+For all practical purposes, this cannot be smaller than the amount
+of time it takes to process a single training batch. This is not
+guaranteed to execute at the exact time specified, but should be close.
+This must be mutually exclusive with <code>every_n_train_steps</code> and <code>every_n_epochs</code>.</dd>
+<dt><strong><code>every_n_epochs</code></strong></dt>
+<dd>Number of epochs between checkpoints.
+If <code>every_n_epochs == None or every_n_epochs == 0</code>, we skip saving when the epoch ends.
+To disable, set <code>every_n_epochs = 0</code>. This value must be <code>None</code> or non-negative.
+This must be mutually exclusive with <code>every_n_train_steps</code> and <code>train_time_interval</code>.
+Setting both <code>ModelCheckpoint(..., every_n_epochs=V, save_on_train_epoch_end=False)</code> and
+<code>Trainer(max_epochs=N, check_val_every_n_epoch=M)</code>
+will only save checkpoints at epochs 0 &lt; E &lt;= N
+where both values for <code>every_n_epochs</code> and <code>check_val_every_n_epoch</code> evenly divide E.</dd>
+<dt><strong><code>save_on_train_epoch_end</code></strong></dt>
+<dd>Whether to run checkpointing at the end of the training epoch.
+If this is <code>False</code>, then the check runs at the end of the validation.</dd>
+<dt><strong><code>every_n_val_epochs</code></strong></dt>
+<dd>
+<p>Number of epochs between checkpoints.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This argument has been deprecated in v1.4 and will be removed in v1.6.</p>
+</div>
+<p>Use <code>every_n_epochs</code> instead.</p>
+</dd>
+</dl>
+<h2 id="note">Note</h2>
+<p>For extra customization, ModelCheckpoint includes the following attributes:</p>
+<ul>
+<li><code>CHECKPOINT_JOIN_CHAR = "-"</code></li>
+<li><code>CHECKPOINT_NAME_LAST = "last"</code></li>
+<li><code>FILE_EXTENSION = ".ckpt"</code></li>
+<li><code>STARTING_VERSION = 1</code></li>
+</ul>
+<p>For example, you can change the default last checkpoint name by doing
+<code>checkpoint_callback.CHECKPOINT_NAME_LAST = "{epoch}-last"</code></p>
+<p>If you want to checkpoint every N hours, every M train batches, and/or every K val epochs,
+then you should create multiple <code>ModelCheckpoint</code> callbacks.</p>
+<h2 id="raises">Raises</h2>
+<p>MisconfigurationException:
+If <code>save_top_k</code> is smaller than <code>-1</code>,
+if <code>monitor</code> is <code>None</code> and <code>save_top_k</code> is none of <code>None</code>, <code>-1</code>, and <code>0</code>, or
+if <code>mode</code> is none of <code>"min"</code> or <code>"max"</code>.
+ValueError:
+If <code>trainer.save_checkpoint</code> is <code>None</code>.
+Example::</p>
+<pre><code>&gt;&gt;&gt; from pytorch_lightning import Trainer
+&gt;&gt;&gt; from pytorch_lightning.callbacks import ModelCheckpoint
+
+# saves checkpoints to 'my/path/' at every epoch
+&gt;&gt;&gt; checkpoint_callback = ModelCheckpoint(dirpath='my/path/')
+&gt;&gt;&gt; trainer = Trainer(callbacks=[checkpoint_callback])
+
+# save epoch and val_loss in name
+# saves a file like: my/path/sample-mnist-epoch=02-val_loss=0.32.ckpt
+&gt;&gt;&gt; checkpoint_callback = ModelCheckpoint(
+...     monitor='val_loss',
+...     dirpath='my/path/',
+...     filename='sample-mnist-{epoch:02d}-{val_loss:.2f}'
+... )
+
+# save epoch and val_loss in name, but specify the formatting yourself (e.g. to avoid problems with Tensorboard
+# or Neptune, due to the presence of characters like '=' or '/')
+# saves a file like: my/path/sample-mnist-epoch02-val_loss0.32.ckpt
+&gt;&gt;&gt; checkpoint_callback = ModelCheckpoint(
+...     monitor='val/loss',
+...     dirpath='my/path/',
+...     filename='sample-mnist-epoch{epoch:02d}-val_loss{val/loss:.2f}',
+...     auto_insert_metric_name=False
+... )
+
+# retrieve the best checkpoint after training
+checkpoint_callback = ModelCheckpoint(dirpath='my/path/')
+trainer = Trainer(callbacks=[checkpoint_callback])
+model = ...
+trainer.fit(model)
+checkpoint_callback.best_model_path
+</code></pre>
+<div class="admonition tip">
+<p class="admonition-title">Tip:&ensp;Saving and restoring multiple checkpoint callbacks at the same time is supported under variation in the</p>
+<p>following arguments:</p>
+<p><em>monitor, mode, every_n_train_steps, every_n_epochs, train_time_interval, save_on_train_epoch_end</em></p>
+<p>Read more: :ref:<code>Persisting Callback State</code></p>
+</div></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class WandbModelCheckpoint(ModelCheckpoint):
+        def __init__(self, *args, **kwargs):
+                if not wandb.run:
+                        raise Exception(&#39;Wandb has not been initialized. Please call wandb.init first.&#39;)
+                wandb_dir = os.path.abspath(wandb.run.dir)
+                super().__init__(dirpath=os.path.join(wandb_dir, CHECKPOINT_FOLDER), *args, **kwargs)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>pytorch_lightning.callbacks.model_checkpoint.ModelCheckpoint</li>
+<li>pytorch_lightning.callbacks.base.Callback</li>
+<li>abc.ABC</li>
+</ul>
+</dd>
+<dt id="imutils.ml.callbacks.wandb_callbacks.WatchModelWithWandb"><code class="flex name class">
+<span>class <span class="ident">WatchModelWithWandb</span></span>
+<span>(</span><span>log: str = 'gradients', log_freq: int = 100)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Make WandbLogger watch model at the beginning of the run.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class WatchModelWithWandb(Callback):
+        &#34;&#34;&#34;Make WandbLogger watch model at the beginning of the run.&#34;&#34;&#34;
+
+        def __init__(self, log: str = &#34;gradients&#34;, log_freq: int = 100):
+                self.log = log
+                self.log_freq = log_freq
+
+        def on_train_start(self, trainer, pl_module):
+                logger = get_wandb_logger(trainer=trainer)
+                logger.watch(model=trainer.model, log=self.log, log_freq=self.log_freq)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>pytorch_lightning.callbacks.base.Callback</li>
+<li>abc.ABC</li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="imutils.ml.callbacks.wandb_callbacks.WatchModelWithWandb.on_train_start"><code class="name flex">
+<span>def <span class="ident">on_train_start</span></span>(<span>self, trainer, pl_module)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Called when the train begins.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def on_train_start(self, trainer, pl_module):
+        logger = get_wandb_logger(trainer=trainer)
+        logger.watch(model=trainer.model, log=self.log, log_freq=self.log_freq)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="imutils.ml.callbacks" href="index.html">imutils.ml.callbacks</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="imutils.ml.callbacks.wandb_callbacks.get_wandb_logger" href="#imutils.ml.callbacks.wandb_callbacks.get_wandb_logger">get_wandb_logger</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="imutils.ml.callbacks.wandb_callbacks.ImagePredictionLogger" href="#imutils.ml.callbacks.wandb_callbacks.ImagePredictionLogger">ImagePredictionLogger</a></code></h4>
+<ul class="">
+<li><code><a title="imutils.ml.callbacks.wandb_callbacks.ImagePredictionLogger.on_validation_epoch_end" href="#imutils.ml.callbacks.wandb_callbacks.ImagePredictionLogger.on_validation_epoch_end">on_validation_epoch_end</a></code></li>
+<li><code><a title="imutils.ml.callbacks.wandb_callbacks.ImagePredictionLogger.reset_iterator" href="#imutils.ml.callbacks.wandb_callbacks.ImagePredictionLogger.reset_iterator">reset_iterator</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="imutils.ml.callbacks.wandb_callbacks.LogPerClassMetricsToWandb" href="#imutils.ml.callbacks.wandb_callbacks.LogPerClassMetricsToWandb">LogPerClassMetricsToWandb</a></code></h4>
+<ul class="">
+<li><code><a title="imutils.ml.callbacks.wandb_callbacks.LogPerClassMetricsToWandb.on_sanity_check_end" href="#imutils.ml.callbacks.wandb_callbacks.LogPerClassMetricsToWandb.on_sanity_check_end">on_sanity_check_end</a></code></li>
+<li><code><a title="imutils.ml.callbacks.wandb_callbacks.LogPerClassMetricsToWandb.on_sanity_check_start" href="#imutils.ml.callbacks.wandb_callbacks.LogPerClassMetricsToWandb.on_sanity_check_start">on_sanity_check_start</a></code></li>
+<li><code><a title="imutils.ml.callbacks.wandb_callbacks.LogPerClassMetricsToWandb.on_validation_batch_end" href="#imutils.ml.callbacks.wandb_callbacks.LogPerClassMetricsToWandb.on_validation_batch_end">on_validation_batch_end</a></code></li>
+<li><code><a title="imutils.ml.callbacks.wandb_callbacks.LogPerClassMetricsToWandb.on_validation_epoch_end" href="#imutils.ml.callbacks.wandb_callbacks.LogPerClassMetricsToWandb.on_validation_epoch_end">on_validation_epoch_end</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="imutils.ml.callbacks.wandb_callbacks.ModuleDataMonitor" href="#imutils.ml.callbacks.wandb_callbacks.ModuleDataMonitor">ModuleDataMonitor</a></code></h4>
+</li>
+<li>
+<h4><code><a title="imutils.ml.callbacks.wandb_callbacks.UploadCheckpointsToWandbAsArtifact" href="#imutils.ml.callbacks.wandb_callbacks.UploadCheckpointsToWandbAsArtifact">UploadCheckpointsToWandbAsArtifact</a></code></h4>
+<ul class="">
+<li><code><a title="imutils.ml.callbacks.wandb_callbacks.UploadCheckpointsToWandbAsArtifact.create_and_use_artifact" href="#imutils.ml.callbacks.wandb_callbacks.UploadCheckpointsToWandbAsArtifact.create_and_use_artifact">create_and_use_artifact</a></code></li>
+<li><code><a title="imutils.ml.callbacks.wandb_callbacks.UploadCheckpointsToWandbAsArtifact.on_train_end" href="#imutils.ml.callbacks.wandb_callbacks.UploadCheckpointsToWandbAsArtifact.on_train_end">on_train_end</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="imutils.ml.callbacks.wandb_callbacks.UploadCodeToWandbAsArtifact" href="#imutils.ml.callbacks.wandb_callbacks.UploadCodeToWandbAsArtifact">UploadCodeToWandbAsArtifact</a></code></h4>
+<ul class="">
+<li><code><a title="imutils.ml.callbacks.wandb_callbacks.UploadCodeToWandbAsArtifact.on_train_start" href="#imutils.ml.callbacks.wandb_callbacks.UploadCodeToWandbAsArtifact.on_train_start">on_train_start</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="imutils.ml.callbacks.wandb_callbacks.WandbClassificationCallback" href="#imutils.ml.callbacks.wandb_callbacks.WandbClassificationCallback">WandbClassificationCallback</a></code></h4>
+<ul class="">
+<li><code><a title="imutils.ml.callbacks.wandb_callbacks.WandbClassificationCallback.on_epoch_end" href="#imutils.ml.callbacks.wandb_callbacks.WandbClassificationCallback.on_epoch_end">on_epoch_end</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="imutils.ml.callbacks.wandb_callbacks.WandbModelCheckpoint" href="#imutils.ml.callbacks.wandb_callbacks.WandbModelCheckpoint">WandbModelCheckpoint</a></code></h4>
+</li>
+<li>
+<h4><code><a title="imutils.ml.callbacks.wandb_callbacks.WatchModelWithWandb" href="#imutils.ml.callbacks.wandb_callbacks.WatchModelWithWandb">WatchModelWithWandb</a></code></h4>
+<ul class="">
+<li><code><a title="imutils.ml.callbacks.wandb_callbacks.WatchModelWithWandb.on_train_start" href="#imutils.ml.callbacks.wandb_callbacks.WatchModelWithWandb.on_train_start">on_train_start</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+</footer>
+</body>
+</html>

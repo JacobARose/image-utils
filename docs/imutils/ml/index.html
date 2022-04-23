@@ -31,7 +31,22 @@
 
 imutils/ml/__init__.py
 
-&#34;&#34;&#34;</code></pre>
+&#34;&#34;&#34;
+
+import os
+
+from .utils.common import load_envs
+# logging = template_utils.get_logger(__file__)
+load_envs()
+
+
+IMUTILS_ML_ROOT = os.path.dirname(__file__)
+BASE_ML_CONF_PATH = os.path.join(IMUTILS_ML_ROOT, &#34;conf/base_conf.yaml&#34;)
+
+# print(f&#34;IMUTILS_ML_ROOT: {IMUTILS_ML_ROOT}&#34;)
+
+# from rich import print as pp
+# pp(dir())</code></pre>
 </details>
 </section>
 <section>
@@ -40,6 +55,10 @@ imutils/ml/__init__.py
 <dt><code class="name"><a title="imutils.ml.aug" href="aug/index.html">imutils.ml.aug</a></code></dt>
 <dd>
 <div class="desc"><p>imutils/ml/aug/<strong>init</strong>.py</p></div>
+</dd>
+<dt><code class="name"><a title="imutils.ml.callbacks" href="callbacks/index.html">imutils.ml.callbacks</a></code></dt>
+<dd>
+<div class="desc"></div>
 </dd>
 <dt><code class="name"><a title="imutils.ml.data" href="data/index.html">imutils.ml.data</a></code></dt>
 <dd>
@@ -70,9 +89,13 @@ Date: May 07, 2020</p></div>
 <dd>
 <div class="desc"><p>imutils/ml/optimizer/<strong>init</strong>.py</p></div>
 </dd>
+<dt><code class="name"><a title="imutils.ml.pretrain" href="pretrain/index.html">imutils.ml.pretrain</a></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
 <dt><code class="name"><a title="imutils.ml.run_main" href="run_main.html">imutils.ml.run_main</a></code></dt>
 <dd>
-<div class="desc"><p>imutils/ml/run_main.py</p></div>
+<div class="desc"><p>Experiment #21: …</p></div>
 </dd>
 <dt><code class="name"><a title="imutils.ml.utils" href="utils/index.html">imutils.ml.utils</a></code></dt>
 <dd>
@@ -101,6 +124,7 @@ Date: May 07, 2020</p></div>
 <li><h3><a href="#header-submodules">Sub-modules</a></h3>
 <ul>
 <li><code><a title="imutils.ml.aug" href="aug/index.html">imutils.ml.aug</a></code></li>
+<li><code><a title="imutils.ml.callbacks" href="callbacks/index.html">imutils.ml.callbacks</a></code></li>
 <li><code><a title="imutils.ml.data" href="data/index.html">imutils.ml.data</a></code></li>
 <li><code><a title="imutils.ml.losses" href="losses.html">imutils.ml.losses</a></code></li>
 <li><code><a title="imutils.ml.main_ce" href="main_ce.html">imutils.ml.main_ce</a></code></li>
@@ -108,6 +132,7 @@ Date: May 07, 2020</p></div>
 <li><code><a title="imutils.ml.main_supcon" href="main_supcon.html">imutils.ml.main_supcon</a></code></li>
 <li><code><a title="imutils.ml.models" href="models/index.html">imutils.ml.models</a></code></li>
 <li><code><a title="imutils.ml.optimizer" href="optimizer/index.html">imutils.ml.optimizer</a></code></li>
+<li><code><a title="imutils.ml.pretrain" href="pretrain/index.html">imutils.ml.pretrain</a></code></li>
 <li><code><a title="imutils.ml.run_main" href="run_main.html">imutils.ml.run_main</a></code></li>
 <li><code><a title="imutils.ml.utils" href="utils/index.html">imutils.ml.utils</a></code></li>
 </ul>

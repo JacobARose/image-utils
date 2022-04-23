@@ -1,11 +1,11 @@
 
 albumentations
-captum
+#captum
 colorama
 dask[all]
 einops
 fastai
-ffcv
+# ffcv
 kornia
 lightning-bolts
 pytorch_lightning
@@ -45,7 +45,7 @@ scikit-learn
 scikit-image
 seaborn
 stuf
-tensorflow==2.8
+# tensorflow>=2
 timm
 toml
 toolz

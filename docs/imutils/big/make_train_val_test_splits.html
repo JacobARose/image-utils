@@ -1,0 +1,1201 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.10.0" />
+<title>imutils.big.make_train_val_test_splits API documentation</title>
+<meta name="description" content="make_train_val_test_splits.py …" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>imutils.big.make_train_val_test_splits</code></h1>
+</header>
+<section id="section-intro">
+<p>make_train_val_test_splits.py</p>
+<p>Load a csv file into a dataframe containing Leavesdb metadata, split it into train, val, and test subsets, then write to new location as csv files.</p>
+<p>Created on: Wednesday April 6th, 2022
+Created by: Jacob A Rose</p>
+<p>python "/media/data_cifs/projects/prj_fossils/users/jacob/github/image-utils/imutils/big/make_train_val_test_splits.py" &ndash;root_dir "/media/data_cifs/projects/prj_fossils/users/jacob/data/leavesdb-v1_1" &ndash;label_col "family" &ndash;splits "0.5,0.2,0.3" &ndash;seed 14 &ndash;run_all</p>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">&#34;&#34;&#34;
+make_train_val_test_splits.py
+
+Load a csv file into a dataframe containing Leavesdb metadata, split it into train, val, and test subsets, then write to new location as csv files.
+
+
+Created on: Wednesday April 6th, 2022
+Created by: Jacob A Rose
+
+
+
+python &#34;/media/data_cifs/projects/prj_fossils/users/jacob/github/image-utils/imutils/big/make_train_val_test_splits.py&#34; \
+--root_dir &#34;/media/data_cifs/projects/prj_fossils/users/jacob/data/leavesdb-v1_1&#34; \
+--label_col &#34;family&#34; \
+--splits &#34;0.5,0.2,0.3&#34; \
+--seed 14 \
+--run_all
+
+
+&#34;&#34;&#34;
+
+import argparse
+import warnings
+warnings.simplefilter(action=&#39;ignore&#39;, category=FutureWarning)
+
+## Can we stratify by genus or Family while classifying species?
+import numpy as np
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import LabelEncoder
+from tqdm import tqdm
+import os
+from typing import *
+import json
+import pandas as pd
+from pathlib import Path
+import seaborn as sns
+import matplotlib.pyplot as plt
+from pprint import pprint as pp
+
+# from imutils.big.make_herbarium_2022_catalog_df import (read_all_from_csv,
+#                                                                                                               read_train_df_from_csv,
+#                                                                                                               read_test_df_from_csv)
+from imutils import catalog_registry
+from imutils.ml.utils import template_utils
+
+log = template_utils.get_logger(__file__)
+
+
+# def train_val_split(df: pd.DataFrame,
+#                                       label_col = &#34;scientificName&#34;,
+#                                       train_size=0.7,
+#                                       seed = 14
+#                                       ) -&gt; Tuple[pd.DataFrame]:
+
+#       num_samples = df.shape[0]
+#       x = np.arange(num_samples)
+#       y = df[label_col].values
+
+#       x_train, x_val, _, _ = train_test_split(x, y,
+#                                                                                       stratify=y,
+#                                                                                       train_size=train_size,
+#                                                                                       random_state=seed)
+#       train_data = df.iloc[x_train,:]
+#       val_data = df.iloc[x_val,:]
+
+#       return train_data, val_data
+
+####################################################
+
+def trainvaltest_split(df: pd.DataFrame,
+                                           label_col = &#34;family&#34;,
+                                           splits: List[float]=(0.5, 0.2, 0.3),
+                                           seed = 14,
+                                           stratify: bool=True
+                                           ) -&gt; Dict[str,pd.DataFrame]:
+        &#34;&#34;&#34;
+        Wrapper function to split data into 3 stratified subsets specified by `splits`.
+        
+        User specifies absolute fraction of total requested for each subset (e.g. splits=[0.5, 0.2, 0.3])
+        
+        Function calculates adjusted fractions necessary in order to use sklearn&#39;s builtin train_test_split function over a sequence of 2 steps.
+        
+        Step 1: Separate test set from the rest of the data (constituting the union of train + val)
+        
+        Step 2: Separate the train and val sets from the remainder produced by step 1.
+
+        Output:
+                Dict: {&#39;train&#39;:(x_train, y_train),
+                                &#39;val&#39;:(x_val_y_val),
+                                &#39;test&#39;:(x_test, y_test)}
+                                
+        Example:
+                &gt;&gt; data = torch.data.Dataset(...)
+                &gt;&gt; y = data.targets
+                &gt;&gt; data_splits = trainvaltest_split(x=None,
+                                                                                        y=y,
+                                                                                        splits=(0.5, 0.2, 0.3),
+                                                                                        random_state=0,
+                                                                                        stratify=True)
+        
+        &#34;&#34;&#34;
+        
+        
+        assert len(splits) == 3, &#34;Must provide eactly 3 float values for `splits`&#34;
+        assert np.isclose(np.sum(splits), 1.0), f&#34;Sum of all splits values {splits} = {np.sum(splits)} must be 1.0&#34;
+        
+        train_split, val_split, test_split = splits
+        val_relative_split = val_split/(train_split + val_split)
+        train_relative_split = train_split/(train_split + val_split)
+        
+        if stratify and (label_col is None):
+                raise ValueError(&#34;If label_col is not provided, stratify must be set to False.&#34;)
+
+        num_samples = df.shape[0]
+        x = np.arange(num_samples)
+        y = df[label_col].values
+        
+        # y = np.array(y)
+        # if x is None:
+        #        x = np.arange(len(y))
+        # else:
+        #        x = np.array(x)
+
+        stratify_y = y if stratify else None    
+        x_train_val, x_test, y_train_val, y_test = train_test_split(x, y,
+                                                                                                                test_size=test_split, 
+                                                                                                                random_state=seed,
+                                                                                                                stratify=y)
+        
+        stratify_y_train = y_train_val if stratify else None
+        x_train, x_val, y_train, y_val = train_test_split(x_train_val, y_train_val,
+                                                                                                          test_size=val_relative_split,
+                                                                                                          random_state=seed, 
+                                                                                                          stratify=y_train_val)
+        
+        x = np.concatenate((x_train, x_val, x_test)).tolist()
+        assert len(set(x)) == len(x), f&#34;[Warning] Check for possible data leakage. len(set(x))={len(set(x))} != len(x)={len(x)}&#34;
+
+        train_data = df.iloc[x_train,:]
+        val_data = df.iloc[x_val,:]
+        test_data = df.iloc[x_test,:]
+
+
+        log.debug(f&#34;x_train.shape={x_train.shape}, y_train.shape={y_train.shape}&#34;)
+        log.debug(f&#34;x_val.shape={x_val.shape}, y_val.shape={y_val.shape}&#34;)
+        log.debug(f&#34;x_test.shape={x_test.shape}, y_test.shape={y_test.shape}&#34;)
+        log.debug(f&#39;Absolute splits: {[train_split, val_split, test_split]}&#39;)
+        log.debug(f&#39;Relative splits: [{train_relative_split:.2f}, {val_relative_split:.2f}, {test_split}]&#39;)
+        
+
+        return {&#34;train&#34;:train_data,
+                        &#34;val&#34;:val_data,
+                        &#34;test&#34;:test_data}
+
+
+
+
+
+
+
+
+def fit_and_encode_labels(train_data,
+                                                  val_data,
+                                                  test_data=None,
+                                                  label_col: str=&#34;family&#34;
+                                                 ) -&gt; Tuple[LabelEncoder, pd.DataFrame]:
+
+        encoder = LabelEncoder()
+        encoder.fit(train_data[label_col])
+        
+        split_data = {}
+        
+        train_data = train_data.assign(
+                y = encoder.transform(train_data[label_col])
+                        ).astype({&#34;y&#34;:&#34;category&#34;})
+        split_data[&#34;train&#34;] = train_data
+        
+        val_data = val_data.assign(
+                y = encoder.transform(val_data[label_col])
+                        ).astype({&#34;y&#34;:&#34;category&#34;})
+        split_data[&#34;val&#34;] = val_data
+
+        if test_data is not None:
+                if label_col in test_data.columns:
+                        test_data = test_data.assign(
+                                y = encoder.transform(test_data[label_col])
+                                        ).astype({&#34;y&#34;:&#34;category&#34;})
+                        split_data[&#34;test&#34;] = test_data
+
+        return encoder, split_data
+
+
+import pickle
+
+def save_label_encoder(encoder,
+                                           root_dir: str,
+                                           label_col: str) -&gt; str:
+        label_name = f&#34;{label_col}-encoder.pkl&#34;
+        label_encoder_path = Path(root_dir, label_name)
+
+        with open(label_encoder_path, mode=&#34;wb&#34;) as fp:
+                pickle.dump(encoder, fp)
+                
+        return label_encoder_path
+
+
+def read_label_encoder(label_encoder_path) -&gt; LabelEncoder:
+
+        with open(label_encoder_path, mode=&#34;rb&#34;) as fp:
+                loaded_encoder = pickle.load(fp)
+                
+        return loaded_encoder
+
+
+def format_output_cols(df: pd.DataFrame):
+        col_order = [&#39;path&#39;, &#39;y&#39;, &#34;family&#34;, &#34;genus&#34;, &#34;species&#34;, &#34;collection&#34;, &#34;catalog_number&#34;]
+        col_order = [col for col in col_order if col in df.columns]
+        return df[col_order]
+
+
+
+
+
+def optimize_dtypes(df: pd.DataFrame) -&gt; pd.DataFrame:
+        &#34;&#34;&#34;
+        Convert column dtypes to optimal type for Leavesdb metadata df.
+        &#34;&#34;&#34;
+
+        # Reduce total df size by optimizing dtypes per column
+        cat_cols = [&#39;y&#39;, &#34;family&#34;, &#34;genus&#34;, &#34;species&#34;, &#34;collection&#34;]
+        if &#34;y&#34; in df.columns:
+                cat_cols.append(&#34;y&#34;)
+        
+        str_cols = [&#39;path&#39;, &#34;catalog_number&#34;]
+        col_dtypes = {c:&#34;category&#34; for c in cat_cols if c in df.columns}
+        col_dtypes.update({c:&#34;string&#34; for c in str_cols})
+        
+        # import pdb;pdb.set_trace()
+
+        df = df.astype(col_dtypes)
+        return df
+
+
+def read_df_from_csv(path,
+                                         nrows: Optional[int]=None
+                                        ) -&gt; pd.DataFrame:
+        
+        df = pd.read_csv(path, index_col=None, nrows=nrows)
+        df = optimize_dtypes(df)
+        return df
+
+
+
+
+        
+
+def make_splits(df: pd.DataFrame,
+                                label_col = &#34;scientificName&#34;,
+                                splits: List[float]=(0.5, 0.2, 0.3),
+                                seed = 14
+                                ) -&gt; Tuple[LabelEncoder, pd.DataFrame]:
+        
+        
+        split_dfs = trainvaltest_split(df=df,
+                                                                   label_col=label_col,
+                                                                   splits=splits,
+                                                                   seed=seed,
+                                                                   stratify=True)
+        
+
+
+        encoder, split_dfs = fit_and_encode_labels(train_data=split_dfs[&#34;train&#34;],
+                                                                                           val_data=split_dfs[&#34;val&#34;],
+                                                                                           test_data=split_dfs[&#34;test&#34;],
+                                                                                           label_col=label_col)
+
+        split_dfs[&#34;train&#34;] = format_output_cols(split_dfs[&#34;train&#34;])
+        split_dfs[&#34;val&#34;] = format_output_cols(split_dfs[&#34;val&#34;])
+        split_dfs[&#34;test&#34;] = format_output_cols(split_dfs[&#34;test&#34;])
+        
+        return encoder, split_dfs
+
+        
+def make_encode_save_splits(source_csv_path: str, #DATA_DIR,
+                                                        save_dir: str, #=None,
+                                                        label_col: str=&#34;family&#34;,
+                                                        splits: List[float]=(0.5, 0.2, 0.3),
+                                                        seed = 14):
+        save_dir = Path(save_dir)
+        os.makedirs(save_dir, exist_ok=True)
+        
+        df = read_df_from_csv(path=source_csv_path)
+        
+        encoder, split_dfs = make_splits(df=df,
+                                                                         label_col = label_col,
+                                                                         splits=splits,
+                                                                         seed=seed)
+        
+        label_encoder_path = save_label_encoder(encoder=encoder,
+                                                                                        root_dir=save_dir,
+                                                                                        label_col=label_col)
+
+        split_dfs[&#34;train&#34;].to_csv(save_dir / &#34;train_metadata.csv&#34;)
+        split_dfs[&#34;val&#34;].to_csv(save_dir / &#34;val_metadata.csv&#34;)
+        split_dfs[&#34;test&#34;].to_csv(save_dir / &#34;test_metadata.csv&#34;)
+
+        return {&#34;label_encoder&#34;:encoder,
+                        &#34;subsets&#34;:{**split_dfs}
+                   }
+
+
+# def read_train_df_from_csv(train_path,
+#                                                       nrows: Optional[int]=None
+#                                                       ) -&gt; pd.DataFrame:
+
+#        df = pd.read_csv(train_path, index_col=0, nrows=nrows)
+#        df = optimize_dtypes_train(df)
+#        return df
+
+
+# def read_test_df_from_csv(test_path,
+#                                                  nrows: Optional[int]=None
+#                                                  ) -&gt; pd.DataFrame:
+
+#        df = pd.read_csv(test_path, index_col=0, nrows=nrows)
+#        df = optimize_dtypes_test(df)
+#        return df
+
+
+def find_label_encoder_path(source_dir: str) -&gt; Path:
+        &#34;&#34;&#34;
+        Parse the contents of source_dir and return the full path of the encoder file, by filtering for files with &#34;encoder&#34; in the name.
+        &#34;&#34;&#34;
+        file_name = [f for f in os.listdir(source_dir) if &#34;encoder&#34; in f]
+        if len(file_name)!=1:
+                return None
+        file_name = file_name[0]
+        return Path(source_dir, file_name)
+
+
+def find_data_splits_dir(source_dir: str,
+                                                 splits: List[float]=(0.5, 0.2, 0.3)
+                                                ) -&gt; Path:
+        &#34;&#34;&#34;
+        Given a base path of `source_dir`, construct the correct data split dir path using chosen train_size.
+        &#34;&#34;&#34;
+        splits_subdir = f&#34;splits=({splits[0]:.1f},{splits[1]:.1f},{splits[2]:.1f})&#34;
+
+        if splits_subdir in str(source_dir):
+                return source_dir
+
+        out_dir = Path(source_dir)
+        if (&#34;splits&#34; in os.listdir(str(out_dir))) or (&#34;splits&#34; not in str(out_dir)):
+                out_dir = out_dir / &#34;splits&#34;
+                
+        out_dir = out_dir / splits_subdir
+        
+        return out_dir
+
+
+
+
+def check_already_built(splits_dir: str) -&gt; bool:
+        &#34;&#34;&#34;
+        Checks splits_dir for completed set of files as evidence that previous run was successful.
+        &#34;&#34;&#34;
+        splits_dir = Path(splits_dir)
+        label_encoder_path = find_label_encoder_path(splits_dir)
+        try:
+                assert os.path.isfile(str(label_encoder_path))
+                assert os.path.isfile(splits_dir / &#34;train_metadata.csv&#34;)
+                assert os.path.isfile(splits_dir / &#34;val_metadata.csv&#34;)
+                assert os.path.isfile(splits_dir / &#34;test_metadata.csv&#34;)
+                return True
+        except AssertionError:
+                return False
+        
+
+def read_encoded_splits(source_dir: str,
+                                                label_encoder_path: str=None,
+                                                include=[&#34;train&#34;,&#34;val&#34;,&#34;test&#34;]):
+        
+        source_dir = Path(source_dir)
+        
+        if label_encoder_path is None:
+                label_encoder_path = find_label_encoder_path(source_dir)
+        
+        encoder = read_label_encoder(label_encoder_path=label_encoder_path)
+        data = {&#34;label_encoder&#34;:encoder,
+                        &#34;subsets&#34;:{}}
+        
+        if &#34;train&#34; in include:
+                data[&#34;subsets&#34;][&#34;train&#34;] = read_df_from_csv(source_dir / &#34;train_metadata.csv&#34;)
+        if &#34;val&#34; in include:
+                data[&#34;subsets&#34;][&#34;val&#34;] = read_df_from_csv(source_dir / &#34;val_metadata.csv&#34;)
+        if &#34;test&#34; in include:
+                data[&#34;subsets&#34;][&#34;test&#34;] = read_df_from_csv(source_dir / &#34;test_metadata.csv&#34;)
+
+        return data
+
+
+
+def main(source_dir: str, #=DATA_DIR,
+                 splits_dir: Optional[str]=None,
+                 label_col: str=&#34;family&#34;,
+                 splits: List[float]=(0.5, 0.2, 0.3),
+                 seed: int=14):
+        &#34;&#34;&#34;
+        If splits already exist on disk, read and return their contents.
+        If they dont, read original herbarium train metadata, apply train val split, and write contents to new directory
+        
+        Returns a fitted LabelEncoder object + 3 DataFrames,
+        - The train &amp; val DataFrames contain labeled/supervised datasets
+        - The test DataFrames contain unlabeled/unsupervised datasets
+        
+        &#34;&#34;&#34;
+        
+        # if splits_dir is None:
+        #        splits_dir = Path(source_dir, &#34;splits&#34;, f&#34;train_size-{train_size}&#34;)
+        #        os.makedirs(splits_dir, exist_ok=True)
+        # import pdb; pdb.set_trace()
+
+        if True: #not check_already_built(splits_dir):
+                print(f&#34;Making &amp; saving train-val-test splits in the following directory:&#34;,
+                          &#39;\n&#39; + str(splits_dir))
+                if not os.path.exists(splits_dir):
+                        print(f&#34;Creating directory structure&#34;)
+                        os.makedirs(splits_dir, exist_ok=True)
+        
+                csv_filename = [f for f in os.listdir(source_dir) if f.endswith(&#34;.csv&#34;)][0]
+        
+                source_csv_path = os.path.join(source_dir, csv_filename)
+                
+                print(f&#34;Reading from: {csv_filename}&#34;)
+        
+                data = make_encode_save_splits(source_csv_path=source_csv_path,
+                                                                           save_dir=splits_dir,
+                                                                           label_col=label_col,
+                                                                           splits=splits,
+                                                                           seed=seed)
+                return data
+        else:
+                
+                print(f&#34;Already completed previous run. train-val-test splits are in the following directory:&#34;,
+                          &#39;\n&#39; + str(splits_dir))
+                return None
+
+
+# HERBARIUM_ROOT = &#34;/media/data_cifs/projects/prj_fossils/data/raw_data/herbarium-2022-fgvc9_resize&#34;
+# WORKING_DIR = &#34;/media/data/jacob/GitHub/image-utils/notebooks/herbarium_2022/&#34;
+# OUTPUT_DIR = os.path.join(WORKING_DIR, &#34;outputs&#34;)
+# DATA_DIR = os.path.join(WORKING_DIR, &#34;data&#34;)
+
+
+from dotenv import load_dotenv
+load_dotenv()
+
+# HERBARIUM_ROOT_DEFAULT = os.environ.get(&#34;HERBARIUM_ROOT_DEFAULT&#34;)
+# CATALOG_DIR = os.environ.get(&#34;CATALOG_DIR&#34;)
+# SPLITS_DIR = os.environ.get(&#34;SPLITS_DIR&#34;)
+
+
+CATALOG_ROOT_DIR = &#34;/media/data_cifs/projects/prj_fossils/users/jacob/data/leavesdb-v1_1&#34;
+available_catalogs = [
+        # &#39;Extant_Leaves_1024&#39;,
+        # &#39;Extant_Leaves_512&#39;,
+        &#39;Extant_Leaves_family_100_1024&#39;,
+        &#39;Extant_Leaves_family_100_512&#39;,
+        &#39;Extant_Leaves_family_10_1024&#39;,
+        &#39;Extant_Leaves_family_10_512&#39;,
+        &#39;Extant_Leaves_family_3_1024&#39;,
+        &#39;Extant_Leaves_family_3_512&#39;,
+        # &#39;Fossil_1024&#39;,
+        # &#39;Fossil_512&#39;,
+        &#39;Fossil_family_3_1024&#39;,
+        &#39;Fossil_family_3_512&#39;,
+        &#39;PNAS_family_100_1024&#39;,
+        &#39;PNAS_family_100_512&#39;
+]
+
+
+
+
+
+        
+def parse_args() -&gt; argparse.Namespace:
+        
+        parser = argparse.ArgumentParser(&#34;&#34;&#34;Generate train-val-test splits dataset from Leavesdb v1.1 catalogs.&#34;&#34;&#34;)
+        parser.add_argument(
+                &#34;--root_dir&#34;, default=CATALOG_ROOT_DIR, help=&#34;Root directory where inidividual datasets each have their own subdir, within which lie the catalog files.&#34;
+        )
+        parser.add_argument(
+                &#34;--sub_dir&#34;, default=&#34;Extant_Leaves_family_10_512&#34;, help=&#34;Root directory where inidividual datasets each have their own subdir, within which lie the catalog files.&#34;
+        )
+
+        parser.add_argument(
+                &#34;--splits_dir&#34;,
+                default=None, #SPLITS_DIR,
+                help=&#34;Target directory in which to save the csv files for each split. &#34;,
+        )
+        parser.add_argument(
+                &#34;--label_col&#34;,
+                default=&#34;family&#34;, #SPLITS_DIR,
+                help=&#34;The column to encode as labels &amp; use for stratification.&#34;,
+        )
+        parser.add_argument(
+                &#34;--splits&#34;,
+                default=&#34;0.5,0.2,0.3&#34;,
+                type=str,
+                help=&#34;3 floats representing the train, val, and test fractions of the data catalogs to be made.&#34;,
+        )
+        parser.add_argument(
+                &#34;--seed&#34;, default=14, type=int, help=&#34;Random seed.&#34;
+        )
+        parser.add_argument(
+                &#34;--run_all&#34;, action=&#34;store_true&#34;, help=&#34;Flag to create splits for all subdirs in args.root_dir.&#34;
+        )
+
+        args = parser.parse_args()
+        # WORKING_DIR = &#34;/media/data/jacob/GitHub/image-utils/notebooks/herbarium_2022/&#34;
+        # OUTPUT_DIR = os.path.join(WORKING_DIR, &#34;outputs&#34;)
+        # DATA_DIR = os.path.join(WORKING_DIR, &#34;data&#34;)
+        args.splits = tuple(float(frac) for frac in args.splits.split(&#34;,&#34;))
+        # args.train_size = float(args.train_size)
+        
+        assert os.path.isdir(args.root_dir)
+        
+        return args
+
+
+
+
+if __name__ == &#34;__main__&#34;:
+        
+        args = parse_args()
+
+                        
+        if args.run_all:
+                print(f&#34;--run_all was passed, generating train-val-test splits for {len(available_catalogs)} datasets.&#34;)
+                for sub_dir in tqdm(available_catalogs):
+                        source_dir = os.path.join(args.root_dir, sub_dir)
+
+                        args.splits_dir = find_data_splits_dir(source_dir=source_dir,
+                                                                                                   splits=args.splits)
+                        print(f&#34;Using args.splits_dir: {args.splits_dir}&#34;)
+                        os.makedirs(args.splits_dir, exist_ok=True)
+
+                        main(source_dir=source_dir,
+                                 splits_dir=args.splits_dir,
+                                 label_col=args.label_col,
+                                 splits=args.splits,
+                                 seed=args.seed)
+
+
+        else:
+                
+                source_dir = os.path.join(args.root_dir, args.sub_dir)
+                
+                if args.splits_dir is None:
+                        args.splits_dir = find_data_splits_dir(source_dir=source_dir,
+                                                                                                   splits=args.splits)          
+                print(f&#34;Using args.splits_dir: {args.splits_dir}&#34;)
+                os.makedirs(args.splits_dir, exist_ok=True)
+
+                main(source_dir=source_dir,
+                         splits_dir=args.splits_dir,
+                         label_col=args.label_col,
+                         splits=args.splits,
+                         seed=args.seed)</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="imutils.big.make_train_val_test_splits.check_already_built"><code class="name flex">
+<span>def <span class="ident">check_already_built</span></span>(<span>splits_dir: str) ‑> bool</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Checks splits_dir for completed set of files as evidence that previous run was successful.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def check_already_built(splits_dir: str) -&gt; bool:
+        &#34;&#34;&#34;
+        Checks splits_dir for completed set of files as evidence that previous run was successful.
+        &#34;&#34;&#34;
+        splits_dir = Path(splits_dir)
+        label_encoder_path = find_label_encoder_path(splits_dir)
+        try:
+                assert os.path.isfile(str(label_encoder_path))
+                assert os.path.isfile(splits_dir / &#34;train_metadata.csv&#34;)
+                assert os.path.isfile(splits_dir / &#34;val_metadata.csv&#34;)
+                assert os.path.isfile(splits_dir / &#34;test_metadata.csv&#34;)
+                return True
+        except AssertionError:
+                return False</code></pre>
+</details>
+</dd>
+<dt id="imutils.big.make_train_val_test_splits.find_data_splits_dir"><code class="name flex">
+<span>def <span class="ident">find_data_splits_dir</span></span>(<span>source_dir: str, splits: List[float] = (0.5, 0.2, 0.3)) ‑> pathlib.Path</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Given a base path of <code>source_dir</code>, construct the correct data split dir path using chosen train_size.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def find_data_splits_dir(source_dir: str,
+                                                 splits: List[float]=(0.5, 0.2, 0.3)
+                                                ) -&gt; Path:
+        &#34;&#34;&#34;
+        Given a base path of `source_dir`, construct the correct data split dir path using chosen train_size.
+        &#34;&#34;&#34;
+        splits_subdir = f&#34;splits=({splits[0]:.1f},{splits[1]:.1f},{splits[2]:.1f})&#34;
+
+        if splits_subdir in str(source_dir):
+                return source_dir
+
+        out_dir = Path(source_dir)
+        if (&#34;splits&#34; in os.listdir(str(out_dir))) or (&#34;splits&#34; not in str(out_dir)):
+                out_dir = out_dir / &#34;splits&#34;
+                
+        out_dir = out_dir / splits_subdir
+        
+        return out_dir</code></pre>
+</details>
+</dd>
+<dt id="imutils.big.make_train_val_test_splits.find_label_encoder_path"><code class="name flex">
+<span>def <span class="ident">find_label_encoder_path</span></span>(<span>source_dir: str) ‑> pathlib.Path</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Parse the contents of source_dir and return the full path of the encoder file, by filtering for files with "encoder" in the name.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def find_label_encoder_path(source_dir: str) -&gt; Path:
+        &#34;&#34;&#34;
+        Parse the contents of source_dir and return the full path of the encoder file, by filtering for files with &#34;encoder&#34; in the name.
+        &#34;&#34;&#34;
+        file_name = [f for f in os.listdir(source_dir) if &#34;encoder&#34; in f]
+        if len(file_name)!=1:
+                return None
+        file_name = file_name[0]
+        return Path(source_dir, file_name)</code></pre>
+</details>
+</dd>
+<dt id="imutils.big.make_train_val_test_splits.fit_and_encode_labels"><code class="name flex">
+<span>def <span class="ident">fit_and_encode_labels</span></span>(<span>train_data, val_data, test_data=None, label_col: str = 'family') ‑> Tuple[sklearn.preprocessing._label.LabelEncoder, pandas.core.frame.DataFrame]</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def fit_and_encode_labels(train_data,
+                                                  val_data,
+                                                  test_data=None,
+                                                  label_col: str=&#34;family&#34;
+                                                 ) -&gt; Tuple[LabelEncoder, pd.DataFrame]:
+
+        encoder = LabelEncoder()
+        encoder.fit(train_data[label_col])
+        
+        split_data = {}
+        
+        train_data = train_data.assign(
+                y = encoder.transform(train_data[label_col])
+                        ).astype({&#34;y&#34;:&#34;category&#34;})
+        split_data[&#34;train&#34;] = train_data
+        
+        val_data = val_data.assign(
+                y = encoder.transform(val_data[label_col])
+                        ).astype({&#34;y&#34;:&#34;category&#34;})
+        split_data[&#34;val&#34;] = val_data
+
+        if test_data is not None:
+                if label_col in test_data.columns:
+                        test_data = test_data.assign(
+                                y = encoder.transform(test_data[label_col])
+                                        ).astype({&#34;y&#34;:&#34;category&#34;})
+                        split_data[&#34;test&#34;] = test_data
+
+        return encoder, split_data</code></pre>
+</details>
+</dd>
+<dt id="imutils.big.make_train_val_test_splits.format_output_cols"><code class="name flex">
+<span>def <span class="ident">format_output_cols</span></span>(<span>df: pandas.core.frame.DataFrame)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def format_output_cols(df: pd.DataFrame):
+        col_order = [&#39;path&#39;, &#39;y&#39;, &#34;family&#34;, &#34;genus&#34;, &#34;species&#34;, &#34;collection&#34;, &#34;catalog_number&#34;]
+        col_order = [col for col in col_order if col in df.columns]
+        return df[col_order]</code></pre>
+</details>
+</dd>
+<dt id="imutils.big.make_train_val_test_splits.main"><code class="name flex">
+<span>def <span class="ident">main</span></span>(<span>source_dir: str, splits_dir: Optional[str] = None, label_col: str = 'family', splits: List[float] = (0.5, 0.2, 0.3), seed: int = 14)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>If splits already exist on disk, read and return their contents.
+If they dont, read original herbarium train metadata, apply train val split, and write contents to new directory</p>
+<p>Returns a fitted LabelEncoder object + 3 DataFrames,
+- The train &amp; val DataFrames contain labeled/supervised datasets
+- The test DataFrames contain unlabeled/unsupervised datasets</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def main(source_dir: str, #=DATA_DIR,
+                 splits_dir: Optional[str]=None,
+                 label_col: str=&#34;family&#34;,
+                 splits: List[float]=(0.5, 0.2, 0.3),
+                 seed: int=14):
+        &#34;&#34;&#34;
+        If splits already exist on disk, read and return their contents.
+        If they dont, read original herbarium train metadata, apply train val split, and write contents to new directory
+        
+        Returns a fitted LabelEncoder object + 3 DataFrames,
+        - The train &amp; val DataFrames contain labeled/supervised datasets
+        - The test DataFrames contain unlabeled/unsupervised datasets
+        
+        &#34;&#34;&#34;
+        
+        # if splits_dir is None:
+        #        splits_dir = Path(source_dir, &#34;splits&#34;, f&#34;train_size-{train_size}&#34;)
+        #        os.makedirs(splits_dir, exist_ok=True)
+        # import pdb; pdb.set_trace()
+
+        if True: #not check_already_built(splits_dir):
+                print(f&#34;Making &amp; saving train-val-test splits in the following directory:&#34;,
+                          &#39;\n&#39; + str(splits_dir))
+                if not os.path.exists(splits_dir):
+                        print(f&#34;Creating directory structure&#34;)
+                        os.makedirs(splits_dir, exist_ok=True)
+        
+                csv_filename = [f for f in os.listdir(source_dir) if f.endswith(&#34;.csv&#34;)][0]
+        
+                source_csv_path = os.path.join(source_dir, csv_filename)
+                
+                print(f&#34;Reading from: {csv_filename}&#34;)
+        
+                data = make_encode_save_splits(source_csv_path=source_csv_path,
+                                                                           save_dir=splits_dir,
+                                                                           label_col=label_col,
+                                                                           splits=splits,
+                                                                           seed=seed)
+                return data
+        else:
+                
+                print(f&#34;Already completed previous run. train-val-test splits are in the following directory:&#34;,
+                          &#39;\n&#39; + str(splits_dir))
+                return None</code></pre>
+</details>
+</dd>
+<dt id="imutils.big.make_train_val_test_splits.make_encode_save_splits"><code class="name flex">
+<span>def <span class="ident">make_encode_save_splits</span></span>(<span>source_csv_path: str, save_dir: str, label_col: str = 'family', splits: List[float] = (0.5, 0.2, 0.3), seed=14)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def make_encode_save_splits(source_csv_path: str, #DATA_DIR,
+                                                        save_dir: str, #=None,
+                                                        label_col: str=&#34;family&#34;,
+                                                        splits: List[float]=(0.5, 0.2, 0.3),
+                                                        seed = 14):
+        save_dir = Path(save_dir)
+        os.makedirs(save_dir, exist_ok=True)
+        
+        df = read_df_from_csv(path=source_csv_path)
+        
+        encoder, split_dfs = make_splits(df=df,
+                                                                         label_col = label_col,
+                                                                         splits=splits,
+                                                                         seed=seed)
+        
+        label_encoder_path = save_label_encoder(encoder=encoder,
+                                                                                        root_dir=save_dir,
+                                                                                        label_col=label_col)
+
+        split_dfs[&#34;train&#34;].to_csv(save_dir / &#34;train_metadata.csv&#34;)
+        split_dfs[&#34;val&#34;].to_csv(save_dir / &#34;val_metadata.csv&#34;)
+        split_dfs[&#34;test&#34;].to_csv(save_dir / &#34;test_metadata.csv&#34;)
+
+        return {&#34;label_encoder&#34;:encoder,
+                        &#34;subsets&#34;:{**split_dfs}
+                   }</code></pre>
+</details>
+</dd>
+<dt id="imutils.big.make_train_val_test_splits.make_splits"><code class="name flex">
+<span>def <span class="ident">make_splits</span></span>(<span>df: pandas.core.frame.DataFrame, label_col='scientificName', splits: List[float] = (0.5, 0.2, 0.3), seed=14) ‑> Tuple[sklearn.preprocessing._label.LabelEncoder, pandas.core.frame.DataFrame]</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def make_splits(df: pd.DataFrame,
+                                label_col = &#34;scientificName&#34;,
+                                splits: List[float]=(0.5, 0.2, 0.3),
+                                seed = 14
+                                ) -&gt; Tuple[LabelEncoder, pd.DataFrame]:
+        
+        
+        split_dfs = trainvaltest_split(df=df,
+                                                                   label_col=label_col,
+                                                                   splits=splits,
+                                                                   seed=seed,
+                                                                   stratify=True)
+        
+
+
+        encoder, split_dfs = fit_and_encode_labels(train_data=split_dfs[&#34;train&#34;],
+                                                                                           val_data=split_dfs[&#34;val&#34;],
+                                                                                           test_data=split_dfs[&#34;test&#34;],
+                                                                                           label_col=label_col)
+
+        split_dfs[&#34;train&#34;] = format_output_cols(split_dfs[&#34;train&#34;])
+        split_dfs[&#34;val&#34;] = format_output_cols(split_dfs[&#34;val&#34;])
+        split_dfs[&#34;test&#34;] = format_output_cols(split_dfs[&#34;test&#34;])
+        
+        return encoder, split_dfs</code></pre>
+</details>
+</dd>
+<dt id="imutils.big.make_train_val_test_splits.optimize_dtypes"><code class="name flex">
+<span>def <span class="ident">optimize_dtypes</span></span>(<span>df: pandas.core.frame.DataFrame) ‑> pandas.core.frame.DataFrame</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Convert column dtypes to optimal type for Leavesdb metadata df.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def optimize_dtypes(df: pd.DataFrame) -&gt; pd.DataFrame:
+        &#34;&#34;&#34;
+        Convert column dtypes to optimal type for Leavesdb metadata df.
+        &#34;&#34;&#34;
+
+        # Reduce total df size by optimizing dtypes per column
+        cat_cols = [&#39;y&#39;, &#34;family&#34;, &#34;genus&#34;, &#34;species&#34;, &#34;collection&#34;]
+        if &#34;y&#34; in df.columns:
+                cat_cols.append(&#34;y&#34;)
+        
+        str_cols = [&#39;path&#39;, &#34;catalog_number&#34;]
+        col_dtypes = {c:&#34;category&#34; for c in cat_cols if c in df.columns}
+        col_dtypes.update({c:&#34;string&#34; for c in str_cols})
+        
+        # import pdb;pdb.set_trace()
+
+        df = df.astype(col_dtypes)
+        return df</code></pre>
+</details>
+</dd>
+<dt id="imutils.big.make_train_val_test_splits.parse_args"><code class="name flex">
+<span>def <span class="ident">parse_args</span></span>(<span>) ‑> argparse.Namespace</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def parse_args() -&gt; argparse.Namespace:
+        
+        parser = argparse.ArgumentParser(&#34;&#34;&#34;Generate train-val-test splits dataset from Leavesdb v1.1 catalogs.&#34;&#34;&#34;)
+        parser.add_argument(
+                &#34;--root_dir&#34;, default=CATALOG_ROOT_DIR, help=&#34;Root directory where inidividual datasets each have their own subdir, within which lie the catalog files.&#34;
+        )
+        parser.add_argument(
+                &#34;--sub_dir&#34;, default=&#34;Extant_Leaves_family_10_512&#34;, help=&#34;Root directory where inidividual datasets each have their own subdir, within which lie the catalog files.&#34;
+        )
+
+        parser.add_argument(
+                &#34;--splits_dir&#34;,
+                default=None, #SPLITS_DIR,
+                help=&#34;Target directory in which to save the csv files for each split. &#34;,
+        )
+        parser.add_argument(
+                &#34;--label_col&#34;,
+                default=&#34;family&#34;, #SPLITS_DIR,
+                help=&#34;The column to encode as labels &amp; use for stratification.&#34;,
+        )
+        parser.add_argument(
+                &#34;--splits&#34;,
+                default=&#34;0.5,0.2,0.3&#34;,
+                type=str,
+                help=&#34;3 floats representing the train, val, and test fractions of the data catalogs to be made.&#34;,
+        )
+        parser.add_argument(
+                &#34;--seed&#34;, default=14, type=int, help=&#34;Random seed.&#34;
+        )
+        parser.add_argument(
+                &#34;--run_all&#34;, action=&#34;store_true&#34;, help=&#34;Flag to create splits for all subdirs in args.root_dir.&#34;
+        )
+
+        args = parser.parse_args()
+        # WORKING_DIR = &#34;/media/data/jacob/GitHub/image-utils/notebooks/herbarium_2022/&#34;
+        # OUTPUT_DIR = os.path.join(WORKING_DIR, &#34;outputs&#34;)
+        # DATA_DIR = os.path.join(WORKING_DIR, &#34;data&#34;)
+        args.splits = tuple(float(frac) for frac in args.splits.split(&#34;,&#34;))
+        # args.train_size = float(args.train_size)
+        
+        assert os.path.isdir(args.root_dir)
+        
+        return args</code></pre>
+</details>
+</dd>
+<dt id="imutils.big.make_train_val_test_splits.read_df_from_csv"><code class="name flex">
+<span>def <span class="ident">read_df_from_csv</span></span>(<span>path, nrows: Optional[int] = None) ‑> pandas.core.frame.DataFrame</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def read_df_from_csv(path,
+                                         nrows: Optional[int]=None
+                                        ) -&gt; pd.DataFrame:
+        
+        df = pd.read_csv(path, index_col=None, nrows=nrows)
+        df = optimize_dtypes(df)
+        return df</code></pre>
+</details>
+</dd>
+<dt id="imutils.big.make_train_val_test_splits.read_encoded_splits"><code class="name flex">
+<span>def <span class="ident">read_encoded_splits</span></span>(<span>source_dir: str, label_encoder_path: str = None, include=['train', 'val', 'test'])</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def read_encoded_splits(source_dir: str,
+                                                label_encoder_path: str=None,
+                                                include=[&#34;train&#34;,&#34;val&#34;,&#34;test&#34;]):
+        
+        source_dir = Path(source_dir)
+        
+        if label_encoder_path is None:
+                label_encoder_path = find_label_encoder_path(source_dir)
+        
+        encoder = read_label_encoder(label_encoder_path=label_encoder_path)
+        data = {&#34;label_encoder&#34;:encoder,
+                        &#34;subsets&#34;:{}}
+        
+        if &#34;train&#34; in include:
+                data[&#34;subsets&#34;][&#34;train&#34;] = read_df_from_csv(source_dir / &#34;train_metadata.csv&#34;)
+        if &#34;val&#34; in include:
+                data[&#34;subsets&#34;][&#34;val&#34;] = read_df_from_csv(source_dir / &#34;val_metadata.csv&#34;)
+        if &#34;test&#34; in include:
+                data[&#34;subsets&#34;][&#34;test&#34;] = read_df_from_csv(source_dir / &#34;test_metadata.csv&#34;)
+
+        return data</code></pre>
+</details>
+</dd>
+<dt id="imutils.big.make_train_val_test_splits.read_label_encoder"><code class="name flex">
+<span>def <span class="ident">read_label_encoder</span></span>(<span>label_encoder_path) ‑> sklearn.preprocessing._label.LabelEncoder</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def read_label_encoder(label_encoder_path) -&gt; LabelEncoder:
+
+        with open(label_encoder_path, mode=&#34;rb&#34;) as fp:
+                loaded_encoder = pickle.load(fp)
+                
+        return loaded_encoder</code></pre>
+</details>
+</dd>
+<dt id="imutils.big.make_train_val_test_splits.save_label_encoder"><code class="name flex">
+<span>def <span class="ident">save_label_encoder</span></span>(<span>encoder, root_dir: str, label_col: str) ‑> str</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def save_label_encoder(encoder,
+                                           root_dir: str,
+                                           label_col: str) -&gt; str:
+        label_name = f&#34;{label_col}-encoder.pkl&#34;
+        label_encoder_path = Path(root_dir, label_name)
+
+        with open(label_encoder_path, mode=&#34;wb&#34;) as fp:
+                pickle.dump(encoder, fp)
+                
+        return label_encoder_path</code></pre>
+</details>
+</dd>
+<dt id="imutils.big.make_train_val_test_splits.trainvaltest_split"><code class="name flex">
+<span>def <span class="ident">trainvaltest_split</span></span>(<span>df: pandas.core.frame.DataFrame, label_col='family', splits: List[float] = (0.5, 0.2, 0.3), seed=14, stratify: bool = True) ‑> Dict[str, pandas.core.frame.DataFrame]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Wrapper function to split data into 3 stratified subsets specified by <code>splits</code>.</p>
+<p>User specifies absolute fraction of total requested for each subset (e.g. splits=[0.5, 0.2, 0.3])</p>
+<p>Function calculates adjusted fractions necessary in order to use sklearn's builtin train_test_split function over a sequence of 2 steps.</p>
+<p>Step 1: Separate test set from the rest of the data (constituting the union of train + val)</p>
+<p>Step 2: Separate the train and val sets from the remainder produced by step 1.</p>
+<h2 id="output">Output</h2>
+<p>Dict: {'train':(x_train, y_train),
+'val':(x_val_y_val),
+'test':(x_test, y_test)}</p>
+<h2 id="example">Example</h2>
+<blockquote>
+<blockquote>
+<p>data = torch.data.Dataset(&hellip;)
+y = data.targets
+data_splits = trainvaltest_split(x=None,
+y=y,
+splits=(0.5, 0.2, 0.3),
+random_state=0,
+stratify=True)</p>
+</blockquote>
+</blockquote></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def trainvaltest_split(df: pd.DataFrame,
+                                           label_col = &#34;family&#34;,
+                                           splits: List[float]=(0.5, 0.2, 0.3),
+                                           seed = 14,
+                                           stratify: bool=True
+                                           ) -&gt; Dict[str,pd.DataFrame]:
+        &#34;&#34;&#34;
+        Wrapper function to split data into 3 stratified subsets specified by `splits`.
+        
+        User specifies absolute fraction of total requested for each subset (e.g. splits=[0.5, 0.2, 0.3])
+        
+        Function calculates adjusted fractions necessary in order to use sklearn&#39;s builtin train_test_split function over a sequence of 2 steps.
+        
+        Step 1: Separate test set from the rest of the data (constituting the union of train + val)
+        
+        Step 2: Separate the train and val sets from the remainder produced by step 1.
+
+        Output:
+                Dict: {&#39;train&#39;:(x_train, y_train),
+                                &#39;val&#39;:(x_val_y_val),
+                                &#39;test&#39;:(x_test, y_test)}
+                                
+        Example:
+                &gt;&gt; data = torch.data.Dataset(...)
+                &gt;&gt; y = data.targets
+                &gt;&gt; data_splits = trainvaltest_split(x=None,
+                                                                                        y=y,
+                                                                                        splits=(0.5, 0.2, 0.3),
+                                                                                        random_state=0,
+                                                                                        stratify=True)
+        
+        &#34;&#34;&#34;
+        
+        
+        assert len(splits) == 3, &#34;Must provide eactly 3 float values for `splits`&#34;
+        assert np.isclose(np.sum(splits), 1.0), f&#34;Sum of all splits values {splits} = {np.sum(splits)} must be 1.0&#34;
+        
+        train_split, val_split, test_split = splits
+        val_relative_split = val_split/(train_split + val_split)
+        train_relative_split = train_split/(train_split + val_split)
+        
+        if stratify and (label_col is None):
+                raise ValueError(&#34;If label_col is not provided, stratify must be set to False.&#34;)
+
+        num_samples = df.shape[0]
+        x = np.arange(num_samples)
+        y = df[label_col].values
+        
+        # y = np.array(y)
+        # if x is None:
+        #        x = np.arange(len(y))
+        # else:
+        #        x = np.array(x)
+
+        stratify_y = y if stratify else None    
+        x_train_val, x_test, y_train_val, y_test = train_test_split(x, y,
+                                                                                                                test_size=test_split, 
+                                                                                                                random_state=seed,
+                                                                                                                stratify=y)
+        
+        stratify_y_train = y_train_val if stratify else None
+        x_train, x_val, y_train, y_val = train_test_split(x_train_val, y_train_val,
+                                                                                                          test_size=val_relative_split,
+                                                                                                          random_state=seed, 
+                                                                                                          stratify=y_train_val)
+        
+        x = np.concatenate((x_train, x_val, x_test)).tolist()
+        assert len(set(x)) == len(x), f&#34;[Warning] Check for possible data leakage. len(set(x))={len(set(x))} != len(x)={len(x)}&#34;
+
+        train_data = df.iloc[x_train,:]
+        val_data = df.iloc[x_val,:]
+        test_data = df.iloc[x_test,:]
+
+
+        log.debug(f&#34;x_train.shape={x_train.shape}, y_train.shape={y_train.shape}&#34;)
+        log.debug(f&#34;x_val.shape={x_val.shape}, y_val.shape={y_val.shape}&#34;)
+        log.debug(f&#34;x_test.shape={x_test.shape}, y_test.shape={y_test.shape}&#34;)
+        log.debug(f&#39;Absolute splits: {[train_split, val_split, test_split]}&#39;)
+        log.debug(f&#39;Relative splits: [{train_relative_split:.2f}, {val_relative_split:.2f}, {test_split}]&#39;)
+        
+
+        return {&#34;train&#34;:train_data,
+                        &#34;val&#34;:val_data,
+                        &#34;test&#34;:test_data}</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+<section>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="imutils.big" href="index.html">imutils.big</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="imutils.big.make_train_val_test_splits.check_already_built" href="#imutils.big.make_train_val_test_splits.check_already_built">check_already_built</a></code></li>
+<li><code><a title="imutils.big.make_train_val_test_splits.find_data_splits_dir" href="#imutils.big.make_train_val_test_splits.find_data_splits_dir">find_data_splits_dir</a></code></li>
+<li><code><a title="imutils.big.make_train_val_test_splits.find_label_encoder_path" href="#imutils.big.make_train_val_test_splits.find_label_encoder_path">find_label_encoder_path</a></code></li>
+<li><code><a title="imutils.big.make_train_val_test_splits.fit_and_encode_labels" href="#imutils.big.make_train_val_test_splits.fit_and_encode_labels">fit_and_encode_labels</a></code></li>
+<li><code><a title="imutils.big.make_train_val_test_splits.format_output_cols" href="#imutils.big.make_train_val_test_splits.format_output_cols">format_output_cols</a></code></li>
+<li><code><a title="imutils.big.make_train_val_test_splits.main" href="#imutils.big.make_train_val_test_splits.main">main</a></code></li>
+<li><code><a title="imutils.big.make_train_val_test_splits.make_encode_save_splits" href="#imutils.big.make_train_val_test_splits.make_encode_save_splits">make_encode_save_splits</a></code></li>
+<li><code><a title="imutils.big.make_train_val_test_splits.make_splits" href="#imutils.big.make_train_val_test_splits.make_splits">make_splits</a></code></li>
+<li><code><a title="imutils.big.make_train_val_test_splits.optimize_dtypes" href="#imutils.big.make_train_val_test_splits.optimize_dtypes">optimize_dtypes</a></code></li>
+<li><code><a title="imutils.big.make_train_val_test_splits.parse_args" href="#imutils.big.make_train_val_test_splits.parse_args">parse_args</a></code></li>
+<li><code><a title="imutils.big.make_train_val_test_splits.read_df_from_csv" href="#imutils.big.make_train_val_test_splits.read_df_from_csv">read_df_from_csv</a></code></li>
+<li><code><a title="imutils.big.make_train_val_test_splits.read_encoded_splits" href="#imutils.big.make_train_val_test_splits.read_encoded_splits">read_encoded_splits</a></code></li>
+<li><code><a title="imutils.big.make_train_val_test_splits.read_label_encoder" href="#imutils.big.make_train_val_test_splits.read_label_encoder">read_label_encoder</a></code></li>
+<li><code><a title="imutils.big.make_train_val_test_splits.save_label_encoder" href="#imutils.big.make_train_val_test_splits.save_label_encoder">save_label_encoder</a></code></li>
+<li><code><a title="imutils.big.make_train_val_test_splits.trainvaltest_split" href="#imutils.big.make_train_val_test_splits.trainvaltest_split">trainvaltest_split</a></code></li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+</footer>
+</body>
+</html>

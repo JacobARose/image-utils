@@ -34,19 +34,22 @@ make_herbarium_2022_catalog_df.py
 
 import argparse
 import os
+import sys
 from typing import *
 import json
 import pandas as pd
 from pathlib import Path
 import seaborn as sns
 import matplotlib.pyplot as plt
-from pprint import pprint as pp
+from rich import print as pp
 
 
 # HERBARIUM_ROOT_DEFAULT = "/media/data_cifs/projects/prj_fossils/data/raw_data/herbarium-2022-fgvc9_resize"
 
-from dotenv import load_dotenv
-load_dotenv()
+# from dotenv import load_dotenv
+# load_dotenv()
+import imutils
+from imutils.big.split_catalog_utils import TRAIN_KEY, VAL_KEY, TEST_KEY
 
 HERBARIUM_ROOT_DEFAULT = os.environ["HERBARIUM_ROOT_DEFAULT"]
 CATALOG_DIR = os.environ["CATALOG_DIR"]
@@ -89,38 +92,67 @@ def optimize_dtypes_test(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def read_train_df_from_csv(train_path,
-						   nrows: Optional[int]=None
+						   nrows: Optional[int]=None,
+						   index_col: int=0
 						   ) -> pd.DataFrame:
 	
-	df = pd.read_csv(train_path, index_col=0, nrows=nrows)
+	df = pd.read_csv(train_path, index_col=index_col, nrows=nrows)
 	df = optimize_dtypes_train(df)
 	return df
 
 
 def read_test_df_from_csv(test_path,
-						  nrows: Optional[int]=None
+						  nrows: Optional[int]=None,
+						  index_col: int=0
 						  ) -> pd.DataFrame:
 	
-	df = pd.read_csv(test_path, index_col=0, nrows=nrows)
+	df = pd.read_csv(test_path, index_col=index_col, nrows=nrows)
 	df = optimize_dtypes_test(df)
 	return df
 
 
-def read_all_from_csv(root_dir: str) -> Tuple[pd.DataFrame]:
+def read_all_from_csv(root_dir: str=None,
+					  source_csv_paths: Optional[List[str]]=None,
+					  subset_read_funcs: Union[Callable, Dict[str, Callable]]={
+						  TRAIN_KEY: read_train_df_from_csv,
+						  TEST_KEY: read_test_df_from_csv
+					  },
+					  return_dict: bool=False,
+					 **kwargs) -> Tuple[pd.DataFrame]:
 	"""
 	Read the train_metadata.csv and test_metadata.csv files from `root_dir`
 	
 	Note: This is prior to any train-val splits.
 	"""
-	train_path = Path(root_dir, "train_metadata.csv")
-	test_path = Path(root_dir, "test_metadata.csv")
+	if source_csv_paths is not None:
+		train_path, test_path = sorted(source_csv_paths)[::-1]
+	else:
+		train_path = Path(root_dir, "train_metadata.csv")
+		test_path = Path(root_dir, "test_metadata.csv")
 	
-	train_df = read_train_df_from_csv(train_path)
-	test_df = read_test_df_from_csv(test_path)
+	if isinstance(subset_read_funcs, Callable):
+		train_df = subset_read_funcs(train_path)
+		test_df = subset_read_funcs(test_path)
+	else:
+		train_df = subset_read_funcs[TRAIN_KEY](train_path)
+		test_df = subset_read_funcs[TEST_KEY](test_path)
+		
+	# train_df = read_train_df_from_csv(train_path)
+	# test_df = read_test_df_from_csv(test_path)
+	
+	if return_dict:
+		return {
+			TRAIN_KEY: train_df,
+			TEST_KEY: test_df
+		}
 
 	return train_df, test_df
 	
 
+	# read_train_df_from_csv,
+	# read_test_df_from_csv
+	
+	
 ###################################
 ###################################
 
@@ -195,7 +227,8 @@ class HerbariumMetadata:
 	
 	def write_herbarium_metadata2disk(
 		self,
-		output_dir: str=None
+		output_dir: str=None,
+		force_overwrite: bool=False
 	) -> Tuple[Path]:
 		"""
 		Reads json metadata files from `root_dir`, parses into train & test dataframes, then writes to disk as csv files.
@@ -206,22 +239,28 @@ class HerbariumMetadata:
 		train_path = Path(output_dir, "train_metadata.csv")
 		test_path = Path(output_dir, "test_metadata.csv")
 
-		if os.path.exists(train_path):
-			print(train_path, "already exists, skipping write process.",
+		if os.path.exists(train_path) and not force_overwrite:
+			print(train_path, "already exists, and force_overwrite==False, skipping write process.",
 				  "Delete the existing file if intention is to refresh dataset.")
-			print(f"Reading train data from: {train_path}")
-			# df_train = read_train_df_from_csv(train_path)
-		else:
+		elif os.path.exists(train_path):
+			pp(f"force_overwrite is set to true, removing previously existing file: {os.path.basename(train_path)}")
+			os.remove(train_path)
+
+		if os.path.exists(test_path) and not force_overwrite:
+			print(test_path, "already exists, and force_overwrite==False, skipping write process.",
+				  "Delete the existing file or pass --force_overwrite if intention is to refresh dataset.")
+		elif os.path.exists(test_path):
+			pp(f"force_overwrite is set to true, removing previously existing file: {os.path.basename(test_path)}")
+			os.remove(test_path)
+
+
+			
+		if not os.path.exists(train_path):
 			print(f"Writing train data to: {train_path}")
 			df_train = self.get_train_df()
 			df_train.to_csv(train_path)
 
-		if os.path.exists(test_path):
-			print(test_path, "already exists, skipping write process.",
-				  "Delete the existing file if intention is to refresh dataset.")
-			print(f"Reading test data from: {test_path}")
-			# df_test = read_test_df_from_csv(test_path)
-		else:
+		if not os.path.exists(test_path):
 			print(f"Writing test data to: {test_path}")
 			df_test = self.get_test_df()
 			df_test.to_csv(test_path)
@@ -253,13 +292,25 @@ def parse_args() -> argparse.Namespace:
 		default=HERBARIUM_ROOT_DEFAULT,
 		help="Source directory containing original herbarium 2022 dataset, as accessed by kaggle.",
 	)
+	parser.add_argument(
+		"--info", action="store_true", help="Flag to print execution variables then quit without execution."
+	)
+	parser.add_argument(
+		"--force_overwrite", action="store_true", help="Flag to allow removal of pre-existing output files if they already exist, instead of skipping creation during execution."
+	)
+	
 	args = parser.parse_args()
 	# WORKING_DIR = "/media/data/jacob/GitHub/image-utils/notebooks/herbarium_2022/"
 	# OUTPUT_DIR = os.path.join(WORKING_DIR, "outputs")
 	# DATA_DIR = os.path.join(WORKING_DIR, "data")
+	
+	if args.info:
+		print("User passed --info, displaying execution args then exiting")
+		pp(args)
+		sys.exit(0)
+		
+	
 	os.makedirs(args.target_dir, exist_ok=True)	
-	
-	
 	
 	return args
 
@@ -276,7 +327,8 @@ if __name__=="__main__":
 	
 	metadata = HerbariumMetadata(herbarium_root=args.herbarium_source_dir)
 	
-	train_path, test_path = metadata.write_herbarium_metadata2disk(output_dir=args.target_dir)
+	train_path, test_path = metadata.write_herbarium_metadata2disk(output_dir=args.target_dir,
+																   force_overwrite=args.force_overwrite)
 
 	# train_df, test_df = read_all_from_csv(root_dir=HERBARIUM_ROOT)
 

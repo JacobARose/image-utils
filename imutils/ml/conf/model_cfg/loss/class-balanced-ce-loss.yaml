@@ -1,0 +1,9 @@
+# @package model_cfg
+
+## conf/model_cfg/loss/class-balanced-ce-loss.yaml
+
+
+loss:
+    _target_: imutils.ml.utils.toolbox.nn.loss.CBCrossEntropyLoss
+    beta: 0.99
+    reduction: "mean"

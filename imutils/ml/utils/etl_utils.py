@@ -58,7 +58,7 @@ class Extract:
 	Collection of class methods related to saving/reading common experiment related objects to/from disk.
 	"""
 
-	valid_splits: Tuple[str] = ("train", "val", "test")
+	valid_splits: Tuple[str] = ("train", "val", "test", "train_images", "test_images")
 	data_file_ext_maps = {"df": ".csv", "encoder": ".json", "config": ".yaml"}
 
 	@classmethod

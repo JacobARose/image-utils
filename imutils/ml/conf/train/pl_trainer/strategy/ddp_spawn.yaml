@@ -1,5 +1,5 @@
 # @package train.pl_trainer
 
 strategy:
-    _target_: pytorch_lightning.plugins.DDPSpawnPlugin
+    _target_: pytorch_lightning.strategies.DDPSpawnStrategy
     find_unused_parameters: false

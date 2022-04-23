@@ -131,7 +131,7 @@ def print_config(
 		"callbacks",
 		"logging",
 		"hp",
-		"seed",
+		"seed"
 	),
 	resolve: bool = True,
 	file: str = None

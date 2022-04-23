@@ -1,47 +1,61 @@
 # @package data
 
 ## data/datamodule/base_datamodule.yaml
+
+num_classes: 
+    scientificName: 15501
+    Species: 15501
+    genus: 2564
+    family: 272
+    institution_id: 48
+
 datamodule:
     _target_: imutils.ml.data.datamodule.Herbarium2022DataModule
-    name: "herbarium2022"
-    catalog_dir: "/media/data/jacob/GitHub/image-utils/imutils/big/data"
+    name: "herbarium2022_512"
+    catalog_dir: "/media/data_cifs/projects/prj_fossils/data/raw_data/herbarium-2022-fgvc9_resize-512/catalogs"
     label_col: "scientificName"
-    train_size: 0.7
+    train_size: 0.8
     shuffle: true
     seed: 14
     batch_size: ${hp.batch_size}
     num_workers: 4
     pin_memory: true
+    persistent_workers: false
     transform_cfg:
         preprocess_size: ${int:${hp.preprocess_size}}
         resolution: ${int:${hp.resolution}}
+        normalization:
+            mean: [0.822, 0.800, 0.751]
+            std: [0.186, 0.193, 0.203]
 
+    to_grayscale: ${hp.to_grayscale}
+    num_channels: ${hp.num_channels}
     remove_transforms: false
     image_reader: "default"
     datasets:
         herbarium2022:
-			catalog_dir: "/media/data_cifs/projects/prj_fossils/data/raw_data/herbarium-2022-fgvc9_resize"
+            catalog_dir: ${data.datamodule.catalog_dir}
             train:
                 _target_: imutils.ml.data.datamodule.Herbarium2022Dataset
                 catalog_dir: ${..catalog_dir}
                 subset: "train"
-                label_col: "scientificName"
-                train_size: 0.7
+                label_col: ${data.datamodule.label_col}
+                train_size: ${data.datamodule.train_size}
                 shuffle: true
                 seed: ${data.datamodule.seed}
             val:
                 _target_: imutils.ml.data.datamodule.Herbarium2022Dataset
                 catalog_dir: ${..catalog_dir}
                 subset: "val"
-                label_col: "scientificName"
-                train_size: 0.7
+                label_col: ${data.datamodule.label_col}
+                train_size: ${data.datamodule.train_size}
                 shuffle: false
                 seed: ${data.datamodule.seed}
             test:
                 _target_: imutils.ml.data.datamodule.Herbarium2022Dataset
                 catalog_dir: ${..catalog_dir}
                 subset: "train"
-                label_col: "scientificName"
-                train_size: 0.7
-                shuffle: true
+                label_col: ${data.datamodule.label_col}
+                train_size: ${data.datamodule.train_size}
+                shuffle: false
                 seed: ${data.datamodule.seed}

@@ -1,0 +1,47 @@
+# @package data
+
+## conf/data/datamodule/extant_leaves_family_3_512_datamodule.yaml
+
+defaults:
+    - base_extant_leaves_datamodule
+
+datamodule:
+    _target_: imutils.ml.data.datamodule.ExtantLeavesDataModule
+    name: "extant_leaves_family_3_512"
+    catalog_dir: "/media/data_cifs/projects/prj_fossils/users/jacob/data/leavesdb-v1_1/${.name}/splits/splits=(0.5,0.2,0.3)"
+    label_col: "family"
+	splits:
+		- 0.5
+		- 0.2
+		- 0.3
+    transform_cfg:
+        preprocess_size: ${int:${hp.preprocess_size}}
+        resolution: ${int:${hp.resolution}}
+
+    # datasets:
+    #     extant_leaves:
+    #         catalog_dir: ${data.datamodule.catalog_dir}
+            # train:
+            #     _target_: imutils.ml.data.datamodule.ExtantLeavesDataset
+            #     catalog_dir: ${..catalog_dir}
+            #     subset: "train"
+            #     label_col: ${data.datamodule.label_col}
+            #     splits: ${data.datamodule.splits}
+            #     shuffle: true
+            #     seed: ${data.datamodule.seed}
+            # val:
+            #     _target_: imutils.ml.data.datamodule.ExtantLeavesDataset
+            #     catalog_dir: ${..catalog_dir}
+            #     subset: "val"
+            #     label_col: ${data.datamodule.label_col}
+            #     splits: ${data.datamodule.splits}
+            #     shuffle: false
+            #     seed: ${data.datamodule.seed}
+            # test:
+            #     _target_: imutils.ml.data.datamodule.ExtantLeavesDataset
+            #     catalog_dir: ${..catalog_dir}
+            #     subset: "train"
+            #     label_col: ${data.datamodule.label_col}
+            #     splits: ${data.datamodule.splits}
+            #     shuffle: false
+            #     seed: ${data.datamodule.seed}

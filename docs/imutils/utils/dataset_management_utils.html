@@ -57,7 +57,7 @@ from sklearn.model_selection import train_test_split
 from torchvision.datasets import ImageFolder
 
 from imutils.utils import torchdata
-from imutils.utils.etl_utils import Extract
+from imutils.ml.utils.etl_utils import Extract
 from imutils.utils.SmartCrop import CleverCrop
 
 # try:
@@ -741,97 +741,126 @@ def PNASParser(self):
 <span>class <span class="ident">Extract</span></span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Collection of class methods related to saving/reading common experiment related objects to/from disk.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class Extract:
+        &#34;&#34;&#34;
+        Collection of class methods related to saving/reading common experiment related objects to/from disk.
+        &#34;&#34;&#34;
 
-    valid_splits: Tuple[str] = (&#34;train&#34;, &#34;val&#34;, &#34;test&#34;)
+        valid_splits: Tuple[str] = (&#34;train&#34;, &#34;val&#34;, &#34;test&#34;, &#34;train_images&#34;, &#34;test_images&#34;)
+        data_file_ext_maps = {&#34;df&#34;: &#34;.csv&#34;, &#34;encoder&#34;: &#34;.json&#34;, &#34;config&#34;: &#34;.yaml&#34;}
 
-    data_file_ext_maps = {&#34;df&#34;: &#34;.csv&#34;, &#34;encoder&#34;: &#34;.json&#34;, &#34;config&#34;: &#34;.yaml&#34;}
+        @classmethod
+        def get_split_subdir_stems(cls, dataset_dir: str) -&gt; List[str]:
 
-    @classmethod
-    def get_split_subdir_stems(cls, dataset_dir: str) -&gt; List[str]:
+                subdirs = os.listdir(dataset_dir)
+                stems = []
+                for subdir in subdirs:
+                        if subdir in cls.valid_splits:
+                                stems.append(subdir)
+                return stems
 
-        subdirs = os.listdir(dataset_dir)
-        stems = []
-        for subdir in subdirs:
-            if subdir in cls.valid_splits:
-                stems.append(subdir)
-        return stems
+        @classmethod
+        def locate_files(
+                cls, dataset_dir: Union[str, List[str]], select_subset: Optional[str] = None
+        ) -&gt; Dict[str, &#34;torchdata.datasets.Dataset&#34;]:
+                &#34;&#34;&#34;
+                Searches `dataset_dir`
+                ```
+                method_2:  
+                        * root  
+                        *       /train  
+                        *                /class_0  
+                        *       /test  
+                        *       ....  
+                         
+                method_1:  
+                        * root  
+                        *       /class_0  
+                        *       /class_1  
+                        *       ....  
+                ```
 
-    @classmethod
-    def locate_files(
-        cls, dataset_dir: Union[str, List[str]], select_subset: Optional[str] = None
-    ) -&gt; Dict[str, &#34;torchdata.datasets.Dataset&#34;]:
 
-        files = {}
-        if isinstance(dataset_dir, list):
-            # If a list of data directories is provided, concatenate their results into the &#39;all&#39; key. e.g. When constructing the combined Florissant &amp; General Fossil datasets
-            assert np.all([os.path.isdir(d) for d in dataset_dir])
-            files[&#34;all&#34;] = []
-            for data_dir in dataset_dir:
-                files[&#34;all&#34;].extend(cls.locate_files(data_dir)[&#34;all&#34;])
-            return files
-        splits = cls.get_split_subdir_stems(dataset_dir=dataset_dir)
+                &#34;&#34;&#34;
+                files = {}
+                if isinstance(dataset_dir, list):
+                        # If a list of data directories is provided, concatenate their results into the &#39;all&#39; key. e.g. When constructing the combined Florissant &amp; General Fossil datasets
+                        assert np.all([os.path.isdir(d) for d in dataset_dir])
+                        files[&#34;all&#34;] = []
+                        for data_dir in dataset_dir:
+                                files[&#34;all&#34;].extend(cls.locate_files(data_dir)[&#34;all&#34;])
+                        return files
+                splits = cls.get_split_subdir_stems(dataset_dir=dataset_dir)
 
-        if len(splits) &gt; 1:
-            # root
-            #     /train
-            #          /class_0
-            #     /test
-            #     ....
-            for subdir in splits:
-                files[subdir] = torchdata.datasets.Files.from_folder(
-                    Path(dataset_dir, subdir), regex=&#34;*/*.jpg&#34;
-                ).files
-            files[&#34;all&#34;] = list(flatten([files[subdir] for subdir in splits]))
+                method_2 = len(splits) &gt;= 2
+                method_1 = len(os.listdir(dataset_dir)) &gt; 1
+                if method_2:
+                        for subdir in splits:
+                                files[subdir] = torchdata.datasets.Files.from_folder(
+                                        Path(dataset_dir, subdir), regex=&#34;*/*.jpg&#34;
+                                ).files
+                        files[&#34;all&#34;] = list(flatten([files[subdir] for subdir in splits]))
 
-        elif len(os.listdir(dataset_dir)) &gt; 1:
-            # root
-            #     /class_0
-            #     /class_1
-            #     ....
-            files[&#34;all&#34;] = torchdata.datasets.Files.from_folder(
-                Path(dataset_dir), regex=&#34;*/*.jpg&#34;
-            ).files
-        else:
-            raise Exception(
-                f&#34;# of valid subdirs = {len(os.listdir(dataset_dir))} is invalid for locating&#34;
-                &#34; files.&#34;
-            )
+                elif method_1:
+                        files[&#34;all&#34;] = torchdata.datasets.Files.from_folder(
+                                Path(dataset_dir), regex=&#34;*/*.jpg&#34;
+                        ).files
+                else:
+                        raise Exception(
+                                f&#34;# of valid subdirs = {len(os.listdir(dataset_dir))} is invalid for locating&#34;
+                                &#34; files.&#34;
+                        )
 
-        if isinstance(select_subset, str):
-            files = {select_subset: files[select_subset]}
-        return files
+                if isinstance(select_subset, str):
+                        files = {select_subset: files[select_subset]}
+                return files
 
-    @classmethod
-    def df_from_dir(
-        cls, root_dir: Union[str, Path], select_subset: Optional[str] = None
-    ) -&gt; pd.DataFrame:
-        files = cls.locate_files(dataset_dir=root_dir, select_subset=select_subset)
-        for k in list(files.keys()):
-            files[k] = pd.DataFrame(files[k]).rename(columns={0: &#34;path&#34;})  # .samples)
-        return files
+        @classmethod
+        def df_from_dir(
+                cls, root_dir: Union[str, Path], select_subset: Optional[str] = None
+        ) -&gt; pd.DataFrame:
+                &#34;&#34;&#34; Load a pd.DataFrame from a directory of images
+                &#34;&#34;&#34;
+                files = cls.locate_files(dataset_dir=root_dir, select_subset=select_subset)
+                for k in list(files.keys()):
+                        files[k] = pd.DataFrame(files[k]).rename(columns={0: &#34;path&#34;})  # .samples)
+                return files
 
-    @classmethod
-    def df_from_csv(cls, path: Union[str, Path], index_col: int = None) -&gt; pd.DataFrame:
-        return pd.read_csv(path, index_col=index_col)
+        @classmethod
+        def df_from_csv(cls, path: Union[str, Path], index_col: int = None) -&gt; pd.DataFrame:
+                &#34;&#34;&#34; Load a pd.DataFrame from a csv
+                &#34;&#34;&#34;
+                return pd.read_csv(path, index_col=index_col)
 
-    @classmethod
-    def config_from_yaml(cls, path: Union[str, Path]) -&gt; DictConfig:
-        return load_config(config_path=path)
+        @classmethod
+        def config_from_yaml(cls, path: Union[str, Path]) -&gt; DictConfig:
+                &#34;&#34;&#34;
+                Load a config object from a yaml
+                &#34;&#34;&#34;
+                return load_config(config_path=path)
 
-    @classmethod
-    def df2csv(cls, df: pd.DataFrame, path: Union[str, Path], index: bool = False) -&gt; None:
-        df.to_csv(path, index=index)
+        @classmethod
+        def df2csv(cls, df: pd.DataFrame, path: Union[str, Path], index: bool = False) -&gt; None:
+                &#34;&#34;&#34; Save a pd.DataFrame to a csv
+                &#34;&#34;&#34;
+                df.to_csv(path, index=index)
 
-    @classmethod
-    def config2yaml(cls, config: DictConfig, path: Union[str, Path]) -&gt; None:
-        save_config(config=config, config_path=path)</code></pre>
+        @classmethod
+        def config2yaml(cls, config: DictConfig, path: Union[str, Path]) -&gt; None:
+                &#34;&#34;&#34;
+                Save a config object to a yaml file
+                &#34;&#34;&#34;
+                save_config(config=config, config_path=path)</code></pre>
 </details>
+<h3>Subclasses</h3>
+<ul class="hlist">
+<li><a title="imutils.ml.utils.etl_utils.ETL" href="../ml/utils/etl_utils.html#imutils.ml.utils.etl_utils.ETL">ETL</a></li>
+</ul>
 <h3>Class variables</h3>
 <dl>
 <dt id="imutils.utils.dataset_management_utils.Extract.data_file_ext_maps"><code class="name">var <span class="ident">data_file_ext_maps</span></code></dt>
@@ -849,75 +878,87 @@ def PNASParser(self):
 <span>def <span class="ident">config2yaml</span></span>(<span>config: omegaconf.dictconfig.DictConfig, path: Union[str, pathlib.Path]) ‑> None</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Save a config object to a yaml file</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@classmethod
 def config2yaml(cls, config: DictConfig, path: Union[str, Path]) -&gt; None:
-    save_config(config=config, config_path=path)</code></pre>
+        &#34;&#34;&#34;
+        Save a config object to a yaml file
+        &#34;&#34;&#34;
+        save_config(config=config, config_path=path)</code></pre>
 </details>
 </dd>
 <dt id="imutils.utils.dataset_management_utils.Extract.config_from_yaml"><code class="name flex">
 <span>def <span class="ident">config_from_yaml</span></span>(<span>path: Union[str, pathlib.Path]) ‑> omegaconf.dictconfig.DictConfig</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Load a config object from a yaml</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@classmethod
 def config_from_yaml(cls, path: Union[str, Path]) -&gt; DictConfig:
-    return load_config(config_path=path)</code></pre>
+        &#34;&#34;&#34;
+        Load a config object from a yaml
+        &#34;&#34;&#34;
+        return load_config(config_path=path)</code></pre>
 </details>
 </dd>
 <dt id="imutils.utils.dataset_management_utils.Extract.df2csv"><code class="name flex">
 <span>def <span class="ident">df2csv</span></span>(<span>df: pandas.core.frame.DataFrame, path: Union[str, pathlib.Path], index: bool = False) ‑> None</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Save a pd.DataFrame to a csv</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@classmethod
 def df2csv(cls, df: pd.DataFrame, path: Union[str, Path], index: bool = False) -&gt; None:
-    df.to_csv(path, index=index)</code></pre>
+        &#34;&#34;&#34; Save a pd.DataFrame to a csv
+        &#34;&#34;&#34;
+        df.to_csv(path, index=index)</code></pre>
 </details>
 </dd>
 <dt id="imutils.utils.dataset_management_utils.Extract.df_from_csv"><code class="name flex">
 <span>def <span class="ident">df_from_csv</span></span>(<span>path: Union[str, pathlib.Path], index_col: int = None) ‑> pandas.core.frame.DataFrame</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Load a pd.DataFrame from a csv</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@classmethod
 def df_from_csv(cls, path: Union[str, Path], index_col: int = None) -&gt; pd.DataFrame:
-    return pd.read_csv(path, index_col=index_col)</code></pre>
+        &#34;&#34;&#34; Load a pd.DataFrame from a csv
+        &#34;&#34;&#34;
+        return pd.read_csv(path, index_col=index_col)</code></pre>
 </details>
 </dd>
 <dt id="imutils.utils.dataset_management_utils.Extract.df_from_dir"><code class="name flex">
 <span>def <span class="ident">df_from_dir</span></span>(<span>root_dir: Union[str, pathlib.Path], select_subset: Optional[str] = None) ‑> pandas.core.frame.DataFrame</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Load a pd.DataFrame from a directory of images</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@classmethod
 def df_from_dir(
-    cls, root_dir: Union[str, Path], select_subset: Optional[str] = None
+        cls, root_dir: Union[str, Path], select_subset: Optional[str] = None
 ) -&gt; pd.DataFrame:
-    files = cls.locate_files(dataset_dir=root_dir, select_subset=select_subset)
-    for k in list(files.keys()):
-        files[k] = pd.DataFrame(files[k]).rename(columns={0: &#34;path&#34;})  # .samples)
-    return files</code></pre>
+        &#34;&#34;&#34; Load a pd.DataFrame from a directory of images
+        &#34;&#34;&#34;
+        files = cls.locate_files(dataset_dir=root_dir, select_subset=select_subset)
+        for k in list(files.keys()):
+                files[k] = pd.DataFrame(files[k]).rename(columns={0: &#34;path&#34;})  # .samples)
+        return files</code></pre>
 </details>
 </dd>
 <dt id="imutils.utils.dataset_management_utils.Extract.get_split_subdir_stems"><code class="name flex">
@@ -932,67 +973,91 @@ def df_from_dir(
 <pre><code class="python">@classmethod
 def get_split_subdir_stems(cls, dataset_dir: str) -&gt; List[str]:
 
-    subdirs = os.listdir(dataset_dir)
-    stems = []
-    for subdir in subdirs:
-        if subdir in cls.valid_splits:
-            stems.append(subdir)
-    return stems</code></pre>
+        subdirs = os.listdir(dataset_dir)
+        stems = []
+        for subdir in subdirs:
+                if subdir in cls.valid_splits:
+                        stems.append(subdir)
+        return stems</code></pre>
 </details>
 </dd>
 <dt id="imutils.utils.dataset_management_utils.Extract.locate_files"><code class="name flex">
-<span>def <span class="ident">locate_files</span></span>(<span>dataset_dir: Union[str, List[str]], select_subset: Optional[str] = None) ‑> Dict[str, torchdata.datasets.Dataset]</span>
+<span>def <span class="ident">locate_files</span></span>(<span>dataset_dir: Union[str, List[str]], select_subset: Optional[str] = None) ‑> Dict[str, torchdatasets.datasets.Dataset]</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Searches <code>dataset_dir</code></p>
+<pre><code>method_2:  
+        * root  
+        *       /train  
+        *                /class_0  
+        *       /test  
+        *       ....  
+
+method_1:  
+        * root  
+        *       /class_0  
+        *       /class_1  
+        *       ....  
+</code></pre></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@classmethod
 def locate_files(
-    cls, dataset_dir: Union[str, List[str]], select_subset: Optional[str] = None
+        cls, dataset_dir: Union[str, List[str]], select_subset: Optional[str] = None
 ) -&gt; Dict[str, &#34;torchdata.datasets.Dataset&#34;]:
+        &#34;&#34;&#34;
+        Searches `dataset_dir`
+        ```
+        method_2:  
+                * root  
+                *       /train  
+                *                /class_0  
+                *       /test  
+                *       ....  
+                 
+        method_1:  
+                * root  
+                *       /class_0  
+                *       /class_1  
+                *       ....  
+        ```
 
-    files = {}
-    if isinstance(dataset_dir, list):
-        # If a list of data directories is provided, concatenate their results into the &#39;all&#39; key. e.g. When constructing the combined Florissant &amp; General Fossil datasets
-        assert np.all([os.path.isdir(d) for d in dataset_dir])
-        files[&#34;all&#34;] = []
-        for data_dir in dataset_dir:
-            files[&#34;all&#34;].extend(cls.locate_files(data_dir)[&#34;all&#34;])
-        return files
-    splits = cls.get_split_subdir_stems(dataset_dir=dataset_dir)
 
-    if len(splits) &gt; 1:
-        # root
-        #     /train
-        #          /class_0
-        #     /test
-        #     ....
-        for subdir in splits:
-            files[subdir] = torchdata.datasets.Files.from_folder(
-                Path(dataset_dir, subdir), regex=&#34;*/*.jpg&#34;
-            ).files
-        files[&#34;all&#34;] = list(flatten([files[subdir] for subdir in splits]))
+        &#34;&#34;&#34;
+        files = {}
+        if isinstance(dataset_dir, list):
+                # If a list of data directories is provided, concatenate their results into the &#39;all&#39; key. e.g. When constructing the combined Florissant &amp; General Fossil datasets
+                assert np.all([os.path.isdir(d) for d in dataset_dir])
+                files[&#34;all&#34;] = []
+                for data_dir in dataset_dir:
+                        files[&#34;all&#34;].extend(cls.locate_files(data_dir)[&#34;all&#34;])
+                return files
+        splits = cls.get_split_subdir_stems(dataset_dir=dataset_dir)
 
-    elif len(os.listdir(dataset_dir)) &gt; 1:
-        # root
-        #     /class_0
-        #     /class_1
-        #     ....
-        files[&#34;all&#34;] = torchdata.datasets.Files.from_folder(
-            Path(dataset_dir), regex=&#34;*/*.jpg&#34;
-        ).files
-    else:
-        raise Exception(
-            f&#34;# of valid subdirs = {len(os.listdir(dataset_dir))} is invalid for locating&#34;
-            &#34; files.&#34;
-        )
+        method_2 = len(splits) &gt;= 2
+        method_1 = len(os.listdir(dataset_dir)) &gt; 1
+        if method_2:
+                for subdir in splits:
+                        files[subdir] = torchdata.datasets.Files.from_folder(
+                                Path(dataset_dir, subdir), regex=&#34;*/*.jpg&#34;
+                        ).files
+                files[&#34;all&#34;] = list(flatten([files[subdir] for subdir in splits]))
 
-    if isinstance(select_subset, str):
-        files = {select_subset: files[select_subset]}
-    return files</code></pre>
+        elif method_1:
+                files[&#34;all&#34;] = torchdata.datasets.Files.from_folder(
+                        Path(dataset_dir), regex=&#34;*/*.jpg&#34;
+                ).files
+        else:
+                raise Exception(
+                        f&#34;# of valid subdirs = {len(os.listdir(dataset_dir))} is invalid for locating&#34;
+                        &#34; files.&#34;
+                )
+
+        if isinstance(select_subset, str):
+                files = {select_subset: files[select_subset]}
+        return files</code></pre>
 </details>
 </dd>
 </dl>

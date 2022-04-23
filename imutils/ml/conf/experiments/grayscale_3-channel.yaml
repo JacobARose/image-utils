@@ -1,0 +1,30 @@
+# @package _global_
+
+# python run.py +experiment=grayscale_3-channel
+
+
+
+# defaults:
+# #     - override /logger: many_loggers.yaml
+#     - override /hydra/hydra_logging: colorlog
+#     - override /hydra/job_logging: colorlog
+
+
+##################################
+##################################
+
+hp:
+    num_channels: 3
+    to_grayscale: true
+
+# model:
+#     ckpt_path: '${source.model.backbone_ckpt_path}'
+#     ckpt_dir: '${checkpoint_dir}'
+#     ckpt_mode: "pretrained_backbone_w_new_classifier"
+
+
+
+logger:
+    wandb:
+        tags: '[${core.name}, ${core.dataset_name}, ${core.backbone_name}]'
+        notes: "Description of this model."

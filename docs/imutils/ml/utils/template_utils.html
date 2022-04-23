@@ -1,0 +1,795 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.10.0" />
+<title>imutils.ml.utils.template_utils API documentation</title>
+<meta name="description" content="image-utils/imutils/ml/utils/template_utils.py" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>imutils.ml.utils.template_utils</code></h1>
+</header>
+<section id="section-intro">
+<p>image-utils/imutils/ml/utils/template_utils.py</p>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">&#34;&#34;&#34;
+
+image-utils/imutils/ml/utils/template_utils.py
+
+
+
+&#34;&#34;&#34;
+
+import logging
+import warnings
+from typing import List, Sequence, Union
+import os
+import pytorch_lightning as pl
+import rich
+import wandb
+from omegaconf import DictConfig, OmegaConf
+# from pytorch_lightning.loggers.wandb import WandbLogger
+from pytorch_lightning.loggers import WandbLogger, LightningLoggerBase
+
+# pl.loggers.LightningLoggerBase
+from pytorch_lightning.utilities import rank_zero_only
+from rich.syntax import Syntax
+from rich.tree import Tree
+import hydra
+
+def get_logger(name=__name__, level=logging.INFO):
+        &#34;&#34;&#34;Initializes python logger.&#34;&#34;&#34;
+
+        logger = logging.getLogger(name)
+        
+        handler = logging.StreamHandler()
+        formatter = logging.Formatter(&#39;%(asctime)s %(name)-12s %(levelname)-8s %(message)s&#39;)
+        handler.setFormatter(formatter)
+        logger.addHandler(handler)
+        
+        logger.setLevel(level)
+
+        # this ensures all logging levels get marked with the rank zero decorator
+        # otherwise logs would get multiplied for each GPU process in multi-GPU setup
+        for level in (&#34;debug&#34;, &#34;info&#34;, &#34;warning&#34;, &#34;error&#34;, &#34;exception&#34;, &#34;fatal&#34;, &#34;critical&#34;):
+                setattr(logger, level, rank_zero_only(getattr(logger, level)))
+
+        return logger
+
+
+log = get_logger()
+
+def get_wandb_logger(loggers: Union[LightningLoggerBase, List[LightningLoggerBase]]):
+        &#34;&#34;&#34;
+        Looks through either a single or list of loggers, if it finds a WandbLogger, it returns only that. If it doesn&#39;t, it returns only None.
+        &#34;&#34;&#34;
+        if isinstance(loggers, Sequence):
+                for l in loggers:
+                        if isinstance(l, WandbLogger):
+                                return l
+        elif isinstance(loggers, WandbLogger):
+                return loggers
+        else:
+                return None
+
+
+
+
+def extras(config: DictConfig) -&gt; None:
+        &#34;&#34;&#34;A couple of optional utilities, controlled by main config file.
+                - disabling warnings
+                - easier access to debug mode
+                - forcing debug friendly configuration
+                - forcing multi-gpu friendly configuration
+        Args:
+                config (DictConfig): [description]
+        &#34;&#34;&#34;
+
+        # enable adding new keys to config
+        OmegaConf.set_struct(config, False)
+
+        # disable python warnings if &lt;config.disable_warnings=True&gt;
+        if config.get(&#34;disable_warnings&#34;):
+                log.info(f&#34;Disabling python warnings! &lt;config.disable_warnings=True&gt;&#34;)
+                warnings.filterwarnings(&#34;ignore&#34;)
+
+        # set &lt;config.trainer.fast_dev_run=True&gt; if &lt;config.debug=True&gt;
+        if config.get(&#34;debug&#34;):
+                log.info(&#34;Running in debug mode! &lt;config.debug=True&gt;&#34;)
+                config.train.pl_trainer.fast_dev_run = True
+
+        # force debugger friendly configuration if &lt;config.trainer.fast_dev_run=True&gt;
+        if config.train.pl_trainer.get(&#34;fast_dev_run&#34;):
+                log.info(&#34;Forcing debugger friendly configuration! &lt;config.trainer.fast_dev_run=True&gt;&#34;)
+                # Debuggers don&#39;t like GPUs or multiprocessing
+                if config.train.pl_trainer.get(&#34;gpus&#34;):
+                        config.train.pl_trainer.gpus = 0
+                if config.data.datamodule.get(&#34;num_workers&#34;):
+                        config.data.datamodule.num_workers = 0
+
+        # force multi-gpu friendly configuration if &lt;config.trainer.accelerator=ddp&gt;
+        if config.train.pl_trainer.get(&#34;accelerator&#34;) in [&#34;ddp&#34;, &#34;ddp_spawn&#34;, &#34;dp&#34;, &#34;ddp2&#34;]:
+                log.info(&#34;Forcing ddp friendly configuration! &lt;config.trainer.accelerator=ddp&gt;&#34;)
+                # ddp doesn&#39;t like num_workers&gt;0 or pin_memory=True
+                if config.data.datamodule.get(&#34;num_workers&#34;):
+#                        config.datamodule.num_workers = 0
+                        gpus = config.train.pl_trainer.get(&#34;gpus&#34;, 0)
+                        gpus = gpus or config.train.pl_trainer.get(&#34;devices&#34;, 0)
+                        print(f&#34;GPUs: {gpus}&#34;)
+                        if isinstance(gpus, list):
+                                config.data.datamodule.num_workers = 4 * len(gpus)
+                        elif isinstance(gpus, int):
+                                config.data.datamodule.num_workers = 4
+                if config.data.datamodule.get(&#34;pin_memory&#34;):
+                        config.data.datamodule.pin_memory = False
+
+        # disable adding new keys to config
+        OmegaConf.set_struct(config, True)
+        
+def initialize_config(cfg: DictConfig):
+        OmegaConf.set_struct(cfg, False)
+        OmegaConf.register_new_resolver(&#34;int&#34;, int)
+        return cfg
+
+
+
+@rank_zero_only
+def print_config(
+        config: DictConfig,
+        fields: Sequence[str] = (
+        &#34;pretrain&#34;,
+                &#34;train&#34;,
+                &#34;model_cfg&#34;,
+                &#34;optim&#34;,
+                &#34;data&#34;,
+                &#34;callbacks&#34;,
+                &#34;logging&#34;,
+                &#34;hp&#34;,
+                &#34;seed&#34;,
+        ),
+        resolve: bool = True,
+        file: str = None
+) -&gt; None:
+        &#34;&#34;&#34;Prints content of DictConfig using Rich library and its tree structure.
+
+        Args:
+                config (DictConfig): Config.
+                fields (Sequence[str], optional): Determines which main fields from config will be printed
+                and in what order.
+                resolve (bool, optional): Whether to resolve reference fields of DictConfig.
+        &#34;&#34;&#34;
+
+        style = &#34;dim&#34;
+        tree = Tree(f&#34;:gear: CONFIG&#34;, style=style, guide_style=style)
+
+        for field in fields:
+                branch = tree.add(field, style=style, guide_style=style)
+
+                config_section = config.get(field)
+                branch_content = str(config_section)
+                if isinstance(config_section, DictConfig):
+                        branch_content = OmegaConf.to_yaml(config_section, resolve=resolve)
+
+                branch.add(Syntax(branch_content, &#34;yaml&#34;))
+
+        rich.print(tree, file=file)
+
+
+def empty(*args, **kwargs):
+        pass
+
+
+@rank_zero_only
+def log_hyperparameters(
+        config: DictConfig,
+        model: pl.LightningModule,
+        datamodule: pl.LightningDataModule,
+        trainer: pl.Trainer,
+        callbacks: List[pl.Callback],
+        logger: List[pl.loggers.LightningLoggerBase],
+) -&gt; None:
+        &#34;&#34;&#34;This method controls which parameters from Hydra config are saved by Lightning loggers.
+
+        Additionaly saves:
+                - sizes of train, val, test dataset
+                - number of trainable model parameters
+        &#34;&#34;&#34;
+
+        hparams = {}
+
+        # choose which parts of hydra config will be saved to loggers
+        hparams[&#34;train&#34;] = config[&#34;train&#34;]
+        hparams[&#34;model&#34;] = config[&#34;model&#34;]
+        hparams[&#34;data&#34;] = config[&#34;data&#34;]
+        if &#34;optim&#34; in config:
+                hparams[&#34;optim&#34;] = config[&#34;optim&#34;]
+        if &#34;callbacks&#34; in config:
+                hparams[&#34;callbacks&#34;] = config[&#34;callbacks&#34;]
+        if &#34;hp&#34; in config:
+                hparams[&#34;hp&#34;] = config[&#34;hp&#34;]
+
+        # save sizes of each dataset
+        # (requires calling `datamodule.setup()` first to initialize datasets)
+        datamodule.setup()
+        if hasattr(datamodule, &#34;data_train&#34;) and datamodule.data_train:
+                hparams[&#34;datamodule/train_size&#34;] = len(datamodule.data_train)
+        if hasattr(datamodule, &#34;data_val&#34;) and datamodule.data_val:
+                hparams[&#34;datamodule/val_size&#34;] = len(datamodule.data_val)
+        if hasattr(datamodule, &#34;data_test&#34;) and datamodule.data_test:
+                hparams[&#34;datamodule/test_size&#34;] = len(datamodule.data_test)
+
+        # save number of model parameters
+        hparams[&#34;model/params_total&#34;] = sum(p.numel() for p in model.parameters())
+        hparams[&#34;model/params_trainable&#34;] = sum(
+                p.numel() for p in model.parameters() if p.requires_grad
+        )
+        hparams[&#34;model/params_not_trainable&#34;] = sum(
+                p.numel() for p in model.parameters() if not p.requires_grad
+        )
+        
+        for logger in trainer.logger:
+                if hasattr(logger, &#34;log_hyperparams&#34;):
+                        trainer.logger.log_hyperparams(hparams)
+                if hasattr(logger, &#39;save_dir&#39;):
+                        os.makedirs(logger.save_dir, exist_ok=True)
+        
+        if &#39;wandb&#39; in config.logger.keys():
+                wandb.watch(model.classifier, criterion=model.criterion, log=&#39;all&#39;)
+                log.info(f&#39;Logging classifier gradients to wandb using wandb.watch()&#39;)
+
+        # disable logging any more hyperparameters for all loggers
+        # (this is just a trick to prevent trainer from logging hparams of model, since we already did that above)
+        trainer.logger.log_hyperparams = empty
+
+
+from torch import distributed as dist
+        
+# @rank_zero_only
+def init(config: DictConfig):
+#        wandb.init(..., reinit=dist.is_available() and dist.is_initialized() and dist.get_rank() == 0)
+        if config.trainer.accelerator == &#34;ddp&#34;:
+#        if wandb.run is None:
+                config.wandb.init.reinit = True# = dist.is_available() and dist.is_initialized() and (dist.get_rank() == 0)
+#                print(f&#34;dist.is_available()={dist.is_available()}&#34;)
+#                print(f&#34;dist.is_initialized()={dist.is_initialized()}&#34;)
+#                print(f&#34;dist.get_rank() == 0)={(dist.get_rank() == 0)}&#34;)
+        
+                logging.info(f&#34;Since trainer.accelerator={config.trainer.accelerator}, setting config.wandb.init.reinit to: {config.wandb.init.reinit}&#34;)
+                
+#                        logging.info(f&#34;torch.distributed.get_rank() = {dist.get_rank()}&#34;)
+                
+                local_rank = os.environ.get(&#34;LOCAL_RANK&#34;, 0)
+                print(f&#39;local_rank={local_rank}&#39;)
+                if str(local_rank)==&#34;0&#34;:
+                        hydra.utils.instantiate(config.wandb.init)
+                        print(f&#39;Just may have successfully initiated wandb&#39;)
+                else:
+                        print(f&#39;Skipping wandb.init b/c local_rank={local_rank}&#39;)
+                
+        
+# def init_ddp_connection(self, *args, **kwargs):
+#        super().init_ddp_connection(*args, **kwargs)
+
+#        if torch.distributed.get_rank() == 0:
+#                import wandb
+#                wandb.run = None
+
+
+def find_ckpt_callback(callbacks: List[pl.Callback]=None):
+        for cb in callbacks:
+                if isinstance(cb, pl.callbacks.ModelCheckpoint):
+                        return cb
+        return None
+
+
+
+def write_ckpts_info2yaml(cfg: DictConfig,
+                                                  callbacks: List[pl.Callback]=None):
+        # save top weights paths to yaml
+        if &#34;model_checkpoint&#34; in cfg.train.callbacks:
+                ckpts_info_path = os.path.join(
+                        cfg.train.callbacks.model_checkpoint.dirpath, &#34;best_ckpts_meta.yaml&#34;
+                )
+                cb = find_ckpt_callback(callbacks)
+                if isinstance(cb, pl.callbacks.ModelCheckpoint):
+                        cb.to_yaml(filepath=ckpts_info_path)
+                if os.path.isfile(ckpts_info_path):
+                        print(f&#34;Find a listing of the path(s) best ckpt(s) located at: {ckpts_info_path} &#34;)
+                else:
+                        print(f&#34;Warning: problem encountered trying to save ckpts info to yaml file at path: {ckpts_info_path}. Continuing without error.&#34;)
+
+
+
+
+
+from pathlib import Path
+import shutil
+
+@rank_zero_only
+def finish(
+        config: DictConfig,
+        logger: List[pl.loggers.LightningLoggerBase],
+        # model: pl.LightningModule=None,
+        # datamodule: pl.LightningDataModule=None,
+        # trainer: pl.Trainer=None,
+        callbacks: List[pl.Callback]=None
+) -&gt; None:
+        &#34;&#34;&#34;Perform some simple reporting hooks for the end of common workflows + Makes sure everything closed properly.&#34;&#34;&#34;
+        
+        write_ckpts_info2yaml(cfg=config,
+                                                  callbacks=callbacks)
+        
+        wandb_logger = get_wandb_logger(logger)
+        if wandb_logger is None:
+                return
+        
+        try:
+                log_dir = Path(config.run_output_dir, &#34;hydra_cfg&#34;)
+                shutil.copytree(&#34;.hydra&#34;, log_dir)
+        except Exception as e:
+                print(f&#34;WARNING: Error while copying .hydra files to hydra_cfg directory. Attempting to finish up anyway.&#34;)
+                print(f&#34;The exception: {e}&#34;)
+
+        
+        if isinstance(wandb_logger, WandbLogger):
+                wandb.finish()</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="imutils.ml.utils.template_utils.empty"><code class="name flex">
+<span>def <span class="ident">empty</span></span>(<span>*args, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def empty(*args, **kwargs):
+        pass</code></pre>
+</details>
+</dd>
+<dt id="imutils.ml.utils.template_utils.extras"><code class="name flex">
+<span>def <span class="ident">extras</span></span>(<span>config: omegaconf.dictconfig.DictConfig) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>A couple of optional utilities, controlled by main config file.
+- disabling warnings
+- easier access to debug mode
+- forcing debug friendly configuration
+- forcing multi-gpu friendly configuration</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>config</code></strong> :&ensp;<code>DictConfig</code></dt>
+<dd>[description]</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def extras(config: DictConfig) -&gt; None:
+        &#34;&#34;&#34;A couple of optional utilities, controlled by main config file.
+                - disabling warnings
+                - easier access to debug mode
+                - forcing debug friendly configuration
+                - forcing multi-gpu friendly configuration
+        Args:
+                config (DictConfig): [description]
+        &#34;&#34;&#34;
+
+        # enable adding new keys to config
+        OmegaConf.set_struct(config, False)
+
+        # disable python warnings if &lt;config.disable_warnings=True&gt;
+        if config.get(&#34;disable_warnings&#34;):
+                log.info(f&#34;Disabling python warnings! &lt;config.disable_warnings=True&gt;&#34;)
+                warnings.filterwarnings(&#34;ignore&#34;)
+
+        # set &lt;config.trainer.fast_dev_run=True&gt; if &lt;config.debug=True&gt;
+        if config.get(&#34;debug&#34;):
+                log.info(&#34;Running in debug mode! &lt;config.debug=True&gt;&#34;)
+                config.train.pl_trainer.fast_dev_run = True
+
+        # force debugger friendly configuration if &lt;config.trainer.fast_dev_run=True&gt;
+        if config.train.pl_trainer.get(&#34;fast_dev_run&#34;):
+                log.info(&#34;Forcing debugger friendly configuration! &lt;config.trainer.fast_dev_run=True&gt;&#34;)
+                # Debuggers don&#39;t like GPUs or multiprocessing
+                if config.train.pl_trainer.get(&#34;gpus&#34;):
+                        config.train.pl_trainer.gpus = 0
+                if config.data.datamodule.get(&#34;num_workers&#34;):
+                        config.data.datamodule.num_workers = 0
+
+        # force multi-gpu friendly configuration if &lt;config.trainer.accelerator=ddp&gt;
+        if config.train.pl_trainer.get(&#34;accelerator&#34;) in [&#34;ddp&#34;, &#34;ddp_spawn&#34;, &#34;dp&#34;, &#34;ddp2&#34;]:
+                log.info(&#34;Forcing ddp friendly configuration! &lt;config.trainer.accelerator=ddp&gt;&#34;)
+                # ddp doesn&#39;t like num_workers&gt;0 or pin_memory=True
+                if config.data.datamodule.get(&#34;num_workers&#34;):
+#                        config.datamodule.num_workers = 0
+                        gpus = config.train.pl_trainer.get(&#34;gpus&#34;, 0)
+                        gpus = gpus or config.train.pl_trainer.get(&#34;devices&#34;, 0)
+                        print(f&#34;GPUs: {gpus}&#34;)
+                        if isinstance(gpus, list):
+                                config.data.datamodule.num_workers = 4 * len(gpus)
+                        elif isinstance(gpus, int):
+                                config.data.datamodule.num_workers = 4
+                if config.data.datamodule.get(&#34;pin_memory&#34;):
+                        config.data.datamodule.pin_memory = False
+
+        # disable adding new keys to config
+        OmegaConf.set_struct(config, True)</code></pre>
+</details>
+</dd>
+<dt id="imutils.ml.utils.template_utils.find_ckpt_callback"><code class="name flex">
+<span>def <span class="ident">find_ckpt_callback</span></span>(<span>callbacks: List[pytorch_lightning.callbacks.base.Callback] = None)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def find_ckpt_callback(callbacks: List[pl.Callback]=None):
+        for cb in callbacks:
+                if isinstance(cb, pl.callbacks.ModelCheckpoint):
+                        return cb
+        return None</code></pre>
+</details>
+</dd>
+<dt id="imutils.ml.utils.template_utils.finish"><code class="name flex">
+<span>def <span class="ident">finish</span></span>(<span>config: omegaconf.dictconfig.DictConfig, logger: List[pytorch_lightning.loggers.base.LightningLoggerBase], callbacks: List[pytorch_lightning.callbacks.base.Callback] = None) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Perform some simple reporting hooks for the end of common workflows + Makes sure everything closed properly.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@rank_zero_only
+def finish(
+        config: DictConfig,
+        logger: List[pl.loggers.LightningLoggerBase],
+        # model: pl.LightningModule=None,
+        # datamodule: pl.LightningDataModule=None,
+        # trainer: pl.Trainer=None,
+        callbacks: List[pl.Callback]=None
+) -&gt; None:
+        &#34;&#34;&#34;Perform some simple reporting hooks for the end of common workflows + Makes sure everything closed properly.&#34;&#34;&#34;
+        
+        write_ckpts_info2yaml(cfg=config,
+                                                  callbacks=callbacks)
+        
+        wandb_logger = get_wandb_logger(logger)
+        if wandb_logger is None:
+                return
+        
+        try:
+                log_dir = Path(config.run_output_dir, &#34;hydra_cfg&#34;)
+                shutil.copytree(&#34;.hydra&#34;, log_dir)
+        except Exception as e:
+                print(f&#34;WARNING: Error while copying .hydra files to hydra_cfg directory. Attempting to finish up anyway.&#34;)
+                print(f&#34;The exception: {e}&#34;)
+
+        
+        if isinstance(wandb_logger, WandbLogger):
+                wandb.finish()</code></pre>
+</details>
+</dd>
+<dt id="imutils.ml.utils.template_utils.get_logger"><code class="name flex">
+<span>def <span class="ident">get_logger</span></span>(<span>name='imutils.ml.utils.template_utils', level=20)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Initializes python logger.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_logger(name=__name__, level=logging.INFO):
+        &#34;&#34;&#34;Initializes python logger.&#34;&#34;&#34;
+
+        logger = logging.getLogger(name)
+        
+        handler = logging.StreamHandler()
+        formatter = logging.Formatter(&#39;%(asctime)s %(name)-12s %(levelname)-8s %(message)s&#39;)
+        handler.setFormatter(formatter)
+        logger.addHandler(handler)
+        
+        logger.setLevel(level)
+
+        # this ensures all logging levels get marked with the rank zero decorator
+        # otherwise logs would get multiplied for each GPU process in multi-GPU setup
+        for level in (&#34;debug&#34;, &#34;info&#34;, &#34;warning&#34;, &#34;error&#34;, &#34;exception&#34;, &#34;fatal&#34;, &#34;critical&#34;):
+                setattr(logger, level, rank_zero_only(getattr(logger, level)))
+
+        return logger</code></pre>
+</details>
+</dd>
+<dt id="imutils.ml.utils.template_utils.get_wandb_logger"><code class="name flex">
+<span>def <span class="ident">get_wandb_logger</span></span>(<span>loggers: Union[pytorch_lightning.loggers.base.LightningLoggerBase, List[pytorch_lightning.loggers.base.LightningLoggerBase]])</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Looks through either a single or list of loggers, if it finds a WandbLogger, it returns only that. If it doesn't, it returns only None.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_wandb_logger(loggers: Union[LightningLoggerBase, List[LightningLoggerBase]]):
+        &#34;&#34;&#34;
+        Looks through either a single or list of loggers, if it finds a WandbLogger, it returns only that. If it doesn&#39;t, it returns only None.
+        &#34;&#34;&#34;
+        if isinstance(loggers, Sequence):
+                for l in loggers:
+                        if isinstance(l, WandbLogger):
+                                return l
+        elif isinstance(loggers, WandbLogger):
+                return loggers
+        else:
+                return None</code></pre>
+</details>
+</dd>
+<dt id="imutils.ml.utils.template_utils.init"><code class="name flex">
+<span>def <span class="ident">init</span></span>(<span>config: omegaconf.dictconfig.DictConfig)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def init(config: DictConfig):
+#        wandb.init(..., reinit=dist.is_available() and dist.is_initialized() and dist.get_rank() == 0)
+        if config.trainer.accelerator == &#34;ddp&#34;:
+#        if wandb.run is None:
+                config.wandb.init.reinit = True# = dist.is_available() and dist.is_initialized() and (dist.get_rank() == 0)
+#                print(f&#34;dist.is_available()={dist.is_available()}&#34;)
+#                print(f&#34;dist.is_initialized()={dist.is_initialized()}&#34;)
+#                print(f&#34;dist.get_rank() == 0)={(dist.get_rank() == 0)}&#34;)
+        
+                logging.info(f&#34;Since trainer.accelerator={config.trainer.accelerator}, setting config.wandb.init.reinit to: {config.wandb.init.reinit}&#34;)
+                
+#                        logging.info(f&#34;torch.distributed.get_rank() = {dist.get_rank()}&#34;)
+                
+                local_rank = os.environ.get(&#34;LOCAL_RANK&#34;, 0)
+                print(f&#39;local_rank={local_rank}&#39;)
+                if str(local_rank)==&#34;0&#34;:
+                        hydra.utils.instantiate(config.wandb.init)
+                        print(f&#39;Just may have successfully initiated wandb&#39;)
+                else:
+                        print(f&#39;Skipping wandb.init b/c local_rank={local_rank}&#39;)</code></pre>
+</details>
+</dd>
+<dt id="imutils.ml.utils.template_utils.initialize_config"><code class="name flex">
+<span>def <span class="ident">initialize_config</span></span>(<span>cfg: omegaconf.dictconfig.DictConfig)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def initialize_config(cfg: DictConfig):
+        OmegaConf.set_struct(cfg, False)
+        OmegaConf.register_new_resolver(&#34;int&#34;, int)
+        return cfg</code></pre>
+</details>
+</dd>
+<dt id="imutils.ml.utils.template_utils.log_hyperparameters"><code class="name flex">
+<span>def <span class="ident">log_hyperparameters</span></span>(<span>config: omegaconf.dictconfig.DictConfig, model: pytorch_lightning.core.lightning.LightningModule, datamodule: pytorch_lightning.core.datamodule.LightningDataModule, trainer: pytorch_lightning.trainer.trainer.Trainer, callbacks: List[pytorch_lightning.callbacks.base.Callback], logger: List[pytorch_lightning.loggers.base.LightningLoggerBase]) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>This method controls which parameters from Hydra config are saved by Lightning loggers.</p>
+<p>Additionaly saves:
+- sizes of train, val, test dataset
+- number of trainable model parameters</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@rank_zero_only
+def log_hyperparameters(
+        config: DictConfig,
+        model: pl.LightningModule,
+        datamodule: pl.LightningDataModule,
+        trainer: pl.Trainer,
+        callbacks: List[pl.Callback],
+        logger: List[pl.loggers.LightningLoggerBase],
+) -&gt; None:
+        &#34;&#34;&#34;This method controls which parameters from Hydra config are saved by Lightning loggers.
+
+        Additionaly saves:
+                - sizes of train, val, test dataset
+                - number of trainable model parameters
+        &#34;&#34;&#34;
+
+        hparams = {}
+
+        # choose which parts of hydra config will be saved to loggers
+        hparams[&#34;train&#34;] = config[&#34;train&#34;]
+        hparams[&#34;model&#34;] = config[&#34;model&#34;]
+        hparams[&#34;data&#34;] = config[&#34;data&#34;]
+        if &#34;optim&#34; in config:
+                hparams[&#34;optim&#34;] = config[&#34;optim&#34;]
+        if &#34;callbacks&#34; in config:
+                hparams[&#34;callbacks&#34;] = config[&#34;callbacks&#34;]
+        if &#34;hp&#34; in config:
+                hparams[&#34;hp&#34;] = config[&#34;hp&#34;]
+
+        # save sizes of each dataset
+        # (requires calling `datamodule.setup()` first to initialize datasets)
+        datamodule.setup()
+        if hasattr(datamodule, &#34;data_train&#34;) and datamodule.data_train:
+                hparams[&#34;datamodule/train_size&#34;] = len(datamodule.data_train)
+        if hasattr(datamodule, &#34;data_val&#34;) and datamodule.data_val:
+                hparams[&#34;datamodule/val_size&#34;] = len(datamodule.data_val)
+        if hasattr(datamodule, &#34;data_test&#34;) and datamodule.data_test:
+                hparams[&#34;datamodule/test_size&#34;] = len(datamodule.data_test)
+
+        # save number of model parameters
+        hparams[&#34;model/params_total&#34;] = sum(p.numel() for p in model.parameters())
+        hparams[&#34;model/params_trainable&#34;] = sum(
+                p.numel() for p in model.parameters() if p.requires_grad
+        )
+        hparams[&#34;model/params_not_trainable&#34;] = sum(
+                p.numel() for p in model.parameters() if not p.requires_grad
+        )
+        
+        for logger in trainer.logger:
+                if hasattr(logger, &#34;log_hyperparams&#34;):
+                        trainer.logger.log_hyperparams(hparams)
+                if hasattr(logger, &#39;save_dir&#39;):
+                        os.makedirs(logger.save_dir, exist_ok=True)
+        
+        if &#39;wandb&#39; in config.logger.keys():
+                wandb.watch(model.classifier, criterion=model.criterion, log=&#39;all&#39;)
+                log.info(f&#39;Logging classifier gradients to wandb using wandb.watch()&#39;)
+
+        # disable logging any more hyperparameters for all loggers
+        # (this is just a trick to prevent trainer from logging hparams of model, since we already did that above)
+        trainer.logger.log_hyperparams = empty</code></pre>
+</details>
+</dd>
+<dt id="imutils.ml.utils.template_utils.print_config"><code class="name flex">
+<span>def <span class="ident">print_config</span></span>(<span>config: omegaconf.dictconfig.DictConfig, fields: Sequence[str] = ('pretrain', 'train', 'model_cfg', 'optim', 'data', 'callbacks', 'logging', 'hp', 'seed'), resolve: bool = True, file: str = None) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Prints content of DictConfig using Rich library and its tree structure.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>config</code></strong> :&ensp;<code>DictConfig</code></dt>
+<dd>Config.</dd>
+<dt><strong><code>fields</code></strong> :&ensp;<code>Sequence[str]</code>, optional</dt>
+<dd>Determines which main fields from config will be printed</dd>
+<dt>and in what order.</dt>
+<dt><strong><code>resolve</code></strong> :&ensp;<code>bool</code>, optional</dt>
+<dd>Whether to resolve reference fields of DictConfig.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@rank_zero_only
+def print_config(
+        config: DictConfig,
+        fields: Sequence[str] = (
+        &#34;pretrain&#34;,
+                &#34;train&#34;,
+                &#34;model_cfg&#34;,
+                &#34;optim&#34;,
+                &#34;data&#34;,
+                &#34;callbacks&#34;,
+                &#34;logging&#34;,
+                &#34;hp&#34;,
+                &#34;seed&#34;,
+        ),
+        resolve: bool = True,
+        file: str = None
+) -&gt; None:
+        &#34;&#34;&#34;Prints content of DictConfig using Rich library and its tree structure.
+
+        Args:
+                config (DictConfig): Config.
+                fields (Sequence[str], optional): Determines which main fields from config will be printed
+                and in what order.
+                resolve (bool, optional): Whether to resolve reference fields of DictConfig.
+        &#34;&#34;&#34;
+
+        style = &#34;dim&#34;
+        tree = Tree(f&#34;:gear: CONFIG&#34;, style=style, guide_style=style)
+
+        for field in fields:
+                branch = tree.add(field, style=style, guide_style=style)
+
+                config_section = config.get(field)
+                branch_content = str(config_section)
+                if isinstance(config_section, DictConfig):
+                        branch_content = OmegaConf.to_yaml(config_section, resolve=resolve)
+
+                branch.add(Syntax(branch_content, &#34;yaml&#34;))
+
+        rich.print(tree, file=file)</code></pre>
+</details>
+</dd>
+<dt id="imutils.ml.utils.template_utils.write_ckpts_info2yaml"><code class="name flex">
+<span>def <span class="ident">write_ckpts_info2yaml</span></span>(<span>cfg: omegaconf.dictconfig.DictConfig, callbacks: List[pytorch_lightning.callbacks.base.Callback] = None)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def write_ckpts_info2yaml(cfg: DictConfig,
+                                                  callbacks: List[pl.Callback]=None):
+        # save top weights paths to yaml
+        if &#34;model_checkpoint&#34; in cfg.train.callbacks:
+                ckpts_info_path = os.path.join(
+                        cfg.train.callbacks.model_checkpoint.dirpath, &#34;best_ckpts_meta.yaml&#34;
+                )
+                cb = find_ckpt_callback(callbacks)
+                if isinstance(cb, pl.callbacks.ModelCheckpoint):
+                        cb.to_yaml(filepath=ckpts_info_path)
+                if os.path.isfile(ckpts_info_path):
+                        print(f&#34;Find a listing of the path(s) best ckpt(s) located at: {ckpts_info_path} &#34;)
+                else:
+                        print(f&#34;Warning: problem encountered trying to save ckpts info to yaml file at path: {ckpts_info_path}. Continuing without error.&#34;)</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+<section>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="imutils.ml.utils" href="index.html">imutils.ml.utils</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="imutils.ml.utils.template_utils.empty" href="#imutils.ml.utils.template_utils.empty">empty</a></code></li>
+<li><code><a title="imutils.ml.utils.template_utils.extras" href="#imutils.ml.utils.template_utils.extras">extras</a></code></li>
+<li><code><a title="imutils.ml.utils.template_utils.find_ckpt_callback" href="#imutils.ml.utils.template_utils.find_ckpt_callback">find_ckpt_callback</a></code></li>
+<li><code><a title="imutils.ml.utils.template_utils.finish" href="#imutils.ml.utils.template_utils.finish">finish</a></code></li>
+<li><code><a title="imutils.ml.utils.template_utils.get_logger" href="#imutils.ml.utils.template_utils.get_logger">get_logger</a></code></li>
+<li><code><a title="imutils.ml.utils.template_utils.get_wandb_logger" href="#imutils.ml.utils.template_utils.get_wandb_logger">get_wandb_logger</a></code></li>
+<li><code><a title="imutils.ml.utils.template_utils.init" href="#imutils.ml.utils.template_utils.init">init</a></code></li>
+<li><code><a title="imutils.ml.utils.template_utils.initialize_config" href="#imutils.ml.utils.template_utils.initialize_config">initialize_config</a></code></li>
+<li><code><a title="imutils.ml.utils.template_utils.log_hyperparameters" href="#imutils.ml.utils.template_utils.log_hyperparameters">log_hyperparameters</a></code></li>
+<li><code><a title="imutils.ml.utils.template_utils.print_config" href="#imutils.ml.utils.template_utils.print_config">print_config</a></code></li>
+<li><code><a title="imutils.ml.utils.template_utils.write_ckpts_info2yaml" href="#imutils.ml.utils.template_utils.write_ckpts_info2yaml">write_ckpts_info2yaml</a></code></li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+</footer>
+</body>
+</html>

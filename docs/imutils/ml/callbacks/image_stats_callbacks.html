@@ -1,0 +1,901 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.10.0" />
+<title>imutils.ml.callbacks.image_stats_callbacks API documentation</title>
+<meta name="description" content="lightning_hydra_classifiers/callbacks/image_stats_callbacks.py …" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>imutils.ml.callbacks.image_stats_callbacks</code></h1>
+</header>
+<section id="section-intro">
+<p>lightning_hydra_classifiers/callbacks/image_stats_callbacks.py</p>
+<p>Pytorch Lightning Callbacks for analyzing image statistics</p>
+<p>Created on: Wednesday September 8th, 2021
+Author: Jacob A Rose</p>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">&#34;&#34;&#34;
+
+lightning_hydra_classifiers/callbacks/image_stats_callbacks.py
+
+
+Pytorch Lightning Callbacks for analyzing image statistics
+
+Created on: Wednesday September 8th, 2021
+Author: Jacob A Rose
+
+
+&#34;&#34;&#34;
+
+
+# from time import time
+import time
+from tqdm import tqdm
+from torch import nn
+import torch
+from pathlib import Path
+import os
+from typing import *
+import pytorch_lightning as pl
+# from pytorch_lightning.utilities.distributed import rank_zero_only
+from imutils.ml.callbacks.wandb_callbacks import get_wandb_logger
+from imutils.ml.utils.template_utils import get_logger
+logger = get_logger(name=__name__)
+
+
+__all__ = [&#34;ImageStatsAccumulatorCallback&#34;, &#34;ImageStatsAccumulator&#34;, &#34;PersistentModule&#34;]
+
+
+class PersistentModule(nn.Module):
+    &#34;&#34;&#34;Base nn.Module class containing custom state management with the following methods:
+        ::self.cache
+        ::self.load_from_cache
+    &#34;&#34;&#34;
+    
+#     @rank_zero_only
+    def cache(self):
+        if not isinstance(self.cache_dir, (str, Path)):
+            return
+#         self.cache_path = os.path.join(self.cache_dir, self.name + &#34;.pth&#34;)
+        torch.save(self.state_dict(), self.cache_path)
+        logger.info(f&#34;Updated Image Stats cache located at: {self.cache_path}&#34;)
+
+#     @rank_zero_only
+    def load_from_cache(self):
+        if not isinstance(self.cache_dir, (str, Path)):
+            logger.warning(f&#34;No cache detected. No-op.&#34;)
+            return
+#         self.cache_path = os.path.join(self.cache_dir, self.name + &#34;.pth&#34;)
+        if os.path.isfile(self.cache_path):            
+            self.load_state_dict(torch.load(self.cache_path))
+            logger.info(f&#34;Loaded Image Stats from cache located at: {self.cache_path}&#34;)
+        else:
+            logger.warning(f&#34;No cache detected. No-op.&#34;)
+
+    def state_dict(self):
+        return self.__dict__
+    
+    def load_state_dict(self, state_dict: Dict):
+        for k, v in state_dict.items():
+            if k in self.__dict__:
+                self.__dict__[k] = v
+        
+    def finalize(self, **kwargs):
+        raise NotImplementedError
+        
+        
+        
+
+class ImageStatsAccumulator(PersistentModule):
+    &#34;&#34;&#34;
+    Calculates a dataset-wide set of image statistics.
+    Currently:
+        - per-channel pixel mean
+        - per-channel pixel std
+        - per-channel pixel min
+        - per-channel pixel max
+    
+    &#34;&#34;&#34;
+    
+    def __init__(self, name: str=&#34;image_stats&#34;, cache_dir: str=None, clear_cache: bool=True):
+        self.pixel_count = torch.zeros(1)
+        self.image_count = torch.zeros(1)
+        self.sum_of_pixels = torch.zeros(3)
+        self.sum_of_square_pixels = torch.zeros(3)
+        self.resolution = torch.zeros(1)
+#         self.channels = torch.Tensor(3)
+        
+        self.global_max_pixel = torch.Tensor([-float(&#34;inf&#34;)]*3)
+        self.global_min_pixel = torch.Tensor([float(&#34;inf&#34;)]*3)
+        
+        self.name = name
+        self.cache_dir = cache_dir
+        self.cache_path = os.path.join(self.cache_dir, self.name + &#34;.pth&#34;)
+#         self.clear_cache = clear_cache
+        if os.path.isfile(self.cache_path):
+            if clear_cache:
+                logger.warning(f&#34;Removing prior cache prior to stats update.&#34;)
+                os.remove(self.cache_path)
+            else:
+                self.load_from_cache()
+    
+    
+    def update_step(self, batch):
+        images = batch[0]
+        b, c, h, w = images.shape
+        nb_pixels = b * h * w
+        if self.resolution == 0:
+            self.resolution = h
+        assert self.resolution == h == w
+        
+        batch_max = torch.amax(images, dim=(0,2,3))
+        batch_min = torch.amin(images, dim=(0,2,3))
+        
+        self.global_max_pixel = torch.amax(torch.stack([self.global_max_pixel, batch_max]), dim=0)
+        self.global_min_pixel = torch.amin(torch.stack([self.global_min_pixel, batch_min]), dim=0)
+        
+        
+        self.sum_of_pixels        += torch.sum(images,    dim=[0, 2, 3])
+        self.sum_of_square_pixels += torch.sum(images**2, dim=[0, 2, 3])
+        self.pixel_count          += nb_pixels
+        self.image_count          += b
+        
+        
+    def update(self, loader: torch.utils.data.DataLoader):
+        for batch in tqdm(loader):
+            self.update_step(batch)
+        global_mean, global_std, global_min, global_max = self.compute()
+        logger.info(f&#34;[FINISHED] Calculating full dataset stats from a collection of {self.image_count} images at resolution {self.resolution}&#34;)
+        logger.info(f&#34;Global channel-wise mean = {global_mean}&#34;)
+        logger.info(f&#34;Global channel-wise std = {global_std}&#34;)
+        logger.info(f&#34;Global channel-wise pixel min = {global_min}&#34;)
+        logger.info(f&#34;Global channel-wise pixel max = {global_max}&#34;)
+
+        return global_mean, global_std, global_min, global_max
+
+    
+    def compute(self):        
+        global_mean = self.sum_of_pixels / self.pixel_count
+        global_var = (self.sum_of_square_pixels / self.pixel_count) - global_mean**2
+        global_std = torch.sqrt(global_var)
+        return global_mean, global_std, self.global_min_pixel, self.global_max_pixel
+    
+    
+    # TODO Move the state dict stuff to a structured config dataclass
+    def state_dict(self):
+        global_mean, global_std, _, _ = self.compute()
+        return {&#34;global_mean&#34;: global_mean,
+                &#34;global_std&#34;: global_std,
+                &#34;pixel_count&#34;: self.pixel_count,
+                &#34;image_count&#34;: self.image_count,
+                &#34;sum_of_pixels&#34;: self.sum_of_pixels,
+                &#34;sum_of_square_pixels&#34;: self.sum_of_square_pixels,
+                &#34;resolution&#34;: self.resolution,
+                &#34;global_max_pixel&#34;: self.global_max_pixel,
+                &#34;global_min_pixel&#34;: self.global_min_pixel}
+    
+    def load_state_dict(self, state_dict):
+        self.pixel_count = state_dict[&#34;pixel_count&#34;]
+        self.image_count = state_dict[&#34;image_count&#34;]
+        self.sum_of_pixels = state_dict[&#34;sum_of_pixels&#34;]
+        self.sum_of_square_pixels = state_dict[&#34;sum_of_square_pixels&#34;]
+        self.resolution = state_dict[&#34;resolution&#34;]
+        self.global_max_pixel = state_dict[&#34;global_max_pixel&#34;]
+        self.global_min_pixel = state_dict[&#34;global_min_pixel&#34;]
+        
+        global_mean, global_std, _, _ = self.compute()
+        assert torch.all(global_mean == state_dict[&#34;global_mean&#34;])
+        assert torch.all(global_std == state_dict[&#34;global_std&#34;])    
+    
+
+    def __repr__(self):
+        return &#34;ImageStatsAccumulator:\n&#34; + str(&#39;\n&#39;.join([f&#34;{k}: {v}&#34; for k,v in self.state_dict().items()]))
+    
+    
+    
+    
+    
+
+class ImageStatsAccumulatorCallback(pl.Callback):
+    
+    # TODO: Consider calculating per-class image statistics and logging as a bar plot
+    
+    def __init__(self,
+                 name: str=&#34;image_stats&#34;,
+                 cache_dir: str=None,
+                 clear_cache: bool=True):
+        super().__init__()
+        
+        self.accumulator = ImageStatsAccumulator(name=name,
+                                                 cache_dir=cache_dir,
+                                                 clear_cache=clear_cache)
+        
+    
+    def on_pretrain_routine_start(self, trainer, pl_module):
+        self._start_time = time.time()
+#         dataloader = trainer.test_dataloader()
+        dataloader = trainer.datamodule.train_dataloader()
+        self.accumulator.update(dataloader)
+
+        
+    def on_pretrain_routine_end(self, trainer, pl_module):
+        logs = {}
+        
+        summary_stats = self.accumulator.compute()
+        logger.info(str(self.accumulator))
+        logger.info(&#34;Summary Stats:\n&#34; + f&#34;Global Mean: {summary_stats[0]}, Global Std: {summary_stats[1]}&#34;)
+        trainer.datamodule.update_stats(mean=summary_stats[0], std=summary_stats[1])
+        total_time = time.time() - self._start_time
+        
+        logger = get_wandb_logger(trainer)
+        if isinstance(logger, pl.loggers.wandb.WandbLogger):
+            logger.experiment.summary[&#34;mean&#34;] = summary_stats[0]
+            logger.experiment.summary[&#34;std&#34;] = summary_stats[1]
+            
+            
+            
+            
+#         trainer.logger.log_metrics(logs, step=trainer.current_epoch)
+
+        
+
+    # def on_train_batch_start(self, trainer, pl_module, batch, batch_idx, dataloader_idx):
+    #     if (batch_idx + 1) % trainer.log_every_n_steps == 0:
+    #         x, y = batch[:1]
+            #TBD: Add logic for multiple loggers
+            # logger = trainer.logger
+            # logger.experiment.add_histogram(&#34;input&#34;, x, global_step=trainer.global_step)
+            # logger.experiment.add_histogram(&#34;target&#34;, y, global_step=trainer.global_step)
+            
+            
+            
+            
+        
+
+#     def on_train_epoch_end(self, trainer, pl_module) -&gt; None:
+#         logs = {}
+#         epoch_time = time.time() - self._start_time
+#         trainer.logger.log_metrics(logs, step=trainer.current_epoch)
+
+#         if self._verbose:
+#             rank_zero_info(f&#34;Average Epoch time: {epoch_time:.2f} seconds&#34;)
+#             rank_zero_info(f&#34;Average Peak memory: {peak_memory:.2f} MB&#34;)
+#             rank_zero_info(f&#34;Average Free memory: {free_memory:.2f} MB&#34;)</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="imutils.ml.callbacks.image_stats_callbacks.ImageStatsAccumulator"><code class="flex name class">
+<span>class <span class="ident">ImageStatsAccumulator</span></span>
+<span>(</span><span>name: str = 'image_stats', cache_dir: str = None, clear_cache: bool = True)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Calculates a dataset-wide set of image statistics.</p>
+<h2 id="currently">Currently</h2>
+<ul>
+<li>per-channel pixel mean</li>
+<li>per-channel pixel std</li>
+<li>per-channel pixel min</li>
+<li>per-channel pixel max</li>
+</ul>
+<p>Initializes internal Module state, shared by both nn.Module and ScriptModule.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class ImageStatsAccumulator(PersistentModule):
+    &#34;&#34;&#34;
+    Calculates a dataset-wide set of image statistics.
+    Currently:
+        - per-channel pixel mean
+        - per-channel pixel std
+        - per-channel pixel min
+        - per-channel pixel max
+    
+    &#34;&#34;&#34;
+    
+    def __init__(self, name: str=&#34;image_stats&#34;, cache_dir: str=None, clear_cache: bool=True):
+        self.pixel_count = torch.zeros(1)
+        self.image_count = torch.zeros(1)
+        self.sum_of_pixels = torch.zeros(3)
+        self.sum_of_square_pixels = torch.zeros(3)
+        self.resolution = torch.zeros(1)
+#         self.channels = torch.Tensor(3)
+        
+        self.global_max_pixel = torch.Tensor([-float(&#34;inf&#34;)]*3)
+        self.global_min_pixel = torch.Tensor([float(&#34;inf&#34;)]*3)
+        
+        self.name = name
+        self.cache_dir = cache_dir
+        self.cache_path = os.path.join(self.cache_dir, self.name + &#34;.pth&#34;)
+#         self.clear_cache = clear_cache
+        if os.path.isfile(self.cache_path):
+            if clear_cache:
+                logger.warning(f&#34;Removing prior cache prior to stats update.&#34;)
+                os.remove(self.cache_path)
+            else:
+                self.load_from_cache()
+    
+    
+    def update_step(self, batch):
+        images = batch[0]
+        b, c, h, w = images.shape
+        nb_pixels = b * h * w
+        if self.resolution == 0:
+            self.resolution = h
+        assert self.resolution == h == w
+        
+        batch_max = torch.amax(images, dim=(0,2,3))
+        batch_min = torch.amin(images, dim=(0,2,3))
+        
+        self.global_max_pixel = torch.amax(torch.stack([self.global_max_pixel, batch_max]), dim=0)
+        self.global_min_pixel = torch.amin(torch.stack([self.global_min_pixel, batch_min]), dim=0)
+        
+        
+        self.sum_of_pixels        += torch.sum(images,    dim=[0, 2, 3])
+        self.sum_of_square_pixels += torch.sum(images**2, dim=[0, 2, 3])
+        self.pixel_count          += nb_pixels
+        self.image_count          += b
+        
+        
+    def update(self, loader: torch.utils.data.DataLoader):
+        for batch in tqdm(loader):
+            self.update_step(batch)
+        global_mean, global_std, global_min, global_max = self.compute()
+        logger.info(f&#34;[FINISHED] Calculating full dataset stats from a collection of {self.image_count} images at resolution {self.resolution}&#34;)
+        logger.info(f&#34;Global channel-wise mean = {global_mean}&#34;)
+        logger.info(f&#34;Global channel-wise std = {global_std}&#34;)
+        logger.info(f&#34;Global channel-wise pixel min = {global_min}&#34;)
+        logger.info(f&#34;Global channel-wise pixel max = {global_max}&#34;)
+
+        return global_mean, global_std, global_min, global_max
+
+    
+    def compute(self):        
+        global_mean = self.sum_of_pixels / self.pixel_count
+        global_var = (self.sum_of_square_pixels / self.pixel_count) - global_mean**2
+        global_std = torch.sqrt(global_var)
+        return global_mean, global_std, self.global_min_pixel, self.global_max_pixel
+    
+    
+    # TODO Move the state dict stuff to a structured config dataclass
+    def state_dict(self):
+        global_mean, global_std, _, _ = self.compute()
+        return {&#34;global_mean&#34;: global_mean,
+                &#34;global_std&#34;: global_std,
+                &#34;pixel_count&#34;: self.pixel_count,
+                &#34;image_count&#34;: self.image_count,
+                &#34;sum_of_pixels&#34;: self.sum_of_pixels,
+                &#34;sum_of_square_pixels&#34;: self.sum_of_square_pixels,
+                &#34;resolution&#34;: self.resolution,
+                &#34;global_max_pixel&#34;: self.global_max_pixel,
+                &#34;global_min_pixel&#34;: self.global_min_pixel}
+    
+    def load_state_dict(self, state_dict):
+        self.pixel_count = state_dict[&#34;pixel_count&#34;]
+        self.image_count = state_dict[&#34;image_count&#34;]
+        self.sum_of_pixels = state_dict[&#34;sum_of_pixels&#34;]
+        self.sum_of_square_pixels = state_dict[&#34;sum_of_square_pixels&#34;]
+        self.resolution = state_dict[&#34;resolution&#34;]
+        self.global_max_pixel = state_dict[&#34;global_max_pixel&#34;]
+        self.global_min_pixel = state_dict[&#34;global_min_pixel&#34;]
+        
+        global_mean, global_std, _, _ = self.compute()
+        assert torch.all(global_mean == state_dict[&#34;global_mean&#34;])
+        assert torch.all(global_std == state_dict[&#34;global_std&#34;])    
+    
+
+    def __repr__(self):
+        return &#34;ImageStatsAccumulator:\n&#34; + str(&#39;\n&#39;.join([f&#34;{k}: {v}&#34; for k,v in self.state_dict().items()]))</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="imutils.ml.callbacks.image_stats_callbacks.PersistentModule" href="#imutils.ml.callbacks.image_stats_callbacks.PersistentModule">PersistentModule</a></li>
+<li>torch.nn.modules.module.Module</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="imutils.ml.callbacks.image_stats_callbacks.ImageStatsAccumulator.dump_patches"><code class="name">var <span class="ident">dump_patches</span> : bool</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="imutils.ml.callbacks.image_stats_callbacks.ImageStatsAccumulator.training"><code class="name">var <span class="ident">training</span> : bool</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="imutils.ml.callbacks.image_stats_callbacks.ImageStatsAccumulator.compute"><code class="name flex">
+<span>def <span class="ident">compute</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def compute(self):        
+    global_mean = self.sum_of_pixels / self.pixel_count
+    global_var = (self.sum_of_square_pixels / self.pixel_count) - global_mean**2
+    global_std = torch.sqrt(global_var)
+    return global_mean, global_std, self.global_min_pixel, self.global_max_pixel</code></pre>
+</details>
+</dd>
+<dt id="imutils.ml.callbacks.image_stats_callbacks.ImageStatsAccumulator.update"><code class="name flex">
+<span>def <span class="ident">update</span></span>(<span>self, loader: torch.utils.data.dataloader.DataLoader)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def update(self, loader: torch.utils.data.DataLoader):
+    for batch in tqdm(loader):
+        self.update_step(batch)
+    global_mean, global_std, global_min, global_max = self.compute()
+    logger.info(f&#34;[FINISHED] Calculating full dataset stats from a collection of {self.image_count} images at resolution {self.resolution}&#34;)
+    logger.info(f&#34;Global channel-wise mean = {global_mean}&#34;)
+    logger.info(f&#34;Global channel-wise std = {global_std}&#34;)
+    logger.info(f&#34;Global channel-wise pixel min = {global_min}&#34;)
+    logger.info(f&#34;Global channel-wise pixel max = {global_max}&#34;)
+
+    return global_mean, global_std, global_min, global_max</code></pre>
+</details>
+</dd>
+<dt id="imutils.ml.callbacks.image_stats_callbacks.ImageStatsAccumulator.update_step"><code class="name flex">
+<span>def <span class="ident">update_step</span></span>(<span>self, batch)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def update_step(self, batch):
+    images = batch[0]
+    b, c, h, w = images.shape
+    nb_pixels = b * h * w
+    if self.resolution == 0:
+        self.resolution = h
+    assert self.resolution == h == w
+    
+    batch_max = torch.amax(images, dim=(0,2,3))
+    batch_min = torch.amin(images, dim=(0,2,3))
+    
+    self.global_max_pixel = torch.amax(torch.stack([self.global_max_pixel, batch_max]), dim=0)
+    self.global_min_pixel = torch.amin(torch.stack([self.global_min_pixel, batch_min]), dim=0)
+    
+    
+    self.sum_of_pixels        += torch.sum(images,    dim=[0, 2, 3])
+    self.sum_of_square_pixels += torch.sum(images**2, dim=[0, 2, 3])
+    self.pixel_count          += nb_pixels
+    self.image_count          += b</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="imutils.ml.callbacks.image_stats_callbacks.PersistentModule" href="#imutils.ml.callbacks.image_stats_callbacks.PersistentModule">PersistentModule</a></b></code>:
+<ul class="hlist">
+<li><code><a title="imutils.ml.callbacks.image_stats_callbacks.PersistentModule.forward" href="#imutils.ml.callbacks.image_stats_callbacks.PersistentModule.forward">forward</a></code></li>
+<li><code><a title="imutils.ml.callbacks.image_stats_callbacks.PersistentModule.load_state_dict" href="#imutils.ml.callbacks.image_stats_callbacks.PersistentModule.load_state_dict">load_state_dict</a></code></li>
+<li><code><a title="imutils.ml.callbacks.image_stats_callbacks.PersistentModule.state_dict" href="#imutils.ml.callbacks.image_stats_callbacks.PersistentModule.state_dict">state_dict</a></code></li>
+</ul>
+</li>
+</ul>
+</dd>
+<dt id="imutils.ml.callbacks.image_stats_callbacks.ImageStatsAccumulatorCallback"><code class="flex name class">
+<span>class <span class="ident">ImageStatsAccumulatorCallback</span></span>
+<span>(</span><span>name: str = 'image_stats', cache_dir: str = None, clear_cache: bool = True)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Abstract base class used to build new callbacks.</p>
+<p>Subclass this class and override any of the relevant hooks</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class ImageStatsAccumulatorCallback(pl.Callback):
+    
+    # TODO: Consider calculating per-class image statistics and logging as a bar plot
+    
+    def __init__(self,
+                 name: str=&#34;image_stats&#34;,
+                 cache_dir: str=None,
+                 clear_cache: bool=True):
+        super().__init__()
+        
+        self.accumulator = ImageStatsAccumulator(name=name,
+                                                 cache_dir=cache_dir,
+                                                 clear_cache=clear_cache)
+        
+    
+    def on_pretrain_routine_start(self, trainer, pl_module):
+        self._start_time = time.time()
+#         dataloader = trainer.test_dataloader()
+        dataloader = trainer.datamodule.train_dataloader()
+        self.accumulator.update(dataloader)
+
+        
+    def on_pretrain_routine_end(self, trainer, pl_module):
+        logs = {}
+        
+        summary_stats = self.accumulator.compute()
+        logger.info(str(self.accumulator))
+        logger.info(&#34;Summary Stats:\n&#34; + f&#34;Global Mean: {summary_stats[0]}, Global Std: {summary_stats[1]}&#34;)
+        trainer.datamodule.update_stats(mean=summary_stats[0], std=summary_stats[1])
+        total_time = time.time() - self._start_time
+        
+        logger = get_wandb_logger(trainer)
+        if isinstance(logger, pl.loggers.wandb.WandbLogger):
+            logger.experiment.summary[&#34;mean&#34;] = summary_stats[0]
+            logger.experiment.summary[&#34;std&#34;] = summary_stats[1]
+            
+            
+            
+            
+#         trainer.logger.log_metrics(logs, step=trainer.current_epoch)
+
+        
+
+    # def on_train_batch_start(self, trainer, pl_module, batch, batch_idx, dataloader_idx):
+    #     if (batch_idx + 1) % trainer.log_every_n_steps == 0:
+    #         x, y = batch[:1]
+            #TBD: Add logic for multiple loggers
+            # logger = trainer.logger
+            # logger.experiment.add_histogram(&#34;input&#34;, x, global_step=trainer.global_step)
+            # logger.experiment.add_histogram(&#34;target&#34;, y, global_step=trainer.global_step)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>pytorch_lightning.callbacks.base.Callback</li>
+<li>abc.ABC</li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="imutils.ml.callbacks.image_stats_callbacks.ImageStatsAccumulatorCallback.on_pretrain_routine_end"><code class="name flex">
+<span>def <span class="ident">on_pretrain_routine_end</span></span>(<span>self, trainer, pl_module)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Called when the pretrain routine ends.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">    def on_pretrain_routine_end(self, trainer, pl_module):
+        logs = {}
+        
+        summary_stats = self.accumulator.compute()
+        logger.info(str(self.accumulator))
+        logger.info(&#34;Summary Stats:\n&#34; + f&#34;Global Mean: {summary_stats[0]}, Global Std: {summary_stats[1]}&#34;)
+        trainer.datamodule.update_stats(mean=summary_stats[0], std=summary_stats[1])
+        total_time = time.time() - self._start_time
+        
+        logger = get_wandb_logger(trainer)
+        if isinstance(logger, pl.loggers.wandb.WandbLogger):
+            logger.experiment.summary[&#34;mean&#34;] = summary_stats[0]
+            logger.experiment.summary[&#34;std&#34;] = summary_stats[1]
+            
+            
+            
+            
+#         trainer.logger.log_metrics(logs, step=trainer.current_epoch)
+
+        
+
+    # def on_train_batch_start(self, trainer, pl_module, batch, batch_idx, dataloader_idx):
+    #     if (batch_idx + 1) % trainer.log_every_n_steps == 0:
+    #         x, y = batch[:1]
+            #TBD: Add logic for multiple loggers
+            # logger = trainer.logger
+            # logger.experiment.add_histogram(&#34;input&#34;, x, global_step=trainer.global_step)
+            # logger.experiment.add_histogram(&#34;target&#34;, y, global_step=trainer.global_step)</code></pre>
+</details>
+</dd>
+<dt id="imutils.ml.callbacks.image_stats_callbacks.ImageStatsAccumulatorCallback.on_pretrain_routine_start"><code class="name flex">
+<span>def <span class="ident">on_pretrain_routine_start</span></span>(<span>self, trainer, pl_module)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Called when the pretrain routine begins.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">    def on_pretrain_routine_start(self, trainer, pl_module):
+        self._start_time = time.time()
+#         dataloader = trainer.test_dataloader()
+        dataloader = trainer.datamodule.train_dataloader()
+        self.accumulator.update(dataloader)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="imutils.ml.callbacks.image_stats_callbacks.PersistentModule"><code class="flex name class">
+<span>class <span class="ident">PersistentModule</span></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Base nn.Module class containing custom state management with the following methods:
+::self.cache
+::self.load_from_cache</p>
+<p>Initializes internal Module state, shared by both nn.Module and ScriptModule.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class PersistentModule(nn.Module):
+    &#34;&#34;&#34;Base nn.Module class containing custom state management with the following methods:
+        ::self.cache
+        ::self.load_from_cache
+    &#34;&#34;&#34;
+    
+#     @rank_zero_only
+    def cache(self):
+        if not isinstance(self.cache_dir, (str, Path)):
+            return
+#         self.cache_path = os.path.join(self.cache_dir, self.name + &#34;.pth&#34;)
+        torch.save(self.state_dict(), self.cache_path)
+        logger.info(f&#34;Updated Image Stats cache located at: {self.cache_path}&#34;)
+
+#     @rank_zero_only
+    def load_from_cache(self):
+        if not isinstance(self.cache_dir, (str, Path)):
+            logger.warning(f&#34;No cache detected. No-op.&#34;)
+            return
+#         self.cache_path = os.path.join(self.cache_dir, self.name + &#34;.pth&#34;)
+        if os.path.isfile(self.cache_path):            
+            self.load_state_dict(torch.load(self.cache_path))
+            logger.info(f&#34;Loaded Image Stats from cache located at: {self.cache_path}&#34;)
+        else:
+            logger.warning(f&#34;No cache detected. No-op.&#34;)
+
+    def state_dict(self):
+        return self.__dict__
+    
+    def load_state_dict(self, state_dict: Dict):
+        for k, v in state_dict.items():
+            if k in self.__dict__:
+                self.__dict__[k] = v
+        
+    def finalize(self, **kwargs):
+        raise NotImplementedError</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>torch.nn.modules.module.Module</li>
+</ul>
+<h3>Subclasses</h3>
+<ul class="hlist">
+<li><a title="imutils.ml.callbacks.image_stats_callbacks.ImageStatsAccumulator" href="#imutils.ml.callbacks.image_stats_callbacks.ImageStatsAccumulator">ImageStatsAccumulator</a></li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="imutils.ml.callbacks.image_stats_callbacks.PersistentModule.dump_patches"><code class="name">var <span class="ident">dump_patches</span> : bool</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="imutils.ml.callbacks.image_stats_callbacks.PersistentModule.training"><code class="name">var <span class="ident">training</span> : bool</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="imutils.ml.callbacks.image_stats_callbacks.PersistentModule.cache"><code class="name flex">
+<span>def <span class="ident">cache</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">    def cache(self):
+        if not isinstance(self.cache_dir, (str, Path)):
+            return
+#         self.cache_path = os.path.join(self.cache_dir, self.name + &#34;.pth&#34;)
+        torch.save(self.state_dict(), self.cache_path)
+        logger.info(f&#34;Updated Image Stats cache located at: {self.cache_path}&#34;)</code></pre>
+</details>
+</dd>
+<dt id="imutils.ml.callbacks.image_stats_callbacks.PersistentModule.finalize"><code class="name flex">
+<span>def <span class="ident">finalize</span></span>(<span>self, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def finalize(self, **kwargs):
+    raise NotImplementedError</code></pre>
+</details>
+</dd>
+<dt id="imutils.ml.callbacks.image_stats_callbacks.PersistentModule.forward"><code class="name flex">
+<span>def <span class="ident">forward</span></span>(<span>self, *input: Any) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Defines the computation performed at every call.</p>
+<p>Should be overridden by all subclasses.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Although the recipe for forward pass needs to be defined within
+this function, one should call the :class:<code>Module</code> instance afterwards
+instead of this since the former takes care of running the
+registered hooks while the latter silently ignores them.</p>
+</div></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def _forward_unimplemented(self, *input: Any) -&gt; None:
+    r&#34;&#34;&#34;Defines the computation performed at every call.
+
+    Should be overridden by all subclasses.
+
+    .. note::
+        Although the recipe for forward pass needs to be defined within
+        this function, one should call the :class:`Module` instance afterwards
+        instead of this since the former takes care of running the
+        registered hooks while the latter silently ignores them.
+    &#34;&#34;&#34;
+    raise NotImplementedError</code></pre>
+</details>
+</dd>
+<dt id="imutils.ml.callbacks.image_stats_callbacks.PersistentModule.load_from_cache"><code class="name flex">
+<span>def <span class="ident">load_from_cache</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">    def load_from_cache(self):
+        if not isinstance(self.cache_dir, (str, Path)):
+            logger.warning(f&#34;No cache detected. No-op.&#34;)
+            return
+#         self.cache_path = os.path.join(self.cache_dir, self.name + &#34;.pth&#34;)
+        if os.path.isfile(self.cache_path):            
+            self.load_state_dict(torch.load(self.cache_path))
+            logger.info(f&#34;Loaded Image Stats from cache located at: {self.cache_path}&#34;)
+        else:
+            logger.warning(f&#34;No cache detected. No-op.&#34;)</code></pre>
+</details>
+</dd>
+<dt id="imutils.ml.callbacks.image_stats_callbacks.PersistentModule.load_state_dict"><code class="name flex">
+<span>def <span class="ident">load_state_dict</span></span>(<span>self, state_dict: Dict[~KT, ~VT])</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Copies parameters and buffers from :attr:<code>state_dict</code> into
+this module and its descendants. If :attr:<code>strict</code> is <code>True</code>, then
+the keys of :attr:<code>state_dict</code> must exactly match the keys returned
+by this module's :meth:<code>~torch.nn.Module.state_dict</code> function.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>state_dict</code></strong> :&ensp;<code>dict</code></dt>
+<dd>a dict containing parameters and
+persistent buffers.</dd>
+<dt><strong><code>strict</code></strong> :&ensp;<code>bool</code>, optional</dt>
+<dd>whether to strictly enforce that the keys
+in :attr:<code>state_dict</code> match the keys returned by this module's
+:meth:<code>~torch.nn.Module.state_dict</code> function. Default: <code>True</code></dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p><code>NamedTuple</code> with <code>missing_keys</code> and <code>unexpected_keys</code> fields:
+* <strong>missing_keys</strong> is a list of str containing the missing keys
+* <strong>unexpected_keys</strong> is a list of str containing the unexpected keys</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def load_state_dict(self, state_dict: Dict):
+    for k, v in state_dict.items():
+        if k in self.__dict__:
+            self.__dict__[k] = v</code></pre>
+</details>
+</dd>
+<dt id="imutils.ml.callbacks.image_stats_callbacks.PersistentModule.state_dict"><code class="name flex">
+<span>def <span class="ident">state_dict</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns a dictionary containing a whole state of the module.</p>
+<p>Both parameters and persistent buffers (e.g. running averages) are
+included. Keys are corresponding parameter and buffer names.</p>
+<h2 id="returns">Returns</h2>
+<p>dict:
+a dictionary containing a whole state of the module
+Example::</p>
+<pre><code>&gt;&gt;&gt; module.state_dict().keys()
+['bias', 'weight']
+</code></pre></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def state_dict(self):
+    return self.__dict__</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="imutils.ml.callbacks" href="index.html">imutils.ml.callbacks</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="imutils.ml.callbacks.image_stats_callbacks.ImageStatsAccumulator" href="#imutils.ml.callbacks.image_stats_callbacks.ImageStatsAccumulator">ImageStatsAccumulator</a></code></h4>
+<ul class="">
+<li><code><a title="imutils.ml.callbacks.image_stats_callbacks.ImageStatsAccumulator.compute" href="#imutils.ml.callbacks.image_stats_callbacks.ImageStatsAccumulator.compute">compute</a></code></li>
+<li><code><a title="imutils.ml.callbacks.image_stats_callbacks.ImageStatsAccumulator.dump_patches" href="#imutils.ml.callbacks.image_stats_callbacks.ImageStatsAccumulator.dump_patches">dump_patches</a></code></li>
+<li><code><a title="imutils.ml.callbacks.image_stats_callbacks.ImageStatsAccumulator.training" href="#imutils.ml.callbacks.image_stats_callbacks.ImageStatsAccumulator.training">training</a></code></li>
+<li><code><a title="imutils.ml.callbacks.image_stats_callbacks.ImageStatsAccumulator.update" href="#imutils.ml.callbacks.image_stats_callbacks.ImageStatsAccumulator.update">update</a></code></li>
+<li><code><a title="imutils.ml.callbacks.image_stats_callbacks.ImageStatsAccumulator.update_step" href="#imutils.ml.callbacks.image_stats_callbacks.ImageStatsAccumulator.update_step">update_step</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="imutils.ml.callbacks.image_stats_callbacks.ImageStatsAccumulatorCallback" href="#imutils.ml.callbacks.image_stats_callbacks.ImageStatsAccumulatorCallback">ImageStatsAccumulatorCallback</a></code></h4>
+<ul class="">
+<li><code><a title="imutils.ml.callbacks.image_stats_callbacks.ImageStatsAccumulatorCallback.on_pretrain_routine_end" href="#imutils.ml.callbacks.image_stats_callbacks.ImageStatsAccumulatorCallback.on_pretrain_routine_end">on_pretrain_routine_end</a></code></li>
+<li><code><a title="imutils.ml.callbacks.image_stats_callbacks.ImageStatsAccumulatorCallback.on_pretrain_routine_start" href="#imutils.ml.callbacks.image_stats_callbacks.ImageStatsAccumulatorCallback.on_pretrain_routine_start">on_pretrain_routine_start</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="imutils.ml.callbacks.image_stats_callbacks.PersistentModule" href="#imutils.ml.callbacks.image_stats_callbacks.PersistentModule">PersistentModule</a></code></h4>
+<ul class="two-column">
+<li><code><a title="imutils.ml.callbacks.image_stats_callbacks.PersistentModule.cache" href="#imutils.ml.callbacks.image_stats_callbacks.PersistentModule.cache">cache</a></code></li>
+<li><code><a title="imutils.ml.callbacks.image_stats_callbacks.PersistentModule.dump_patches" href="#imutils.ml.callbacks.image_stats_callbacks.PersistentModule.dump_patches">dump_patches</a></code></li>
+<li><code><a title="imutils.ml.callbacks.image_stats_callbacks.PersistentModule.finalize" href="#imutils.ml.callbacks.image_stats_callbacks.PersistentModule.finalize">finalize</a></code></li>
+<li><code><a title="imutils.ml.callbacks.image_stats_callbacks.PersistentModule.forward" href="#imutils.ml.callbacks.image_stats_callbacks.PersistentModule.forward">forward</a></code></li>
+<li><code><a title="imutils.ml.callbacks.image_stats_callbacks.PersistentModule.load_from_cache" href="#imutils.ml.callbacks.image_stats_callbacks.PersistentModule.load_from_cache">load_from_cache</a></code></li>
+<li><code><a title="imutils.ml.callbacks.image_stats_callbacks.PersistentModule.load_state_dict" href="#imutils.ml.callbacks.image_stats_callbacks.PersistentModule.load_state_dict">load_state_dict</a></code></li>
+<li><code><a title="imutils.ml.callbacks.image_stats_callbacks.PersistentModule.state_dict" href="#imutils.ml.callbacks.image_stats_callbacks.PersistentModule.state_dict">state_dict</a></code></li>
+<li><code><a title="imutils.ml.callbacks.image_stats_callbacks.PersistentModule.training" href="#imutils.ml.callbacks.image_stats_callbacks.PersistentModule.training">training</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+</footer>
+</body>
+</html>

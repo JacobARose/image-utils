@@ -1,47 +1,52 @@
 # @package data
 
-## data/datamodule/base_datamodule.yaml
+## conf/data/datamodule/herbarium2022-res_960_datamodule.yaml
+
+defaults:
+    - base_herbarium_datamodule
+    - _self_
+
 datamodule:
     _target_: imutils.ml.data.datamodule.Herbarium2022DataModule
-    name: "herbarium2022"
-    catalog_dir: "/media/data/jacob/GitHub/image-utils/imutils/big/data"
+    name: "herbarium2022_960"
+    catalog_dir: "/media/data_cifs/projects/prj_fossils/data/raw_data/herbarium-2022-fgvc9_resize-512/catalogs/splits/train_size-0.8"
     label_col: "scientificName"
-    train_size: 0.7
-    shuffle: true
-    seed: 14
-    batch_size: ${hp.batch_size}
-    num_workers: 4
-    pin_memory: true
-    transform_cfg:
-        preprocess_size: ${int:${hp.preprocess_size}}
-        resolution: ${int:${hp.resolution}}
-
-    remove_transforms: false
-    image_reader: "default"
-    datasets:
-        herbarium2022:
-			catalog_dir: "/media/data_cifs/projects/prj_fossils/data/raw_data/herbarium-2022-fgvc9_resize"
-            train:
-                _target_: imutils.ml.data.datamodule.Herbarium2022Dataset
-                catalog_dir: ${..catalog_dir}
-                subset: "train"
-                label_col: "scientificName"
-                train_size: 0.7
-                shuffle: true
-                seed: ${data.datamodule.seed}
-            val:
-                _target_: imutils.ml.data.datamodule.Herbarium2022Dataset
-                catalog_dir: ${..catalog_dir}
-                subset: "val"
-                label_col: "scientificName"
-                train_size: 0.7
-                shuffle: false
-                seed: ${data.datamodule.seed}
-            test:
-                _target_: imutils.ml.data.datamodule.Herbarium2022Dataset
-                catalog_dir: ${..catalog_dir}
-                subset: "train"
-                label_col: "scientificName"
-                train_size: 0.7
-                shuffle: true
-                seed: ${data.datamodule.seed}
+    train_size: 0.8
+    # shuffle: true
+    # seed: 14
+    # batch_size: ${hp.batch_size}
+    # num_workers: 4
+    # pin_memory: true
+    # transform_cfg:
+    #     preprocess_size: ${int:${hp.preprocess_size}}
+    #     resolution: ${int:${hp.resolution}}
+    
+    # remove_transforms: false
+    # image_reader: "default"
+    # datasets:
+        # herbarium2022:
+            # catalog_dir: ${data.datamodule.catalog_dir} # "/media/data_cifs/projects/prj_fossils/data/raw_data/herbarium-2022-fgvc9_resize"
+            # train:
+                # _target_: imutils.ml.data.datamodule.Herbarium2022Dataset
+                # catalog_dir: ${..catalog_dir}
+                # subset: "train"
+                # label_col: "scientificName"
+                # train_size: 0.7
+                # shuffle: true
+                # seed: ${data.datamodule.seed}
+            # val:
+                # _target_: imutils.ml.data.datamodule.Herbarium2022Dataset
+                # catalog_dir: ${..catalog_dir}
+                # subset: "val"
+                # label_col: "scientificName"
+                # train_size: 0.7
+                # shuffle: false
+                # seed: ${data.datamodule.seed}
+            # test:
+                # _target_: imutils.ml.data.datamodule.Herbarium2022Dataset
+                # catalog_dir: ${..catalog_dir}
+                # subset: "train"
+                # label_col: "scientificName"
+                # train_size: 0.7
+                # shuffle: false
+                # seed: ${data.datamodule.seed}

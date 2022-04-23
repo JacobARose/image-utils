@@ -1,0 +1,21 @@
+# @package optim
+
+defaults:
+    - optimizer: base
+    - lr_scheduler: base
+
+# optimizer:
+#     _target_: torch.optim.Adam
+#     lr: ${hp.lr} #1e-3    # 0.001
+#     betas: [ 0.9, 0.999 ]
+#     eps: 1e-08
+#     weight_decay: 0.0
+exclude_bn_bias: True
+use_lr_scheduler: True
+# lr_scheduler:
+#     _target_: pl_bolts.optimizers.lr_scheduler.LinearWarmupCosineAnnealingLR
+#     warmup_epochs: ${hp.warmup_epochs}
+#     max_epochs: ${hp.max_epochs}
+#     warmup_start_lr: 1e-04 #overridden if execution_list.auto_lr_tune=True
+#     eta_min: 1e-06
+#     last_epoch: -1

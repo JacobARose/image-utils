@@ -40,172 +40,316 @@ Created by: Jacob Alexander Rose
 &#34;&#34;&#34;
 
 
-
-
-from typing import Any, Dict, List, Sequence, Tuple, Union, Optional
+from icecream import ic
+from rich import print as pp
+from typing import Any, Dict, List, Sequence, Tuple, Union, Optional, Callable
 import hydra
 import pytorch_lightning as pl
 import torchmetrics
 import torch
 import torch.nn.functional as F
 import wandb
-from omegaconf import DictConfig
+from omegaconf import DictConfig, OmegaConf
 from torch.optim import Optimizer
 
 import numpy as np
 import matplotlib.pyplot as plt
-
+        
 from captum.attr import IntegratedGradients
 from captum.attr import NoiseTunnel
 from captum.attr import visualization as viz
 
 from imutils.ml.utils.common import iterate_elements_in_batches, render_images
-
-# from src.pl_modules import resnets
-# from src.pl_modules import losses
+from imutils.ml.utils.metric_utils import get_scalar_metrics
 from torchvision import models
+# from pl_bolts.optimizers.lr_scheduler import linear_warmup_decay
+from imutils.ml.models.base import BaseModule, BaseLightningModule
+from imutils.ml.models.backbones.backbone import build_model
+from imutils.ml.utils.experiment_utils import resolve_config
+# from imutils.ml.utils.model_utils import log_model_summary
 
-from pl_bolts.optimizers.lr_scheduler import linear_warmup_decay
+from imutils.ml.utils.toolbox.nn.loss import LabelSmoothingLoss
+
+# from imutils.ml import losses
+# nn = losses.nn
+
+__all__ = [&#34;LitClassifier&#34;]
 
 
-class LitClassifier(pl.LightningModule):
+
+class LitClassifier(BaseLightningModule): #pl.LightningModule):
         def __init__(self,
-                                 cfg: DictConfig, 
-                                 name: str,
-                                 num_classes: int, 
-                                 final_nl,
-                                 loss,
-                                 pretrain : bool = True,
-                                 self_supervised=False,
+                                 cfg: DictConfig=None,
+                                 model_cfg: DictConfig=None, 
+                                 name: str=None,
+                                 num_classes: int=None, 
+                                 loss_func: Union[Callable, str]=None,
+                                 # pretrain : bool = True,
+                                 # self_supervised=False,
                                  *args, **kwargs) -&gt; None:
-
                 super().__init__(*args, **kwargs)
+                # import pdb; pdb.set_trace()
+                cfg = resolve_config(cfg)
+                self.save_hyperparameters(cfg, ignore=[&#39;loss_func&#39;])
                 self.cfg = cfg
-                self.save_hyperparameters(cfg)
-                self.name = name
+                model_cfg = cfg.get(&#34;model_cfg&#34;, {})
+                self.model_cfg = model_cfg or {}
+                self.lr = cfg.hp.lr
+                self.batch_size = cfg.hp.batch_size
+                self.num_classes = num_classes or self.model_cfg.head.get(&#34;num_classes&#34;)
+                self.name = name or self.model_cfg.get(&#34;name&#34;)
+                
+                self.setup_loss(loss_func)
+                self.setup_metrics()
+                self.net = build_model(backbone_cfg=self.model_cfg.backbone,
+                                                           head_cfg=self.model_cfg.head)
+                # self.backbone
 
-                self.pretrain = pretrain
-                self.num_classes = num_classes
-                self.self_supervised = self_supervised
+                if self.cfg.train.freeze_backbone:
+                        self.freeze_up_to(layer=self.cfg.train.get(&#34;freeze_backbone_up_to&#34;),
+                                                          submodule=&#34;backbone&#34;,
+                                                          verbose=False)        # def on_fit_start(self):
 
+                
+                if self.cfg.logging.log_model_summary:
+                        self.summarize_model(f&#34;{self.name}/init&#34;)
 
-                if self.name == &#34;resnet18&#34;:
-                        self.net = models.resnet18(pretrained=False, num_classes=num_classes)
-                elif self.name == &#34;simclr_resnet18&#34;:
-                        self.net = models.resnet18(pretrained=False, num_classes=num_classes)
-                if self.name == &#39;resnet50&#39;:
-                        self.net = models.resnet50(pretrained=True)
-                        n_features = self.net.fc.in_features
-                        fc = torch.nn.Linear(n_features, n_class)
-                        self.net.fc = fc
+#       def on_fit_start(self):
+                
+                # if self.cfg.logging.log_model_summary:
+                #       self.summarize_model()
+
+        def setup_loss(self,
+                                   loss_func: Optional[Union[Callable, str]]=None):
+                if isinstance(loss_func, Callable):
+                        self.loss = loss_func
                 else:
-                        raise NotImplementedError(&#34;Could not find network {}.&#34;.format(self.net))
-                self.net.fc.weight.data.normal_(0, 0.005)
-                self.net.fc.bias.data.fill_(0.1)
+                        self.loss = hydra.utils.instantiate(self.model_cfg.loss)
 
-                self.loss = getattr(losses, loss)
+        # def summarize_model(self):
+        #       cfg = self.cfg
+        #       input_size = (1, *OmegaConf.to_container(cfg.model_cfg.input_shape, resolve=True))
+        #       model_summary = log_model_summary(model=self.net,
+        #                                       input_size=input_size,
+        #                                       full_summary=True,
+        #                                       working_dir=cfg.checkpoint_dir,
+        #                                       model_name = cfg.model_cfg.name,
+        #                                       verbose=1)
 
 
-                        
-                metric = torchmetrics.Accuracy()
-                self.train_accuracy = metric.clone().cuda()
-                self.val_accuracy = metric.clone().cuda()
-                self.test_accuracy = metric.clone().cuda()
+        def setup_metrics(self):
+                
+                self.train_metric = get_scalar_metrics(num_classes=self.num_classes,
+                                                                                           average=&#34;macro&#34;,
+                                                                                           prefix=&#34;train&#34;)
+                self.val_metric = get_scalar_metrics(num_classes=self.num_classes,
+                                                                                           average=&#34;macro&#34;,
+                                                                                           prefix=&#34;val&#34;)
+                self.test_metric = get_scalar_metrics(num_classes=self.num_classes,
+                                                                                           average=&#34;macro&#34;,
+                                                                                           prefix=&#34;test&#34;)
+                
 
         def forward(self, x: torch.Tensor) -&gt; torch.Tensor:
                 return self.net(x)
 
         def step(self, x, y) -&gt; Dict[str, torch.Tensor]:
-                if self.self_supervised:
-                        z1, z2 = self.shared_step(x)
-                        loss = self.loss(z1, z2)
-                else:
-                        logits = self(x)
-                        loss = self.loss(self.final_nl(logits, dim=-1), y)
+                &#34;&#34;&#34;
+                TODO: remove the &#34;x&#34; from common method self.step() outputs &amp; benchmark reduction in GPU memory leaks
+                &#34;&#34;&#34;
+                # if self.self_supervised:
+                #       z1, z2 = self.shared_step(x)
+                #       loss = self.loss(z1, z2)
+                # else:
+                logits = self(x)
+                                
+                loss = self.loss(logits, y)
+                
+                # pp(f&#34;logits.shape: {logits.shape}, y.shape: {y.shape}, loss.shape: {loss.shape}&#34;)
+                # pp(f&#34;logits.min(): {logits.min()}, logits.max(): {logits.max()}, logits.mean(axis=-1): {logits.mean(axis=-1)}, logits.std(axis=-1): {logits.std(axis=-1)}&#34;)
+                # _y = y.type(torch.cuda.FloatTensor)
+                # pp(f&#34;y.min(): {_y.min()}, y.max(): {_y.max()}, y.mean(axis=-1): {_y.mean(axis=-1)}, y.std(axis=-1): {_y.std(axis=-1)}&#34;)
+                # pp(f&#34;loss.min(): {loss.min()}, loss.max(): {loss.max()}, loss.mean(axis=-1): {loss.mean(axis=-1)}, loss.std(axis=-1): {loss.std(axis=-1)}&#34;)
+
                 return {&#34;logits&#34;: logits, &#34;loss&#34;: loss, &#34;y&#34;: y, &#34;x&#34;: x}
 
         def training_step(self, batch: Any, batch_idx: int) -&gt; torch.Tensor:
-                x, y = batch
+
+                x, y = batch[:2]
+                # import pdb; pdb.set_trace()
                 out = self.step(x, y)
-                return out
+                
+                # print(&#34;self.training_step: &#34;, f&#34;device:{torch.cuda.current_device()}, y.shape:{out[&#39;y&#39;].shape}, logits.shape:{out[&#39;logits&#39;].shape}, loss.shape:{out[&#39;loss&#39;].shape}&#34;)
+                return {k: out[k] for k in [&#34;logits&#34;, &#34;loss&#34;, &#34;y&#34;]}
 
         def training_step_end(self, out):
-                self.train_accuracy(self.final_nl(out[&#34;logits&#34;], dim=-1), out[&#34;y&#34;])
+                # print(&#34;self.training_step_end: &#34;, f&#34;device:{torch.cuda.current_device()}, y.shape:{out[&#39;y&#39;].shape}, logits.shape:{out[&#39;logits&#39;].shape}, loss.shape:{out[&#39;loss&#39;].shape}&#34;)
+                self.train_metric(out[&#34;logits&#34;], out[&#34;y&#34;])
+                
+                batch_size=self.batch_size #len(out[&#34;y&#34;])
+                loss = out[&#34;loss&#34;].mean()
+                log_dict = {
+                        &#34;train_loss&#34;: loss,
+                        **self.train_metric
+                }
                 self.log_dict(
-                        {
-                                &#34;train_acc&#34;: self.train_accuracy,
-                                &#34;train_loss&#34;: out[&#34;loss&#34;].mean(),
-                        },
+                        log_dict,
                         on_step=True,
-                        on_epoch=False
+                        on_epoch=True,
+                        prog_bar=True,
+                        batch_size=batch_size
                 )
-                return out[&#34;loss&#34;].mean()
+                self.print(f&#34;training_step_end -&gt; self.current_epoch: {self.current_epoch}, self.global_step: {self.global_step}, loss: {loss}&#34;)
+                return loss
 
         def validation_step(self, batch: Any, batch_idx: int) -&gt; Dict[str, torch.Tensor]:
-                x, y = batch
+                x, y = batch[:2]
                 out = self.step(x, y)
-                return out
+                # self.
+                # print(&#34;self.validation_step: &#34;, f&#34;device:{torch.cuda.current_device()}, y.shape:{out[&#39;y&#39;].shape}, logits.shape:{out[&#39;logits&#39;].shape}, loss.shape:{out[&#39;loss&#39;].shape}&#34;)
+                return {k: out[k] for k in [&#34;logits&#34;, &#34;loss&#34;, &#34;y&#34;]}
         
         def validation_step_end(self, out):
-                self.val_accuracy(self.final_nl(out[&#34;logits&#34;], dim=-1), out[&#34;y&#34;])
-                self.log_dict(
-                        {
-                                &#34;val_acc&#34;: self.val_accuracy,
-                                &#34;val_loss&#34;: out[&#34;loss&#34;].mean(),
-                        },
-                )
-                return {
-                        &#34;image&#34;: out[&#34;x&#34;],
-                        &#34;y_true&#34;: out[&#34;y&#34;],
-                        &#34;logits&#34;: out[&#34;logits&#34;],
-                        &#34;val_loss&#34;: out[&#34;loss&#34;].mean(),
+                # self.
+                # print(&#34;self.validation_step_end: &#34;, f&#34;device:{torch.cuda.current_device()}, y.shape:{out[&#39;y&#39;].shape}, logits.shape:{out[&#39;logits&#39;].shape}, loss.shape:{out[&#39;loss&#39;].shape}&#34;)
+                self.val_metric(out[&#34;logits&#34;], out[&#34;y&#34;])
+                batch_size=self.batch_size #len(out[&#34;y&#34;])
+                loss = out[&#34;loss&#34;].mean()
+                
+                log_dict = {
+                        &#34;val_loss&#34;: loss,
+                        **self.val_metric
                 }
+                # if &#34;val/F1_top1&#34; in self.val_metric.keys():
+                #       log_dict[&#34;val_F1&#34;] = self.val_metric[&#34;val/F1_top1&#34;]
+                #       log_dict.update({k:v for k,v in self.val_metric.items() if k != &#34;val/F1_top1&#34;})
+                # elif &#34;val_macro_F1&#34; in self.val_metric.keys():
+                #       log_dict[&#34;val_F1&#34;] = self.val_metric[&#34;val_macro_F1&#34;]
+                #       log_dict.update({k:v for k,v in self.val_metric.items() if k != &#34;val_macro_F1&#34;})
+                # else:
+                # log_dict.update(self.val_metric)
+                # self.log(&#34;val_macro_F1&#34;, self.val_metric[&#34;val_macro_F1&#34;])
+                self.log_dict(log_dict,
+                                          on_step=True, # False, #
+                                          on_epoch=True,
+                                          prog_bar=True,
+                                          batch_size=batch_size)
+                self.print(f&#34;validation_step_end -&gt; self.current_epoch: {self.current_epoch}, self.global_step: {self.global_step}, loss: {loss}&#34;)
+
+                # self.log_dict(self.val_metric,
+                #                         on_step=True,
+                #                         on_epoch=True,
+                #                         # prog_bar=True,
+                #                         batch_size=batch_size)
+                
+                # return {
+                #       # &#34;image&#34;: out[&#34;x&#34;],
+                #       &#34;y_true&#34;: out[&#34;y&#34;],
+                #       &#34;logits&#34;: out[&#34;logits&#34;],
+                #       &#34;val_loss&#34;: loss,
+                # }
 
         def test_step(self, batch: Any, batch_idx: int) -&gt; Dict[str, torch.Tensor]:
-                x, y = batch
+                x, y = batch[:2]
                 out = self.step(x, y)
-                return out
+                return {k: out[k] for k in [&#34;logits&#34;, &#34;loss&#34;, &#34;y&#34;]}
 
         def test_step_end(self, out):
-                self.test_accuracy(self.final_nl(out[&#34;logits&#34;], dim=-1), out[&#34;y&#34;])
+                batch_size=len(out[&#34;y&#34;])
+                self.test_metric(out[&#34;logits&#34;], out[&#34;y&#34;])
                 self.log_dict(
                         {
-                                &#34;test_acc&#34;: self.test_accuracy,
                                 &#34;test_loss&#34;: out[&#34;loss&#34;].mean(),
+                                **self.test_metric,
                         },
+                        batch_size=batch_size
                 )
                 return {
-                        &#34;image&#34;: out[&#34;x&#34;],
+                        # &#34;image&#34;: out[&#34;x&#34;],
                         &#34;y_true&#34;: out[&#34;y&#34;],
                         &#34;logits&#34;: out[&#34;logits&#34;],
                         &#34;val_loss&#34;: out[&#34;loss&#34;].mean(),
                 }
+
+        def predict_step(self, batch: Any, batch_idx: int) -&gt; Dict[str, torch.Tensor]:
+                if len(batch)==3:
+                        x, y, metadata = batch[:3]
+                        image_idx = metadata.get(&#34;image_id&#34;)
+                else:
+                        x, y = batch[:2]
+                        image_idx = torch.arange(0, len(x)) + batch_idx*self.batch_size
+
+                y_logit = self(x)
+                return {&#34;image_id&#34;:image_idx,
+                                &#34;y_logit&#34;:y_logit}
+
+        def training_epoch_end(self, outputs: List[Any]) -&gt; None:
+                &#34;&#34;&#34;
+                
+                &#34;&#34;&#34;
+                info = {k: v.shape for k,v in outputs[0].items()}
+                # print(&#34;self.training_epoch_end: &#34;, f&#34;device:{torch.cuda.current_device()}, len(outputs)={len(outputs)}, info: {info}&#34;)
+
+                # losses = []
+                # for o in outputs:
+                #       losses.append(o[&#34;loss&#34;])
+                # losses = torch.stack(losses)
+                losses = torch.stack([o[&#34;loss&#34;] for o in outputs])
+                self.print(f&#34;training_epoch_end -&gt; self.current_epoch: {self.current_epoch}, self.global_step: {self.global_step}, losses: {losses}&#34;)
+                # print(f&#34;self.validation_epoch_end (torch.stack the losses): losses.shape = {losses.shape}&#34;)
+                
 
 
         def validation_epoch_end(self, outputs: List[Any]) -&gt; None:
                 &#34;&#34;&#34;
                 
                 &#34;&#34;&#34;
+                info = {k: v.shape for k,v in outputs[0].items()}
+                print(&#34;self.validation_epoch_end: &#34;, f&#34;device:{torch.cuda.current_device()}, len(outputs)={len(outputs)}, info: {info}&#34;)
+                
+                # losses = torch.stack([o[&#34;loss&#34;] for o in outputs])
+                losses = []
+                y = []
+                logits = []
+                for o in outputs:
+                        losses.append(o[&#34;loss&#34;])
+                        y.append(o[&#34;y&#34;])
+                        logits = [o[&#34;logits&#34;]]
+                losses = torch.stack(losses)
+                y = torch.cat(y)
+                logits = torch.cat(logits)
+                
+                self.print(f&#34;validation_epoch_end -&gt; self.current_epoch: {self.current_epoch}, self.global_step: {self.global_step}, losses: {losses}&#34;)
+                # print(f&#34;self.validation_epoch_end (torch.stack the losses): losses.shape = {losses.shape}, y.shape = {y.shape}, logits.shape = {logits.shape}&#34;)
+                
+                if &#34;image&#34; not in outputs:
+                        # print(f&#34;Skipping val render_image_predictions due to missing &#39;image&#39; key in epoch outputs.&#34;)
+                        return
                 self.render_image_predictions(
                         outputs=outputs,
-                        batch_size=self.cfg.data.datamodule.batch_size.val,
+                        batch_size=self.cfg.data.datamodule.batch_size,
                         n_elements_to_log=self.cfg.logging.n_elements_to_log,
                         log_name=&#34;val_image_predictions&#34;,
                         normalize_visualization=self.cfg.logging.normalize_visualization,
                         logger=self.logger,
-                        global_step=self.global_step)   
+                        global_step=self.global_step,
+                        commit=False)
 
 
         def test_epoch_end(self, outputs: List[Any]) -&gt; None:
+                if &#34;image&#34; not in outputs:
+                        # print(f&#34;Skipping test render_image_predictions due to missing &#39;image&#39; key in epoch outputs.&#34;)
+                        return
                 
                 self.render_image_predictions(
                         outputs=outputs,
-                        batch_size=self.cfg.data.datamodule.batch_size.test,
+                        batch_size=self.cfg.data.datamodule.batch_size,
                         n_elements_to_log=self.cfg.logging.n_elements_to_log,
                         log_name=&#34;test_image_predictions&#34;,
                         normalize_visualization=self.cfg.logging.normalize_visualization,
                         logger=self.logger,
-                        global_step=self.global_step)
+                        global_step=self.global_step,
+                        commit=False)
 
 
         @staticmethod
@@ -216,7 +360,8 @@ class LitClassifier(pl.LightningModule):
                 log_name: str=&#34;image predictions&#34;,
                 normalize_visualization: bool=True,
                 logger=None,
-                global_step: int=0
+                global_step: int=0,
+                commit: bool=False
         ) -&gt; None:
                 
                 # images_feat_viz = []
@@ -243,8 +388,9 @@ class LitClassifier(pl.LightningModule):
                         )
                 if logger is not None:
                         logger.experiment.log(
-                                {log_name: images}, 
-                                step=global_step
+                                {log_name: images,
+                                 &#34;global_step&#34;:global_step},
+                                commit=commit
                         )
 
 
@@ -264,39 +410,28 @@ class LitClassifier(pl.LightningModule):
                         - Tuple of dictionaries as described, with an optional &#39;frequency&#39; key.
                         - None - Fit will run without any optimizer.
                 &#34;&#34;&#34;
-                if hasattr(self.cfg.optim.optimizer, &#34;exclude_bn_bias&#34;) and \
-                                self.cfg.optim.optimizer.exclude_bn_bias:
+                # if hasattr(self.cfg.optim, &#34;exclude_bn_bias&#34;) and \
+                                # self.cfg.optim.get(&#34;exclude_bn_bias&#34;, False):
+                if self.cfg.optim.get(&#34;exclude_bn_bias&#34;, False):
                         params = self.exclude_from_wt_decay(self.named_parameters(), weight_decay=self.cfg.optim.optimizer.weight_decay)
                 else:
                         params = self.parameters()
 
+                # pp(OmegaConf.to_container(self.cfg.optim.optimizer))
+                pp(OmegaConf.to_container(self.cfg.optim.optimizer, resolve=True))
                 opt = hydra.utils.instantiate(
-                        self.cfg.optim.optimizer, 
+                        OmegaConf.to_container(self.cfg.optim.optimizer),
                         params=params,
-                        weight_decay=self.cfg.optim.optimizer.weight_decay
+                        weight_decay=self.cfg.optim.optimizer.weight_decay,
+                        _convert_=&#34;partial&#34;
                 )
-                
-                if not self.cfg.optim.use_lr_scheduler:
-                        return opt
 
-                # Handle schedulers if requested
-                if torch.optim.lr_scheduler.warmup_steps:
-                        # Right now this is specific to SimCLR
-                        lr_scheduler = {
-                                &#34;scheduler&#34;: torch.optim.lr_scheduler.LambdaLR(
-                                        opt,
-                                        linear_warmup_decay(
-                                                self.cfg.optim.lr_scheduler.warmup_steps,
-                                                self.cfg.optim.lr_scheduler.total_steps,
-                                                cosine=True),
-                                ),
-                                &#34;interval&#34;: &#34;step&#34;,
-                                &#34;frequency&#34;: 1,
-                        }
-                else:
+                out = opt
+                if self.cfg.optim.use_lr_scheduler:
                         lr_scheduler = self.cfg.optim.lr_scheduler
-                scheduler = hydra.utils.instantiate(lr_scheduler, optimizer=opt)
-                return [opt], [scheduler]
+                        scheduler = hydra.utils.instantiate(lr_scheduler, optimizer=opt)
+                        out = ([opt], [scheduler])
+                return out
 
         @staticmethod
         def exclude_from_wt_decay(named_params: List[Tuple[str, torch.Tensor]],
@@ -330,42 +465,49 @@ class LitClassifier(pl.LightningModule):
                                 &#34;weight_decay&#34;: 0.0,
                         },
                 ]
+        
+# [TODO] Uncomment &amp; benchmark this
+# source: https://pytorch-lightning.readthedocs.io/en/stable/guides/speed.html#set-grads-to-none
+        # def optimizer_zero_grad(self, epoch, batch_idx, optimizer, optimizer_idx):
+        #        optimizer.zero_grad(set_to_none=True)
+        
+        
 
-        def init_metrics(self,
-                                         stage: str=&#39;train&#39;,
-                                         tag: Optional[str]=None):
-                tag = tag or &#34;&#34;
-                if not hasattr(self, &#34;all_metrics&#34;):
-                        self.all_metrics = {}
+#       def init_metrics(self,
+#                                        stage: str=&#39;train&#39;,
+#                                        tag: Optional[str]=None):
+#               tag = tag or &#34;&#34;
+#               if not hasattr(self, &#34;all_metrics&#34;):
+#                       self.all_metrics = {}
                 
-                if not hasattr(self,&#34;num_classes&#34;) and hasattr(self.hparams, &#34;num_classes&#34;):
-                        self.num_classes = self.hparams.num_classes
+#               if not hasattr(self,&#34;num_classes&#34;) and hasattr(self.hparams, &#34;num_classes&#34;):
+#                       self.num_classes = self.hparams.num_classes
                 
-                print(f&#34;self.num_classes={self.num_classes}&#34;)
-                if stage in [&#39;train&#39;, &#39;all&#39;]:
-                        prefix=f&#39;{tag}_train&#39;.strip(&#34;_&#34;)
-                        self.metrics_train = get_scalar_metrics(num_classes=self.num_classes, average=&#39;macro&#39;, prefix=prefix)
-                        self.metrics_train_per_class = get_per_class_metrics(num_classes=self.num_classes, prefix=&#39;train&#39;)
-                        self.all_metrics[&#39;train&#39;] = {&#34;scalar&#34;:self.metrics_train,
-                                                                                 &#34;per_class&#34;:self.metrics_train_per_class}
+#               print(f&#34;self.num_classes={self.num_classes}&#34;)
+#               if stage in [&#39;train&#39;, &#39;all&#39;]:
+#                       prefix=f&#39;{tag}_train&#39;.strip(&#34;_&#34;)
+#                       self.metrics_train = get_scalar_metrics(num_classes=self.num_classes, average=&#39;macro&#39;, prefix=prefix)
+#                       self.metrics_train_per_class = get_per_class_metrics(num_classes=self.num_classes, prefix=&#39;train&#39;)
+#                       self.all_metrics[&#39;train&#39;] = {&#34;scalar&#34;:self.metrics_train,
+#                                                                                &#34;per_class&#34;:self.metrics_train_per_class}
                         
-                if stage in [&#39;val&#39;, &#39;all&#39;]:
-                        prefix=f&#39;{tag}_val&#39;.strip(&#34;_&#34;)
-                        self.metrics_val = get_scalar_metrics(num_classes=self.num_classes, average=&#39;macro&#39;, prefix=prefix)
-                        self.metrics_val_per_class = get_per_class_metrics(num_classes=self.num_classes, prefix=&#39;val&#39;)
-                        self.all_metrics[&#39;val&#39;] = {&#34;scalar&#34;:self.metrics_val,
-                                                                           &#34;per_class&#34;:self.metrics_val_per_class}
+#               if stage in [&#39;val&#39;, &#39;all&#39;]:
+#                       prefix=f&#39;{tag}_val&#39;.strip(&#34;_&#34;)
+#                       self.metrics_val = get_scalar_metrics(num_classes=self.num_classes, average=&#39;macro&#39;, prefix=prefix)
+#                       self.metrics_val_per_class = get_per_class_metrics(num_classes=self.num_classes, prefix=&#39;val&#39;)
+#                       self.all_metrics[&#39;val&#39;] = {&#34;scalar&#34;:self.metrics_val,
+#                                                                          &#34;per_class&#34;:self.metrics_val_per_class}
                         
-                if stage in [&#39;test&#39;, &#39;all&#39;]:
-                        if isinstance(tag, str):
-                                prefix=tag
-                        else:
-                                prefix = &#34;test&#34;
-#                        prefix=f&#39;{tag}_test&#39;.strip(&#34;_&#34;)
-                        self.metrics_test = get_scalar_metrics(num_classes=self.num_classes, average=&#39;macro&#39;, prefix=prefix)
-                        self.metrics_test_per_class = get_per_class_metrics(num_classes=self.num_classes, prefix=prefix)
-                        self.all_metrics[&#39;test&#39;] = {&#34;scalar&#34;:self.metrics_test,
-                                                                                &#34;per_class&#34;:self.metrics_test_per_class}</code></pre>
+#               if stage in [&#39;test&#39;, &#39;all&#39;]:
+#                       if isinstance(tag, str):
+#                               prefix=tag
+#                       else:
+#                               prefix = &#34;test&#34;
+# #                      prefix=f&#39;{tag}_test&#39;.strip(&#34;_&#34;)
+#                       self.metrics_test = get_scalar_metrics(num_classes=self.num_classes, average=&#39;macro&#39;, prefix=prefix)
+#                       self.metrics_test_per_class = get_per_class_metrics(num_classes=self.num_classes, prefix=prefix)
+#                       self.all_metrics[&#39;test&#39;] = {&#34;scalar&#34;:self.metrics_test,
+#                                                                               &#34;per_class&#34;:self.metrics_test_per_class}</code></pre>
 </details>
 </section>
 <section>
@@ -379,152 +521,287 @@ class LitClassifier(pl.LightningModule):
 <dl>
 <dt id="imutils.ml.models.pl.classifier.LitClassifier"><code class="flex name class">
 <span>class <span class="ident">LitClassifier</span></span>
-<span>(</span><span>cfg: omegaconf.dictconfig.DictConfig, name: str, num_classes: int, final_nl, loss, pretrain: bool = True, self_supervised=False, *args, **kwargs)</span>
+<span>(</span><span>cfg: omegaconf.dictconfig.DictConfig = None, model_cfg: omegaconf.dictconfig.DictConfig = None, name: str = None, num_classes: int = None, loss_func: Union[Callable, str] = None, *args, **kwargs)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Hooks to be used in LightningModule.</p></div>
+<div class="desc"><p>Implements some more custom boiler plate for custom lightning modules</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class LitClassifier(pl.LightningModule):
+<pre><code class="python">class LitClassifier(BaseLightningModule): #pl.LightningModule):
         def __init__(self,
-                                 cfg: DictConfig, 
-                                 name: str,
-                                 num_classes: int, 
-                                 final_nl,
-                                 loss,
-                                 pretrain : bool = True,
-                                 self_supervised=False,
+                                 cfg: DictConfig=None,
+                                 model_cfg: DictConfig=None, 
+                                 name: str=None,
+                                 num_classes: int=None, 
+                                 loss_func: Union[Callable, str]=None,
+                                 # pretrain : bool = True,
+                                 # self_supervised=False,
                                  *args, **kwargs) -&gt; None:
-
                 super().__init__(*args, **kwargs)
+                # import pdb; pdb.set_trace()
+                cfg = resolve_config(cfg)
+                self.save_hyperparameters(cfg, ignore=[&#39;loss_func&#39;])
                 self.cfg = cfg
-                self.save_hyperparameters(cfg)
-                self.name = name
+                model_cfg = cfg.get(&#34;model_cfg&#34;, {})
+                self.model_cfg = model_cfg or {}
+                self.lr = cfg.hp.lr
+                self.batch_size = cfg.hp.batch_size
+                self.num_classes = num_classes or self.model_cfg.head.get(&#34;num_classes&#34;)
+                self.name = name or self.model_cfg.get(&#34;name&#34;)
+                
+                self.setup_loss(loss_func)
+                self.setup_metrics()
+                self.net = build_model(backbone_cfg=self.model_cfg.backbone,
+                                                           head_cfg=self.model_cfg.head)
+                # self.backbone
 
-                self.pretrain = pretrain
-                self.num_classes = num_classes
-                self.self_supervised = self_supervised
+                if self.cfg.train.freeze_backbone:
+                        self.freeze_up_to(layer=self.cfg.train.get(&#34;freeze_backbone_up_to&#34;),
+                                                          submodule=&#34;backbone&#34;,
+                                                          verbose=False)        # def on_fit_start(self):
 
+                
+                if self.cfg.logging.log_model_summary:
+                        self.summarize_model(f&#34;{self.name}/init&#34;)
 
-                if self.name == &#34;resnet18&#34;:
-                        self.net = models.resnet18(pretrained=False, num_classes=num_classes)
-                elif self.name == &#34;simclr_resnet18&#34;:
-                        self.net = models.resnet18(pretrained=False, num_classes=num_classes)
-                if self.name == &#39;resnet50&#39;:
-                        self.net = models.resnet50(pretrained=True)
-                        n_features = self.net.fc.in_features
-                        fc = torch.nn.Linear(n_features, n_class)
-                        self.net.fc = fc
+#       def on_fit_start(self):
+                
+                # if self.cfg.logging.log_model_summary:
+                #       self.summarize_model()
+
+        def setup_loss(self,
+                                   loss_func: Optional[Union[Callable, str]]=None):
+                if isinstance(loss_func, Callable):
+                        self.loss = loss_func
                 else:
-                        raise NotImplementedError(&#34;Could not find network {}.&#34;.format(self.net))
-                self.net.fc.weight.data.normal_(0, 0.005)
-                self.net.fc.bias.data.fill_(0.1)
+                        self.loss = hydra.utils.instantiate(self.model_cfg.loss)
 
-                self.loss = getattr(losses, loss)
+        # def summarize_model(self):
+        #       cfg = self.cfg
+        #       input_size = (1, *OmegaConf.to_container(cfg.model_cfg.input_shape, resolve=True))
+        #       model_summary = log_model_summary(model=self.net,
+        #                                       input_size=input_size,
+        #                                       full_summary=True,
+        #                                       working_dir=cfg.checkpoint_dir,
+        #                                       model_name = cfg.model_cfg.name,
+        #                                       verbose=1)
 
 
-                        
-                metric = torchmetrics.Accuracy()
-                self.train_accuracy = metric.clone().cuda()
-                self.val_accuracy = metric.clone().cuda()
-                self.test_accuracy = metric.clone().cuda()
+        def setup_metrics(self):
+                
+                self.train_metric = get_scalar_metrics(num_classes=self.num_classes,
+                                                                                           average=&#34;macro&#34;,
+                                                                                           prefix=&#34;train&#34;)
+                self.val_metric = get_scalar_metrics(num_classes=self.num_classes,
+                                                                                           average=&#34;macro&#34;,
+                                                                                           prefix=&#34;val&#34;)
+                self.test_metric = get_scalar_metrics(num_classes=self.num_classes,
+                                                                                           average=&#34;macro&#34;,
+                                                                                           prefix=&#34;test&#34;)
+                
 
         def forward(self, x: torch.Tensor) -&gt; torch.Tensor:
                 return self.net(x)
 
         def step(self, x, y) -&gt; Dict[str, torch.Tensor]:
-                if self.self_supervised:
-                        z1, z2 = self.shared_step(x)
-                        loss = self.loss(z1, z2)
-                else:
-                        logits = self(x)
-                        loss = self.loss(self.final_nl(logits, dim=-1), y)
+                &#34;&#34;&#34;
+                TODO: remove the &#34;x&#34; from common method self.step() outputs &amp; benchmark reduction in GPU memory leaks
+                &#34;&#34;&#34;
+                # if self.self_supervised:
+                #       z1, z2 = self.shared_step(x)
+                #       loss = self.loss(z1, z2)
+                # else:
+                logits = self(x)
+                                
+                loss = self.loss(logits, y)
+                
+                # pp(f&#34;logits.shape: {logits.shape}, y.shape: {y.shape}, loss.shape: {loss.shape}&#34;)
+                # pp(f&#34;logits.min(): {logits.min()}, logits.max(): {logits.max()}, logits.mean(axis=-1): {logits.mean(axis=-1)}, logits.std(axis=-1): {logits.std(axis=-1)}&#34;)
+                # _y = y.type(torch.cuda.FloatTensor)
+                # pp(f&#34;y.min(): {_y.min()}, y.max(): {_y.max()}, y.mean(axis=-1): {_y.mean(axis=-1)}, y.std(axis=-1): {_y.std(axis=-1)}&#34;)
+                # pp(f&#34;loss.min(): {loss.min()}, loss.max(): {loss.max()}, loss.mean(axis=-1): {loss.mean(axis=-1)}, loss.std(axis=-1): {loss.std(axis=-1)}&#34;)
+
                 return {&#34;logits&#34;: logits, &#34;loss&#34;: loss, &#34;y&#34;: y, &#34;x&#34;: x}
 
         def training_step(self, batch: Any, batch_idx: int) -&gt; torch.Tensor:
-                x, y = batch
+
+                x, y = batch[:2]
+                # import pdb; pdb.set_trace()
                 out = self.step(x, y)
-                return out
+                
+                # print(&#34;self.training_step: &#34;, f&#34;device:{torch.cuda.current_device()}, y.shape:{out[&#39;y&#39;].shape}, logits.shape:{out[&#39;logits&#39;].shape}, loss.shape:{out[&#39;loss&#39;].shape}&#34;)
+                return {k: out[k] for k in [&#34;logits&#34;, &#34;loss&#34;, &#34;y&#34;]}
 
         def training_step_end(self, out):
-                self.train_accuracy(self.final_nl(out[&#34;logits&#34;], dim=-1), out[&#34;y&#34;])
+                # print(&#34;self.training_step_end: &#34;, f&#34;device:{torch.cuda.current_device()}, y.shape:{out[&#39;y&#39;].shape}, logits.shape:{out[&#39;logits&#39;].shape}, loss.shape:{out[&#39;loss&#39;].shape}&#34;)
+                self.train_metric(out[&#34;logits&#34;], out[&#34;y&#34;])
+                
+                batch_size=self.batch_size #len(out[&#34;y&#34;])
+                loss = out[&#34;loss&#34;].mean()
+                log_dict = {
+                        &#34;train_loss&#34;: loss,
+                        **self.train_metric
+                }
                 self.log_dict(
-                        {
-                                &#34;train_acc&#34;: self.train_accuracy,
-                                &#34;train_loss&#34;: out[&#34;loss&#34;].mean(),
-                        },
+                        log_dict,
                         on_step=True,
-                        on_epoch=False
+                        on_epoch=True,
+                        prog_bar=True,
+                        batch_size=batch_size
                 )
-                return out[&#34;loss&#34;].mean()
+                self.print(f&#34;training_step_end -&gt; self.current_epoch: {self.current_epoch}, self.global_step: {self.global_step}, loss: {loss}&#34;)
+                return loss
 
         def validation_step(self, batch: Any, batch_idx: int) -&gt; Dict[str, torch.Tensor]:
-                x, y = batch
+                x, y = batch[:2]
                 out = self.step(x, y)
-                return out
+                # self.
+                # print(&#34;self.validation_step: &#34;, f&#34;device:{torch.cuda.current_device()}, y.shape:{out[&#39;y&#39;].shape}, logits.shape:{out[&#39;logits&#39;].shape}, loss.shape:{out[&#39;loss&#39;].shape}&#34;)
+                return {k: out[k] for k in [&#34;logits&#34;, &#34;loss&#34;, &#34;y&#34;]}
         
         def validation_step_end(self, out):
-                self.val_accuracy(self.final_nl(out[&#34;logits&#34;], dim=-1), out[&#34;y&#34;])
-                self.log_dict(
-                        {
-                                &#34;val_acc&#34;: self.val_accuracy,
-                                &#34;val_loss&#34;: out[&#34;loss&#34;].mean(),
-                        },
-                )
-                return {
-                        &#34;image&#34;: out[&#34;x&#34;],
-                        &#34;y_true&#34;: out[&#34;y&#34;],
-                        &#34;logits&#34;: out[&#34;logits&#34;],
-                        &#34;val_loss&#34;: out[&#34;loss&#34;].mean(),
+                # self.
+                # print(&#34;self.validation_step_end: &#34;, f&#34;device:{torch.cuda.current_device()}, y.shape:{out[&#39;y&#39;].shape}, logits.shape:{out[&#39;logits&#39;].shape}, loss.shape:{out[&#39;loss&#39;].shape}&#34;)
+                self.val_metric(out[&#34;logits&#34;], out[&#34;y&#34;])
+                batch_size=self.batch_size #len(out[&#34;y&#34;])
+                loss = out[&#34;loss&#34;].mean()
+                
+                log_dict = {
+                        &#34;val_loss&#34;: loss,
+                        **self.val_metric
                 }
+                # if &#34;val/F1_top1&#34; in self.val_metric.keys():
+                #       log_dict[&#34;val_F1&#34;] = self.val_metric[&#34;val/F1_top1&#34;]
+                #       log_dict.update({k:v for k,v in self.val_metric.items() if k != &#34;val/F1_top1&#34;})
+                # elif &#34;val_macro_F1&#34; in self.val_metric.keys():
+                #       log_dict[&#34;val_F1&#34;] = self.val_metric[&#34;val_macro_F1&#34;]
+                #       log_dict.update({k:v for k,v in self.val_metric.items() if k != &#34;val_macro_F1&#34;})
+                # else:
+                # log_dict.update(self.val_metric)
+                # self.log(&#34;val_macro_F1&#34;, self.val_metric[&#34;val_macro_F1&#34;])
+                self.log_dict(log_dict,
+                                          on_step=True, # False, #
+                                          on_epoch=True,
+                                          prog_bar=True,
+                                          batch_size=batch_size)
+                self.print(f&#34;validation_step_end -&gt; self.current_epoch: {self.current_epoch}, self.global_step: {self.global_step}, loss: {loss}&#34;)
+
+                # self.log_dict(self.val_metric,
+                #                         on_step=True,
+                #                         on_epoch=True,
+                #                         # prog_bar=True,
+                #                         batch_size=batch_size)
+                
+                # return {
+                #       # &#34;image&#34;: out[&#34;x&#34;],
+                #       &#34;y_true&#34;: out[&#34;y&#34;],
+                #       &#34;logits&#34;: out[&#34;logits&#34;],
+                #       &#34;val_loss&#34;: loss,
+                # }
 
         def test_step(self, batch: Any, batch_idx: int) -&gt; Dict[str, torch.Tensor]:
-                x, y = batch
+                x, y = batch[:2]
                 out = self.step(x, y)
-                return out
+                return {k: out[k] for k in [&#34;logits&#34;, &#34;loss&#34;, &#34;y&#34;]}
 
         def test_step_end(self, out):
-                self.test_accuracy(self.final_nl(out[&#34;logits&#34;], dim=-1), out[&#34;y&#34;])
+                batch_size=len(out[&#34;y&#34;])
+                self.test_metric(out[&#34;logits&#34;], out[&#34;y&#34;])
                 self.log_dict(
                         {
-                                &#34;test_acc&#34;: self.test_accuracy,
                                 &#34;test_loss&#34;: out[&#34;loss&#34;].mean(),
+                                **self.test_metric,
                         },
+                        batch_size=batch_size
                 )
                 return {
-                        &#34;image&#34;: out[&#34;x&#34;],
+                        # &#34;image&#34;: out[&#34;x&#34;],
                         &#34;y_true&#34;: out[&#34;y&#34;],
                         &#34;logits&#34;: out[&#34;logits&#34;],
                         &#34;val_loss&#34;: out[&#34;loss&#34;].mean(),
                 }
+
+        def predict_step(self, batch: Any, batch_idx: int) -&gt; Dict[str, torch.Tensor]:
+                if len(batch)==3:
+                        x, y, metadata = batch[:3]
+                        image_idx = metadata.get(&#34;image_id&#34;)
+                else:
+                        x, y = batch[:2]
+                        image_idx = torch.arange(0, len(x)) + batch_idx*self.batch_size
+
+                y_logit = self(x)
+                return {&#34;image_id&#34;:image_idx,
+                                &#34;y_logit&#34;:y_logit}
+
+        def training_epoch_end(self, outputs: List[Any]) -&gt; None:
+                &#34;&#34;&#34;
+                
+                &#34;&#34;&#34;
+                info = {k: v.shape for k,v in outputs[0].items()}
+                # print(&#34;self.training_epoch_end: &#34;, f&#34;device:{torch.cuda.current_device()}, len(outputs)={len(outputs)}, info: {info}&#34;)
+
+                # losses = []
+                # for o in outputs:
+                #       losses.append(o[&#34;loss&#34;])
+                # losses = torch.stack(losses)
+                losses = torch.stack([o[&#34;loss&#34;] for o in outputs])
+                self.print(f&#34;training_epoch_end -&gt; self.current_epoch: {self.current_epoch}, self.global_step: {self.global_step}, losses: {losses}&#34;)
+                # print(f&#34;self.validation_epoch_end (torch.stack the losses): losses.shape = {losses.shape}&#34;)
+                
 
 
         def validation_epoch_end(self, outputs: List[Any]) -&gt; None:
                 &#34;&#34;&#34;
                 
                 &#34;&#34;&#34;
+                info = {k: v.shape for k,v in outputs[0].items()}
+                print(&#34;self.validation_epoch_end: &#34;, f&#34;device:{torch.cuda.current_device()}, len(outputs)={len(outputs)}, info: {info}&#34;)
+                
+                # losses = torch.stack([o[&#34;loss&#34;] for o in outputs])
+                losses = []
+                y = []
+                logits = []
+                for o in outputs:
+                        losses.append(o[&#34;loss&#34;])
+                        y.append(o[&#34;y&#34;])
+                        logits = [o[&#34;logits&#34;]]
+                losses = torch.stack(losses)
+                y = torch.cat(y)
+                logits = torch.cat(logits)
+                
+                self.print(f&#34;validation_epoch_end -&gt; self.current_epoch: {self.current_epoch}, self.global_step: {self.global_step}, losses: {losses}&#34;)
+                # print(f&#34;self.validation_epoch_end (torch.stack the losses): losses.shape = {losses.shape}, y.shape = {y.shape}, logits.shape = {logits.shape}&#34;)
+                
+                if &#34;image&#34; not in outputs:
+                        # print(f&#34;Skipping val render_image_predictions due to missing &#39;image&#39; key in epoch outputs.&#34;)
+                        return
                 self.render_image_predictions(
                         outputs=outputs,
-                        batch_size=self.cfg.data.datamodule.batch_size.val,
+                        batch_size=self.cfg.data.datamodule.batch_size,
                         n_elements_to_log=self.cfg.logging.n_elements_to_log,
                         log_name=&#34;val_image_predictions&#34;,
                         normalize_visualization=self.cfg.logging.normalize_visualization,
                         logger=self.logger,
-                        global_step=self.global_step)   
+                        global_step=self.global_step,
+                        commit=False)
 
 
         def test_epoch_end(self, outputs: List[Any]) -&gt; None:
+                if &#34;image&#34; not in outputs:
+                        # print(f&#34;Skipping test render_image_predictions due to missing &#39;image&#39; key in epoch outputs.&#34;)
+                        return
                 
                 self.render_image_predictions(
                         outputs=outputs,
-                        batch_size=self.cfg.data.datamodule.batch_size.test,
+                        batch_size=self.cfg.data.datamodule.batch_size,
                         n_elements_to_log=self.cfg.logging.n_elements_to_log,
                         log_name=&#34;test_image_predictions&#34;,
                         normalize_visualization=self.cfg.logging.normalize_visualization,
                         logger=self.logger,
-                        global_step=self.global_step)
+                        global_step=self.global_step,
+                        commit=False)
 
 
         @staticmethod
@@ -535,7 +812,8 @@ class LitClassifier(pl.LightningModule):
                 log_name: str=&#34;image predictions&#34;,
                 normalize_visualization: bool=True,
                 logger=None,
-                global_step: int=0
+                global_step: int=0,
+                commit: bool=False
         ) -&gt; None:
                 
                 # images_feat_viz = []
@@ -562,8 +840,9 @@ class LitClassifier(pl.LightningModule):
                         )
                 if logger is not None:
                         logger.experiment.log(
-                                {log_name: images}, 
-                                step=global_step
+                                {log_name: images,
+                                 &#34;global_step&#34;:global_step},
+                                commit=commit
                         )
 
 
@@ -583,39 +862,28 @@ class LitClassifier(pl.LightningModule):
                         - Tuple of dictionaries as described, with an optional &#39;frequency&#39; key.
                         - None - Fit will run without any optimizer.
                 &#34;&#34;&#34;
-                if hasattr(self.cfg.optim.optimizer, &#34;exclude_bn_bias&#34;) and \
-                                self.cfg.optim.optimizer.exclude_bn_bias:
+                # if hasattr(self.cfg.optim, &#34;exclude_bn_bias&#34;) and \
+                                # self.cfg.optim.get(&#34;exclude_bn_bias&#34;, False):
+                if self.cfg.optim.get(&#34;exclude_bn_bias&#34;, False):
                         params = self.exclude_from_wt_decay(self.named_parameters(), weight_decay=self.cfg.optim.optimizer.weight_decay)
                 else:
                         params = self.parameters()
 
+                # pp(OmegaConf.to_container(self.cfg.optim.optimizer))
+                pp(OmegaConf.to_container(self.cfg.optim.optimizer, resolve=True))
                 opt = hydra.utils.instantiate(
-                        self.cfg.optim.optimizer, 
+                        OmegaConf.to_container(self.cfg.optim.optimizer),
                         params=params,
-                        weight_decay=self.cfg.optim.optimizer.weight_decay
+                        weight_decay=self.cfg.optim.optimizer.weight_decay,
+                        _convert_=&#34;partial&#34;
                 )
-                
-                if not self.cfg.optim.use_lr_scheduler:
-                        return opt
 
-                # Handle schedulers if requested
-                if torch.optim.lr_scheduler.warmup_steps:
-                        # Right now this is specific to SimCLR
-                        lr_scheduler = {
-                                &#34;scheduler&#34;: torch.optim.lr_scheduler.LambdaLR(
-                                        opt,
-                                        linear_warmup_decay(
-                                                self.cfg.optim.lr_scheduler.warmup_steps,
-                                                self.cfg.optim.lr_scheduler.total_steps,
-                                                cosine=True),
-                                ),
-                                &#34;interval&#34;: &#34;step&#34;,
-                                &#34;frequency&#34;: 1,
-                        }
-                else:
+                out = opt
+                if self.cfg.optim.use_lr_scheduler:
                         lr_scheduler = self.cfg.optim.lr_scheduler
-                scheduler = hydra.utils.instantiate(lr_scheduler, optimizer=opt)
-                return [opt], [scheduler]
+                        scheduler = hydra.utils.instantiate(lr_scheduler, optimizer=opt)
+                        out = ([opt], [scheduler])
+                return out
 
         @staticmethod
         def exclude_from_wt_decay(named_params: List[Tuple[str, torch.Tensor]],
@@ -649,45 +917,15 @@ class LitClassifier(pl.LightningModule):
                                 &#34;weight_decay&#34;: 0.0,
                         },
                 ]
-
-        def init_metrics(self,
-                                         stage: str=&#39;train&#39;,
-                                         tag: Optional[str]=None):
-                tag = tag or &#34;&#34;
-                if not hasattr(self, &#34;all_metrics&#34;):
-                        self.all_metrics = {}
-                
-                if not hasattr(self,&#34;num_classes&#34;) and hasattr(self.hparams, &#34;num_classes&#34;):
-                        self.num_classes = self.hparams.num_classes
-                
-                print(f&#34;self.num_classes={self.num_classes}&#34;)
-                if stage in [&#39;train&#39;, &#39;all&#39;]:
-                        prefix=f&#39;{tag}_train&#39;.strip(&#34;_&#34;)
-                        self.metrics_train = get_scalar_metrics(num_classes=self.num_classes, average=&#39;macro&#39;, prefix=prefix)
-                        self.metrics_train_per_class = get_per_class_metrics(num_classes=self.num_classes, prefix=&#39;train&#39;)
-                        self.all_metrics[&#39;train&#39;] = {&#34;scalar&#34;:self.metrics_train,
-                                                                                 &#34;per_class&#34;:self.metrics_train_per_class}
-                        
-                if stage in [&#39;val&#39;, &#39;all&#39;]:
-                        prefix=f&#39;{tag}_val&#39;.strip(&#34;_&#34;)
-                        self.metrics_val = get_scalar_metrics(num_classes=self.num_classes, average=&#39;macro&#39;, prefix=prefix)
-                        self.metrics_val_per_class = get_per_class_metrics(num_classes=self.num_classes, prefix=&#39;val&#39;)
-                        self.all_metrics[&#39;val&#39;] = {&#34;scalar&#34;:self.metrics_val,
-                                                                           &#34;per_class&#34;:self.metrics_val_per_class}
-                        
-                if stage in [&#39;test&#39;, &#39;all&#39;]:
-                        if isinstance(tag, str):
-                                prefix=tag
-                        else:
-                                prefix = &#34;test&#34;
-#                        prefix=f&#39;{tag}_test&#39;.strip(&#34;_&#34;)
-                        self.metrics_test = get_scalar_metrics(num_classes=self.num_classes, average=&#39;macro&#39;, prefix=prefix)
-                        self.metrics_test_per_class = get_per_class_metrics(num_classes=self.num_classes, prefix=prefix)
-                        self.all_metrics[&#39;test&#39;] = {&#34;scalar&#34;:self.metrics_test,
-                                                                                &#34;per_class&#34;:self.metrics_test_per_class}</code></pre>
+        
+# [TODO] Uncomment &amp; benchmark this
+# source: https://pytorch-lightning.readthedocs.io/en/stable/guides/speed.html#set-grads-to-none
+        # def optimizer_zero_grad(self, epoch, batch_idx, optimizer, optimizer_idx):
+        #        optimizer.zero_grad(set_to_none=True)</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
+<li><a title="imutils.ml.models.base.BaseLightningModule" href="../base.html#imutils.ml.models.base.BaseLightningModule">BaseLightningModule</a></li>
 <li>pytorch_lightning.core.lightning.LightningModule</li>
 <li>pytorch_lightning.core.mixins.device_dtype_mixin.DeviceDtypeModuleMixin</li>
 <li>pytorch_lightning.core.mixins.hparams_mixin.HyperparametersMixin</li>
@@ -759,7 +997,7 @@ def exclude_from_wt_decay(named_params: List[Tuple[str, torch.Tensor]],
 </details>
 </dd>
 <dt id="imutils.ml.models.pl.classifier.LitClassifier.render_image_predictions"><code class="name flex">
-<span>def <span class="ident">render_image_predictions</span></span>(<span>outputs: List[Any], batch_size: int, n_elements_to_log: int, log_name: str = 'image predictions', normalize_visualization: bool = True, logger=None, global_step: int = 0) ‑> None</span>
+<span>def <span class="ident">render_image_predictions</span></span>(<span>outputs: List[Any], batch_size: int, n_elements_to_log: int, log_name: str = 'image predictions', normalize_visualization: bool = True, logger=None, global_step: int = 0, commit: bool = False) ‑> None</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -775,7 +1013,8 @@ def render_image_predictions(
         log_name: str=&#34;image predictions&#34;,
         normalize_visualization: bool=True,
         logger=None,
-        global_step: int=0
+        global_step: int=0,
+        commit: bool=False
 ) -&gt; None:
         
         # images_feat_viz = []
@@ -802,8 +1041,9 @@ def render_image_predictions(
                 )
         if logger is not None:
                 logger.experiment.log(
-                        {log_name: images}, 
-                        step=global_step
+                        {log_name: images,
+                         &#34;global_step&#34;:global_step},
+                        commit=commit
                 )</code></pre>
 </details>
 </dd>
@@ -845,65 +1085,85 @@ key whose value is a single LR scheduler or lr_dict.
                 - Tuple of dictionaries as described, with an optional &#39;frequency&#39; key.
                 - None - Fit will run without any optimizer.
         &#34;&#34;&#34;
-        if hasattr(self.cfg.optim.optimizer, &#34;exclude_bn_bias&#34;) and \
-                        self.cfg.optim.optimizer.exclude_bn_bias:
+        # if hasattr(self.cfg.optim, &#34;exclude_bn_bias&#34;) and \
+                        # self.cfg.optim.get(&#34;exclude_bn_bias&#34;, False):
+        if self.cfg.optim.get(&#34;exclude_bn_bias&#34;, False):
                 params = self.exclude_from_wt_decay(self.named_parameters(), weight_decay=self.cfg.optim.optimizer.weight_decay)
         else:
                 params = self.parameters()
 
+        # pp(OmegaConf.to_container(self.cfg.optim.optimizer))
+        pp(OmegaConf.to_container(self.cfg.optim.optimizer, resolve=True))
         opt = hydra.utils.instantiate(
-                self.cfg.optim.optimizer, 
+                OmegaConf.to_container(self.cfg.optim.optimizer),
                 params=params,
-                weight_decay=self.cfg.optim.optimizer.weight_decay
+                weight_decay=self.cfg.optim.optimizer.weight_decay,
+                _convert_=&#34;partial&#34;
         )
-        
-        if not self.cfg.optim.use_lr_scheduler:
-                return opt
 
-        # Handle schedulers if requested
-        if torch.optim.lr_scheduler.warmup_steps:
-                # Right now this is specific to SimCLR
-                lr_scheduler = {
-                        &#34;scheduler&#34;: torch.optim.lr_scheduler.LambdaLR(
-                                opt,
-                                linear_warmup_decay(
-                                        self.cfg.optim.lr_scheduler.warmup_steps,
-                                        self.cfg.optim.lr_scheduler.total_steps,
-                                        cosine=True),
-                        ),
-                        &#34;interval&#34;: &#34;step&#34;,
-                        &#34;frequency&#34;: 1,
-                }
-        else:
+        out = opt
+        if self.cfg.optim.use_lr_scheduler:
                 lr_scheduler = self.cfg.optim.lr_scheduler
-        scheduler = hydra.utils.instantiate(lr_scheduler, optimizer=opt)
-        return [opt], [scheduler]</code></pre>
+                scheduler = hydra.utils.instantiate(lr_scheduler, optimizer=opt)
+                out = ([opt], [scheduler])
+        return out</code></pre>
 </details>
 </dd>
-<dt id="imutils.ml.models.pl.classifier.LitClassifier.forward"><code class="name flex">
-<span>def <span class="ident">forward</span></span>(<span>self, x: torch.Tensor) ‑> torch.Tensor</span>
+<dt id="imutils.ml.models.pl.classifier.LitClassifier.predict_step"><code class="name flex">
+<span>def <span class="ident">predict_step</span></span>(<span>self, batch: Any, batch_idx: int) ‑> Dict[str, torch.Tensor]</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Same as :meth:<code>torch.nn.Module.forward()</code>.</p>
+<div class="desc"><p>Step function called during :meth:<code>~pytorch_lightning.trainer.trainer.Trainer.predict</code>. By default, it
+calls :meth:<code>~pytorch_lightning.core.lightning.LightningModule.forward</code>. Override to add any processing
+logic.</p>
+<p>The :meth:<code>~pytorch_lightning.core.lightning.LightningModule.predict_step</code> is used
+to scale inference on multi-devices.</p>
+<p>To prevent an OOM error, it is possible to use :class:<code>~pytorch_lightning.callbacks.BasePredictionWriter</code>
+callback to write the predictions to disk or database after each batch or on epoch end.</p>
+<p>The :class:<code>~pytorch_lightning.callbacks.BasePredictionWriter</code> should be used while using a spawn
+based accelerator. This happens for <code>Trainer(strategy="ddp_spawn")</code>
+or training on 8 TPU cores with <code>Trainer(tpu_cores=8)</code> as predictions won't be returned.</p>
+<p>Example ::</p>
+<pre><code>class MyModel(LightningModule):
+
+    def predicts_step(self, batch, batch_idx, dataloader_idx):
+        return self(batch)
+
+dm = ...
+model = MyModel()
+trainer = Trainer(gpus=2)
+predictions = trainer.predict(model, dm)
+</code></pre>
 <h2 id="args">Args</h2>
 <dl>
-<dt><strong><code>*args</code></strong></dt>
-<dd>Whatever you decide to pass into the forward method.</dd>
-<dt><strong><code>**kwargs</code></strong></dt>
-<dd>Keyword arguments are also possible.</dd>
+<dt><strong><code>batch</code></strong></dt>
+<dd>Current batch</dd>
+<dt><strong><code>batch_idx</code></strong></dt>
+<dd>Index of current batch</dd>
+<dt><strong><code>dataloader_idx</code></strong></dt>
+<dd>Index of the current dataloader</dd>
 </dl>
 <h2 id="return">Return</h2>
-<p>Your model's output</p></div>
+<p>Predicted output</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def forward(self, x: torch.Tensor) -&gt; torch.Tensor:
-        return self.net(x)</code></pre>
+<pre><code class="python">def predict_step(self, batch: Any, batch_idx: int) -&gt; Dict[str, torch.Tensor]:
+        if len(batch)==3:
+                x, y, metadata = batch[:3]
+                image_idx = metadata.get(&#34;image_id&#34;)
+        else:
+                x, y = batch[:2]
+                image_idx = torch.arange(0, len(x)) + batch_idx*self.batch_size
+
+        y_logit = self(x)
+        return {&#34;image_id&#34;:image_idx,
+                        &#34;y_logit&#34;:y_logit}</code></pre>
 </details>
 </dd>
-<dt id="imutils.ml.models.pl.classifier.LitClassifier.init_metrics"><code class="name flex">
-<span>def <span class="ident">init_metrics</span></span>(<span>self, stage: str = 'train', tag: Optional[str] = None)</span>
+<dt id="imutils.ml.models.pl.classifier.LitClassifier.setup_loss"><code class="name flex">
+<span>def <span class="ident">setup_loss</span></span>(<span>self, loss_func: Union[Callable, str, None] = None)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -911,59 +1171,63 @@ key whose value is a single LR scheduler or lr_dict.
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">        def init_metrics(self,
-                                         stage: str=&#39;train&#39;,
-                                         tag: Optional[str]=None):
-                tag = tag or &#34;&#34;
-                if not hasattr(self, &#34;all_metrics&#34;):
-                        self.all_metrics = {}
-                
-                if not hasattr(self,&#34;num_classes&#34;) and hasattr(self.hparams, &#34;num_classes&#34;):
-                        self.num_classes = self.hparams.num_classes
-                
-                print(f&#34;self.num_classes={self.num_classes}&#34;)
-                if stage in [&#39;train&#39;, &#39;all&#39;]:
-                        prefix=f&#39;{tag}_train&#39;.strip(&#34;_&#34;)
-                        self.metrics_train = get_scalar_metrics(num_classes=self.num_classes, average=&#39;macro&#39;, prefix=prefix)
-                        self.metrics_train_per_class = get_per_class_metrics(num_classes=self.num_classes, prefix=&#39;train&#39;)
-                        self.all_metrics[&#39;train&#39;] = {&#34;scalar&#34;:self.metrics_train,
-                                                                                 &#34;per_class&#34;:self.metrics_train_per_class}
-                        
-                if stage in [&#39;val&#39;, &#39;all&#39;]:
-                        prefix=f&#39;{tag}_val&#39;.strip(&#34;_&#34;)
-                        self.metrics_val = get_scalar_metrics(num_classes=self.num_classes, average=&#39;macro&#39;, prefix=prefix)
-                        self.metrics_val_per_class = get_per_class_metrics(num_classes=self.num_classes, prefix=&#39;val&#39;)
-                        self.all_metrics[&#39;val&#39;] = {&#34;scalar&#34;:self.metrics_val,
-                                                                           &#34;per_class&#34;:self.metrics_val_per_class}
-                        
-                if stage in [&#39;test&#39;, &#39;all&#39;]:
-                        if isinstance(tag, str):
-                                prefix=tag
-                        else:
-                                prefix = &#34;test&#34;
-#                        prefix=f&#39;{tag}_test&#39;.strip(&#34;_&#34;)
-                        self.metrics_test = get_scalar_metrics(num_classes=self.num_classes, average=&#39;macro&#39;, prefix=prefix)
-                        self.metrics_test_per_class = get_per_class_metrics(num_classes=self.num_classes, prefix=prefix)
-                        self.all_metrics[&#39;test&#39;] = {&#34;scalar&#34;:self.metrics_test,
-                                                                                &#34;per_class&#34;:self.metrics_test_per_class}</code></pre>
+<pre><code class="python">def setup_loss(self,
+                           loss_func: Optional[Union[Callable, str]]=None):
+        if isinstance(loss_func, Callable):
+                self.loss = loss_func
+        else:
+                self.loss = hydra.utils.instantiate(self.model_cfg.loss)</code></pre>
+</details>
+</dd>
+<dt id="imutils.ml.models.pl.classifier.LitClassifier.setup_metrics"><code class="name flex">
+<span>def <span class="ident">setup_metrics</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def setup_metrics(self):
+        
+        self.train_metric = get_scalar_metrics(num_classes=self.num_classes,
+                                                                                   average=&#34;macro&#34;,
+                                                                                   prefix=&#34;train&#34;)
+        self.val_metric = get_scalar_metrics(num_classes=self.num_classes,
+                                                                                   average=&#34;macro&#34;,
+                                                                                   prefix=&#34;val&#34;)
+        self.test_metric = get_scalar_metrics(num_classes=self.num_classes,
+                                                                                   average=&#34;macro&#34;,
+                                                                                   prefix=&#34;test&#34;)</code></pre>
 </details>
 </dd>
 <dt id="imutils.ml.models.pl.classifier.LitClassifier.step"><code class="name flex">
 <span>def <span class="ident">step</span></span>(<span>self, x, y) ‑> Dict[str, torch.Tensor]</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>TODO: remove the "x" from common method self.step() outputs &amp; benchmark reduction in GPU memory leaks</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def step(self, x, y) -&gt; Dict[str, torch.Tensor]:
-        if self.self_supervised:
-                z1, z2 = self.shared_step(x)
-                loss = self.loss(z1, z2)
-        else:
-                logits = self(x)
-                loss = self.loss(self.final_nl(logits, dim=-1), y)
+        &#34;&#34;&#34;
+        TODO: remove the &#34;x&#34; from common method self.step() outputs &amp; benchmark reduction in GPU memory leaks
+        &#34;&#34;&#34;
+        # if self.self_supervised:
+        #       z1, z2 = self.shared_step(x)
+        #       loss = self.loss(z1, z2)
+        # else:
+        logits = self(x)
+                        
+        loss = self.loss(logits, y)
+        
+        # pp(f&#34;logits.shape: {logits.shape}, y.shape: {y.shape}, loss.shape: {loss.shape}&#34;)
+        # pp(f&#34;logits.min(): {logits.min()}, logits.max(): {logits.max()}, logits.mean(axis=-1): {logits.mean(axis=-1)}, logits.std(axis=-1): {logits.std(axis=-1)}&#34;)
+        # _y = y.type(torch.cuda.FloatTensor)
+        # pp(f&#34;y.min(): {_y.min()}, y.max(): {_y.max()}, y.mean(axis=-1): {_y.mean(axis=-1)}, y.std(axis=-1): {_y.std(axis=-1)}&#34;)
+        # pp(f&#34;loss.min(): {loss.min()}, loss.max(): {loss.max()}, loss.mean(axis=-1): {loss.mean(axis=-1)}, loss.std(axis=-1): {loss.std(axis=-1)}&#34;)
+
         return {&#34;logits&#34;: logits, &#34;loss&#34;: loss, &#34;y&#34;: y, &#34;x&#34;: x}</code></pre>
 </details>
 </dd>
@@ -1018,15 +1282,19 @@ each test step for that dataloader.</p>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def test_epoch_end(self, outputs: List[Any]) -&gt; None:
+        if &#34;image&#34; not in outputs:
+                # print(f&#34;Skipping test render_image_predictions due to missing &#39;image&#39; key in epoch outputs.&#34;)
+                return
         
         self.render_image_predictions(
                 outputs=outputs,
-                batch_size=self.cfg.data.datamodule.batch_size.test,
+                batch_size=self.cfg.data.datamodule.batch_size,
                 n_elements_to_log=self.cfg.logging.n_elements_to_log,
                 log_name=&#34;test_image_predictions&#34;,
                 normalize_visualization=self.cfg.logging.normalize_visualization,
                 logger=self.logger,
-                global_step=self.global_step)</code></pre>
+                global_step=self.global_step,
+                commit=False)</code></pre>
 </details>
 </dd>
 <dt id="imutils.ml.models.pl.classifier.LitClassifier.test_step"><code class="name flex">
@@ -1110,9 +1378,9 @@ to training mode and gradients are enabled.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def test_step(self, batch: Any, batch_idx: int) -&gt; Dict[str, torch.Tensor]:
-        x, y = batch
+        x, y = batch[:2]
         out = self.step(x, y)
-        return out</code></pre>
+        return {k: out[k] for k in [&#34;logits&#34;, &#34;loss&#34;, &#34;y&#34;]}</code></pre>
 </details>
 </dd>
 <dt id="imutils.ml.models.pl.classifier.LitClassifier.test_step_end"><code class="name flex">
@@ -1172,19 +1440,46 @@ See the :ref:<code>advanced/multi_gpu:Multi-GPU training</code> guide for more d
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def test_step_end(self, out):
-        self.test_accuracy(self.final_nl(out[&#34;logits&#34;], dim=-1), out[&#34;y&#34;])
+        batch_size=len(out[&#34;y&#34;])
+        self.test_metric(out[&#34;logits&#34;], out[&#34;y&#34;])
         self.log_dict(
                 {
-                        &#34;test_acc&#34;: self.test_accuracy,
                         &#34;test_loss&#34;: out[&#34;loss&#34;].mean(),
+                        **self.test_metric,
                 },
+                batch_size=batch_size
         )
         return {
-                &#34;image&#34;: out[&#34;x&#34;],
+                # &#34;image&#34;: out[&#34;x&#34;],
                 &#34;y_true&#34;: out[&#34;y&#34;],
                 &#34;logits&#34;: out[&#34;logits&#34;],
                 &#34;val_loss&#34;: out[&#34;loss&#34;].mean(),
         }</code></pre>
+</details>
+</dd>
+<dt id="imutils.ml.models.pl.classifier.LitClassifier.training_epoch_end"><code class="name flex">
+<span>def <span class="ident">training_epoch_end</span></span>(<span>self, outputs: List[Any]) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def training_epoch_end(self, outputs: List[Any]) -&gt; None:
+        &#34;&#34;&#34;
+        
+        &#34;&#34;&#34;
+        info = {k: v.shape for k,v in outputs[0].items()}
+        # print(&#34;self.training_epoch_end: &#34;, f&#34;device:{torch.cuda.current_device()}, len(outputs)={len(outputs)}, info: {info}&#34;)
+
+        # losses = []
+        # for o in outputs:
+        #       losses.append(o[&#34;loss&#34;])
+        # losses = torch.stack(losses)
+        losses = torch.stack([o[&#34;loss&#34;] for o in outputs])
+        self.print(f&#34;training_epoch_end -&gt; self.current_epoch: {self.current_epoch}, self.global_step: {self.global_step}, losses: {losses}&#34;)
+        # print(f&#34;self.validation_epoch_end (torch.stack the losses): losses.shape = {losses.shape}&#34;)</code></pre>
 </details>
 </dd>
 <dt id="imutils.ml.models.pl.classifier.LitClassifier.training_step"><code class="name flex">
@@ -1247,9 +1542,13 @@ so it differs from the actual loss returned in train/validation step.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def training_step(self, batch: Any, batch_idx: int) -&gt; torch.Tensor:
-        x, y = batch
+
+        x, y = batch[:2]
+        # import pdb; pdb.set_trace()
         out = self.step(x, y)
-        return out</code></pre>
+        
+        # print(&#34;self.training_step: &#34;, f&#34;device:{torch.cuda.current_device()}, y.shape:{out[&#39;y&#39;].shape}, logits.shape:{out[&#39;logits&#39;].shape}, loss.shape:{out[&#39;loss&#39;].shape}&#34;)
+        return {k: out[k] for k in [&#34;logits&#34;, &#34;loss&#34;, &#34;y&#34;]}</code></pre>
 </details>
 </dd>
 <dt id="imutils.ml.models.pl.classifier.LitClassifier.training_step_end"><code class="name flex">
@@ -1313,16 +1612,24 @@ See the :ref:<code>advanced/multi_gpu:Multi-GPU training</code> guide for more d
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def training_step_end(self, out):
-        self.train_accuracy(self.final_nl(out[&#34;logits&#34;], dim=-1), out[&#34;y&#34;])
+        # print(&#34;self.training_step_end: &#34;, f&#34;device:{torch.cuda.current_device()}, y.shape:{out[&#39;y&#39;].shape}, logits.shape:{out[&#39;logits&#39;].shape}, loss.shape:{out[&#39;loss&#39;].shape}&#34;)
+        self.train_metric(out[&#34;logits&#34;], out[&#34;y&#34;])
+        
+        batch_size=self.batch_size #len(out[&#34;y&#34;])
+        loss = out[&#34;loss&#34;].mean()
+        log_dict = {
+                &#34;train_loss&#34;: loss,
+                **self.train_metric
+        }
         self.log_dict(
-                {
-                        &#34;train_acc&#34;: self.train_accuracy,
-                        &#34;train_loss&#34;: out[&#34;loss&#34;].mean(),
-                },
+                log_dict,
                 on_step=True,
-                on_epoch=False
+                on_epoch=True,
+                prog_bar=True,
+                batch_size=batch_size
         )
-        return out[&#34;loss&#34;].mean()</code></pre>
+        self.print(f&#34;training_step_end -&gt; self.current_epoch: {self.current_epoch}, self.global_step: {self.global_step}, loss: {loss}&#34;)
+        return loss</code></pre>
 </details>
 </dd>
 <dt id="imutils.ml.models.pl.classifier.LitClassifier.validation_epoch_end"><code class="name flex">
@@ -1338,14 +1645,36 @@ See the :ref:<code>advanced/multi_gpu:Multi-GPU training</code> guide for more d
         &#34;&#34;&#34;
         
         &#34;&#34;&#34;
+        info = {k: v.shape for k,v in outputs[0].items()}
+        print(&#34;self.validation_epoch_end: &#34;, f&#34;device:{torch.cuda.current_device()}, len(outputs)={len(outputs)}, info: {info}&#34;)
+        
+        # losses = torch.stack([o[&#34;loss&#34;] for o in outputs])
+        losses = []
+        y = []
+        logits = []
+        for o in outputs:
+                losses.append(o[&#34;loss&#34;])
+                y.append(o[&#34;y&#34;])
+                logits = [o[&#34;logits&#34;]]
+        losses = torch.stack(losses)
+        y = torch.cat(y)
+        logits = torch.cat(logits)
+        
+        self.print(f&#34;validation_epoch_end -&gt; self.current_epoch: {self.current_epoch}, self.global_step: {self.global_step}, losses: {losses}&#34;)
+        # print(f&#34;self.validation_epoch_end (torch.stack the losses): losses.shape = {losses.shape}, y.shape = {y.shape}, logits.shape = {logits.shape}&#34;)
+        
+        if &#34;image&#34; not in outputs:
+                # print(f&#34;Skipping val render_image_predictions due to missing &#39;image&#39; key in epoch outputs.&#34;)
+                return
         self.render_image_predictions(
                 outputs=outputs,
-                batch_size=self.cfg.data.datamodule.batch_size.val,
+                batch_size=self.cfg.data.datamodule.batch_size,
                 n_elements_to_log=self.cfg.logging.n_elements_to_log,
                 log_name=&#34;val_image_predictions&#34;,
                 normalize_visualization=self.cfg.logging.normalize_visualization,
                 logger=self.logger,
-                global_step=self.global_step)   </code></pre>
+                global_step=self.global_step,
+                commit=False)</code></pre>
 </details>
 </dd>
 <dt id="imutils.ml.models.pl.classifier.LitClassifier.validation_step"><code class="name flex">
@@ -1437,9 +1766,11 @@ the model goes back to training mode and gradients are enabled.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def validation_step(self, batch: Any, batch_idx: int) -&gt; Dict[str, torch.Tensor]:
-        x, y = batch
+        x, y = batch[:2]
         out = self.step(x, y)
-        return out</code></pre>
+        # self.
+        # print(&#34;self.validation_step: &#34;, f&#34;device:{torch.cuda.current_device()}, y.shape:{out[&#39;y&#39;].shape}, logits.shape:{out[&#39;logits&#39;].shape}, loss.shape:{out[&#39;loss&#39;].shape}&#34;)
+        return {k: out[k] for k in [&#34;logits&#34;, &#34;loss&#34;, &#34;y&#34;]}</code></pre>
 </details>
 </dd>
 <dt id="imutils.ml.models.pl.classifier.LitClassifier.validation_step_end"><code class="name flex">
@@ -1499,22 +1830,57 @@ See the :ref:<code>advanced/multi_gpu:Multi-GPU training</code> guide for more d
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def validation_step_end(self, out):
-        self.val_accuracy(self.final_nl(out[&#34;logits&#34;], dim=-1), out[&#34;y&#34;])
-        self.log_dict(
-                {
-                        &#34;val_acc&#34;: self.val_accuracy,
-                        &#34;val_loss&#34;: out[&#34;loss&#34;].mean(),
-                },
-        )
-        return {
-                &#34;image&#34;: out[&#34;x&#34;],
-                &#34;y_true&#34;: out[&#34;y&#34;],
-                &#34;logits&#34;: out[&#34;logits&#34;],
-                &#34;val_loss&#34;: out[&#34;loss&#34;].mean(),
-        }</code></pre>
+        # self.
+        # print(&#34;self.validation_step_end: &#34;, f&#34;device:{torch.cuda.current_device()}, y.shape:{out[&#39;y&#39;].shape}, logits.shape:{out[&#39;logits&#39;].shape}, loss.shape:{out[&#39;loss&#39;].shape}&#34;)
+        self.val_metric(out[&#34;logits&#34;], out[&#34;y&#34;])
+        batch_size=self.batch_size #len(out[&#34;y&#34;])
+        loss = out[&#34;loss&#34;].mean()
+        
+        log_dict = {
+                &#34;val_loss&#34;: loss,
+                **self.val_metric
+        }
+        # if &#34;val/F1_top1&#34; in self.val_metric.keys():
+        #       log_dict[&#34;val_F1&#34;] = self.val_metric[&#34;val/F1_top1&#34;]
+        #       log_dict.update({k:v for k,v in self.val_metric.items() if k != &#34;val/F1_top1&#34;})
+        # elif &#34;val_macro_F1&#34; in self.val_metric.keys():
+        #       log_dict[&#34;val_F1&#34;] = self.val_metric[&#34;val_macro_F1&#34;]
+        #       log_dict.update({k:v for k,v in self.val_metric.items() if k != &#34;val_macro_F1&#34;})
+        # else:
+        # log_dict.update(self.val_metric)
+        # self.log(&#34;val_macro_F1&#34;, self.val_metric[&#34;val_macro_F1&#34;])
+        self.log_dict(log_dict,
+                                  on_step=True, # False, #
+                                  on_epoch=True,
+                                  prog_bar=True,
+                                  batch_size=batch_size)
+        self.print(f&#34;validation_step_end -&gt; self.current_epoch: {self.current_epoch}, self.global_step: {self.global_step}, loss: {loss}&#34;)
+
+        # self.log_dict(self.val_metric,
+        #                         on_step=True,
+        #                         on_epoch=True,
+        #                         # prog_bar=True,
+        #                         batch_size=batch_size)
+        
+        # return {
+        #       # &#34;image&#34;: out[&#34;x&#34;],
+        #       &#34;y_true&#34;: out[&#34;y&#34;],
+        #       &#34;logits&#34;: out[&#34;logits&#34;],
+        #       &#34;val_loss&#34;: loss,
+        # }</code></pre>
 </details>
 </dd>
 </dl>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="imutils.ml.models.base.BaseLightningModule" href="../base.html#imutils.ml.models.base.BaseLightningModule">BaseLightningModule</a></b></code>:
+<ul class="hlist">
+<li><code><a title="imutils.ml.models.base.BaseLightningModule.forward" href="../base.html#imutils.ml.models.base.BaseLightningModule.forward">forward</a></code></li>
+<li><code><a title="imutils.ml.models.base.BaseLightningModule.on_train_epoch_start" href="../base.html#imutils.ml.models.base.BaseLightningModule.on_train_epoch_start">on_train_epoch_start</a></code></li>
+<li><code><a title="imutils.ml.models.base.BaseLightningModule.on_train_start" href="../base.html#imutils.ml.models.base.BaseLightningModule.on_train_start">on_train_start</a></code></li>
+</ul>
+</li>
+</ul>
 </dd>
 </dl>
 </section>
@@ -1538,14 +1904,16 @@ See the :ref:<code>advanced/multi_gpu:Multi-GPU training</code> guide for more d
 <li><code><a title="imutils.ml.models.pl.classifier.LitClassifier.configure_optimizers" href="#imutils.ml.models.pl.classifier.LitClassifier.configure_optimizers">configure_optimizers</a></code></li>
 <li><code><a title="imutils.ml.models.pl.classifier.LitClassifier.dump_patches" href="#imutils.ml.models.pl.classifier.LitClassifier.dump_patches">dump_patches</a></code></li>
 <li><code><a title="imutils.ml.models.pl.classifier.LitClassifier.exclude_from_wt_decay" href="#imutils.ml.models.pl.classifier.LitClassifier.exclude_from_wt_decay">exclude_from_wt_decay</a></code></li>
-<li><code><a title="imutils.ml.models.pl.classifier.LitClassifier.forward" href="#imutils.ml.models.pl.classifier.LitClassifier.forward">forward</a></code></li>
-<li><code><a title="imutils.ml.models.pl.classifier.LitClassifier.init_metrics" href="#imutils.ml.models.pl.classifier.LitClassifier.init_metrics">init_metrics</a></code></li>
+<li><code><a title="imutils.ml.models.pl.classifier.LitClassifier.predict_step" href="#imutils.ml.models.pl.classifier.LitClassifier.predict_step">predict_step</a></code></li>
 <li><code><a title="imutils.ml.models.pl.classifier.LitClassifier.render_image_predictions" href="#imutils.ml.models.pl.classifier.LitClassifier.render_image_predictions">render_image_predictions</a></code></li>
+<li><code><a title="imutils.ml.models.pl.classifier.LitClassifier.setup_loss" href="#imutils.ml.models.pl.classifier.LitClassifier.setup_loss">setup_loss</a></code></li>
+<li><code><a title="imutils.ml.models.pl.classifier.LitClassifier.setup_metrics" href="#imutils.ml.models.pl.classifier.LitClassifier.setup_metrics">setup_metrics</a></code></li>
 <li><code><a title="imutils.ml.models.pl.classifier.LitClassifier.step" href="#imutils.ml.models.pl.classifier.LitClassifier.step">step</a></code></li>
 <li><code><a title="imutils.ml.models.pl.classifier.LitClassifier.test_epoch_end" href="#imutils.ml.models.pl.classifier.LitClassifier.test_epoch_end">test_epoch_end</a></code></li>
 <li><code><a title="imutils.ml.models.pl.classifier.LitClassifier.test_step" href="#imutils.ml.models.pl.classifier.LitClassifier.test_step">test_step</a></code></li>
 <li><code><a title="imutils.ml.models.pl.classifier.LitClassifier.test_step_end" href="#imutils.ml.models.pl.classifier.LitClassifier.test_step_end">test_step_end</a></code></li>
 <li><code><a title="imutils.ml.models.pl.classifier.LitClassifier.training" href="#imutils.ml.models.pl.classifier.LitClassifier.training">training</a></code></li>
+<li><code><a title="imutils.ml.models.pl.classifier.LitClassifier.training_epoch_end" href="#imutils.ml.models.pl.classifier.LitClassifier.training_epoch_end">training_epoch_end</a></code></li>
 <li><code><a title="imutils.ml.models.pl.classifier.LitClassifier.training_step" href="#imutils.ml.models.pl.classifier.LitClassifier.training_step">training_step</a></code></li>
 <li><code><a title="imutils.ml.models.pl.classifier.LitClassifier.training_step_end" href="#imutils.ml.models.pl.classifier.LitClassifier.training_step_end">training_step_end</a></code></li>
 <li><code><a title="imutils.ml.models.pl.classifier.LitClassifier.validation_epoch_end" href="#imutils.ml.models.pl.classifier.LitClassifier.validation_epoch_end">validation_epoch_end</a></code></li>

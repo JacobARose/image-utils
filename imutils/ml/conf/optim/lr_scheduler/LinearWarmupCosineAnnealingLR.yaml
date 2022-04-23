@@ -1,0 +1,10 @@
+# @package optim.lr_scheduler
+
+# optim:
+
+_target_: pl_bolts.optimizers.lr_scheduler.LinearWarmupCosineAnnealingLR
+warmup_epochs: ${hp.warmup_epochs}
+max_epochs: ${hp.max_epochs}
+warmup_start_lr: 1e-04 #overridden if execution_list.auto_lr_tune=True
+eta_min: 1e-06
+last_epoch: -1

@@ -1,0 +1,1161 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.10.0" />
+<title>imutils.ml.utils.toolbox.nn.loss API documentation</title>
+<meta name="description" content="" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>imutils.ml.utils.toolbox.nn.loss</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python"># -*- coding: utf-8 -*-
+# @Author  : DevinYang(pistonyang@gmail.com)
+__all__ = [&#39;LabelSmoothingLoss&#39;, &#39;CBCrossEntropyLoss&#39;, &#39;SigmoidCrossEntropy&#39;, &#39;FocalLoss&#39;, &#39;L0Loss&#39;, &#39;RingLoss&#39;, &#39;CenterLoss&#39;, &#39;CircleLoss&#39;]
+
+from imutils.ml.utils.toolbox.nn import functional as BF
+from torch import nn
+from torch.nn import functional as F
+from torch.nn.modules.loss import _WeightedLoss
+import torch
+from typing import Sequence
+
+
+class SigmoidCrossEntropy(_WeightedLoss):
+        def __init__(self, classes, weight=None, reduction=&#39;mean&#39;):
+                super(SigmoidCrossEntropy, self).__init__(weight=weight, reduction=reduction)
+                self.classes = classes
+
+        def forward(self, pred, target):
+                zt = BF.logits_distribution(pred, target, self.classes)
+                return BF.logits_nll_loss(-F.logsigmoid(zt), target, self.weight, self.reduction)
+
+
+class FocalLoss(_WeightedLoss):
+        def __init__(self,
+                                 num_classes: int,
+                                 gamma,
+                                 weight=None,
+                                 reduction=&#39;mean&#39;):
+                super(FocalLoss, self).__init__(weight=weight, reduction=reduction)
+                self.num_classes = num_classes
+                self.gamma = gamma
+
+        def forward(self, pred, target):
+                zt = BF.logits_distribution(pred, target, self.num_classes)
+                ret = -(1 - torch.sigmoid(zt)).pow(self.gamma) * F.logsigmoid(zt)
+                return BF.logits_nll_loss(ret, target, self.weight, self.reduction)
+
+
+class L0Loss(nn.Module):
+        &#34;&#34;&#34;L0loss from
+        &#34;Noise2Noise: Learning Image Restoration without Clean Data&#34;
+        &lt;https://arxiv.org/pdf/1803.04189&gt;`_ paper.
+
+        &#34;&#34;&#34;
+        def __init__(self, gamma=2, eps=1e-8):
+                super(L0Loss, self).__init__()
+                self.gamma = gamma
+                self.eps = eps
+
+        def forward(self, pred, target):
+                loss = (torch.abs(pred - target) + self.eps).pow(self.gamma)
+                return torch.mean(loss)
+
+
+class LabelSmoothingLoss(nn.Module):
+        &#34;&#34;&#34;This is label smoothing loss function.
+        &#34;&#34;&#34;
+        def __init__(self,
+                                 num_classes: int,
+                                 smoothing: float=0.0,
+                                 dim: int=-1):
+                super(LabelSmoothingLoss, self).__init__()
+                self.confidence = 1.0 - smoothing
+                self.smoothing = smoothing
+                self.num_classes = num_classes
+                self.dim = dim
+
+        def forward(self, pred: torch.Tensor, target: torch.Tensor) -&gt; torch.Tensor:
+                pred = pred.log_softmax(dim=self.dim)
+                true_dist = BF.smooth_one_hot(target, self.num_classes, self.smoothing)
+                return torch.mean(torch.sum(-true_dist * pred, dim=self.dim))
+
+
+
+class CBCrossEntropyLoss(nn.Module):
+        &#34;&#34;&#34;This is a class implementation of the Class Balanced Cross Entropy Loss.
+        
+        Behavior:
+                - beta=0.0 (default), results in the equivalent of unbalanced-CE, with weights=1 for all classes.
+                - beta=1.0, results in the equivalent of class-balanced-CE, with all weights equal to the inverse frequency of their corresponding class.
+                
+        
+        &#34;&#34;&#34;
+        def __init__(self,
+                                 targets: Sequence[int],
+                                 beta: float=0.0,
+                                 reduction: str=&#34;mean&#34;):
+                super(CBCrossEntropyLoss, self).__init__()
+                self.beta = beta
+                self.reduction = reduction
+                
+                self.weights = torch.nn.Parameter(
+                        self.calculate_class_weights(targets=targets, beta=beta),
+                        requires_grad=False
+                )
+                
+        def calculate_class_weights(self, targets: Sequence[int], beta: float=0.0) -&gt; torch.Tensor:
+                &#34;&#34;&#34;
+                Provided a representative sequence of target labels + an interpolation parameter beta, produce a class-balanced sequence of weights, 1 for each class see in targets. Shouldn&#39;t normally be called directly by the user, as it&#39;s run once in the Loss class __init__ method.
+                
+                [TBD] -- Add in some kind of masking to allow calculating weights for sequences that have at least 1 class absent.
+                &#34;&#34;&#34;
+                self.classes, self.class_counts = BF.class_counts(targets)
+                weights = BF.class_balanced_weight(beta=beta, samples_per_class=self.class_counts)
+                # self.weights = torch.from_numpy(weights)
+                # import pdb; pdb.set_trace()
+                
+                # with open(&#34;class_weights.csv&#34;, &#34;w&#34;) as f:
+                #       f
+                
+                return weights
+
+        def forward(self, y_logits: torch.Tensor, targets: torch.Tensor) -&gt; torch.Tensor:
+                
+#               print(f&#34;y_logits.device: {y_logits.device}&#34;,
+#                         f&#34;targets.device: {targets.device}&#34;,
+#                         f&#34;self.weights.device: {self.weights.device}&#34;)
+                
+#               import pdb; pdb.set_trace()
+                
+                loss = BF.class_balanced_cross_entropy_loss(y_logits,
+                                                                                                        y_true=targets,
+                                                                                                        weights=self.weights,
+                                                                                                        reduction=self.reduction)
+                
+                
+                
+                return loss
+
+
+
+
+
+
+class CircleLoss(nn.Module):
+        r&#34;&#34;&#34;CircleLoss from
+        `&#34;Circle Loss: A Unified Perspective of Pair Similarity Optimization&#34;
+        &lt;https://arxiv.org/pdf/2002.10857&gt;`_ paper.
+
+        Parameters
+        ----------
+        m: float.
+                Margin parameter for loss.
+        gamma: int.
+                Scale parameter for loss.
+
+        Outputs:
+                - **loss**: scalar.
+        &#34;&#34;&#34;
+        def __init__(self, m, gamma):
+                super(CircleLoss, self).__init__()
+                self.m = m
+                self.gamma = gamma
+                self.dp = 1 - m
+                self.dn = m
+
+        def forward(self, x, target):
+                similarity_matrix = x @ x.T  # need gard here
+                label_matrix = target.unsqueeze(1) == target.unsqueeze(0)
+                negative_matrix = label_matrix.logical_not()
+                positive_matrix = label_matrix.fill_diagonal_(False)
+
+                sp = torch.where(positive_matrix, similarity_matrix, torch.zeros_like(similarity_matrix))
+                sn = torch.where(negative_matrix, similarity_matrix, torch.zeros_like(similarity_matrix))
+
+                ap = torch.clamp_min(1 + self.m - sp.detach(), min=0.)
+                an = torch.clamp_min(sn.detach() + self.m, min=0.)
+
+                logit_p = -self.gamma * ap * (sp - self.dp)
+                logit_n = self.gamma * an * (sn - self.dn)
+
+                logit_p = torch.where(positive_matrix, logit_p, torch.zeros_like(logit_p))
+                logit_n = torch.where(negative_matrix, logit_n, torch.zeros_like(logit_n))
+
+                loss = F.softplus(torch.logsumexp(logit_p, dim=1) + torch.logsumexp(logit_n, dim=1)).mean()
+                return loss
+
+
+class RingLoss(nn.Module):
+        &#34;&#34;&#34;Computes the Ring Loss from
+        `&#34;Ring loss: Convex Feature Normalization for Face Recognition&#34;
+
+        Parameters
+        ----------
+        lamda: float
+                The loss weight enforcing a trade-off between the softmax loss and ring loss.
+        l2_norm: bool
+                Whether use l2 norm to embedding.
+        weight_initializer (None or torch.Tensor): If not None a torch.Tensor should be provided.
+
+        Outputs:
+                - **loss**: scalar.
+        &#34;&#34;&#34;
+        def __init__(self, lamda, l2_norm=True, weight_initializer=None):
+                super(RingLoss, self).__init__()
+                self.lamda = lamda
+                self.l2_norm = l2_norm
+                if weight_initializer is None:
+                        self.R = self.parameters(torch.rand(1))
+                else:
+                        assert torch.is_tensor(weight_initializer), &#39;weight_initializer should be a Tensor.&#39;
+                        self.R = self.parameters(weight_initializer)
+
+        def forward(self, embedding):
+                if self.l2_norm:
+                        embedding = F.normalize(embedding, 2, dim=-1)
+                loss = (embedding - self.R).pow(2).sum(1).mean(0) * self.lamda * 0.5
+                return loss
+
+
+class CenterLoss(nn.Module):
+        &#34;&#34;&#34;Computes the Center Loss from
+        `&#34;A Discriminative Feature Learning Approach for Deep Face Recognition&#34;
+        &lt;http://ydwen.github.io/papers/WenECCV16.pdf&gt;`_paper.
+        Implementation is refer to
+        &#39;https://github.com/lyakaap/image-feature-learning-pytorch/blob/master/code/center_loss.py&#39;
+
+        Parameters
+        ----------
+        classes: int.
+                Number of classes.
+        embedding_dim: int
+                embedding_dim.
+        lamda: float
+                The loss weight enforcing a trade-off between the softmax loss and center loss.
+
+        Outputs:
+                - **loss**: loss tensor with shape (batch_size,). Dimensions other than
+                  batch_axis are averaged out.
+        &#34;&#34;&#34;
+        def __init__(self, classes, embedding_dim, lamda):
+                super(CenterLoss, self).__init__()
+                self.lamda = lamda
+                self.centers = nn.Parameter(torch.randn(classes, embedding_dim))
+
+        def forward(self, embedding, target):
+                expanded_centers = self.centers.index_select(0, target)
+                intra_distances = embedding.dist(expanded_centers)
+                loss = self.lamda * 0.5 * intra_distances / target.size()[0]
+                return loss
+
+
+class KnowledgeDistillationLoss(nn.Module):
+        def __init__(self, temperature=1):
+                super().__init__()
+                self.temperature = temperature
+
+        def forward(self, student_output, teacher_output):
+                return self.temperature**2 * torch.mean(
+                        torch.sum(-F.softmax(teacher_output / self.temperature) * F.log_softmax(student_output / self.temperature), dim=1))</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="imutils.ml.utils.toolbox.nn.loss.CBCrossEntropyLoss"><code class="flex name class">
+<span>class <span class="ident">CBCrossEntropyLoss</span></span>
+<span>(</span><span>targets: Sequence[int], beta: float = 0.0, reduction: str = 'mean')</span>
+</code></dt>
+<dd>
+<div class="desc"><p>This is a class implementation of the Class Balanced Cross Entropy Loss.</p>
+<h2 id="behavior">Behavior</h2>
+<ul>
+<li>beta=0.0 (default), results in the equivalent of unbalanced-CE, with weights=1 for all classes.</li>
+<li>beta=1.0, results in the equivalent of class-balanced-CE, with all weights equal to the inverse frequency of their corresponding class.</li>
+</ul>
+<p>Initializes internal Module state, shared by both nn.Module and ScriptModule.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class CBCrossEntropyLoss(nn.Module):
+        &#34;&#34;&#34;This is a class implementation of the Class Balanced Cross Entropy Loss.
+        
+        Behavior:
+                - beta=0.0 (default), results in the equivalent of unbalanced-CE, with weights=1 for all classes.
+                - beta=1.0, results in the equivalent of class-balanced-CE, with all weights equal to the inverse frequency of their corresponding class.
+                
+        
+        &#34;&#34;&#34;
+        def __init__(self,
+                                 targets: Sequence[int],
+                                 beta: float=0.0,
+                                 reduction: str=&#34;mean&#34;):
+                super(CBCrossEntropyLoss, self).__init__()
+                self.beta = beta
+                self.reduction = reduction
+                
+                self.weights = torch.nn.Parameter(
+                        self.calculate_class_weights(targets=targets, beta=beta),
+                        requires_grad=False
+                )
+                
+        def calculate_class_weights(self, targets: Sequence[int], beta: float=0.0) -&gt; torch.Tensor:
+                &#34;&#34;&#34;
+                Provided a representative sequence of target labels + an interpolation parameter beta, produce a class-balanced sequence of weights, 1 for each class see in targets. Shouldn&#39;t normally be called directly by the user, as it&#39;s run once in the Loss class __init__ method.
+                
+                [TBD] -- Add in some kind of masking to allow calculating weights for sequences that have at least 1 class absent.
+                &#34;&#34;&#34;
+                self.classes, self.class_counts = BF.class_counts(targets)
+                weights = BF.class_balanced_weight(beta=beta, samples_per_class=self.class_counts)
+                # self.weights = torch.from_numpy(weights)
+                # import pdb; pdb.set_trace()
+                
+                # with open(&#34;class_weights.csv&#34;, &#34;w&#34;) as f:
+                #       f
+                
+                return weights
+
+        def forward(self, y_logits: torch.Tensor, targets: torch.Tensor) -&gt; torch.Tensor:
+                
+#               print(f&#34;y_logits.device: {y_logits.device}&#34;,
+#                         f&#34;targets.device: {targets.device}&#34;,
+#                         f&#34;self.weights.device: {self.weights.device}&#34;)
+                
+#               import pdb; pdb.set_trace()
+                
+                loss = BF.class_balanced_cross_entropy_loss(y_logits,
+                                                                                                        y_true=targets,
+                                                                                                        weights=self.weights,
+                                                                                                        reduction=self.reduction)
+                
+                
+                
+                return loss</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>torch.nn.modules.module.Module</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="imutils.ml.utils.toolbox.nn.loss.CBCrossEntropyLoss.dump_patches"><code class="name">var <span class="ident">dump_patches</span> : bool</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="imutils.ml.utils.toolbox.nn.loss.CBCrossEntropyLoss.training"><code class="name">var <span class="ident">training</span> : bool</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="imutils.ml.utils.toolbox.nn.loss.CBCrossEntropyLoss.calculate_class_weights"><code class="name flex">
+<span>def <span class="ident">calculate_class_weights</span></span>(<span>self, targets: Sequence[int], beta: float = 0.0) ‑> torch.Tensor</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Provided a representative sequence of target labels + an interpolation parameter beta, produce a class-balanced sequence of weights, 1 for each class see in targets. Shouldn't normally be called directly by the user, as it's run once in the Loss class <strong>init</strong> method.</p>
+<p>[TBD] &ndash; Add in some kind of masking to allow calculating weights for sequences that have at least 1 class absent.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def calculate_class_weights(self, targets: Sequence[int], beta: float=0.0) -&gt; torch.Tensor:
+        &#34;&#34;&#34;
+        Provided a representative sequence of target labels + an interpolation parameter beta, produce a class-balanced sequence of weights, 1 for each class see in targets. Shouldn&#39;t normally be called directly by the user, as it&#39;s run once in the Loss class __init__ method.
+        
+        [TBD] -- Add in some kind of masking to allow calculating weights for sequences that have at least 1 class absent.
+        &#34;&#34;&#34;
+        self.classes, self.class_counts = BF.class_counts(targets)
+        weights = BF.class_balanced_weight(beta=beta, samples_per_class=self.class_counts)
+        # self.weights = torch.from_numpy(weights)
+        # import pdb; pdb.set_trace()
+        
+        # with open(&#34;class_weights.csv&#34;, &#34;w&#34;) as f:
+        #       f
+        
+        return weights</code></pre>
+</details>
+</dd>
+<dt id="imutils.ml.utils.toolbox.nn.loss.CBCrossEntropyLoss.forward"><code class="name flex">
+<span>def <span class="ident">forward</span></span>(<span>self, y_logits: torch.Tensor, targets: torch.Tensor) ‑> torch.Tensor</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Defines the computation performed at every call.</p>
+<p>Should be overridden by all subclasses.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Although the recipe for forward pass needs to be defined within
+this function, one should call the :class:<code>Module</code> instance afterwards
+instead of this since the former takes care of running the
+registered hooks while the latter silently ignores them.</p>
+</div></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">        def forward(self, y_logits: torch.Tensor, targets: torch.Tensor) -&gt; torch.Tensor:
+                
+#               print(f&#34;y_logits.device: {y_logits.device}&#34;,
+#                         f&#34;targets.device: {targets.device}&#34;,
+#                         f&#34;self.weights.device: {self.weights.device}&#34;)
+                
+#               import pdb; pdb.set_trace()
+                
+                loss = BF.class_balanced_cross_entropy_loss(y_logits,
+                                                                                                        y_true=targets,
+                                                                                                        weights=self.weights,
+                                                                                                        reduction=self.reduction)
+                
+                
+                
+                return loss</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="imutils.ml.utils.toolbox.nn.loss.CenterLoss"><code class="flex name class">
+<span>class <span class="ident">CenterLoss</span></span>
+<span>(</span><span>classes, embedding_dim, lamda)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Computes the Center Loss from
+<code>"A Discriminative Feature Learning Approach for Deep Face Recognition"
+&lt;http://ydwen.github.io/papers/WenECCV16.pdf&gt;</code>_paper.
+Implementation is refer to
+'https://github.com/lyakaap/image-feature-learning-pytorch/blob/master/code/center_loss.py'</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt>classes: int.</dt>
+<dt>Number of classes.</dt>
+<dt><strong><code>embedding_dim</code></strong> :&ensp;<code>int</code></dt>
+<dd>embedding_dim.</dd>
+<dt><strong><code>lamda</code></strong> :&ensp;<code>float</code></dt>
+<dd>The loss weight enforcing a trade-off between the softmax loss and center loss.</dd>
+</dl>
+<h2 id="outputs">Outputs</h2>
+<ul>
+<li><strong>loss</strong>: loss tensor with shape (batch_size,). Dimensions other than
+batch_axis are averaged out.</li>
+</ul>
+<p>Initializes internal Module state, shared by both nn.Module and ScriptModule.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class CenterLoss(nn.Module):
+        &#34;&#34;&#34;Computes the Center Loss from
+        `&#34;A Discriminative Feature Learning Approach for Deep Face Recognition&#34;
+        &lt;http://ydwen.github.io/papers/WenECCV16.pdf&gt;`_paper.
+        Implementation is refer to
+        &#39;https://github.com/lyakaap/image-feature-learning-pytorch/blob/master/code/center_loss.py&#39;
+
+        Parameters
+        ----------
+        classes: int.
+                Number of classes.
+        embedding_dim: int
+                embedding_dim.
+        lamda: float
+                The loss weight enforcing a trade-off between the softmax loss and center loss.
+
+        Outputs:
+                - **loss**: loss tensor with shape (batch_size,). Dimensions other than
+                  batch_axis are averaged out.
+        &#34;&#34;&#34;
+        def __init__(self, classes, embedding_dim, lamda):
+                super(CenterLoss, self).__init__()
+                self.lamda = lamda
+                self.centers = nn.Parameter(torch.randn(classes, embedding_dim))
+
+        def forward(self, embedding, target):
+                expanded_centers = self.centers.index_select(0, target)
+                intra_distances = embedding.dist(expanded_centers)
+                loss = self.lamda * 0.5 * intra_distances / target.size()[0]
+                return loss</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>torch.nn.modules.module.Module</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="imutils.ml.utils.toolbox.nn.loss.CenterLoss.dump_patches"><code class="name">var <span class="ident">dump_patches</span> : bool</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="imutils.ml.utils.toolbox.nn.loss.CenterLoss.training"><code class="name">var <span class="ident">training</span> : bool</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="imutils.ml.utils.toolbox.nn.loss.CenterLoss.forward"><code class="name flex">
+<span>def <span class="ident">forward</span></span>(<span>self, embedding, target) ‑> Callable[..., Any]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Defines the computation performed at every call.</p>
+<p>Should be overridden by all subclasses.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Although the recipe for forward pass needs to be defined within
+this function, one should call the :class:<code>Module</code> instance afterwards
+instead of this since the former takes care of running the
+registered hooks while the latter silently ignores them.</p>
+</div></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def forward(self, embedding, target):
+        expanded_centers = self.centers.index_select(0, target)
+        intra_distances = embedding.dist(expanded_centers)
+        loss = self.lamda * 0.5 * intra_distances / target.size()[0]
+        return loss</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="imutils.ml.utils.toolbox.nn.loss.CircleLoss"><code class="flex name class">
+<span>class <span class="ident">CircleLoss</span></span>
+<span>(</span><span>m, gamma)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>CircleLoss from
+<code>"Circle Loss: A Unified Perspective of Pair Similarity Optimization"
+&lt;https://arxiv.org/pdf/2002.10857&gt;</code>_ paper.</p>
+<h2 id="parameters">Parameters</h2>
+<p>m: float.
+Margin parameter for loss.
+gamma: int.
+Scale parameter for loss.</p>
+<h2 id="outputs">Outputs</h2>
+<ul>
+<li><strong>loss</strong>: scalar.</li>
+</ul>
+<p>Initializes internal Module state, shared by both nn.Module and ScriptModule.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class CircleLoss(nn.Module):
+        r&#34;&#34;&#34;CircleLoss from
+        `&#34;Circle Loss: A Unified Perspective of Pair Similarity Optimization&#34;
+        &lt;https://arxiv.org/pdf/2002.10857&gt;`_ paper.
+
+        Parameters
+        ----------
+        m: float.
+                Margin parameter for loss.
+        gamma: int.
+                Scale parameter for loss.
+
+        Outputs:
+                - **loss**: scalar.
+        &#34;&#34;&#34;
+        def __init__(self, m, gamma):
+                super(CircleLoss, self).__init__()
+                self.m = m
+                self.gamma = gamma
+                self.dp = 1 - m
+                self.dn = m
+
+        def forward(self, x, target):
+                similarity_matrix = x @ x.T  # need gard here
+                label_matrix = target.unsqueeze(1) == target.unsqueeze(0)
+                negative_matrix = label_matrix.logical_not()
+                positive_matrix = label_matrix.fill_diagonal_(False)
+
+                sp = torch.where(positive_matrix, similarity_matrix, torch.zeros_like(similarity_matrix))
+                sn = torch.where(negative_matrix, similarity_matrix, torch.zeros_like(similarity_matrix))
+
+                ap = torch.clamp_min(1 + self.m - sp.detach(), min=0.)
+                an = torch.clamp_min(sn.detach() + self.m, min=0.)
+
+                logit_p = -self.gamma * ap * (sp - self.dp)
+                logit_n = self.gamma * an * (sn - self.dn)
+
+                logit_p = torch.where(positive_matrix, logit_p, torch.zeros_like(logit_p))
+                logit_n = torch.where(negative_matrix, logit_n, torch.zeros_like(logit_n))
+
+                loss = F.softplus(torch.logsumexp(logit_p, dim=1) + torch.logsumexp(logit_n, dim=1)).mean()
+                return loss</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>torch.nn.modules.module.Module</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="imutils.ml.utils.toolbox.nn.loss.CircleLoss.dump_patches"><code class="name">var <span class="ident">dump_patches</span> : bool</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="imutils.ml.utils.toolbox.nn.loss.CircleLoss.training"><code class="name">var <span class="ident">training</span> : bool</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="imutils.ml.utils.toolbox.nn.loss.CircleLoss.forward"><code class="name flex">
+<span>def <span class="ident">forward</span></span>(<span>self, x, target) ‑> Callable[..., Any]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Defines the computation performed at every call.</p>
+<p>Should be overridden by all subclasses.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Although the recipe for forward pass needs to be defined within
+this function, one should call the :class:<code>Module</code> instance afterwards
+instead of this since the former takes care of running the
+registered hooks while the latter silently ignores them.</p>
+</div></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def forward(self, x, target):
+        similarity_matrix = x @ x.T  # need gard here
+        label_matrix = target.unsqueeze(1) == target.unsqueeze(0)
+        negative_matrix = label_matrix.logical_not()
+        positive_matrix = label_matrix.fill_diagonal_(False)
+
+        sp = torch.where(positive_matrix, similarity_matrix, torch.zeros_like(similarity_matrix))
+        sn = torch.where(negative_matrix, similarity_matrix, torch.zeros_like(similarity_matrix))
+
+        ap = torch.clamp_min(1 + self.m - sp.detach(), min=0.)
+        an = torch.clamp_min(sn.detach() + self.m, min=0.)
+
+        logit_p = -self.gamma * ap * (sp - self.dp)
+        logit_n = self.gamma * an * (sn - self.dn)
+
+        logit_p = torch.where(positive_matrix, logit_p, torch.zeros_like(logit_p))
+        logit_n = torch.where(negative_matrix, logit_n, torch.zeros_like(logit_n))
+
+        loss = F.softplus(torch.logsumexp(logit_p, dim=1) + torch.logsumexp(logit_n, dim=1)).mean()
+        return loss</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="imutils.ml.utils.toolbox.nn.loss.FocalLoss"><code class="flex name class">
+<span>class <span class="ident">FocalLoss</span></span>
+<span>(</span><span>num_classes: int, gamma, weight=None, reduction='mean')</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Base class for all neural network modules.</p>
+<p>Your models should also subclass this class.</p>
+<p>Modules can also contain other Modules, allowing to nest them in
+a tree structure. You can assign the submodules as regular attributes::</p>
+<pre><code>import torch.nn as nn
+import torch.nn.functional as F
+
+class Model(nn.Module):
+    def __init__(self):
+        super(Model, self).__init__()
+        self.conv1 = nn.Conv2d(1, 20, 5)
+        self.conv2 = nn.Conv2d(20, 20, 5)
+
+    def forward(self, x):
+        x = F.relu(self.conv1(x))
+        return F.relu(self.conv2(x))
+</code></pre>
+<p>Submodules assigned in this way will be registered, and will have their
+parameters converted too when you call :meth:<code>to</code>, etc.</p>
+<p>:ivar training: Boolean represents whether this module is in training or
+evaluation mode.
+:vartype training: bool</p>
+<p>Initializes internal Module state, shared by both nn.Module and ScriptModule.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class FocalLoss(_WeightedLoss):
+        def __init__(self,
+                                 num_classes: int,
+                                 gamma,
+                                 weight=None,
+                                 reduction=&#39;mean&#39;):
+                super(FocalLoss, self).__init__(weight=weight, reduction=reduction)
+                self.num_classes = num_classes
+                self.gamma = gamma
+
+        def forward(self, pred, target):
+                zt = BF.logits_distribution(pred, target, self.num_classes)
+                ret = -(1 - torch.sigmoid(zt)).pow(self.gamma) * F.logsigmoid(zt)
+                return BF.logits_nll_loss(ret, target, self.weight, self.reduction)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>torch.nn.modules.loss._WeightedLoss</li>
+<li>torch.nn.modules.loss._Loss</li>
+<li>torch.nn.modules.module.Module</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="imutils.ml.utils.toolbox.nn.loss.FocalLoss.reduction"><code class="name">var <span class="ident">reduction</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="imutils.ml.utils.toolbox.nn.loss.FocalLoss.forward"><code class="name flex">
+<span>def <span class="ident">forward</span></span>(<span>self, pred, target) ‑> Callable[..., Any]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Defines the computation performed at every call.</p>
+<p>Should be overridden by all subclasses.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Although the recipe for forward pass needs to be defined within
+this function, one should call the :class:<code>Module</code> instance afterwards
+instead of this since the former takes care of running the
+registered hooks while the latter silently ignores them.</p>
+</div></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def forward(self, pred, target):
+        zt = BF.logits_distribution(pred, target, self.num_classes)
+        ret = -(1 - torch.sigmoid(zt)).pow(self.gamma) * F.logsigmoid(zt)
+        return BF.logits_nll_loss(ret, target, self.weight, self.reduction)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="imutils.ml.utils.toolbox.nn.loss.L0Loss"><code class="flex name class">
+<span>class <span class="ident">L0Loss</span></span>
+<span>(</span><span>gamma=2, eps=1e-08)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>L0loss from
+"Noise2Noise: Learning Image Restoration without Clean Data"
+<a href="https://arxiv.org/pdf/1803.04189">https://arxiv.org/pdf/1803.04189</a>`_ paper.</p>
+<p>Initializes internal Module state, shared by both nn.Module and ScriptModule.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class L0Loss(nn.Module):
+        &#34;&#34;&#34;L0loss from
+        &#34;Noise2Noise: Learning Image Restoration without Clean Data&#34;
+        &lt;https://arxiv.org/pdf/1803.04189&gt;`_ paper.
+
+        &#34;&#34;&#34;
+        def __init__(self, gamma=2, eps=1e-8):
+                super(L0Loss, self).__init__()
+                self.gamma = gamma
+                self.eps = eps
+
+        def forward(self, pred, target):
+                loss = (torch.abs(pred - target) + self.eps).pow(self.gamma)
+                return torch.mean(loss)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>torch.nn.modules.module.Module</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="imutils.ml.utils.toolbox.nn.loss.L0Loss.dump_patches"><code class="name">var <span class="ident">dump_patches</span> : bool</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="imutils.ml.utils.toolbox.nn.loss.L0Loss.training"><code class="name">var <span class="ident">training</span> : bool</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="imutils.ml.utils.toolbox.nn.loss.L0Loss.forward"><code class="name flex">
+<span>def <span class="ident">forward</span></span>(<span>self, pred, target) ‑> Callable[..., Any]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Defines the computation performed at every call.</p>
+<p>Should be overridden by all subclasses.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Although the recipe for forward pass needs to be defined within
+this function, one should call the :class:<code>Module</code> instance afterwards
+instead of this since the former takes care of running the
+registered hooks while the latter silently ignores them.</p>
+</div></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def forward(self, pred, target):
+        loss = (torch.abs(pred - target) + self.eps).pow(self.gamma)
+        return torch.mean(loss)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="imutils.ml.utils.toolbox.nn.loss.LabelSmoothingLoss"><code class="flex name class">
+<span>class <span class="ident">LabelSmoothingLoss</span></span>
+<span>(</span><span>num_classes: int, smoothing: float = 0.0, dim: int = -1)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>This is label smoothing loss function.</p>
+<p>Initializes internal Module state, shared by both nn.Module and ScriptModule.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class LabelSmoothingLoss(nn.Module):
+        &#34;&#34;&#34;This is label smoothing loss function.
+        &#34;&#34;&#34;
+        def __init__(self,
+                                 num_classes: int,
+                                 smoothing: float=0.0,
+                                 dim: int=-1):
+                super(LabelSmoothingLoss, self).__init__()
+                self.confidence = 1.0 - smoothing
+                self.smoothing = smoothing
+                self.num_classes = num_classes
+                self.dim = dim
+
+        def forward(self, pred: torch.Tensor, target: torch.Tensor) -&gt; torch.Tensor:
+                pred = pred.log_softmax(dim=self.dim)
+                true_dist = BF.smooth_one_hot(target, self.num_classes, self.smoothing)
+                return torch.mean(torch.sum(-true_dist * pred, dim=self.dim))</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>torch.nn.modules.module.Module</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="imutils.ml.utils.toolbox.nn.loss.LabelSmoothingLoss.dump_patches"><code class="name">var <span class="ident">dump_patches</span> : bool</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="imutils.ml.utils.toolbox.nn.loss.LabelSmoothingLoss.training"><code class="name">var <span class="ident">training</span> : bool</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="imutils.ml.utils.toolbox.nn.loss.LabelSmoothingLoss.forward"><code class="name flex">
+<span>def <span class="ident">forward</span></span>(<span>self, pred: torch.Tensor, target: torch.Tensor) ‑> torch.Tensor</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Defines the computation performed at every call.</p>
+<p>Should be overridden by all subclasses.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Although the recipe for forward pass needs to be defined within
+this function, one should call the :class:<code>Module</code> instance afterwards
+instead of this since the former takes care of running the
+registered hooks while the latter silently ignores them.</p>
+</div></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def forward(self, pred: torch.Tensor, target: torch.Tensor) -&gt; torch.Tensor:
+        pred = pred.log_softmax(dim=self.dim)
+        true_dist = BF.smooth_one_hot(target, self.num_classes, self.smoothing)
+        return torch.mean(torch.sum(-true_dist * pred, dim=self.dim))</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="imutils.ml.utils.toolbox.nn.loss.RingLoss"><code class="flex name class">
+<span>class <span class="ident">RingLoss</span></span>
+<span>(</span><span>lamda, l2_norm=True, weight_initializer=None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Computes the Ring Loss from
+`"Ring loss: Convex Feature Normalization for Face Recognition"</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>lamda</code></strong> :&ensp;<code>float</code></dt>
+<dd>The loss weight enforcing a trade-off between the softmax loss and ring loss.</dd>
+<dt><strong><code>l2_norm</code></strong> :&ensp;<code>bool</code></dt>
+<dd>Whether use l2 norm to embedding.</dd>
+</dl>
+<p>weight_initializer (None or torch.Tensor): If not None a torch.Tensor should be provided.</p>
+<h2 id="outputs">Outputs</h2>
+<ul>
+<li><strong>loss</strong>: scalar.</li>
+</ul>
+<p>Initializes internal Module state, shared by both nn.Module and ScriptModule.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class RingLoss(nn.Module):
+        &#34;&#34;&#34;Computes the Ring Loss from
+        `&#34;Ring loss: Convex Feature Normalization for Face Recognition&#34;
+
+        Parameters
+        ----------
+        lamda: float
+                The loss weight enforcing a trade-off between the softmax loss and ring loss.
+        l2_norm: bool
+                Whether use l2 norm to embedding.
+        weight_initializer (None or torch.Tensor): If not None a torch.Tensor should be provided.
+
+        Outputs:
+                - **loss**: scalar.
+        &#34;&#34;&#34;
+        def __init__(self, lamda, l2_norm=True, weight_initializer=None):
+                super(RingLoss, self).__init__()
+                self.lamda = lamda
+                self.l2_norm = l2_norm
+                if weight_initializer is None:
+                        self.R = self.parameters(torch.rand(1))
+                else:
+                        assert torch.is_tensor(weight_initializer), &#39;weight_initializer should be a Tensor.&#39;
+                        self.R = self.parameters(weight_initializer)
+
+        def forward(self, embedding):
+                if self.l2_norm:
+                        embedding = F.normalize(embedding, 2, dim=-1)
+                loss = (embedding - self.R).pow(2).sum(1).mean(0) * self.lamda * 0.5
+                return loss</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>torch.nn.modules.module.Module</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="imutils.ml.utils.toolbox.nn.loss.RingLoss.dump_patches"><code class="name">var <span class="ident">dump_patches</span> : bool</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="imutils.ml.utils.toolbox.nn.loss.RingLoss.training"><code class="name">var <span class="ident">training</span> : bool</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="imutils.ml.utils.toolbox.nn.loss.RingLoss.forward"><code class="name flex">
+<span>def <span class="ident">forward</span></span>(<span>self, embedding) ‑> Callable[..., Any]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Defines the computation performed at every call.</p>
+<p>Should be overridden by all subclasses.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Although the recipe for forward pass needs to be defined within
+this function, one should call the :class:<code>Module</code> instance afterwards
+instead of this since the former takes care of running the
+registered hooks while the latter silently ignores them.</p>
+</div></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def forward(self, embedding):
+        if self.l2_norm:
+                embedding = F.normalize(embedding, 2, dim=-1)
+        loss = (embedding - self.R).pow(2).sum(1).mean(0) * self.lamda * 0.5
+        return loss</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="imutils.ml.utils.toolbox.nn.loss.SigmoidCrossEntropy"><code class="flex name class">
+<span>class <span class="ident">SigmoidCrossEntropy</span></span>
+<span>(</span><span>classes, weight=None, reduction='mean')</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Base class for all neural network modules.</p>
+<p>Your models should also subclass this class.</p>
+<p>Modules can also contain other Modules, allowing to nest them in
+a tree structure. You can assign the submodules as regular attributes::</p>
+<pre><code>import torch.nn as nn
+import torch.nn.functional as F
+
+class Model(nn.Module):
+    def __init__(self):
+        super(Model, self).__init__()
+        self.conv1 = nn.Conv2d(1, 20, 5)
+        self.conv2 = nn.Conv2d(20, 20, 5)
+
+    def forward(self, x):
+        x = F.relu(self.conv1(x))
+        return F.relu(self.conv2(x))
+</code></pre>
+<p>Submodules assigned in this way will be registered, and will have their
+parameters converted too when you call :meth:<code>to</code>, etc.</p>
+<p>:ivar training: Boolean represents whether this module is in training or
+evaluation mode.
+:vartype training: bool</p>
+<p>Initializes internal Module state, shared by both nn.Module and ScriptModule.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class SigmoidCrossEntropy(_WeightedLoss):
+        def __init__(self, classes, weight=None, reduction=&#39;mean&#39;):
+                super(SigmoidCrossEntropy, self).__init__(weight=weight, reduction=reduction)
+                self.classes = classes
+
+        def forward(self, pred, target):
+                zt = BF.logits_distribution(pred, target, self.classes)
+                return BF.logits_nll_loss(-F.logsigmoid(zt), target, self.weight, self.reduction)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>torch.nn.modules.loss._WeightedLoss</li>
+<li>torch.nn.modules.loss._Loss</li>
+<li>torch.nn.modules.module.Module</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="imutils.ml.utils.toolbox.nn.loss.SigmoidCrossEntropy.reduction"><code class="name">var <span class="ident">reduction</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="imutils.ml.utils.toolbox.nn.loss.SigmoidCrossEntropy.forward"><code class="name flex">
+<span>def <span class="ident">forward</span></span>(<span>self, pred, target) ‑> Callable[..., Any]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Defines the computation performed at every call.</p>
+<p>Should be overridden by all subclasses.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Although the recipe for forward pass needs to be defined within
+this function, one should call the :class:<code>Module</code> instance afterwards
+instead of this since the former takes care of running the
+registered hooks while the latter silently ignores them.</p>
+</div></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def forward(self, pred, target):
+        zt = BF.logits_distribution(pred, target, self.classes)
+        return BF.logits_nll_loss(-F.logsigmoid(zt), target, self.weight, self.reduction)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="imutils.ml.utils.toolbox.nn" href="index.html">imutils.ml.utils.toolbox.nn</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="imutils.ml.utils.toolbox.nn.loss.CBCrossEntropyLoss" href="#imutils.ml.utils.toolbox.nn.loss.CBCrossEntropyLoss">CBCrossEntropyLoss</a></code></h4>
+<ul class="">
+<li><code><a title="imutils.ml.utils.toolbox.nn.loss.CBCrossEntropyLoss.calculate_class_weights" href="#imutils.ml.utils.toolbox.nn.loss.CBCrossEntropyLoss.calculate_class_weights">calculate_class_weights</a></code></li>
+<li><code><a title="imutils.ml.utils.toolbox.nn.loss.CBCrossEntropyLoss.dump_patches" href="#imutils.ml.utils.toolbox.nn.loss.CBCrossEntropyLoss.dump_patches">dump_patches</a></code></li>
+<li><code><a title="imutils.ml.utils.toolbox.nn.loss.CBCrossEntropyLoss.forward" href="#imutils.ml.utils.toolbox.nn.loss.CBCrossEntropyLoss.forward">forward</a></code></li>
+<li><code><a title="imutils.ml.utils.toolbox.nn.loss.CBCrossEntropyLoss.training" href="#imutils.ml.utils.toolbox.nn.loss.CBCrossEntropyLoss.training">training</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="imutils.ml.utils.toolbox.nn.loss.CenterLoss" href="#imutils.ml.utils.toolbox.nn.loss.CenterLoss">CenterLoss</a></code></h4>
+<ul class="">
+<li><code><a title="imutils.ml.utils.toolbox.nn.loss.CenterLoss.dump_patches" href="#imutils.ml.utils.toolbox.nn.loss.CenterLoss.dump_patches">dump_patches</a></code></li>
+<li><code><a title="imutils.ml.utils.toolbox.nn.loss.CenterLoss.forward" href="#imutils.ml.utils.toolbox.nn.loss.CenterLoss.forward">forward</a></code></li>
+<li><code><a title="imutils.ml.utils.toolbox.nn.loss.CenterLoss.training" href="#imutils.ml.utils.toolbox.nn.loss.CenterLoss.training">training</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="imutils.ml.utils.toolbox.nn.loss.CircleLoss" href="#imutils.ml.utils.toolbox.nn.loss.CircleLoss">CircleLoss</a></code></h4>
+<ul class="">
+<li><code><a title="imutils.ml.utils.toolbox.nn.loss.CircleLoss.dump_patches" href="#imutils.ml.utils.toolbox.nn.loss.CircleLoss.dump_patches">dump_patches</a></code></li>
+<li><code><a title="imutils.ml.utils.toolbox.nn.loss.CircleLoss.forward" href="#imutils.ml.utils.toolbox.nn.loss.CircleLoss.forward">forward</a></code></li>
+<li><code><a title="imutils.ml.utils.toolbox.nn.loss.CircleLoss.training" href="#imutils.ml.utils.toolbox.nn.loss.CircleLoss.training">training</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="imutils.ml.utils.toolbox.nn.loss.FocalLoss" href="#imutils.ml.utils.toolbox.nn.loss.FocalLoss">FocalLoss</a></code></h4>
+<ul class="">
+<li><code><a title="imutils.ml.utils.toolbox.nn.loss.FocalLoss.forward" href="#imutils.ml.utils.toolbox.nn.loss.FocalLoss.forward">forward</a></code></li>
+<li><code><a title="imutils.ml.utils.toolbox.nn.loss.FocalLoss.reduction" href="#imutils.ml.utils.toolbox.nn.loss.FocalLoss.reduction">reduction</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="imutils.ml.utils.toolbox.nn.loss.L0Loss" href="#imutils.ml.utils.toolbox.nn.loss.L0Loss">L0Loss</a></code></h4>
+<ul class="">
+<li><code><a title="imutils.ml.utils.toolbox.nn.loss.L0Loss.dump_patches" href="#imutils.ml.utils.toolbox.nn.loss.L0Loss.dump_patches">dump_patches</a></code></li>
+<li><code><a title="imutils.ml.utils.toolbox.nn.loss.L0Loss.forward" href="#imutils.ml.utils.toolbox.nn.loss.L0Loss.forward">forward</a></code></li>
+<li><code><a title="imutils.ml.utils.toolbox.nn.loss.L0Loss.training" href="#imutils.ml.utils.toolbox.nn.loss.L0Loss.training">training</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="imutils.ml.utils.toolbox.nn.loss.LabelSmoothingLoss" href="#imutils.ml.utils.toolbox.nn.loss.LabelSmoothingLoss">LabelSmoothingLoss</a></code></h4>
+<ul class="">
+<li><code><a title="imutils.ml.utils.toolbox.nn.loss.LabelSmoothingLoss.dump_patches" href="#imutils.ml.utils.toolbox.nn.loss.LabelSmoothingLoss.dump_patches">dump_patches</a></code></li>
+<li><code><a title="imutils.ml.utils.toolbox.nn.loss.LabelSmoothingLoss.forward" href="#imutils.ml.utils.toolbox.nn.loss.LabelSmoothingLoss.forward">forward</a></code></li>
+<li><code><a title="imutils.ml.utils.toolbox.nn.loss.LabelSmoothingLoss.training" href="#imutils.ml.utils.toolbox.nn.loss.LabelSmoothingLoss.training">training</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="imutils.ml.utils.toolbox.nn.loss.RingLoss" href="#imutils.ml.utils.toolbox.nn.loss.RingLoss">RingLoss</a></code></h4>
+<ul class="">
+<li><code><a title="imutils.ml.utils.toolbox.nn.loss.RingLoss.dump_patches" href="#imutils.ml.utils.toolbox.nn.loss.RingLoss.dump_patches">dump_patches</a></code></li>
+<li><code><a title="imutils.ml.utils.toolbox.nn.loss.RingLoss.forward" href="#imutils.ml.utils.toolbox.nn.loss.RingLoss.forward">forward</a></code></li>
+<li><code><a title="imutils.ml.utils.toolbox.nn.loss.RingLoss.training" href="#imutils.ml.utils.toolbox.nn.loss.RingLoss.training">training</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="imutils.ml.utils.toolbox.nn.loss.SigmoidCrossEntropy" href="#imutils.ml.utils.toolbox.nn.loss.SigmoidCrossEntropy">SigmoidCrossEntropy</a></code></h4>
+<ul class="">
+<li><code><a title="imutils.ml.utils.toolbox.nn.loss.SigmoidCrossEntropy.forward" href="#imutils.ml.utils.toolbox.nn.loss.SigmoidCrossEntropy.forward">forward</a></code></li>
+<li><code><a title="imutils.ml.utils.toolbox.nn.loss.SigmoidCrossEntropy.reduction" href="#imutils.ml.utils.toolbox.nn.loss.SigmoidCrossEntropy.reduction">reduction</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+</footer>
+</body>
+</html>

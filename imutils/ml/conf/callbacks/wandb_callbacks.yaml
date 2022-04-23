@@ -34,7 +34,26 @@ watch_model_with_wandb:
 uploadcheckpointsasartifact:
     _target_: imutils.ml.callbacks.wandb_callbacks.UploadCheckpointsToWandbAsArtifact
     ckpt_dir: '${checkpoint_dir}'
-    upload_best_only: true
+    log_every_n_epochs: 2
+    upload_best_only: false
+    artifact_name: "${model_cfg.name}-weights"
+    artifact_type: "checkpoints"
+
+taxonomy_logger_callback:
+    _target_: imutils.ml.utils.taxonomy_utils.TaxonomyLoggerCallback
+    name: "taxonomy.${data.datamodule.name}"
+
+
 
 module_data_monitor:
-    _target_: pl_bolts.callbacks.ModuleDataMonitor
+    _target_: imutils.ml.callbacks.wandb_callbacks.ModuleDataMonitor
+    log_every_n_steps: 50
+    submodules:
+        - "net.backbone.conv1"
+        - "net.backbone.bn1"
+        - "net.backbone.act1"
+        - "net.backbone.layer4.2.act3"
+        - "net.head"
+
+
+

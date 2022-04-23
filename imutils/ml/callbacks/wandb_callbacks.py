@@ -8,6 +8,7 @@ import numpy as np
 from rich import print as pp
 import torch
 import wandb
+import hydra
 import pandas as pd
 # from torchmetrics import metrics
 from torch.utils.data import DataLoader #,Dataset, Subset, random_split
@@ -26,37 +27,6 @@ from sklearn.metrics import classification_report
 
 
 from imutils.ml.utils.plot_utils import plot_confusion_matrix
-
-# from sklearn.metrics import accuracy_score
-# from sklearn.metrics import confusion_matrix
-# from sklearn.metrics import f1_score
-
-
-
-# def get_labels_from_filepath(path: str, fix_catalog_number: bool = False):
-#	 return None
-
-# def get_labels_from_filepath(path: str, fix_catalog_number: bool = False) -> Dict[str,str]:
-#	 """
-#	 Splits a precisely-formatted filename with the expectation that it is constructed with the following fields separated by '_':
-#	 1. family
-#	 2. genus
-#	 3. species
-#	 4. collection
-#	 5. catalog_number
-	
-#	 If fix_catalog_number is True, assume that the collection is not included and must separately be extracted from the first part of the catalog number.
-	
-#	 """
-#	 family, genus, species, collection, catalog_number = Path(path).stem.split("_", maxsplit=4)
-#	 if fix_catalog_number:
-#		 catalog_number = '_'.join([collection, catalog_number])
-#	 return {"family":family,
-#			 "genus":genus,
-#			 "species":species,
-#			 "collection":collection,
-#			 "catalog_number":catalog_number}
-
 
 
 
@@ -169,6 +139,37 @@ class ImagePredictionLogger(Callback):
 
 
 
+import pl_bolts
+from torch import nn
+from rich import print as pp
+from omegaconf import ListConfig, OmegaConf
+from typing import *
+
+class ModuleDataMonitor(pl_bolts.callbacks.ModuleDataMonitor):
+
+
+	def __init__(self,
+				 submodules: Optional[Union[bool, List[str]]] = None,
+				 log_every_n_steps: int = None
+				):
+		if isinstance(submodules, ListConfig):
+			submodules = OmegaConf.to_container(submodules, resolve=True)
+			print("type(submodules): ", type(submodules))
+			submodules = list(submodules)
+		self._train_batch_idx = 0
+		super().__init__(submodules=submodules,
+						 log_every_n_steps=log_every_n_steps)
+
+	def _get_submodule_names(self, root_module: nn.Module) -> List[str]:
+		# default is the root module only
+		# import pdb; pdb.set_trace()
+		names = super()._get_submodule_names(root_module=root_module)
+		print(f"ModuleDataMonitor is now tracking the following submodules:")
+		pp(names)
+
+		return names
+	
+
 
 def get_wandb_logger(trainer: Trainer) -> WandbLogger:
 	print(type(trainer.logger))
@@ -242,16 +243,25 @@ class UploadCheckpointsToWandbAsArtifact(Callback):
 	def __init__(self,
 				 ckpt_dir: str = "checkpoints/", 
 				 upload_best_only: bool = False,
+				 log_every_n_epochs: int = 2,
 				 artifact_name: str="model-weights",
 				 artifact_type: str="checkpoints"):
 		self.ckpt_dir = os.path.abspath(ckpt_dir)
+		self.log_every_n_epochs = log_every_n_epochs
 		self.upload_best_only = upload_best_only
 		self.artifact_name=artifact_name
 		self.artifact_type=artifact_type
 
-	def on_train_end(self, trainer, pl_module):
+	# def on_train_end(self, trainer, pl_module):
+	# 	self.create_and_use_artifact(trainer=trainer)
 		
-		self.create_and_use_artifact(trainer=trainer)
+	# def on_train_epoch_end(self, trainer, pl_module):
+	# 	if trainer.current_epoch % self.log_every_n_epochs == 0:
+	# 		self.create_and_use_artifact(trainer=trainer)
+	
+	def on_validation_epoch_end(self, trainer, pl_module):
+		if trainer.current_epoch % self.log_every_n_epochs == 0:
+			self.create_and_use_artifact(trainer=trainer)
 
 	@rank_zero_only
 	def create_and_use_artifact(self, trainer):
@@ -279,15 +289,32 @@ class UploadCheckpointsToWandbAsArtifact(Callback):
 			
 			print("Potentially successfully adding file to artifact, instead")
 			print("self.on_train_end: ", f"device:{torch.cuda.current_device()}")
-			ckpts.add_file(trainer.checkpoint_callback.best_model_path)
-			print(f"ckpts artifact has had file added. Device: {torch.cuda.current_device()}")
+			path = trainer.checkpoint_callback.best_model_path
+			ckpts.add_file(path)
+			print(f"ckpts artifact has had file at {path} added. Device: {torch.cuda.current_device()}")
 		else:
-			paths = list(glob.glob(os.path.join(self.ckpt_dir, "**/*.ckpt"), recursive=True))
+			paths = list(glob.glob(os.path.join(self.ckpt_dir, "**/model_weights.ckpt"), recursive=True))
+			# paths = list(glob.glob(os.path.join(self.ckpt_dir, "*.ckpt"), recursive=True))
+			skipped = 0
 			for path in paths:
-				ckpts.add_file(path)
-			print(f"ckpts artifact has had {len(paths)} files added. Device: {torch.cuda.current_device()}")
+				try:
+					if os.path.isfile(path):
+						hydra.utils.log.info(f"Logging artifact file: {path}")
+						ckpts.add_file(path)
+					elif os.path.isdir(path):
+						hydra.utils.log.info(f"Logging artifact dir: {path}")
+						ckpts.add_dir(path)
+					else:
+						hydra.utils.log.warning(f"path isnt a file or a dir: {path}")
+						skipped += 1
 
-		experiment.use_artifact(ckpts)
+				except ValueError as e:
+					print(f"{e} ---> Skipping ckpt path: {path}")
+					skipped += 1
+			print(f"ckpts artifact has had {len(paths) - skipped} files added. Device: {torch.cuda.current_device()}")
+
+		experiment.log_artifact(ckpts)
+		# experiment.use_artifact(ckpts)
 
 
 class LogPerClassMetricsToWandb(Callback):

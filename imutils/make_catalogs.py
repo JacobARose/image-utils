@@ -38,38 +38,21 @@ from copy import deepcopy
 from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import *
-
 import pandas as pd
-import torch
-# import torchdata
-import torchvision
-
-# from lightning_hydra_classifiers.utils.common_utils import LabelEncoder
-from IPython.display import display
 
 # from lightning_hydra_classifiers.data.utils import catalog_registry
+from imutils import catalog_registry
+from imutils.ml.utils.etl_utils import ETL
+
+
 # from lightning_hydra_classifiers.data.datasets.common import (
-#     ETL,
 #     CSVDataset,
-#     CSVDatasetConfig,
-#     ImageFileDataset,
-#     ImageFileDatasetConfig,
-#     PathSchema,
-#     SampleSchema,
+#     ImageFileDataset
 # )
-# from lightning_hydra_classifiers.utils.common_utils import (
-#     DataSplitter,
-#     LabelEncoder,
-#     trainval_split,
-#     trainvaltest_split,
-# )
+
+from imutils.big.common_catalog_utils import CSVDatasetConfig, ImageFileDatasetConfig
 from omegaconf import DictConfig
 from PIL import Image
-
-# from lightning_hydra_classifiers.data.common import PathSchema
-# from lightning_hydra_classifiers.utils.dataset_management_utils import Extract as ExtractBase
-# from lightning_hydra_classifiers.utils.etl_utils import ETL as ETLBase
-
 
 #######################################################
 #######################################################
@@ -457,6 +440,12 @@ def make_extant_w_pnas(args):
 
 CSV_CATALOG_DIR_V0_3 = "/media/data_cifs/projects/prj_fossils/users/jacob/experiments/July2021-Nov2021/csv_datasets/leavesdb-v0_3"
 CSV_CATALOG_DIR_V1_0 = "/media/data_cifs/projects/prj_fossils/users/jacob/experiments/July2021-Nov2021/csv_datasets/leavesdb-v1_0"
+
+
+CSV_CATALOG_DIR_V1_1 = "/media/data_cifs/projects/prj_fossils/users/jacob/data/leavesdb-v1_1"
+
+
+
 EXPERIMENTAL_DATASETS_DIR = "/media/data_cifs/projects/prj_fossils/users/jacob/experiments/July2021-Nov2021/csv_datasets/experimental_datasets"
 
 
@@ -473,7 +462,8 @@ def cmdline_args():
         "--output_dir",
         dest="output_dir",
         type=str,
-        default="/media/data_cifs/projects/prj_fossils/users/jacob/experiments/July2021-Nov2021/csv_datasets/leavesdb-v1_0",
+		default="/media/data_cifs/projects/prj_fossils/users/jacob/data/leavesdb-v1_1",
+        # default="/media/data_cifs/projects/prj_fossils/users/jacob/experiments/July2021-Nov2021/csv_datasets/leavesdb-v1_0",
         help=(
             "Output root directory. Each unique dataset will be allotted its own subdirectory"
             " within this root dir."
@@ -494,8 +484,8 @@ def cmdline_args():
         "--version",
         dest="version",
         type=str,
-        default="v1_0",
-        help="Available dataset versions: [v0_3, v1_0].",
+        default="v1_1",
+        help="Available dataset versions: [v0_3, v1_0, v1_1].",
     )
     p.add_argument(
         "--fossil",

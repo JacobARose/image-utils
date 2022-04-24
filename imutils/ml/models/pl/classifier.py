@@ -54,6 +54,7 @@ class LitClassifier(BaseLightningModule): #pl.LightningModule):
 				 name: str=None,
 				 num_classes: int=None, 
 				 loss_func: Union[Callable, str]=None,
+				 sync_dist: bool=False,
 				 # pretrain : bool = True,
 				 # self_supervised=False,
 				 *args, **kwargs) -> None:
@@ -64,6 +65,7 @@ class LitClassifier(BaseLightningModule): #pl.LightningModule):
 				   name=name,
 				   num_classes=num_classes,
 				   loss_func=loss_func,
+				   sync_dist=sync_dist,
 				   *args, **kwargs)
 		
 	def _setup(self,
@@ -74,6 +76,7 @@ class LitClassifier(BaseLightningModule): #pl.LightningModule):
 			  loss_func: Union[Callable, str]=None,
 			  setup_backbone: bool=True,
 			  setup_head: bool=True,
+			  sync_dist: bool=False,
 			  *args, **kwargs) -> None:
 
 		cfg = resolve_config(cfg)
@@ -85,6 +88,7 @@ class LitClassifier(BaseLightningModule): #pl.LightningModule):
 		self.num_classes = num_classes or self.model_cfg.head.get("num_classes")
 		self.name = name or self.model_cfg.get("name")
 		
+		self.sync_dist = sync_dist
 		self.setup_loss(loss_func)
 		self.setup_metrics()
 		backbone = getattr(getattr(self, "net", None), "backbone", None)
@@ -149,7 +153,7 @@ class LitClassifier(BaseLightningModule): #pl.LightningModule):
 	def forward(self, x: torch.Tensor) -> torch.Tensor:
 		return self.net(x)
 
-	def step(self, batch) -> Dict[str, torch.Tensor]:
+	def step(self, batch, batch_idx: int=None) -> Dict[str, torch.Tensor]:
 		"""
 		TODO: remove the "x" from common method self.step() outputs & benchmark reduction in GPU memory leaks
 		"""		
@@ -163,39 +167,42 @@ class LitClassifier(BaseLightningModule): #pl.LightningModule):
 
 		logits = self(x)
 		loss = self.loss(logits, y)
-		return {"logits": logits, "loss": loss, "y": y, "x": x, "image_id": image_idx}
+		return {"logits": logits, "loss": loss, "y": y, "x": x, "image_id": image_idx, "batch_idx": batch_idx}
 
 	def training_step(self, batch: Any, batch_idx: int) -> torch.Tensor:
 
-		out = self.step(batch)
-		out["batch_idx"] = batch_idx
+		out = self.step(batch, batch_idx=batch_idx)
+		# out["batch_idx"] = batch_idx
 		return out #{k: out[k] for k in ["logits", "loss", "y", "batch_idx"]}
 
 	def training_step_end(self, out):
 		
 		batch_size=self.batch_size #len(out["y"])
 		loss = out["loss"].mean()
-		batch_idx = out.pop("batch_idx")
+		# batch_idx = out.pop("batch_idx")
 		
 		self.train_metric.update(out["logits"], out["y"])
 		
+		self.log("train_loss", loss,
+				 on_step=True, on_epoch=True,
+				 prog_bar=True, batch_size=batch_size,
+				 sync_dist=self.sync_dist
+				)
+
 		log_dict = {
-			"train_loss": loss,
 			**self.train_metric
 		}
 		self.log_dict(
 			log_dict,
-			on_step=True,
-			on_epoch=True,
-			prog_bar=True,
-			batch_size=batch_size
+			on_step=False, on_epoch=True,
+			prog_bar=True, batch_size=batch_size
 		)
 		# self.print(f"training_step_end -> self.current_epoch: {self.current_epoch}, self.global_step: {self.global_step}, loss: {loss}")
 		return loss
 
 	def validation_step(self, batch: Any, batch_idx: int) -> Dict[str, torch.Tensor]:
-		out = self.step(batch)
-		out["batch_idx"] = batch_idx
+		out = self.step(batch, batch_idx=batch_idx)
+		# out["batch_idx"] = batch_idx
 		return out #{k: out[k] for k in ["logits", "loss", "y", "batch_idx"]}
 	
 	def validation_step_end(self, out):

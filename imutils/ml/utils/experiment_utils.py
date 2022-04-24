@@ -232,11 +232,13 @@ def configure_model(cfg: argparse.Namespace,
 		model = LitClassifier.load_from_checkpoint(
 			checkpoint_path=cfg.ckpt_path,
 			cfg=cfg,
-			loss_func=loss_func)
+			loss_func=loss_func,
+			sync_dist=cfg.model_cfg.sync_dist)
 	else:
 		model = LitClassifier(
 			cfg=cfg,
-			loss_func=loss_func)
+			loss_func=loss_func,
+			sync_dist=cfg.model_cfg.sync_dist)
 
 	return model
 

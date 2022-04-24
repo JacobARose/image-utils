@@ -27,6 +27,15 @@ logging = template_utils.get_logger(__file__)
 load_envs()
 
 
+@rank_zero_only
+def ddp_print(*args, rich: bool=True):
+	if rich:
+		pp(*args)
+		return
+	print(*args)
+	
+
+
 
 def init_cfg(cfg: DictConfig):
 	
@@ -72,18 +81,20 @@ def run_pretrain(cfg: DictConfig) -> None:
 	cfg = init_cfg(cfg)
 
 	hydra_dir = os.path.abspath(os.getcwd())
-	print(f"Using hydra_dir: {hydra_dir}")
+	ddp_print(f"Using hydra_dir: {hydra_dir}")
 	# hydra.utils.log.info(f"Before pretrain.lr_tuner value of lr: {cfg.optim.optimizer.lr}")	
 	if cfg.execution_list.auto_lr_tune:
-		hydra.utils.log.info(f"Executing pretrain stage: auto_lr_tune")
+		ddp_print(f"Executing pretrain stage: auto_lr_tune")
 		from imutils.ml import pretrain
 		cfg = pretrain.lr_tuner.run(cfg=cfg)
 						   # datamodule=datamodule)
 						   # model=model)
 
 	else:
-		hydra.utils.log.info(f"Skipping pretrain stage: auto_lr_tune")
-	hydra.utils.log.info(f"Proceeding with cfg.optim.lr_scheduler.warmup_start_lr={cfg.optim.lr_scheduler.warmup_start_lr}")
+		ddp_print(f"[SKIPPING PRETRAIN STAGE]: auto_lr_tune")
+		# hydra.utils.log.info(f"Skipping pretrain stage: auto_lr_tune")
+	ddp_print(f"[PROCEEDING] with value cfg.optim.lr_scheduler.warmup_start_lr={cfg.optim.lr_scheduler.warmup_start_lr}")
+	# hydra.utils.log.info(f"Proceeding with cfg.optim.lr_scheduler.warmup_start_lr={cfg.optim.lr_scheduler.warmup_start_lr}")
 	return cfg
 
 
@@ -104,32 +115,30 @@ def train(cfg: DictConfig) -> None:
 	
 	cfg = init_cfg(cfg)
 	hydra_dir = os.path.abspath(os.getcwd())	
-	print(f"Using hydra_dir: {hydra_dir}")
+	ddp_print(f"Using hydra_dir: {hydra_dir}")
 	
 	if cfg.execution_list.model_fit:
 		
-		hydra.utils.log.info(f"Executing train stage: model_fit")
-		hydra.utils.log.info(f"Instantiating <{cfg.data.datamodule._target_}>")
+		# hydra.utils.log.info(f"Executing train stage: model_fit")
+		# hydra.utils.log.info(f"Instantiating <{cfg.data.datamodule._target_}>")
+		ddp_print(f"Executing train stage: model_fit")
+		ddp_print(f"Instantiating {cfg.data.datamodule._target_}")
 		datamodule: pl.LightningDataModule = hydra.utils.instantiate(
 			cfg.data.datamodule, _recursive_=False)
 		datamodule.setup()
 		
 		loss_func = configure_loss_func(cfg, targets=datamodule.train_dataset.df.y)
-		# model: pl.LightningModule = hydra.utils.instantiate(cfg.model, cfg=cfg, _recursive_=False)
-		
-		# model = imutils.ml.models.pl.classifier.LitClassifier(cfg=cfg,
-		# 													  loss_func=loss_func)
 		
 		model = configure_model(cfg=cfg,
 								loss_func=loss_func)
-		
-		ic(model.lr, cfg.hp.lr, cfg.optim.optimizer.lr)
+		ddp_print(f"{cfg.optim.lr_scheduler.warmup_start_lr=}")
+		ddp_print(f"{model.lr=}, {cfg.hp.lr=}, {cfg.optim.optimizer.lr}")
 		
 		loggers = configure_loggers(cfg=cfg, model=model)
 
 		callbacks: List[pl.Callback] = configure_callbacks(cfg=cfg.train)	
-		hydra.utils.log.info(f"Instantiating the Trainer")
-		pp(OmegaConf.to_container(cfg.train.pl_trainer))
+		ddp_print(f"Instantiating the Trainer")
+		ddp_print(OmegaConf.to_container(cfg.train.pl_trainer, resolve=True))
 		trainer = configure_trainer(cfg,
 									callbacks=callbacks,
 									logger=loggers)
@@ -139,7 +148,7 @@ def train(cfg: DictConfig) -> None:
 		# num_classes = cfg.model_cfg.head.num_classes
 		num_classes = cfg.hp.num_classes
 		batch_size = datamodule.batch_size #["train"]
-		rank_zero_only(hydra.utils.log.info)(
+		ddp_print(
 			"Starting training: \n" \
 			+ f"train_size: {num_samples_train} images" + "\n" \
 			+ f"val_size: {num_samples_val} images" + "\n" \
@@ -182,7 +191,7 @@ def main(cfg: DictConfig):
 	# template_utils.extras(cfg)
 	template_utils.initialize_config(cfg)
 	
-	print(f"CUBLAS_WORKSPACE_CONFIG = {os.environ.get('CUBLAS_WORKSPACE_CONFIG')}")
+	ddp_print(f"CUBLAS_WORKSPACE_CONFIG = {os.environ.get('CUBLAS_WORKSPACE_CONFIG')}")
 
 	# Pretty print config using Rich library
 	if cfg.get("print_config_only"):
@@ -643,6 +652,138 @@ train.pl_trainer.accumulate_grad_batches=4
 
 ########################################################
 ########################################################
+
+
+
+########################################################
+########################################################
+
+
+
+######################
+## Experiment #29.5
+-- Grayscale Herbarium2022 512 -- Using m=272 **family** labels
+
+Goal: Train model until saturation on family labels, the lowest cardinality level in the hierarchy. Then, downstream, finetune it on more fine-grained labels.
+
+
+
+-- Changed primary class label level from scientificName (M=15501) to family (M=272)
+-- Increased Label Smoothing from 0.1 to 0.2
+-- Increasing hp.lr from 5e-3 to 7e-3
+
+
+* (Launched 7:45 AM Sunday April 24th, 2022)
+
+
+* (Finished x:xx PM Monday April 19th, 2022)
+
+
+
+
+export CUDA_VISIBLE_DEVICES=3,7; python run_main.py \
+'core.name="[DEV] - sync_dist=true - [fast_dev_run] Grayscale Herbarium2022 pretrain on family - Experiment #29.5b (2022-04-24)"' \
+train.pl_trainer.fast_dev_run=100 \
+model_cfg.sync_dist=true \
+execution_list.auto_lr_tune=false \
+data/datamodule@data=herbarium2022-res_512_datamodule \
+aug@data.datamodule.transform_cfg=medium_image_aug \
+'data.datamodule.label_col="family"' \
+experiments=grayscale_3-channel \
+hp.warmup_epochs=10 \
+hp.batch_size=32 \
+hp.lr=7e-3 \
+hp.preprocess_size=512 \
+hp.resolution=448 \
+optim/optimizer=AdamW \
+optim.optimizer.weight_decay=5e-5 \
+model_cfg.backbone.name=resnext50_32x4d \
+model_cfg/loss=label-smoothing_ce-loss \
+model_cfg.loss.label_smoothing=0.2 \
+hp.freeze_backbone_up_to=0 \
+hp.freeze_backbone=false \
+train.pl_trainer.devices=2 \
+train.pl_trainer.accelerator="gpu" \
+data.datamodule.num_workers=4 \
+train.pl_trainer.max_epochs=100 \
+train.callbacks.early_stopping.patience=20 \
+train.callbacks.early_stopping.min_delta=0.02 \
++train.pl_trainer.profiler="simple" \
+train.pl_trainer.accumulate_grad_batches=4
+
+
+########################################################
+########################################################
+
+
+
+########################################################
+########################################################
+
+
+
+######################
+
+# [TO BE DONE]
+
+## Experiment #30
+-- Grayscale Herbarium2022 512 -- Using m=272 **family** labels
+
+Goal: Train model until saturation on family labels, the lowest cardinality level in the hierarchy. Then, downstream, finetune it on more fine-grained labels.
+
+
+
+-- Setting sync_dist=true
+
+* (Launched 7:45 AM Sunday April 24th, 2022)
+
+
+* (Finished x:xx PM Monday April 19th, 2022)
+
+
+
+
+export CUDA_VISIBLE_DEVICES=3,4,5,7; python run_main.py \
+'core.name="[EXP] - sync_dist=true - Grayscale Herbarium2022 pretrain on family - Experiment #30 (2022-04-24)"' \
+execution_list.auto_lr_tune=true \
+model_cfg.sync_dist=true \
+data/datamodule@data=herbarium2022-res_512_datamodule \
+aug@data.datamodule.transform_cfg=medium_image_aug \
+'data.datamodule.label_col="family"' \
+experiments=grayscale_3-channel \
+hp.warmup_epochs=10 \
+hp.batch_size=32 \
+hp.lr=1e-2 \
+hp.preprocess_size=512 \
+hp.resolution=448 \
+optim/optimizer=AdamW \
+optim.optimizer.weight_decay=5e-5 \
+model_cfg.backbone.name=resnext50_32x4d \
+model_cfg/loss=label-smoothing_ce-loss \
+model_cfg.loss.label_smoothing=0.2 \
+hp.freeze_backbone_up_to=0 \
+hp.freeze_backbone=false \
+train.pl_trainer.devices=4 \
+train.pl_trainer.accelerator="gpu" \
+data.datamodule.num_workers=4 \
+train.pl_trainer.max_epochs=100 \
+train.callbacks.early_stopping.patience=20 \
+train.callbacks.early_stopping.min_delta=0.02 \
++train.pl_trainer.profiler="simple" \
+train.pl_trainer.accumulate_grad_batches=4
+
+
+########################################################
+########################################################
+
+
+
+
+
+
+
+
+
 
 
 

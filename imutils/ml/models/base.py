@@ -214,7 +214,7 @@ class BaseLightningModule(pl.LightningModule):
 	@staticmethod
 	@torch.no_grad()
 	def exclude_from_wt_decay(model: nn.Module, # named_params: List[Tuple[str, torch.Tensor]],
-							  weight_decay: float,
+							  weight_decay: float
 							  # skip_list: Tuple[str]=("bias", "bn")
 							 ) -> List[Dict[str, Any]]:
 		"""
@@ -228,20 +228,38 @@ class BaseLightningModule(pl.LightningModule):
 		"""
 		
 		all_params = tuple(model.parameters())
-		wd_params = list()
-		
+		wd_params = []
+		no_wd_params = []
 		# params = []
 		# excluded_params = []
 		
 		for m in model.modules():
-			if not m.requires_grad:
-				# [TODO] Need to double check whether this needs to be done or not
-				continue
 			if isinstance(m, LAYERS_W_BIAS):
+				# if not m.weight.requires_grad:
+				# 	# [TODO] Need to double check whether this needs to be done or not
+				# 	continue
 				wd_params.append(m.weight)
+				if getattr(m, "bias", None) is not None:
+					no_wd_params.append(m.bias)
+			else:
+				print(type(m))
+				if hasattr(m, "weight"):
+					no_wd_params.append(m.weight)
+				if getattr(m, "bias", None) is not None:
+					no_wd_params.append(m.bias)
+
+			# else:
+			# 	for p in m.parameters():
+			# 		no_wd_params.append(p)
+
+				# no_wd_params.extend(tuple(m.parameters()))
+				
+		# import pdb; pdb.set_trace()
+		print(type(wd_params), len(wd_params), type(wd_params[0]), wd_params[0].shape)
 		# Only weights of specific layers should undergo weight decay.
-		no_wd_params = [p for p in all_params if p not in wd_params]
-		assert len(wd_params) + len(no_wd_params) == len(all_params), "Sanity check failed."
+		# no_wd_params = [p for p in all_params if p not in wd_params]
+		print(f"{len(wd_params)=} + {len(no_wd_params)=} == {len(wd_params) + len(no_wd_params)} != {len(all_params)=}")
+		assert len(wd_params) + len(no_wd_params) == len(all_params), f"Sanity check failed."
 		# return wd_params, no_wd_params
 		
 		return [

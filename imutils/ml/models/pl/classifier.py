@@ -172,33 +172,12 @@ class LitClassifier(BaseLightningModule): #pl.LightningModule):
 		return out #{k: out[k] for k in ["logits", "loss", "y", "batch_idx"]}
 
 	def training_step_end(self, out):
-		self.train_metric(out["logits"], out["y"])
 		
 		batch_size=self.batch_size #len(out["y"])
 		loss = out["loss"].mean()
 		batch_idx = out.pop("batch_idx")
-		if batch_idx <= self.cfg.logging.max_batches_to_log:
-			# print("Running: self.render_image_predictions_table")
-			self.render_image_predictions_table(
-				outputs=out,
-				batch_size=batch_size, #self.cfg.data.datamodule.batch_size,
-				n_elements_to_log=self.cfg.logging.n_elements_to_log,
-				log_name=f"train_batch",
-				log_type="predictions_table",
-				normalize_visualization=self.cfg.logging.normalize_visualization,
-				logger=self.logger,
-				global_step=self.global_step,
-				commit=False)
-
-			# self.render_image_predictions(
-			# 	outputs=out,
-			# 	batch_size=batch_size, #self.cfg.data.datamodule.batch_size,
-			# 	n_elements_to_log=self.cfg.logging.n_elements_to_log,
-			# 	log_name="train_image_predictions",
-			# 	normalize_visualization=self.cfg.logging.normalize_visualization,
-			# 	logger=self.logger,
-			# 	global_step=self.global_step,
-			# 	commit=False)
+		
+		self.train_metric.update(out["logits"], out["y"])
 		
 		log_dict = {
 			"train_loss": loss,
@@ -220,46 +199,22 @@ class LitClassifier(BaseLightningModule): #pl.LightningModule):
 		return out #{k: out[k] for k in ["logits", "loss", "y", "batch_idx"]}
 	
 	def validation_step_end(self, out):
-		self.val_metric(out["logits"], out["y"])
 		batch_size=self.batch_size #len(out["y"])
 		loss = out["loss"].mean()
 		
 		batch_idx = out.pop("batch_idx")
-		if batch_idx <= self.cfg.logging.max_batches_to_log:
-			# print("Running: self.render_image_predictions_table")
-			self.render_image_predictions_table(
-				outputs=out,
-				batch_size=batch_size, #self.cfg.data.datamodule.batch_size,
-				n_elements_to_log=self.cfg.logging.n_elements_to_log,
-				log_name=f"val_batch",
-				log_type="predictions_table",
-				normalize_visualization=self.cfg.logging.normalize_visualization,
-				logger=self.logger,
-				global_step=self.global_step,
-				commit=False)		
-			
-			
-			# self.render_image_predictions(
-			# 	outputs=out,
-			# 	batch_size=batch_size, #self.cfg.data.datamodule.batch_size,
-			# 	n_elements_to_log=self.cfg.logging.n_elements_to_log,
-			# 	log_name="val_image_predictions",
-			# 	normalize_visualization=self.cfg.logging.normalize_visualization,
-			# 	logger=self.logger,
-			# 	global_step=self.global_step,
-			# 	commit=False)
 
+		self.val_metric.update(out["logits"], out["y"])
 		log_dict = {
 			"val_loss": loss,
 			**self.val_metric
 		}
 
 		self.log_dict(log_dict,
-					  on_step=True, # False, #
+					  on_step=False,
 					  on_epoch=True,
 					  prog_bar=True,
 					  batch_size=batch_size)
-		# self.print(f"validation_step_end -> self.current_epoch: {self.current_epoch}, self.global_step: {self.global_step}, loss: {loss}")
 
 
 	def test_step(self, batch: Any, batch_idx: int) -> Dict[str, torch.Tensor]:
@@ -277,7 +232,6 @@ class LitClassifier(BaseLightningModule): #pl.LightningModule):
 			batch_size=batch_size
 		)
 		return {
-			# "image": out["x"],
 			"y_true": out["y"],
 			"logits": out["logits"],
 			"val_loss": out["loss"].mean(),
@@ -295,59 +249,52 @@ class LitClassifier(BaseLightningModule): #pl.LightningModule):
 		return {"image_id":image_idx,
 				"y_logit":y_logit}
 
-# 	def training_epoch_end(self, outputs: List[Any]) -> None:
-# 		"""
-		
-# 		"""
-		
-# 		sch = self.lr_schedulers()
-# 		sch.step()
-		
-		# info = {k: v.shape for k,v in outputs[0].items() if hasattr(v, "shape") else v}
-		# print("self.training_epoch_end: ", f"device:{torch.cuda.current_device()}, len(outputs)={len(outputs)}, info: {info}")
 
-		# losses = torch.stack([o["loss"] for o in outputs])
-		# self.print(f"training_epoch_end -> self.current_epoch: {self.current_epoch}, self.global_step: {self.global_step}, losses: {losses}")
-		# print(f"self.validation_epoch_end (torch.stack the losses): losses.shape = {losses.shape}")
-		
+	def configure_optimizers(
+		self,
+	) -> Union[Optimizer, Tuple[Sequence[Optimizer], Sequence[Any]]]:
+		"""
+		Choose what optimizers and learning-rate schedulers to use in your optimization.
+		Normally you'd need one. But in the case of GANs or similar you might have multiple.
+		Return:
+			Any of these 6 options.
+			- Single optimizer.
+			- List or Tuple - List of optimizers.
+			- Two lists - The first list has multiple optimizers, the second a list of LR schedulers (or lr_dict).
+			- Dictionary, with an 'optimizer' key, and (optionally) a 'lr_scheduler'
+			  key whose value is a single LR scheduler or lr_dict.
+			- Tuple of dictionaries as described, with an optional 'frequency' key.
+			- None - Fit will run without any optimizer.
+		"""
+		# if hasattr(self.cfg.optim, "exclude_bn_bias") and \
+				# self.cfg.optim.get("exclude_bn_bias", False):
+		if self.cfg.optim.get("exclude_bn_bias", False):
+			params = self.exclude_from_wt_decay(self.net,
+												weight_decay=self.cfg.optim.optimizer.weight_decay)
+		else:
+			params = self.parameters()
 
+		# pp(OmegaConf.to_container(self.cfg.optim.optimizer, resolve=True))
+		opt = hydra.utils.instantiate(
+			OmegaConf.to_container(self.cfg.optim.optimizer),
+			params=params,
+			weight_decay=self.cfg.optim.optimizer.weight_decay,
+			_convert_="partial"
+		)
+		out = opt
 
-# 	def validation_epoch_end(self, outputs: List[Any]) -> None:
-# 		"""
-		
-# 		"""
-# 		info = {k: v.shape for k,v in outputs[0].items()}
-		# print("self.validation_epoch_end: ", f"device:{torch.cuda.current_device()}, len(outputs)={len(outputs)}, info: {info}")
-		
-		# losses = torch.stack([o["loss"] for o in outputs])
-		# losses = []
-		# y = []
-		# logits = []
-		# for o in outputs:
-		# 	losses.append(o["loss"])
-		# 	y.append(o["y"])
-		# 	logits = [o["logits"]]
-		# losses = torch.stack(losses)
-		# y = torch.cat(y)
-		# logits = torch.cat(logits)
-		
-		# self.print(f"validation_epoch_end -> self.current_epoch: {self.current_epoch}, self.global_step: {self.global_step}, losses: {losses}")
-
-
-# 	def test_epoch_end(self, outputs: List[Any]) -> None:
-# 		if "image" not in outputs:
-# 			# print(f"Skipping test render_image_predictions due to missing 'image' key in epoch outputs.")
-# 			return
-		
-# 		self.render_image_predictions(
-# 			outputs=outputs,
-# 			batch_size=self.cfg.data.datamodule.batch_size,
-# 			n_elements_to_log=self.cfg.logging.n_elements_to_log,
-# 			log_name="test_image_predictions",
-# 			normalize_visualization=self.cfg.logging.normalize_visualization,
-# 			logger=self.logger,
-# 			global_step=self.global_step,
-# 			commit=False)
+		if self.cfg.optim.use_lr_scheduler:
+			lr_scheduler = self.cfg.optim.lr_scheduler
+			# pp(OmegaConf.to_container(lr_scheduler, resolve=True))
+			scheduler = {"scheduler":hydra.utils.instantiate(lr_scheduler, optimizer=opt),
+						 "name": "learning_rate",
+						 "interval": "epoch",
+						 "frequency":1}
+			out = ([opt], [scheduler])
+		return out
+	
+##############################
+##############################
 
 	@staticmethod
 	@rank_zero_only
@@ -469,81 +416,53 @@ class LitClassifier(BaseLightningModule): #pl.LightningModule):
 
 
 
-	def configure_optimizers(
-		self,
-	) -> Union[Optimizer, Tuple[Sequence[Optimizer], Sequence[Any]]]:
-		"""
-		Choose what optimizers and learning-rate schedulers to use in your optimization.
-		Normally you'd need one. But in the case of GANs or similar you might have multiple.
-		Return:
-			Any of these 6 options.
-			- Single optimizer.
-			- List or Tuple - List of optimizers.
-			- Two lists - The first list has multiple optimizers, the second a list of LR schedulers (or lr_dict).
-			- Dictionary, with an 'optimizer' key, and (optionally) a 'lr_scheduler'
-			  key whose value is a single LR scheduler or lr_dict.
-			- Tuple of dictionaries as described, with an optional 'frequency' key.
-			- None - Fit will run without any optimizer.
-		"""
-		# if hasattr(self.cfg.optim, "exclude_bn_bias") and \
-				# self.cfg.optim.get("exclude_bn_bias", False):
-		if self.cfg.optim.get("exclude_bn_bias", False):
-			params = self.exclude_from_wt_decay(self.named_parameters(), weight_decay=self.cfg.optim.optimizer.weight_decay)
-		else:
-			params = self.parameters()
 
-		# pp(OmegaConf.to_container(self.cfg.optim.optimizer))
-		pp(OmegaConf.to_container(self.cfg.optim.optimizer, resolve=True))
-		opt = hydra.utils.instantiate(
-			OmegaConf.to_container(self.cfg.optim.optimizer),
-			params=params,
-			weight_decay=self.cfg.optim.optimizer.weight_decay,
-			_convert_="partial"
-		)
 
-		out = opt
-		if self.cfg.optim.use_lr_scheduler:
-			lr_scheduler = self.cfg.optim.lr_scheduler
-			pp(OmegaConf.to_container(lr_scheduler, resolve=True))
-			scheduler = {"scheduler":hydra.utils.instantiate(lr_scheduler, optimizer=opt),
-						 "name": "learning_rate",
-						 "interval": "epoch",
-						 "frequency":1}
-			out = ([opt], [scheduler])
-		return out
 
-	@staticmethod
-	def exclude_from_wt_decay(named_params: List[Tuple[str, torch.Tensor]],
-							  weight_decay: float,
-							  skip_list: Tuple[str]=("bias", "bn")
-							 ) -> List[Dict[str, Any]]:
-		"""
-		Sort named_params into 2 groups: included & excluded from weight decay.
-		Includes any params with a name that doesn't match any pattern in `skip_list`.
+
+
+
+
+
+
+
+
+# 	@staticmethod
+# 	def exclude_from_wt_decay(named_params: List[Tuple[str, torch.Tensor]],
+# 							  weight_decay: float,
+# 							  skip_list: Tuple[str]=("bias", "bn")
+# 							 ) -> List[Dict[str, Any]]:
+# 		"""
+# 		Sort named_params into 2 groups: included & excluded from weight decay.
+# 		Includes any params with a name that doesn't match any pattern in `skip_list`.
 		
-		Arguments:
-			named_params: List[Tuple[str, torch.Tensor]]
-			weight_decay: float,
-			skip_list: Tuple[str]=("bias", "bn")):		
-		"""
-		params = []
-		excluded_params = []
+# 		Arguments:
+# 			named_params: List[Tuple[str, torch.Tensor]]
+# 			weight_decay: float,
+# 			skip_list: Tuple[str]=("bias", "bn")):		
+# 		"""
+# 		params = []
+# 		excluded_params = []
 
-		for name, param in named_params:
-			if not param.requires_grad:
-				continue
-			elif any(layer_name in name for layer_name in skip_list):
-				excluded_params.append(param)
-			else:
-				params.append(param)
+# 		for name, param in named_params:
+# 			if not param.requires_grad:
+# 				continue
+# 			elif any(layer_name in name for layer_name in skip_list):
+# 				excluded_params.append(param)
+# 			else:
+# 				params.append(param)
 
-		return [
-			{"params": params, "weight_decay": weight_decay},
-			{
-				"params": excluded_params,
-				"weight_decay": 0.0,
-			},
-		]
+# 		return [
+# 			{"params": params, "weight_decay": weight_decay},
+# 			{
+# 				"params": excluded_params,
+# 				"weight_decay": 0.0,
+# 			},
+# 		]
+
+
+
+###########################
 	
 # [TODO] Uncomment & benchmark this
 # source: https://pytorch-lightning.readthedocs.io/en/stable/guides/speed.html#set-grads-to-none

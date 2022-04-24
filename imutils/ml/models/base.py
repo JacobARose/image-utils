@@ -29,6 +29,28 @@ from imutils.ml.utils.model_utils import log_model_summary, count_parameters
 __all__ = ["BaseModule", "BaseLightningModule"]
 
 
+
+
+
+# Layer types with bias weights, for filtering bias out of weight decay computations
+LAYERS_W_BIAS = (
+	nn.Linear,
+	nn.Conv1d,
+	nn.Conv2d,
+	nn.Conv3d,
+	nn.ConvTranspose1d,
+	nn.ConvTranspose2d,
+	nn.ConvTranspose3d,
+)
+
+
+
+
+
+
+
+
+
 class BaseModule(nn.Module):
 	"""
 	Models should subclass this in place of nn.Module. This is a custom base class to implement standard interfaces & implementations across all custom pytorch modules in this library.
@@ -188,8 +210,88 @@ class BaseLightningModule(pl.LightningModule):
 	Implements some more custom boiler plate for custom lightning modules
 	
 	"""
-	# def on_fit_start(self) -> None:
-	#	 import pdb; pdb.set_trace()
+
+	@staticmethod
+	@torch.no_grad()
+	def exclude_from_wt_decay(model: nn.Module, # named_params: List[Tuple[str, torch.Tensor]],
+							  weight_decay: float,
+							  # skip_list: Tuple[str]=("bias", "bn")
+							 ) -> List[Dict[str, Any]]:
+		"""
+		Sort named_params into 2 groups: included & excluded from weight decay.
+		Includes any params with a name that doesn't match any pattern in `skip_list`.
+		
+		Arguments:
+			named_params: List[Tuple[str, torch.Tensor]]
+			weight_decay: float,
+			skip_list: Tuple[str]=("bias", "bn")):		
+		"""
+		
+		all_params = tuple(model.parameters())
+		wd_params = list()
+		
+		# params = []
+		# excluded_params = []
+		
+		for m in model.modules():
+			if not m.requires_grad:
+				# [TODO] Need to double check whether this needs to be done or not
+				continue
+			if isinstance(m, LAYERS_W_BIAS):
+				wd_params.append(m.weight)
+		# Only weights of specific layers should undergo weight decay.
+		no_wd_params = [p for p in all_params if p not in wd_params]
+		assert len(wd_params) + len(no_wd_params) == len(all_params), "Sanity check failed."
+		# return wd_params, no_wd_params
+		
+		return [
+			{"params": wd_params, "weight_decay": weight_decay},
+			{
+				"params": no_wd_params,
+				"weight_decay": 0.0,
+			},
+		]
+
+
+		
+		
+		
+
+
+
+	
+	
+	# @staticmethod
+	# @torch.no_grad()
+	# def get_wd_params(model: nn.Module):
+	# 	# Parameters must have a defined order. 
+	# 	# No sets or dictionary iterations.
+	# 	# See https://pytorch.org/docs/stable/optim.html#base-class
+	# 	# Parameters for weight decay.
+	# 	all_params = tuple(model.parameters())
+	# 	wd_params = list()
+	# 	for m in model.modules():
+	# 		if isinstance(
+	# 				m,
+	# 				(
+	# 						nn.Linear,
+	# 						nn.Conv1d,
+	# 						nn.Conv2d,
+	# 						nn.Conv3d,
+	# 						nn.ConvTranspose1d,
+	# 						nn.ConvTranspose2d,
+	# 						nn.ConvTranspose3d,
+	# 				),
+	# 		):
+	# 			wd_params.append(m.weight)
+	# 	# Only weights of specific layers should undergo weight decay.
+	# 	no_wd_params = [p for p in all_params if p not in wd_params]
+	# 	assert len(wd_params) + len(no_wd_params) == len(all_params), "Sanity check failed."
+	# 	return wd_params, no_wd_params
+	
+	
+	
+	
 	def on_train_epoch_start(self) -> None:
 		# print("on_train_start")
 		if self.cfg.train.freeze_backbone:

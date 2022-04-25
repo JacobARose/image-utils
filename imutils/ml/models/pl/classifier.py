@@ -143,9 +143,9 @@ class LitClassifier(BaseLightningModule): #pl.LightningModule):
 		self.val_metric = get_scalar_metrics(num_classes=self.num_classes,
 											   average="macro",
 											   prefix="val")
-		self.test_metric = get_scalar_metrics(num_classes=self.num_classes,
-											   average="macro",
-											   prefix="test")
+		# self.test_metric = get_scalar_metrics(num_classes=self.num_classes,
+		# 									   average="macro",
+		# 									   prefix="test")
 		
 		self.artifacts = {}
 		self.tables = {}

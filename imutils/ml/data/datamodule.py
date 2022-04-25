@@ -28,6 +28,7 @@ from sklearn import preprocessing
 from torch.utils.data import DataLoader, Dataset
 from torchvision import transforms as T
 import torchvision
+from pytorch_lightning.utilities import rank_zero_only
 from typing import *
 
 
@@ -698,7 +699,7 @@ class BaseDataModule(pl.LightningDataModule):
 		num_batches = self.num_batches(subset) # len(datamodule.get_dataloader(subset=subset))
 		if verbose:
 			# print(f"{subset} --> (num_samples: {num_samples:,}), (num_batches: {num_batches:,})")
-			ic(subset, num_samples, num_batches, self.num_classes, self.batch_size)
+			rank_zero_only(ic)(subset, num_samples, num_batches, self.num_classes, self.batch_size)
 		return num_samples, num_batches
 
 
@@ -890,7 +891,7 @@ class Herbarium2022DataModule(BaseDataModule):
 
 
 
-	def setup(self, stage=None):
+	def setup(self, stage="fit"):
 		subsets=[]
 		if stage in ["train", "fit", "all", None]:
 			self.train_dataset = self.dataset_cls(catalog_dir=self.catalog_dir,

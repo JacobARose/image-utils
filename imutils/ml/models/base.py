@@ -25,6 +25,10 @@ import os
 # from lightning_hydra_classifiers.utils.logging_utils import get_wandb_logger
 import wandb
 from imutils.ml.utils.model_utils import log_model_summary, count_parameters
+from imutils.ml.utils.metric_utils import get_scalar_metrics
+import hydra
+
+
 
 __all__ = ["BaseModule", "BaseLightningModule"]
 
@@ -272,7 +276,24 @@ class BaseLightningModule(pl.LightningModule):
 
 
 		
+	def setup_metrics(self):
 		
+		self.train_metric = get_scalar_metrics(num_classes=self.num_classes,
+											   average="macro",
+											   prefix="train")
+		self.val_metric = get_scalar_metrics(num_classes=self.num_classes,
+											   average="macro",
+											   prefix="val")
+		self.test_metric = get_scalar_metrics(num_classes=self.num_classes,
+											   average="macro",
+											   prefix="test")
+		
+	def setup_loss(self,
+				   loss_func: Optional[Union[Callable, str]]=None):
+		if isinstance(loss_func, Callable):
+			self.loss = loss_func
+		else:
+			self.loss = hydra.utils.instantiate(self.model_cfg.loss)
 		
 
 

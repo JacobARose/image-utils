@@ -28,7 +28,7 @@
 watch_model_with_wandb:
     _target_: imutils.ml.callbacks.wandb_callbacks.WatchModelWithWandb
     log: "gradients"
-    log_freq: 100
+    log_freq: 1000
 
 
 uploadcheckpointsasartifact:
@@ -41,19 +41,19 @@ uploadcheckpointsasartifact:
 
 taxonomy_logger_callback:
     _target_: imutils.ml.utils.taxonomy_utils.TaxonomyLoggerCallback
-    name: "taxonomy.${data.datamodule.name}"
+    name: "taxonomy_table/${data.datamodule.name}"
 
 
 
-module_data_monitor:
-    _target_: imutils.ml.callbacks.wandb_callbacks.ModuleDataMonitor
-    log_every_n_steps: 50
-    submodules:
-        - "net.backbone.conv1"
-        - "net.backbone.bn1"
-        - "net.backbone.act1"
-        - "net.backbone.layer4.2.act3"
-        - "net.head"
+# module_data_monitor:
+#     _target_: imutils.ml.callbacks.wandb_callbacks.ModuleDataMonitor
+#     log_every_n_steps: 1000
+#     submodules:
+#         - "net.backbone.conv1"
+#         - "net.backbone.bn1"
+#         - "net.backbone.act1"
+#         - "net.backbone.layer4.2.act3"
+#         - "net.head"
 
 
 

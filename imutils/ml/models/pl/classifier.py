@@ -55,6 +55,7 @@ class LitClassifier(BaseLightningModule): #pl.LightningModule):
 				 num_classes: int=None, 
 				 loss_func: Union[Callable, str]=None,
 				 sync_dist: bool=False,
+				 log_images_freq: Optional[int]=None,
 				 # pretrain : bool = True,
 				 # self_supervised=False,
 				 *args, **kwargs) -> None:
@@ -66,6 +67,7 @@ class LitClassifier(BaseLightningModule): #pl.LightningModule):
 				   num_classes=num_classes,
 				   loss_func=loss_func,
 				   sync_dist=sync_dist,
+				   log_images_freq=log_images_freq,
 				   *args, **kwargs)
 		
 	def _setup(self,
@@ -77,6 +79,7 @@ class LitClassifier(BaseLightningModule): #pl.LightningModule):
 			  setup_backbone: bool=True,
 			  setup_head: bool=True,
 			  sync_dist: bool=False,
+			  log_images_freq: Optional[int]=None,
 			  *args, **kwargs) -> None:
 
 		cfg = resolve_config(cfg)
@@ -87,6 +90,7 @@ class LitClassifier(BaseLightningModule): #pl.LightningModule):
 		self.batch_size = cfg.hp.batch_size
 		self.num_classes = num_classes or self.model_cfg.head.get("num_classes")
 		self.name = name or self.model_cfg.get("name")
+		self.log_images_freq = log_images_freq
 		
 		self.sync_dist = sync_dist
 		self.setup_loss(loss_func)
@@ -124,31 +128,7 @@ class LitClassifier(BaseLightningModule): #pl.LightningModule):
 						cfg=cfg,
 						*args, **kwargs)
 		return model
-							 
 
-
-	def setup_loss(self,
-				   loss_func: Optional[Union[Callable, str]]=None):
-		if isinstance(loss_func, Callable):
-			self.loss = loss_func
-		else:
-			self.loss = hydra.utils.instantiate(self.model_cfg.loss)
-
-
-	def setup_metrics(self):
-		
-		self.train_metric = get_scalar_metrics(num_classes=self.num_classes,
-											   average="macro",
-											   prefix="train")
-		self.val_metric = get_scalar_metrics(num_classes=self.num_classes,
-											   average="macro",
-											   prefix="val")
-		# self.test_metric = get_scalar_metrics(num_classes=self.num_classes,
-		# 									   average="macro",
-		# 									   prefix="test")
-		
-		self.artifacts = {}
-		self.tables = {}
 
 	def forward(self, x: torch.Tensor) -> torch.Tensor:
 		return self.net(x)
@@ -172,14 +152,12 @@ class LitClassifier(BaseLightningModule): #pl.LightningModule):
 	def training_step(self, batch: Any, batch_idx: int) -> torch.Tensor:
 
 		out = self.step(batch, batch_idx=batch_idx)
-		# out["batch_idx"] = batch_idx
 		return out #{k: out[k] for k in ["logits", "loss", "y", "batch_idx"]}
 
 	def training_step_end(self, out):
 		
 		batch_size=self.batch_size #len(out["y"])
 		loss = out["loss"].mean()
-		# batch_idx = out.pop("batch_idx")
 		
 		self.train_metric.update(out["logits"], out["y"])
 		
@@ -197,12 +175,20 @@ class LitClassifier(BaseLightningModule): #pl.LightningModule):
 			on_step=False, on_epoch=True,
 			prog_bar=True, batch_size=batch_size
 		)
-		# self.print(f"training_step_end -> self.current_epoch: {self.current_epoch}, self.global_step: {self.global_step}, loss: {loss}")
+		if isinstance(self.log_images_freq, int):
+			if out["batch_idx"] % self.log_images_freq:
+				self.render_image_predictions(
+					outputs=out,
+					batch_size=batch_size,
+					n_elements_to_log=batch_size,
+					log_name="train image predictions",
+					logger=self.logger,
+					global_step=self.trainer.global_step)
+
 		return loss
 
 	def validation_step(self, batch: Any, batch_idx: int) -> Dict[str, torch.Tensor]:
 		out = self.step(batch, batch_idx=batch_idx)
-		# out["batch_idx"] = batch_idx
 		return out #{k: out[k] for k in ["logits", "loss", "y", "batch_idx"]}
 	
 	def validation_step_end(self, out):
@@ -299,13 +285,14 @@ class LitClassifier(BaseLightningModule): #pl.LightningModule):
 						 "frequency":1}
 			out = ([opt], [scheduler])
 		return out
-	
+
 ##############################
 ##############################
 
-	@staticmethod
-	@rank_zero_only
+	# @staticmethod
+	# @rank_zero_only
 	def render_image_predictions(
+		self,
 		outputs: List[Any],
 		batch_size: int,
 		n_elements_to_log: int,
@@ -320,6 +307,9 @@ class LitClassifier(BaseLightningModule): #pl.LightningModule):
 		# integrated_gradients = IntegratedGradients(self.forward)
 		# noise_tunnel = NoiseTunnel(integrated_gradients)
 		
+		classes = self.trainer.datamodule.train_dataset.classes
+		
+		
 		images = []
 		for output_element in iterate_elements_in_batches(
 			outputs, batch_size, n_elements_to_log
@@ -328,7 +318,9 @@ class LitClassifier(BaseLightningModule): #pl.LightningModule):
 				output_element["x"],
 				autoshow=False,
 				normalize=normalize_visualization)
-			caption = f"y_pred: {output_element['logits'].argmax()}  [gt: {output_element['y']}]"  # noqa	
+			y_pred = classes[output_element['logits'].argmax()]
+			y_true = classes[int(output_element['y'])]
+			caption = f"y_pred: {y_pred}  [gt: {y_true}]"  # noqa	
 			# attributions_ig_nt = noise_tunnel.attribute(output_element["image"].unsqueeze(0), nt_samples=50,
 														# nt_type='smoothgrad_sq', target=output_element["y_true"],
 														# internal_batch_size=50)
@@ -422,94 +414,9 @@ class LitClassifier(BaseLightningModule): #pl.LightningModule):
 		return artifact
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-# 	@staticmethod
-# 	def exclude_from_wt_decay(named_params: List[Tuple[str, torch.Tensor]],
-# 							  weight_decay: float,
-# 							  skip_list: Tuple[str]=("bias", "bn")
-# 							 ) -> List[Dict[str, Any]]:
-# 		"""
-# 		Sort named_params into 2 groups: included & excluded from weight decay.
-# 		Includes any params with a name that doesn't match any pattern in `skip_list`.
-		
-# 		Arguments:
-# 			named_params: List[Tuple[str, torch.Tensor]]
-# 			weight_decay: float,
-# 			skip_list: Tuple[str]=("bias", "bn")):		
-# 		"""
-# 		params = []
-# 		excluded_params = []
-
-# 		for name, param in named_params:
-# 			if not param.requires_grad:
-# 				continue
-# 			elif any(layer_name in name for layer_name in skip_list):
-# 				excluded_params.append(param)
-# 			else:
-# 				params.append(param)
-
-# 		return [
-# 			{"params": params, "weight_decay": weight_decay},
-# 			{
-# 				"params": excluded_params,
-# 				"weight_decay": 0.0,
-# 			},
-# 		]
-
-
-
 ###########################
 	
 # [TODO] Uncomment & benchmark this
 # source: https://pytorch-lightning.readthedocs.io/en/stable/guides/speed.html#set-grads-to-none
 	# def optimizer_zero_grad(self, epoch, batch_idx, optimizer, optimizer_idx):
 	#	 optimizer.zero_grad(set_to_none=True)
-	
-	
-
-# 	def init_metrics(self,
-# 					 stage: str='train',
-# 					 tag: Optional[str]=None):
-# 		tag = tag or ""
-# 		if not hasattr(self, "all_metrics"):
-# 			self.all_metrics = {}
-		
-# 		if not hasattr(self,"num_classes") and hasattr(self.hparams, "num_classes"):
-# 			self.num_classes = self.hparams.num_classes
-		
-# 		print(f"self.num_classes={self.num_classes}")
-# 		if stage in ['train', 'all']:
-# 			prefix=f'{tag}_train'.strip("_")
-# 			self.metrics_train = get_scalar_metrics(num_classes=self.num_classes, average='macro', prefix=prefix)
-# 			self.metrics_train_per_class = get_per_class_metrics(num_classes=self.num_classes, prefix='train')
-# 			self.all_metrics['train'] = {"scalar":self.metrics_train,
-# 										 "per_class":self.metrics_train_per_class}
-			
-# 		if stage in ['val', 'all']:
-# 			prefix=f'{tag}_val'.strip("_")
-# 			self.metrics_val = get_scalar_metrics(num_classes=self.num_classes, average='macro', prefix=prefix)
-# 			self.metrics_val_per_class = get_per_class_metrics(num_classes=self.num_classes, prefix='val')
-# 			self.all_metrics['val'] = {"scalar":self.metrics_val,
-# 									   "per_class":self.metrics_val_per_class}
-			
-# 		if stage in ['test', 'all']:
-# 			if isinstance(tag, str):
-# 				prefix=tag
-# 			else:
-# 				prefix = "test"
-# #			 prefix=f'{tag}_test'.strip("_")
-# 			self.metrics_test = get_scalar_metrics(num_classes=self.num_classes, average='macro', prefix=prefix)
-# 			self.metrics_test_per_class = get_per_class_metrics(num_classes=self.num_classes, prefix=prefix)
-# 			self.all_metrics['test'] = {"scalar":self.metrics_test,
-# 										"per_class":self.metrics_test_per_class}

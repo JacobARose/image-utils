@@ -87,15 +87,6 @@ def configure_callbacks(cfg) -> List[pl.Callback]:
 	return callbacks
 
 
-# def configure_loggers(config) -> List[pl.loggers.LightningLoggerBase]:
-#	 logger: List[pl.loggers.LightningLoggerBase] = []
-#	 for _, lg_conf in config["logger"].items():
-#		 if "_target_" in lg_conf:
-#			 log.info(f"Instantiating logger <{lg_conf._target_}>")
-#			 logger.append(hydra.utils.instantiate(lg_conf))
-
-#	 return logger
-
 import wandb
 
 def configure_loggers(cfg, model=None):
@@ -126,7 +117,7 @@ def configure_loggers(cfg, model=None):
 
 
 def configure_loss_func(cfg,
-					    **kwargs) -> Callable:
+						**kwargs) -> Callable:
 	"""
 	Singular function for organizing custom instantiation workflows for different categories of loss function, as some require different kinds of dynamically created kwargs that are difficult or impossible to specify completely within config files.
 	
@@ -170,27 +161,6 @@ def configure_ckpt_dir(cfg):
 			cfg.resume_from_checkpoint = ckpt_paths[-1]
 
 	
-# def configure_progress_bar(*args, **kwargs):
-# 	"""
-# 	Currently set to just the default kwargs for pl.callbacks.RichProgressBar
-# 	"""
-
-# 	prog_bar = RichProgressBar(
-# 		refresh_rate_per_second=10,
-# 		leave=False,
-# 		theme=RichProgressBarTheme(
-# 			description='white',
-# 			progress_bar='#6206E0',
-# 			progress_bar_finished='#6206E0', 
-# 			progress_bar_pulse='#6206E0',
-# 			batch_progress='white',
-# 			time='grey54',
-# 			processing_speed='grey70', 
-# 			metrics='white'
-# 		)
-# 	)
-# 	return prog_bar
-
 
 
 def configure_trainer(cfg,
@@ -206,13 +176,8 @@ def configure_trainer(cfg,
 	kwargs['callbacks'] = callbacks
 	kwargs['logger'] = logger
 	
-	# import pdb;pdb.set_trace()
-	
 	trainer: pl.Trainer = hydra.utils.instantiate(trainer_cfg, **kwargs)
 	return trainer
-
-
-
 
 
 
@@ -225,20 +190,22 @@ def configure_model(cfg: argparse.Namespace,
 	from imutils.ml.models.pl.classifier import LitClassifier
 	import hydra
 
-	hydra.utils.log.info(f"Instantiating <{cfg.model_cfg._target_}>")
+	hydra.utils.log.info(f"Instantiating {cfg.model_cfg._target_}")
 	if cfg.hp.load_from_checkpoint:
 		hydra.utils.log.info(f"Loading from pretrained checkpoint: {cfg.ckpt_path}")
-
+	
 		model = LitClassifier.load_from_checkpoint(
 			checkpoint_path=cfg.ckpt_path,
 			cfg=cfg,
 			loss_func=loss_func,
-			sync_dist=cfg.model_cfg.sync_dist)
+			sync_dist=cfg.model_cfg.sync_dist,
+			log_images_freq=cfg.model_cfg.log_images_freq)
 	else:
 		model = LitClassifier(
 			cfg=cfg,
 			loss_func=loss_func,
-			sync_dist=cfg.model_cfg.sync_dist)
+			sync_dist=cfg.model_cfg.sync_dist,
+			log_images_freq=cfg.model_cfg.log_images_freq)
 
 	return model
 

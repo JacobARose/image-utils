@@ -11,6 +11,7 @@ Created by: Jacob Alexander Rose
 	- Wonky refactor to add ExtantLeavesDataset and ExtantLeavesDataModule to definitions. Involed some blurring of abstractions -- will need to refactor the base class AbstractCatalogDataset.
 """
 
+import dataclasses
 from dataclasses import dataclass, asdict, replace
 import matplotlib.pyplot as plt
 from icecream import ic
@@ -42,17 +43,13 @@ from imutils.big.split_catalog_utils import (check_already_built,
 
 # from imutils.big.transforms.image import (Preprocess,
 from imutils.ml.aug.image.images import (instantiate_transforms,
-										 Preprocess,
-										 BatchTransform,
-										 get_default_transforms,
 										 DEFAULT_CFG as DEFAULT_TRANSFORM_CFG)
 
 from imutils.ml.utils import label_utils, taxonomy_utils
-from imutils.ml.dataset import Herbarium2022Dataset, ExtantLeavesDataset
+from imutils.ml.data.dataset import Herbarium2022Dataset, ExtantLeavesDataset
 
 __all__ = ["Herbarium2022DataModule",
-		   "ExtantLeavesDataModule",
-		   "get_default_transforms"]
+		   "ExtantLeavesDataModule"]
 
 import torch
 
@@ -65,13 +62,11 @@ def tensor_to_image(x: torch.Tensor) -> np.ndarray:
 
 
 
-
 @dataclass
-class ExtantLeavesDataModuleConfig:
+class DataModuleConfig:
 
-	catalog_dir: str="/media/data_cifs/projects/prj_fossils/users/jacob/data/leavesdb-v1_1/extant_leaves_family_3_512" #/splits/splits=(0.5,0.2,0.3)"
+	catalog_dir: str=None
 	label_col: str="family"
-	splits: Tuple[float]=(0.5,0.2,0.3)
 	shuffle: bool=True
 	seed:int=14
 	batch_size: int=128
@@ -84,25 +79,42 @@ class ExtantLeavesDataModuleConfig:
 	remove_transforms: bool=False
 
 
-############################
-############################
 
 @dataclass
-class Herbarium2022DataModuleConfig:
+class ExtantLeavesDataModuleConfig(DataModuleConfig):
+
+	catalog_dir: str="/media/data_cifs/projects/prj_fossils/users/jacob/data/leavesdb-v1_1/extant_leaves_family_3_512"
+	label_col: str="family"
+	splits: Tuple[float]=(0.5,0.2,0.3)
+
+
+@dataclass
+class FossilLeavesDataModuleConfig(DataModuleConfig):
+
+	catalog_dir: str="/media/data_cifs/projects/prj_fossils/users/jacob/data/leavesdb-v1_1/Fossil_family_3_512"
+	label_col: str="family"
+	splits: Tuple[float]=(0.5,0.2,0.3)
+
+
+@dataclass
+class PNASDataModuleConfig(DataModuleConfig):
+
+	catalog_dir: str="/media/data_cifs/projects/prj_fossils/users/jacob/data/leavesdb-v1_1/PNAS_family_100_512"
+	label_col: str="family"
+	splits: Tuple[float]=(0.5,0.2,0.3)
+
+
+@dataclass
+class Herbarium2022DataModuleConfig(DataModuleConfig):
 
 	catalog_dir: str="/media/data_cifs/projects/prj_fossils/data/raw_data/herbarium-2022-fgvc9_resize-512/catalogs" #/splits/train_size-0.8"
 	label_col: str="scientificName"
 	train_size: float=0.8
-	shuffle: bool=True
-	seed:int=14
-	batch_size: int=128
-	num_workers: int=4
-	pin_memory: bool=True
-	persistent_workers: Optional[bool]=False
-	transform_cfg: Optional["Config"]=None
-	to_grayscale: bool=False
-	num_channels: int=3
-	remove_transforms: bool=False
+
+
+############################
+############################
+	
 
 
 
@@ -116,14 +128,89 @@ class BaseDataModule(pl.LightningDataModule):
 	val_transform = None
 	test_transform = None
 	
-	transform_cfg = DEFAULT_TRANSFORM_CFG
+	default_cfg: DataModuleConfig = DataModuleConfig()
+	transform_cfg = None #DEFAULT_TRANSFORM_CFG
+
+
+	@classmethod
+	def from_cfg(cls,
+				 cfg: Union[DataModuleConfig, DictConfig],
+				 **kwargs):
+		if isinstance(cfg, DataModuleConfig):
+			cfg = dataclasses.asdict(cfg)
+		elif isinstance(cfg, DictConfig):
+			cfg = OmegaConf.to_container(cfg, resolve=True)
+		
+		cfg = dataclasses.replace(cls.default_cfg, **cfg)
+
+		return cls(**cfg)
+
+
+	def get_cfg(self, as_dict: bool=False) -> DataModuleConfig:
+		cfg = replace(self.default_cfg, 
+					  catalog_dir=self.catalog_dir,
+					  label_col=self.label_col,
+					  splits=self.splits,
+					  shuffle=self.shuffle,
+					  seed=self.seed,
+					  batch_size=self.batch_size,
+					  num_workers=self.num_workers,
+					  pin_memory=self.pin_memory,
+					  persistent_workers=self.persistent_workers,
+					  transform_cfg=self.transform_cfg,
+					  remove_transforms=self.remove_transforms)
+		if as_dict:
+			return asdict(cfg)
+		return cfg
 
 
 	def prepare_data(self):
 		pass
 
-	def setup(self, stage=None):
-		raise NotImplementedError
+	def setup(self, stage="fit"):
+		subsets=[]
+		if stage in ["train", "fit", "all", None]:
+			self.train_dataset = self.dataset_cls(catalog_dir=self.catalog_dir,
+													  subset="train",
+													  label_col=self.label_col,
+													  train_size=getattr(self, "train_size", None),
+													  splits=getattr(self, "splits", None),
+													  shuffle=self.shuffle,
+													  seed=self.seed,
+													  transform=self.train_transform)
+			# self.setup_taxonomy_table(df=self.train_dataset.df,
+			# 						  smallest_taxon_col=self.label_col)
+			subsets.append("train")
+		if stage in ["val", "fit", "all", None]:
+			self.val_dataset = self.dataset_cls(catalog_dir=self.catalog_dir,
+												subset="val",
+												label_col=self.label_col,
+												train_size=getattr(self, "train_size", None),
+												splits=getattr(self, "splits", None),
+												shuffle=self.shuffle,
+												seed=self.seed,
+												transform=self.val_transform)
+			subsets.append("val")
+		if stage in ["test", "all", None]:
+			self.test_dataset = self.dataset_cls(catalog_dir=self.catalog_dir,
+												 subset="test",
+												 label_col=self.label_col,
+												 train_size=getattr(self, "train_size", None),
+												 splits=getattr(self, "splits", None),
+												 shuffle=self.shuffle,
+												 seed=self.seed,
+												 transform=self.test_transform)
+			subsets.append("test")
+			
+		for s in subsets:
+			self.get_dataset_size(subset=s,
+								  verbose=True)
+			
+		self.set_image_reader(self.image_reader)
+		self.setup_taxonomy_table(
+			df=self.train_dataset.df,
+			smallest_taxon_col=getattr(self, "smallest_taxon_col", None)
+		)
 
 
 	def setup_transforms(self,
@@ -132,8 +219,9 @@ class BaseDataModule(pl.LightningDataModule):
 						 val_transform=None,
 						 test_transform=None,
 						 remove_transforms: bool=False):
+		if transform_cfg is None and self.transform_cfg is None:
+			remove_transforms = True
 		transform_cfg = transform_cfg or {}
-		self.transform_cfg = OmegaConf.merge(self.transform_cfg, transform_cfg)
 		self.remove_transforms = remove_transforms
 		if self.remove_transforms:
 			for subset in ["train", "val", "test"]:
@@ -142,6 +230,7 @@ class BaseDataModule(pl.LightningDataModule):
 					self.get_dataset(subset).transform = None
 			return
 		else:
+			self.transform_cfg = OmegaConf.merge(self.transform_cfg, transform_cfg)
 			# print("self.transform_cfg:"); pp(self.transform_cfg)
 			self.train_transform = (
 				instantiate_transforms(cfg=self.transform_cfg.train, to_grayscale=self.to_grayscale, num_output_channels=self.num_channels, verbose=False)
@@ -290,7 +379,7 @@ class BaseDataModule(pl.LightningDataModule):
 class Herbarium2022DataModule(BaseDataModule):
 	catalog_dir: str="/media/data_cifs/projects/prj_fossils/data/raw_data/herbarium-2022-fgvc9_resize-512/catalogs" #/splits/train_size-0.8"
 	dataset_cls = Herbarium2022Dataset
-	transform_cfg = DEFAULT_TRANSFORM_CFG
+	# transform_cfg = DEFAULT_TRANSFORM_CFG
 	default_cfg: Herbarium2022DataModuleConfig = Herbarium2022DataModuleConfig(catalog_dir=catalog_dir)
 
 	def __init__(self,
@@ -341,61 +430,6 @@ class Herbarium2022DataModule(BaseDataModule):
 
 
 
-	def setup(self, stage="fit"):
-		subsets=[]
-		if stage in ["train", "fit", "all", None]:
-			self.train_dataset = self.dataset_cls(catalog_dir=self.catalog_dir,
-													  subset="train",
-													  label_col=self.label_col,
-													  train_size=self.train_size,
-													  shuffle=self.shuffle,
-													  seed=self.seed,
-													  transform=self.train_transform)
-			# self.setup_taxonomy_table(df=self.train_dataset.df,
-			# 						  smallest_taxon_col=self.label_col)
-			subsets.append("train")
-		if stage in ["val", "fit", "all", None]:
-			self.val_dataset = self.dataset_cls(catalog_dir=self.catalog_dir,
-													subset="val",
-													label_col=self.label_col,
-													train_size=self.train_size,
-													shuffle=self.shuffle,
-													seed=self.seed,
-													transform=self.val_transform)
-			subsets.append("val")
-		if stage in ["test", "all", None]:
-			self.test_dataset = self.dataset_cls(catalog_dir=self.catalog_dir,
-													 subset="test",
-													 label_col=self.label_col,
-													 train_size=self.train_size,
-													 shuffle=self.shuffle,
-													 seed=self.seed,
-													 transform=self.test_transform)
-			subsets.append("test")
-			
-		for s in subsets:
-			self.get_dataset_size(subset=s,
-								  verbose=True)
-			
-		self.set_image_reader(self.image_reader)
-		
-		self.setup_taxonomy_table(
-			df=self.train_dataset.df,
-			smallest_taxon_col=self.smallest_taxon_col)
-
-
-	@classmethod
-	def from_cfg(cls,
-				 cfg: Union[ExtantLeavesDataModuleConfig, DictConfig],
-				 **kwargs):
-		if isinstance(cfg, ExtantLeavesDatasetConfig):
-			cfg = asdict(cfg)
-		elif isinstance(cfg, DictConfig):
-			cfg = OmegaConf.to_container(cfg, resolve=True)
-		
-		cfg = replace(self.default_cfg, **cfg)
-
-		return cls(**cfg)
 
 
 	def get_cfg(self, as_dict: bool=False) -> ExtantLeavesDataModuleConfig:
@@ -429,7 +463,7 @@ from imutils.big.make_train_val_test_splits import main as make_train_val_test_s
 class ExtantLeavesDataModule(BaseDataModule):
 	catalog_dir: str="/media/data_cifs/projects/prj_fossils/users/jacob/data/leavesdb-v1_1/extant_leaves_family_3_512/splits/splits=(0.5,0.2,0.3)"
 	dataset_cls = ExtantLeavesDataset	
-	transform_cfg = DEFAULT_TRANSFORM_CFG	
+	# transform_cfg = DEFAULT_TRANSFORM_CFG	
 	default_cfg: ExtantLeavesDataModuleConfig = ExtantLeavesDataModuleConfig(catalog_dir=catalog_dir)
 
 	def __init__(self,
@@ -479,18 +513,16 @@ class ExtantLeavesDataModule(BaseDataModule):
 		self.kwargs = kwargs
 
 
-	@classmethod
-	def from_cfg(cls,
-				 cfg: Union[ExtantLeavesDataModuleConfig, DictConfig],
-				 **kwargs):
-		if isinstance(cfg, ExtantLeavesDatasetConfig):
-			cfg = asdict(cfg)
-		elif isinstance(cfg, DictConfig):
-			cfg = OmegaConf.to_container(cfg, resolve=True)
-		
-		cfg = replace(self.default_cfg, **cfg)
-
-		return cls(**cfg)
+# 	@classmethod
+# 	def from_cfg(cls,
+# 				 cfg: Union[ExtantLeavesDataModuleConfig, DictConfig],
+# 				 **kwargs):
+# 		if isinstance(cfg, ExtantLeavesDatasetConfig):
+# 			cfg = asdict(cfg)
+# 		elif isinstance(cfg, DictConfig):
+# 			cfg = OmegaConf.to_container(cfg, resolve=True)
+# 		cfg = replace(self.default_cfg, **cfg)
+# 		return cls(**cfg)
 
 
 	def get_cfg(self, as_dict: bool=False) -> ExtantLeavesDataModuleConfig:
@@ -509,58 +541,6 @@ class ExtantLeavesDataModule(BaseDataModule):
 		if as_dict:
 			return asdict(cfg)
 		return cfg
-
-
-
-	def setup(self, stage=None):
-		subsets=[]
-		if stage in ["train", "fit", "all", None]:
-			self.train_dataset = self.dataset_cls(catalog_dir=self.catalog_dir,
-													  subset="train",
-													  label_col=self.label_col,
-													  splits=self.splits,
-													  shuffle=self.shuffle,
-													  seed=self.seed,
-													  transform=self.train_transform)
-			# self.setup_taxonomy_table(df=self.train_dataset.df,
-			# 						  smallest_taxon_col=self.smallest_taxon_col)
-			subsets.append("train")
-		if stage in ["val", "fit", "all", None]:
-			self.val_dataset = self.dataset_cls(catalog_dir=self.catalog_dir,
-													subset="val",
-													label_col=self.label_col,
-													splits=self.splits,
-													shuffle=self.shuffle,
-													seed=self.seed,
-													transform=self.val_transform)
-			subsets.append("val")
-		if stage in ["test", "all", None]:
-			self.test_dataset = self.dataset_cls(catalog_dir=self.catalog_dir,
-													 subset="test",
-													 label_col=self.label_col,
-													 splits=self.splits,
-													 shuffle=self.shuffle,
-													 seed=self.seed,
-													 transform=self.test_transform)
-			subsets.append("test")
-			
-		# for s in subsets:
-		# 	self.get_dataset_size(subset=s,
-		# 						  verbose=True)
-			
-		self.set_image_reader(self.image_reader)
-		
-		self.setup_taxonomy_table(df=self.train_dataset.df,
-								  smallest_taxon_col=self.smallest_taxon_col)
-
-
-
-
-	
-	
-	
-	
-	# catalog_dir: str="/media/data_cifs/projects/prj_fossils/users/jacob/data/leavesdb-v1_1/Fossil_family_10_512/splits/splits=(0.5,0.2,0.3)"
 
 
 @dataclass

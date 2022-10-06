@@ -12,6 +12,7 @@ import argparse
 import cv2
 from rich import print as pp
 import numpy as np
+from pathlib import Path
 from omegaconf import OmegaConf, DictConfig, ListConfig
 import os
 from torch import nn
@@ -23,7 +24,9 @@ import albumentations as A
 from albumentations.augmentations import transforms as AT
 import hydra
 
-DEFAULT_CFG_PATH = os.path.join(os.path.dirname(__file__), "default_image_transform_config.yaml")
+# DEFAULT_CFG_PATH = os.path.join(os.path.dirname(__file__), "default_image_transform_config.yaml")
+
+DEFAULT_CFG_PATH = os.path.join(Path(__file__).parent.parent.parent, "conf", "aug", "default_image_aug.yaml")
 DEFAULT_CFG = OmegaConf.load(DEFAULT_CFG_PATH)
 
 to_tensor = T.ToTensor()

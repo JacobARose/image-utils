@@ -22,6 +22,75 @@ Work In Progress:
 
 
 
+
+
+
+-- (Sunday 2022-06-12) Added the following 40 (!) dataset variations to v1_1:
+
+	Fossil_family_3_512
+	Fossil_family_3_1024
+	Fossil_family_3_1536
+	Fossil_family_3_2048
+	
+	Fossil_family_10_512
+	Fossil_family_10_1024
+	Fossil_family_10_1536
+	Fossil_family_10_2048
+
+	Fossil_family_20_512
+	Fossil_family_20_1024
+	Fossil_family_20_1536
+	Fossil_family_20_2048
+
+	Fossil_family_50_512
+	Fossil_family_50_1024
+	Fossil_family_50_1536
+	Fossil_family_50_2048
+
+
+	General_Fossil_family_10_512
+	General_Fossil_family_10_1024
+	General_Fossil_family_10_1536
+	General_Fossil_family_10_2048
+	Florissant_Fossil_family_10_512
+	Florissant_Fossil_family_10_1024
+	Florissant_Fossil_family_10_1536
+	Florissant_Fossil_family_10_2048
+
+
+	General_Fossil_family_20_512
+	General_Fossil_family_20_1024
+	General_Fossil_family_20_1536
+	General_Fossil_family_20_2048
+	Florissant_Fossil_family_20_512
+	Florissant_Fossil_family_20_1024
+	Florissant_Fossil_family_20_1536
+	Florissant_Fossil_family_20_2048
+
+	
+	General_Fossil_family_50_512
+	General_Fossil_family_50_1024
+	General_Fossil_family_50_1536
+	General_Fossil_family_50_2048
+	Florissant_Fossil_family_50_512
+	Florissant_Fossil_family_50_1024
+	Florissant_Fossil_family_50_1536
+	Florissant_Fossil_family_50_2048
+
+--pnas-extant --extant-w-pnas --original
+
+
+
+
+
+--------------
+
+* [TODO] Add a way to switch between querying for image data dirs and the CSV dataset files (Added 2022-06-13).
+
+
+
+
+
 python "/media/data/jacob/GitHub/lightning-hydra-classifiers/lightning_hydra_classifiers/data/utils/catalog_registry.py"
 
 python "./lightning-hydra-classifiers/lightning_hydra_classifiers/data/utils/catalog_registry.py"
@@ -375,9 +444,12 @@ class Leavesdbv1_0(LeavesdbBase):
 	def tags(self):
 		out = {}
 		for k, v in self.datasets.items():
-			out[k] = []
-			for tag in v.keys():
-				out[k].append(tag)
+			if isinstance(v, list):
+				out[k] = v
+			else:
+				out[k] = []
+				for tag in v.keys():
+					out[k].append(tag)
 		return out
 
 	def __repr__(self):
@@ -464,17 +536,67 @@ class Leavesdbv1_1(LeavesdbBase):
 	Florissant_Fossil_family_3_1536: str = "/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_1/images/Fossil/Florissant_Fossil/1536/3/jpg"
 	Florissant_Fossil_family_3_2048: str = "/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_1/images/Fossil/Florissant_Fossil/2048/3/jpg"
 
+	
+	General_Fossil_family_10_512: str = "/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_1/images/Fossil/General_Fossil/512/10/jpg"
+	General_Fossil_family_10_1024: str = "/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_1/images/Fossil/General_Fossil/1024/10/jpg"
+	General_Fossil_family_10_1536: str = "/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_1/images/Fossil/General_Fossil/1536/10/jpg"
+	General_Fossil_family_10_2048: str = "/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_1/images/Fossil/General_Fossil/2048/10/jpg"
+	Florissant_Fossil_family_10_512: str = "/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_1/images/Fossil/Florissant_Fossil/512/10/jpg"
+	Florissant_Fossil_family_10_1024: str = "/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_1/images/Fossil/Florissant_Fossil/1024/10/jpg"
+	Florissant_Fossil_family_10_1536: str = "/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_1/images/Fossil/Florissant_Fossil/1536/10/jpg"
+	Florissant_Fossil_family_10_2048: str = "/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_1/images/Fossil/Florissant_Fossil/2048/10/jpg"
+
+
+	General_Fossil_family_20_512: str = "/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_1/images/Fossil/General_Fossil/512/20/jpg"
+	General_Fossil_family_20_1024: str = "/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_1/images/Fossil/General_Fossil/1024/20/jpg"
+	General_Fossil_family_20_1536: str = "/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_1/images/Fossil/General_Fossil/1536/20/jpg"
+	General_Fossil_family_20_2048: str = "/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_1/images/Fossil/General_Fossil/2048/20/jpg"
+	Florissant_Fossil_family_20_512: str = "/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_1/images/Fossil/Florissant_Fossil/512/20/jpg"
+	Florissant_Fossil_family_20_1024: str = "/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_1/images/Fossil/Florissant_Fossil/1024/20/jpg"
+	Florissant_Fossil_family_20_1536: str = "/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_1/images/Fossil/Florissant_Fossil/1536/20/jpg"
+	Florissant_Fossil_family_20_2048: str = "/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_1/images/Fossil/Florissant_Fossil/2048/20/jpg"
+
+	
+	General_Fossil_family_50_512: str = "/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_1/images/Fossil/General_Fossil/512/50/jpg"
+	General_Fossil_family_50_1024: str = "/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_1/images/Fossil/General_Fossil/1024/50/jpg"
+	General_Fossil_family_50_1536: str = "/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_1/images/Fossil/General_Fossil/1536/50/jpg"
+	General_Fossil_family_50_2048: str = "/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_1/images/Fossil/General_Fossil/2048/50/jpg"
+	Florissant_Fossil_family_50_512: str = "/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_1/images/Fossil/Florissant_Fossil/512/50/jpg"
+	Florissant_Fossil_family_50_1024: str = "/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_1/images/Fossil/Florissant_Fossil/1024/50/jpg"
+	Florissant_Fossil_family_50_1536: str = "/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_1/images/Fossil/Florissant_Fossil/1536/50/jpg"
+	Florissant_Fossil_family_50_2048: str = "/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_1/images/Fossil/Florissant_Fossil/2048/50/jpg"
+	
+	
+	
+	
 	# ################################
 	# ################################
 	original: List[str] = None
 	Fossil_512: List[str] = None
 	Fossil_1024: List[str] = None
-	Fossil_1536: List[str] = None
+	Fossil_15106: List[str] = None
 	Fossil_2048: List[str] = None
+
 	Fossil_family_3_512: List[str] = None
 	Fossil_family_3_1024: List[str] = None
 	Fossil_family_3_1536: List[str] = None
 	Fossil_family_3_2048: List[str] = None
+	
+	Fossil_family_10_512: List[str] = None
+	Fossil_family_10_1024: List[str] = None
+	Fossil_family_10_1536: List[str] = None
+	Fossil_family_10_2048: List[str] = None
+
+	Fossil_family_20_512: List[str] = None
+	Fossil_family_20_1024: List[str] = None
+	Fossil_family_20_1536: List[str] = None
+	Fossil_family_20_2048: List[str] = None
+
+	Fossil_family_50_512: List[str] = None
+	Fossil_family_50_1024: List[str] = None
+	Fossil_family_50_1536: List[str] = None
+	Fossil_family_50_2048: List[str] = None
+
 
 	def __post_init__(self):
 
@@ -510,6 +632,63 @@ class Leavesdbv1_1(LeavesdbBase):
 			self.General_Fossil_family_3_2048,
 			self.Florissant_Fossil_family_3_2048,
 		]
+###################
+		
+		self.Fossil_family_10_512: List[str] = [
+			self.General_Fossil_family_10_512,
+			self.Florissant_Fossil_family_10_512,
+		]
+		self.Fossil_family_10_1024: List[str] = [
+			self.General_Fossil_family_10_1024,
+			self.Florissant_Fossil_family_10_1024,
+		]
+		self.Fossil_family_10_1536: List[str] = [
+			self.General_Fossil_family_10_1536,
+			self.Florissant_Fossil_family_10_1536,
+		]
+		self.Fossil_family_10_2048: List[str] = [
+			self.General_Fossil_family_10_2048,
+			self.Florissant_Fossil_family_10_2048,
+		]
+		
+		######################
+		
+		self.Fossil_family_20_512: List[str] = [
+			self.General_Fossil_family_20_512,
+			self.Florissant_Fossil_family_20_512,
+		]
+		self.Fossil_family_20_1024: List[str] = [
+			self.General_Fossil_family_20_1024,
+			self.Florissant_Fossil_family_20_1024,
+		]
+		self.Fossil_family_20_1536: List[str] = [
+			self.General_Fossil_family_20_1536,
+			self.Florissant_Fossil_family_20_1536,
+		]
+		self.Fossil_family_20_2048: List[str] = [
+			self.General_Fossil_family_20_2048,
+			self.Florissant_Fossil_family_20_2048,
+		]
+		
+		######################
+		
+		self.Fossil_family_50_512: List[str] = [
+			self.General_Fossil_family_50_512,
+			self.Florissant_Fossil_family_50_512,
+		]
+		self.Fossil_family_50_1024: List[str] = [
+			self.General_Fossil_family_50_1024,
+			self.Florissant_Fossil_family_50_1024,
+		]
+		self.Fossil_family_50_1536: List[str] = [
+			self.General_Fossil_family_50_1536,
+			self.Florissant_Fossil_family_50_1536,
+		]
+		self.Fossil_family_50_2048: List[str] = [
+			self.General_Fossil_family_50_2048,
+			self.Florissant_Fossil_family_50_2048,
+		]
+		
 
 	@property
 	def datasets(self):
@@ -520,15 +699,20 @@ class Leavesdbv1_1(LeavesdbBase):
 			"all": self.original,
 		}
 
+
 	@property
 	def tags(self):
 		out = {}
 		for k, v in self.datasets.items():
-			out[k] = []
-			for tag in v.keys():
-				out[k].append(tag)
+			if isinstance(v, list):
+				out[k] = v
+			else:
+				out[k] = []
+				for tag in v.keys():
+					out[k].append(tag)
 		return out
-
+	
+	
 	def __repr__(self):
 		return super().__repr__()
 
@@ -647,7 +831,7 @@ class AvailableDatasets:
 		)
 
 	@classmethod
-	def search(cls, query: str, version: Optional[str] = "v1_0") -> Dict[str, str]:
+	def search(cls, query: str, version: Optional[str] = "v1_1") -> Dict[str, str]:
 		"""
 		Helper function
 		Searches a target dictionary for k,v pairs for which the key contains a substring equal to {query}.

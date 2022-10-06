@@ -267,6 +267,7 @@ class BaseDataset(AbstractCatalogDataset):
 				 id_col: str="image_id",
 				 smallest_taxon_col: str="Species",
 				 train_size: float=0.8,
+				 splits: Optional[Tuple[float]]=None,
 				 shuffle: bool=True,
 				 seed: int=14,
 				 image_reader: Union[Callable,str]="default",
@@ -301,6 +302,7 @@ class BaseDataset(AbstractCatalogDataset):
 		
 		self.catalog_dir = catalog_dir or self.catalog_dir
 		self.train_size = train_size
+		self.splits = splits
 		self.shuffle = shuffle
 		self.seed = seed
 		self.subset = subset
@@ -443,6 +445,7 @@ class Herbarium2022Dataset(BaseDataset):
 				 id_col: str="image_id",
 				 smallest_taxon_col: str="Species",
 				 train_size: float=0.8,
+				 splits: Optional[Tuple[float]]=None,
 				 shuffle: bool=True,
 				 seed: int=14,
 				 image_reader: Union[Callable,str]="default", #Image.open,
@@ -480,6 +483,7 @@ class Herbarium2022Dataset(BaseDataset):
 						 id_col=id_col,
 						 smallest_taxon_col=smallest_taxon_col,
 						 train_size=train_size,
+						 splits=splits,
 						 shuffle=shuffle,
 						 seed=seed,
 						 image_reader=image_reader,
@@ -544,6 +548,7 @@ class ExtantLeavesDataset(BaseDataset):
 				 y_col: str="y",
 				 id_col: str="catalog_number",
 				 smallest_taxon_col: str="Species",
+				 train_size: Optional[float]=None,
 				 splits: float=(0.5,0.2,0.3),
 				 shuffle: bool=True,
 				 seed: int=14,
@@ -581,7 +586,8 @@ class ExtantLeavesDataset(BaseDataset):
 						 y_col=y_col,
 						 id_col=id_col,
 						 smallest_taxon_col=smallest_taxon_col,
-						 train_size=None,
+						 train_size=train_size,
+						 splits=splits,
 						 shuffle=shuffle,
 						 seed=seed,
 						 image_reader=image_reader,

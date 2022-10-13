@@ -72,7 +72,12 @@ TODO:
 [] Implement file-system agnostic dataset registration for
 	[] 1. automatically downloading and caching from GCS to local system
 	[] 2. Deploying catalogs from central data_cifs repository to GCS for future querying (step 1.)
-
+[] 3. Create a `test_catalog_registry.py` script with pytest fixtures to efficiently describe every combination of possible inputs to AvailableDataset's main methods, including
+	* a. AvailableDatasets.search
+	* b. AvailableDatasets.query_tags
+	* c. AvailableDatasets.get
+	* d. AvailableDatasets.get_latest
+	* e. AvailableDatasets.add_dataset
 
 
 -- (Sunday 2022-06-12) Added the following 40 (!) dataset variations to v1_1:

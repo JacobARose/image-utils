@@ -1,11 +1,58 @@
 """
 Importable registry of directories containing different datasets and versions mounted on data_cifs.
 
+## Example 1: Search
+-------
+
+from imutils.catalog_registry import available_datasets
+
+>> catalog_registry.available_datasets.search("General_Fossil_family_10")
+
+{'General_Fossil_family_10_512': '/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_1/images/Fossil/General_Fossil/512/10/jpg',
+ 'General_Fossil_family_10_1024': '/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_1/images/Fossil/General_Fossil/1024/10/jpg',
+ 'General_Fossil_family_10_1536': '/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_1/images/Fossil/General_Fossil/1536/10/jpg',
+ 'General_Fossil_family_10_2048': '/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_1/images/Fossil/General_Fossil/2048/10/jpg'}
+
+
+---------------------------
+## Example 2: Query an image dataset dir and construct image path & label vectors
+-------
+
+img_root_dir = catalog_registry.available_datasets.get("General_Fossil_family_10_512")
+
+class_names = sorted(os.listdir(img_root_dir))
+
+path_list = []; label_list = []; label_str2int = {}
+
+for i, n in enumerate(class_names):
+    i_paths = sorted(os.listdir(
+        os.path.join(img_root_dir,n)))
+    i_paths = [os.path.join(img_root_dir, n, fname) for fname in i_paths]
+    i_labels = [i]*len(i_paths)
+    path_list.extend(i_paths)
+    label_list.extend(i_labels)
+    label_str2int[n] = i
+
+name_list = [class_names[l] for l in label_list]
+
+data = [(i, l) for i, l in zip(path_list, label_list)]
+
+---------------------------
+## Example 3: Plot images grouped into class tabs
+-------
+
+
+class_counts = Counter(name_list)
+tab_labels = [f"{l}: {class_counts[l]}" for l in name_list]
+
+
+ipyplot.plot_class_tabs(path_list, tab_labels)
+
+---------------------------
 
 
 image-utils/imutils/catalog_registry.py
-
-
+---------------------------
 Previously:
 lightning_hydra_classifiers/data/utils/catalog_registry.py
 
@@ -132,13 +179,13 @@ import rich
 from rich import print as pp
 import yaml
 
-__all__ = [
-	"leavesdbv0_3",
-	"leavesdbv1_0",
-	"leavesdbv1_1",
-	"available_datasets",
-	"AvailableDatasets",
-]
+# __all__ = [
+# 	"leavesdbv0_3",
+# 	"leavesdbv1_0",
+# 	"leavesdbv1_1",
+# 	"available_datasets",
+# 	"AvailableDatasets"
+# ]
 
 
 @dataclass
@@ -903,6 +950,12 @@ class AvailableDatasets:
 
 		"""
 		return cls.versions[version][tag]
+	
+	
+	@classmethod
+	def get_image_label_list(cls, tag: str, version: Optional[str] = "v1_1") -> Union[str, List[str]]:
+		pass
+
 
 	@property
 	def tags(self):

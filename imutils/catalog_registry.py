@@ -66,9 +66,12 @@ Currently covers:
 	- leavesdb v1_1
 Work In Progress:
 	- leavesdb v1_1 -- Blurred Text (Added 2022-04-03)
+----------------------------
+TODO:
 
-
-
+[] Implement file-system agnostic dataset registration for
+	[] 1. automatically downloading and caching from GCS to local system
+	[] 2. Deploying catalogs from central data_cifs repository to GCS for future querying (step 1.)
 
 
 
@@ -180,13 +183,14 @@ from rich import print as pp
 import yaml
 
 # __all__ = [
-# 	"leavesdbv0_3",
-# 	"leavesdbv1_0",
-# 	"leavesdbv1_1",
+# 	"leavesdb_catalogv0_3",
+# 	"leavesdb_catalogv1_0",
+# 	"leavesdb_catalogv1_1",
 # 	"available_datasets",
 # 	"AvailableDatasets"
 # ]
 
+##-----------------------
 
 @dataclass
 class BaseCatalog:
@@ -255,9 +259,10 @@ class BaseCatalog:
 	def Herbarium2022(self):
 		return {k: self[k] for k in self.keys() if k.startswith("Herbarium2022")}
 
-
+##-----------------------
+	
 @dataclass
-class Leavesdbv0_3(BaseCatalog):
+class LeavesdbCatalogv0_3(BaseCatalog):
 
 	PNAS_family_100_original: str = (
 		"/media/data_cifs/projects/prj_fossils/data/processed_data/data_splits/PNAS_family_100"
@@ -353,11 +358,10 @@ class Leavesdbv0_3(BaseCatalog):
 	def __repr__(self):
 		return super().__repr__()
 
-	#	 return rich.pretty.pretty_repr(self.datasets)
-
+##-----------------------
 
 @dataclass
-class Leavesdbv1_0(BaseCatalog):
+class LeavesdbCatalogv1_0(BaseCatalog):
 
 	Extant_Leaves_original: str = "/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_0/images/Extant_Leaves/original/full/jpg"
 	General_Fossil_original: str = "/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_0/images/Fossil/General_Fossil/original/full/jpg"
@@ -502,9 +506,10 @@ class Leavesdbv1_0(BaseCatalog):
 	def __repr__(self):
 		return super().__repr__()
 
+##-----------------------
 
 @dataclass
-class Leavesdbv1_1(BaseCatalog):
+class LeavesdbCatalogv1_1(BaseCatalog):
 	"""
 	Leavesdb-v1.1
 
@@ -817,13 +822,13 @@ def query_dict(target: Dict[str, str], query: str) -> Dict[str, str]:
 
 #############################
 
-leavesdbv0_3 = Leavesdbv0_3()
-leavesdbv1_0 = Leavesdbv1_0()
-leavesdbv1_1 = Leavesdbv1_1()
-
+leavesdb_catalog_v0_3 = LeavesdbCatalogv0_3()
+leavesdb_catalog_v1_0 = LeavesdbCatalogv1_0()
+leavesdb_catalog_v1_1 = LeavesdbCatalogv1_1()
 
 
 third_party = ThirdPartyDatasets()
+
 
 # import rich.repr
 # @rich.repr.auto
@@ -831,7 +836,7 @@ class AvailableDatasets:
 	# class available_datasets:
 	# class AvailableDatasets:
 	"""
-	Central location for querying all datasets
+	Central location for querying all individual *datasets* distributed among multiple *versioned catalogs*.
 	
 	
 	To do: Consider whether to move "third_party" versions to "extras" instead.
@@ -839,7 +844,7 @@ class AvailableDatasets:
 	
 	"""
 
-	versions = {"v0_3": leavesdbv0_3, "v1_0": leavesdbv1_0, "v1_1": leavesdbv1_1, "third_party": third_party}
+	versions = {"v0_3": leavesdb_catalog_v0_3, "v1_0": leavesdb_catalog_v1_0, "v1_1": leavesdb_catalog_v1_1, "third_party": third_party}
 	extras = {}
 	
 	def display_all(self):
@@ -878,7 +883,11 @@ class AvailableDatasets:
 		)
 
 	@classmethod
-	def search(cls, query: str, version: Optional[str] = "v1_1") -> Dict[str, str]:
+	def search(
+		cls,
+		query: str,
+		version: Optional[str] = "v1_1"
+	) -> Dict[str, Union[str, List[str]]]:
 		"""
 		Helper function
 		Searches a target dictionary for k,v pairs for which the key contains a substring equal to {query}.

@@ -189,7 +189,7 @@ import yaml
 
 
 @dataclass
-class LeavesdbBase:
+class BaseCatalog:
 
 	#	 datasets = ["PNAS", "Extant", "Fossil"]
 
@@ -257,7 +257,7 @@ class LeavesdbBase:
 
 
 @dataclass
-class Leavesdbv0_3(LeavesdbBase):
+class Leavesdbv0_3(BaseCatalog):
 
 	PNAS_family_100_original: str = (
 		"/media/data_cifs/projects/prj_fossils/data/processed_data/data_splits/PNAS_family_100"
@@ -357,7 +357,7 @@ class Leavesdbv0_3(LeavesdbBase):
 
 
 @dataclass
-class Leavesdbv1_0(LeavesdbBase):
+class Leavesdbv1_0(BaseCatalog):
 
 	Extant_Leaves_original: str = "/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_0/images/Extant_Leaves/original/full/jpg"
 	General_Fossil_original: str = "/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_0/images/Fossil/General_Fossil/original/full/jpg"
@@ -504,7 +504,7 @@ class Leavesdbv1_0(LeavesdbBase):
 
 
 @dataclass
-class Leavesdbv1_1(LeavesdbBase):
+class Leavesdbv1_1(BaseCatalog):
 	"""
 	Leavesdb-v1.1
 
@@ -765,7 +765,7 @@ class Leavesdbv1_1(LeavesdbBase):
 
 
 @dataclass
-class ThirdPartyDatasets(LeavesdbBase):
+class ThirdPartyDatasets(BaseCatalog):
 	"""
 	ThirdPartyDatasets
 	

@@ -21,7 +21,7 @@ TODO:
 
 
 
-- Sunday June 12h, 2022: 
+- Sunday June 12th, 2022: 
 	Added
 		* make_florissant_fossil
 		* make_general_fossil
@@ -584,7 +584,7 @@ def cmdline_args():
 		action="store_true",
 		help=(
 			"If user provides this flag, produce all currently in-production resolutions+thresholds"
-			" in the dataset: Extant_Leaves's most recent version (currently == 'v1_0')."
+			" in the dataset: Extant_Leaves's most recent version (currently == 'v1_1')."
 		),
 	)
 	p.add_argument(
@@ -594,7 +594,7 @@ def cmdline_args():
 		help=(
 			f"If user provides this flag, produce all currently in-production"
 			f" resolutions+thresholds in the dataset: PNAS's most recent version (currently =="
-			f" 'v1_0')."
+			f" 'v1_1')."
 		),
 	)
 	#					help="If user provides this flag, produce all currently in-production datasets in the most recent version (currently == 'v1_0').")
@@ -604,7 +604,7 @@ def cmdline_args():
 		action="store_true",
 		help=(
 			"If user provides this flag, produce all currently in-production resolutions+thresholds"
-			" in the dataset: Extant-PNAS's most recent version (currently == 'v1_0')."
+			" in the dataset: Extant-PNAS's most recent version (currently == 'v1_1')."
 		),
 	)
 	#					help="If user provides this flag, produce all currently in-production datasets in the most recent version (currently == 'v1_0').")
@@ -614,7 +614,7 @@ def cmdline_args():
 		action="store_true",
 		help=(
 			"If user provides this flag, produce all currently in-production resolutions+thresholds"
-			" in the dataset: PNAS-Extant's most recent version (currently == 'v1_0')."
+			" in the dataset: PNAS-Extant's most recent version (currently == 'v1_1')."
 		),
 	)
 	#					help="If user provides this flag, produce all currently in-production datasets in the most recent version (currently == 'v1_0').")
@@ -624,7 +624,7 @@ def cmdline_args():
 		action="store_true",
 		help=(
 			"If user provides this flag, produce all currently in-production resolutions+thresholds"
-			" in the dataset: Extant_w_PNAS's most recent version (currently == 'v1_0')."
+			" in the dataset: Extant_w_PNAS's most recent version (currently == 'v1_1')."
 		),
 	)
 	#					help="If user provides this flag, produce all currently in-production datasets in the most recent version (currently == 'v1_0').")
@@ -635,7 +635,7 @@ def cmdline_args():
 		help=(
 			f"If user provides this flag, produce all currently in-production"
 			f" resolutions+thresholds in the original datasets' () most recent version (currently"
-			f" == 'v1_0'). Note that this excludes PNAS."
+			f" == 'v1_1'). Note that this excludes PNAS."
 		),
 	)
 	#					help="If user provides this flag, produce all currently in-production datasets in the most recent version (currently == 'v1_0').")

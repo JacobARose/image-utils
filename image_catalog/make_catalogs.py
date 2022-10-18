@@ -48,13 +48,12 @@ from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import *
 import pandas as pd
-
-# from lightning_hydra_classifiers.data.utils import catalog_registry
-from imutils import catalog_registry
-from imutils.ml.utils.etl_utils import ETL
-from imutils.big.common_catalog_utils import CSVDatasetConfig, ImageFileDatasetConfig, CSVDataset, ImageFileDataset
 from omegaconf import DictConfig
 from PIL import Image
+
+from image_catalog import catalog_registry
+from image_catalog.utils.etl_utils import ETL
+from image_catalog.utils.common_catalog_utils import CSVDatasetConfig, ImageFileDatasetConfig, CSVDataset, ImageFileDataset
 
 #######################################################
 #######################################################

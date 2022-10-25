@@ -1,0 +1,354 @@
+/media/data_cifs/projects/prj_fossils/users/jacob/data/leavesdb-v1_1
+├── Extant_Leaves_1024
+│   ├── CSVDataset-config.yaml
+│   ├── Extant_Leaves_1024-full_dataset.csv
+│   └── ImageFileDataset-config.yaml
+├── Extant_Leaves_512
+│   ├── CSVDataset-config.yaml
+│   ├── Extant_Leaves_512-full_dataset.csv
+│   └── ImageFileDataset-config.yaml
+├── Extant_Leaves_family_100_1024
+│   ├── CSVDataset-config.yaml
+│   ├── Extant_Leaves_family_100_1024-full_dataset.csv
+│   ├── ImageFileDataset-config.yaml
+│   └── splits
+│       └── splits=(0.5,0.2,0.3)
+│           ├── family-encoder.pkl
+│           ├── test_metadata.csv
+│           ├── train_metadata.csv
+│           └── val_metadata.csv
+├── Extant_Leaves_family_100_1024_minus_PNAS_family_100_1024
+│   ├── A_in_B-CSVDataset-config.yaml
+│   ├── B_in_A-CSVDataset-config.yaml
+│   ├── CSVDataset-config.yaml
+│   ├── Extant_Leaves_family_100_1024_in_PNAS_family_100_1024.csv
+│   ├── Extant_Leaves_family_100_1024_minus_PNAS_family_100_1024-full_dataset.csv
+│   ├── inputs
+│   │   ├── A
+│   │   │   └── CSVDataset-config.yaml
+│   │   └── B
+│   │       └── CSVDataset-config.yaml
+│   └── PNAS_family_100_1024_in_Extant_Leaves_family_100_1024.csv
+├── Extant_Leaves_family_100_1024_w_PNAS_family_100_1024
+│   ├── A_in_B-CSVDataset-config.yaml
+│   ├── B_in_A-CSVDataset-config.yaml
+│   ├── CSVDataset-config.yaml
+│   ├── Extant_Leaves_family_100_1024_in_PNAS_family_100_1024.csv
+│   ├── Extant_Leaves_family_100_1024_w_PNAS_family_100_1024-full_dataset.csv
+│   ├── inputs
+│   │   ├── A
+│   │   │   └── CSVDataset-config.yaml
+│   │   └── B
+│   │       └── CSVDataset-config.yaml
+│   └── PNAS_family_100_1024_in_Extant_Leaves_family_100_1024.csv
+├── Extant_Leaves_family_100_512
+│   ├── CSVDataset-config.yaml
+│   ├── Extant_Leaves_family_100_512-full_dataset.csv
+│   ├── ImageFileDataset-config.yaml
+│   └── splits
+│       └── splits=(0.5,0.2,0.3)
+│           ├── family-encoder.pkl
+│           ├── test_metadata.csv
+│           ├── train_metadata.csv
+│           └── val_metadata.csv
+├── Extant_Leaves_family_100_512_minus_PNAS_family_100_512
+│   ├── A_in_B-CSVDataset-config.yaml
+│   ├── B_in_A-CSVDataset-config.yaml
+│   ├── CSVDataset-config.yaml
+│   ├── Extant_Leaves_family_100_512_in_PNAS_family_100_512.csv
+│   ├── Extant_Leaves_family_100_512_minus_PNAS_family_100_512-full_dataset.csv
+│   ├── inputs
+│   │   ├── A
+│   │   │   └── CSVDataset-config.yaml
+│   │   └── B
+│   │       └── CSVDataset-config.yaml
+│   └── PNAS_family_100_512_in_Extant_Leaves_family_100_512.csv
+├── Extant_Leaves_family_100_512_w_PNAS_family_100_512
+│   ├── A_in_B-CSVDataset-config.yaml
+│   ├── B_in_A-CSVDataset-config.yaml
+│   ├── CSVDataset-config.yaml
+│   ├── Extant_Leaves_family_100_512_in_PNAS_family_100_512.csv
+│   ├── Extant_Leaves_family_100_512_w_PNAS_family_100_512-full_dataset.csv
+│   ├── inputs
+│   │   ├── A
+│   │   │   └── CSVDataset-config.yaml
+│   │   └── B
+│   │       └── CSVDataset-config.yaml
+│   └── PNAS_family_100_512_in_Extant_Leaves_family_100_512.csv
+├── Extant_Leaves_family_10_1024
+│   ├── CSVDataset-config.yaml
+│   ├── Extant_Leaves_family_10_1024-full_dataset.csv
+│   ├── ImageFileDataset-config.yaml
+│   └── splits
+│       └── splits=(0.5,0.2,0.3)
+│           ├── family-encoder.pkl
+│           ├── test_metadata.csv
+│           ├── train_metadata.csv
+│           └── val_metadata.csv
+├── Extant_Leaves_family_10_1024_minus_PNAS_family_100_1024
+│   ├── A_in_B-CSVDataset-config.yaml
+│   ├── B_in_A-CSVDataset-config.yaml
+│   ├── CSVDataset-config.yaml
+│   ├── Extant_Leaves_family_10_1024_in_PNAS_family_100_1024.csv
+│   ├── Extant_Leaves_family_10_1024_minus_PNAS_family_100_1024-full_dataset.csv
+│   ├── inputs
+│   │   ├── A
+│   │   │   └── CSVDataset-config.yaml
+│   │   └── B
+│   │       └── CSVDataset-config.yaml
+│   └── PNAS_family_100_1024_in_Extant_Leaves_family_10_1024.csv
+├── Extant_Leaves_family_10_1024_w_PNAS_family_100_1024
+│   ├── A_in_B-CSVDataset-config.yaml
+│   ├── B_in_A-CSVDataset-config.yaml
+│   ├── CSVDataset-config.yaml
+│   ├── Extant_Leaves_family_10_1024_in_PNAS_family_100_1024.csv
+│   ├── Extant_Leaves_family_10_1024_w_PNAS_family_100_1024-full_dataset.csv
+│   ├── inputs
+│   │   ├── A
+│   │   │   └── CSVDataset-config.yaml
+│   │   └── B
+│   │       └── CSVDataset-config.yaml
+│   └── PNAS_family_100_1024_in_Extant_Leaves_family_10_1024.csv
+├── Extant_Leaves_family_10_512
+│   ├── CSVDataset-config.yaml
+│   ├── Extant_Leaves_family_10_512-full_dataset.csv
+│   ├── ImageFileDataset-config.yaml
+│   └── splits
+│       └── splits=(0.5,0.2,0.3)
+│           ├── family-encoder.pkl
+│           ├── lmdb_data
+│           │   ├── test.lmdb
+│           │   ├── test.lmdb-lock
+│           │   ├── train.lmdb
+│           │   ├── train.lmdb-lock
+│           │   ├── val.lmdb
+│           │   └── val.lmdb-lock
+│           ├── test_metadata.csv
+│           ├── train_metadata.csv
+│           └── val_metadata.csv
+├── Extant_Leaves_family_10_512_minus_PNAS_family_100_512
+│   ├── A_in_B-CSVDataset-config.yaml
+│   ├── B_in_A-CSVDataset-config.yaml
+│   ├── CSVDataset-config.yaml
+│   ├── Extant_Leaves_family_10_512_in_PNAS_family_100_512.csv
+│   ├── Extant_Leaves_family_10_512_minus_PNAS_family_100_512-full_dataset.csv
+│   ├── inputs
+│   │   ├── A
+│   │   │   └── CSVDataset-config.yaml
+│   │   └── B
+│   │       └── CSVDataset-config.yaml
+│   └── PNAS_family_100_512_in_Extant_Leaves_family_10_512.csv
+├── Extant_Leaves_family_10_512_w_PNAS_family_100_512
+│   ├── A_in_B-CSVDataset-config.yaml
+│   ├── B_in_A-CSVDataset-config.yaml
+│   ├── CSVDataset-config.yaml
+│   ├── Extant_Leaves_family_10_512_in_PNAS_family_100_512.csv
+│   ├── Extant_Leaves_family_10_512_w_PNAS_family_100_512-full_dataset.csv
+│   ├── inputs
+│   │   ├── A
+│   │   │   └── CSVDataset-config.yaml
+│   │   └── B
+│   │       └── CSVDataset-config.yaml
+│   └── PNAS_family_100_512_in_Extant_Leaves_family_10_512.csv
+├── Extant_Leaves_family_3_1024
+│   ├── CSVDataset-config.yaml
+│   ├── Extant_Leaves_family_3_1024-full_dataset.csv
+│   ├── ImageFileDataset-config.yaml
+│   └── splits
+│       └── splits=(0.5,0.2,0.3)
+│           ├── family-encoder.pkl
+│           ├── test_metadata.csv
+│           ├── train_metadata.csv
+│           └── val_metadata.csv
+├── Extant_Leaves_family_3_512
+│   ├── CSVDataset-config.yaml
+│   ├── Extant_Leaves_family_3_512-full_dataset.csv
+│   ├── ImageFileDataset-config.yaml
+│   └── splits
+│       └── splits=(0.5,0.2,0.3)
+│           ├── family-encoder.pkl
+│           ├── test_metadata.csv
+│           ├── train_metadata.csv
+│           └── val_metadata.csv
+├── Florissant_Fossil_1024
+│   ├── CSVDataset-config.yaml
+│   ├── Florissant_Fossil_1024-full_dataset.csv
+│   └── ImageFileDataset-config.yaml
+├── Florissant_Fossil_512
+│   ├── CSVDataset-config.yaml
+│   ├── Florissant_Fossil_512-full_dataset.csv
+│   └── ImageFileDataset-config.yaml
+├── Florissant_Fossil_family_10_1024
+│   ├── CSVDataset-config.yaml
+│   ├── Florissant_Fossil_family_10_1024-full_dataset.csv
+│   └── ImageFileDataset-config.yaml
+├── Florissant_Fossil_family_10_512
+│   ├── CSVDataset-config.yaml
+│   ├── Florissant_Fossil_family_10_512-full_dataset.csv
+│   └── ImageFileDataset-config.yaml
+├── Florissant_Fossil_family_20_1024
+│   ├── CSVDataset-config.yaml
+│   ├── Florissant_Fossil_family_20_1024-full_dataset.csv
+│   └── ImageFileDataset-config.yaml
+├── Florissant_Fossil_family_20_512
+│   ├── CSVDataset-config.yaml
+│   ├── Florissant_Fossil_family_20_512-full_dataset.csv
+│   └── ImageFileDataset-config.yaml
+├── Florissant_Fossil_family_3_1024
+│   ├── CSVDataset-config.yaml
+│   ├── Florissant_Fossil_family_3_1024-full_dataset.csv
+│   └── ImageFileDataset-config.yaml
+├── Florissant_Fossil_family_3_512
+│   ├── CSVDataset-config.yaml
+│   ├── Florissant_Fossil_family_3_512-full_dataset.csv
+│   └── ImageFileDataset-config.yaml
+├── Florissant_Fossil_family_50_1024
+│   ├── CSVDataset-config.yaml
+│   ├── Florissant_Fossil_family_50_1024-full_dataset.csv
+│   └── ImageFileDataset-config.yaml
+├── Florissant_Fossil_family_50_512
+│   ├── CSVDataset-config.yaml
+│   ├── Florissant_Fossil_family_50_512-full_dataset.csv
+│   └── ImageFileDataset-config.yaml
+├── Fossil_1024
+│   ├── CSVDataset-config.yaml
+│   ├── Fossil_1024-full_dataset.csv
+│   └── ImageFileDataset-config.yaml
+├── Fossil_512
+│   ├── CSVDataset-config.yaml
+│   ├── Fossil_512-full_dataset.csv
+│   └── ImageFileDataset-config.yaml
+├── Fossil_family_3_1024
+│   ├── CSVDataset-config.yaml
+│   ├── Fossil_family_3_1024-full_dataset.csv
+│   ├── ImageFileDataset-config.yaml
+│   └── splits
+│       └── splits=(0.5,0.2,0.3)
+│           ├── family-encoder.pkl
+│           ├── test_metadata.csv
+│           ├── train_metadata.csv
+│           └── val_metadata.csv
+├── Fossil_family_3_512
+│   ├── CSVDataset-config.yaml
+│   ├── Fossil_family_3_512-full_dataset.csv
+│   ├── ImageFileDataset-config.yaml
+│   └── splits
+│       └── splits=(0.5,0.2,0.3)
+│           ├── family-encoder.pkl
+│           ├── test_metadata.csv
+│           ├── train_metadata.csv
+│           └── val_metadata.csv
+├── General_Fossil_1024
+│   ├── CSVDataset-config.yaml
+│   ├── General_Fossil_1024-full_dataset.csv
+│   └── ImageFileDataset-config.yaml
+├── General_Fossil_512
+│   ├── CSVDataset-config.yaml
+│   ├── General_Fossil_512-full_dataset.csv
+│   └── ImageFileDataset-config.yaml
+├── General_Fossil_family_10_1024
+│   ├── CSVDataset-config.yaml
+│   ├── General_Fossil_family_10_1024-full_dataset.csv
+│   └── ImageFileDataset-config.yaml
+├── General_Fossil_family_10_512
+│   ├── CSVDataset-config.yaml
+│   ├── General_Fossil_family_10_512-full_dataset.csv
+│   └── ImageFileDataset-config.yaml
+├── General_Fossil_family_20_1024
+│   ├── CSVDataset-config.yaml
+│   ├── General_Fossil_family_20_1024-full_dataset.csv
+│   └── ImageFileDataset-config.yaml
+├── General_Fossil_family_20_512
+│   ├── CSVDataset-config.yaml
+│   ├── General_Fossil_family_20_512-full_dataset.csv
+│   └── ImageFileDataset-config.yaml
+├── General_Fossil_family_3_1024
+│   ├── CSVDataset-config.yaml
+│   ├── General_Fossil_family_3_1024-full_dataset.csv
+│   └── ImageFileDataset-config.yaml
+├── General_Fossil_family_3_512
+│   ├── CSVDataset-config.yaml
+│   ├── General_Fossil_family_3_512-full_dataset.csv
+│   └── ImageFileDataset-config.yaml
+├── General_Fossil_family_50_1024
+│   ├── CSVDataset-config.yaml
+│   ├── General_Fossil_family_50_1024-full_dataset.csv
+│   └── ImageFileDataset-config.yaml
+├── General_Fossil_family_50_512
+│   ├── CSVDataset-config.yaml
+│   ├── General_Fossil_family_50_512-full_dataset.csv
+│   └── ImageFileDataset-config.yaml
+├── original
+│   ├── CSVDataset-config.yaml
+│   ├── ImageFileDataset-config.yaml
+│   └── original-full_dataset.csv
+├── PNAS_family_100_1024
+│   ├── CSVDataset-config.yaml
+│   ├── ImageFileDataset-config.yaml
+│   ├── PNAS_family_100_1024-full_dataset.csv
+│   └── splits
+│       └── splits=(0.5,0.2,0.3)
+│           ├── family-encoder.pkl
+│           ├── test_metadata.csv
+│           ├── train_metadata.csv
+│           └── val_metadata.csv
+├── PNAS_family_100_1024_minus_Extant_Leaves_family_100_1024
+│   ├── A_in_B-CSVDataset-config.yaml
+│   ├── B_in_A-CSVDataset-config.yaml
+│   ├── CSVDataset-config.yaml
+│   ├── Extant_Leaves_family_100_1024_in_PNAS_family_100_1024.csv
+│   ├── inputs
+│   │   ├── A
+│   │   │   └── CSVDataset-config.yaml
+│   │   └── B
+│   │       └── CSVDataset-config.yaml
+│   ├── PNAS_family_100_1024_in_Extant_Leaves_family_100_1024.csv
+│   └── PNAS_family_100_1024_minus_Extant_Leaves_family_100_1024-full_dataset.csv
+├── PNAS_family_100_1024_minus_Extant_Leaves_family_10_1024
+│   ├── A_in_B-CSVDataset-config.yaml
+│   ├── B_in_A-CSVDataset-config.yaml
+│   ├── CSVDataset-config.yaml
+│   ├── Extant_Leaves_family_10_1024_in_PNAS_family_100_1024.csv
+│   ├── inputs
+│   │   ├── A
+│   │   │   └── CSVDataset-config.yaml
+│   │   └── B
+│   │       └── CSVDataset-config.yaml
+│   ├── PNAS_family_100_1024_in_Extant_Leaves_family_10_1024.csv
+│   └── PNAS_family_100_1024_minus_Extant_Leaves_family_10_1024-full_dataset.csv
+├── PNAS_family_100_512
+│   ├── CSVDataset-config.yaml
+│   ├── ImageFileDataset-config.yaml
+│   ├── PNAS_family_100_512-full_dataset.csv
+│   └── splits
+│       └── splits=(0.5,0.2,0.3)
+│           ├── family-encoder.pkl
+│           ├── test_metadata.csv
+│           ├── train_metadata.csv
+│           └── val_metadata.csv
+├── PNAS_family_100_512_minus_Extant_Leaves_family_100_512
+│   ├── A_in_B-CSVDataset-config.yaml
+│   ├── B_in_A-CSVDataset-config.yaml
+│   ├── CSVDataset-config.yaml
+│   ├── Extant_Leaves_family_100_512_in_PNAS_family_100_512.csv
+│   ├── inputs
+│   │   ├── A
+│   │   │   └── CSVDataset-config.yaml
+│   │   └── B
+│   │       └── CSVDataset-config.yaml
+│   ├── PNAS_family_100_512_in_Extant_Leaves_family_100_512.csv
+│   └── PNAS_family_100_512_minus_Extant_Leaves_family_100_512-full_dataset.csv
+└── PNAS_family_100_512_minus_Extant_Leaves_family_10_512
+    ├── A_in_B-CSVDataset-config.yaml
+    ├── B_in_A-CSVDataset-config.yaml
+    ├── CSVDataset-config.yaml
+    ├── Extant_Leaves_family_10_512_in_PNAS_family_100_512.csv
+    ├── inputs
+    │   ├── A
+    │   │   └── CSVDataset-config.yaml
+    │   └── B
+    │       └── CSVDataset-config.yaml
+    ├── PNAS_family_100_512_in_Extant_Leaves_family_10_512.csv
+    └── PNAS_family_100_512_minus_Extant_Leaves_family_10_512-full_dataset.csv
+
+104 directories, 247 files

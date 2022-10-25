@@ -30,6 +30,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
 from tqdm import tqdm
 import os
+import sys
 from typing import *
 import json
 import pandas as pd
@@ -493,16 +494,19 @@ def parse_args() -> argparse.Namespace:
 	
 	parser = argparse.ArgumentParser("""Generate train-val-test splits dataset from Leavesdb v1.1 catalogs.""")
 	parser.add_argument(
-		"--root_dir", default=CATALOG_ROOT_DIR, help="Root directory where inidividual datasets each have their own subdir, within which lie the catalog files."
+		"--root_dir",
+		default=CATALOG_ROOT_DIR, 
+		help="Root directory where inidividual datasets each have their own subdir, within which lie the catalog files."
 	)
 	parser.add_argument(
-		"--sub_dir", default="Extant_Leaves_family_10_512", help="Root directory where inidividual datasets each have their own subdir, within which lie the catalog files."
+		"--sub_dir",
+		default="Extant_Leaves_family_10_512", 
+		help="Root directory where inidividual datasets each have their own subdir, within which lie the catalog files."
 	)
-
 	parser.add_argument(
 		"--splits_dir",
 		default=None, #SPLITS_DIR,
-		help="Target directory in which to save the csv files for each split. ",
+		help="Target directory in which to save the csv files for each split.",
 	)
 	parser.add_argument(
 		"--label_col",
@@ -521,7 +525,6 @@ def parse_args() -> argparse.Namespace:
 	parser.add_argument(
 		"--run_all", action="store_true", help="Flag to create splits for all subdirs in args.root_dir."
 	)
-
 	parser.add_argument(
 		"--info", action="store_true", help="Flag to print execution variables then quit without execution."
 	)

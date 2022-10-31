@@ -27,33 +27,40 @@ TODO:
 		* make_general_fossil
 
 
+python "/media/data_cifs/projects/prj_fossils/users/jacob/github/image-utils/image_catalog/make_catalogs.py" --info
 
-python "/media/data/jacob/GitHub/lightning-hydra-classifiers/lightning_hydra_classifiers/data/utils/make_catalogs.py" --all
+python "/media/data_cifs/projects/prj_fossils/users/jacob/github/image-utils/image_catalog/make_catalogs.py" --all
+
+python "/media/data_cifs/projects/prj_fossils/users/jacob/github/image-utils/image_catalog/make_catalogs.py" --make_original
 
 
-python "/media/data/jacob/GitHub/lightning-hydra-classifiers/lightning_hydra_classifiers/data/utils/make_catalogs.py" --make_original
 
 
-python "/media/data/jacob/GitHub/lightning-hydra-classifiers/lightning_hydra_classifiers/data/utils/make_catalogs.py" --make_extant
-
+python "/media/data_cifs/projects/prj_fossils/users/jacob/github/image-utils/image_catalog/make_catalogs.py" --all -o "/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_1/catalogs"
 
 """
 
 import argparse
 import collections
 import os
+import sys
 import shutil
 from copy import deepcopy
 from dataclasses import asdict, dataclass
 from pathlib import Path
+from rich import print as pp
 from typing import *
 import pandas as pd
 from omegaconf import DictConfig
 from PIL import Image
 
 from image_catalog import catalog_registry
+from image_catalog.utils import template_utils
+
 from image_catalog.utils.etl_utils import ETL
 from image_catalog.utils.common_catalog_utils import CSVDatasetConfig, ImageFileDatasetConfig, CSVDataset, ImageFileDataset
+
+log = template_utils.get_logger(__file__)
 
 #######################################################
 #######################################################
@@ -77,11 +84,11 @@ def create_dataset_A_in_B(dataset_A, dataset_B) -> pd.DataFrame:
 
 
 def export_dataset_catalog_configuration(
-	output_dir: str = "/media/data_cifs/projects/prj_fossils/users/jacob/experiments/July2021-Nov2021/csv_datasets/leavesdb-v1_0",
+	output_dir: str = "/media/data_cifs/projects/prj_fossils/users/jacob/experiments/July2021-Nov2021/csv_datasets/leavesdb-v1_1",
 	base_dataset_name="Extant_Leaves",
 	threshold=100,
 	resolution=512,
-	version: str = "v1_0",
+	version: str = "v1_1",
 	path_schema: str = "{family}_{genus}_{species}_{collection}_{catalog_number}",
 ):
 
@@ -248,7 +255,7 @@ def make_fossil(args):
 
 	base_dataset_name = "Fossil"
 	thresholds = [None, 3]
-	resolutions = [512, 1024]
+	resolutions = [512, 1024, 1536, 2048]
 	path_schema = "{family}_{genus}_{species}_{collection}_{catalog_number}"
 
 	print(
@@ -278,7 +285,7 @@ def make_general_fossil(args):
 
 	base_dataset_name = "General_Fossil"
 	thresholds = [None, 3, 10, 20, 50]
-	resolutions = [512, 1024]
+	resolutions = [512, 1024, 1536, 2048]
 	path_schema = "{family}_{genus}_{species}_{collection}_{catalog_number}"
 
 	print(
@@ -311,7 +318,7 @@ def make_florissant_fossil(args):
 
 	base_dataset_name = "Florissant_Fossil"
 	thresholds = [None, 3, 10, 20, 50]
-	resolutions = [512, 1024]
+	resolutions = [512, 1024, 1536, 2048]
 	path_schema = "{family}_{genus}_{species}_{collection}_{catalog_number}"
 
 	print(
@@ -347,7 +354,7 @@ def make_extant(args):
 
 	base_dataset_name = "Extant_Leaves"
 	thresholds = [None, 3, 10, 100]
-	resolutions = [512, 1024]
+	resolutions = [512, 1024, 1536, 2048]
 	path_schema = "{family}_{genus}_{species}_{collection}_{catalog_number}"
 
 	print(
@@ -378,7 +385,7 @@ def make_pnas(args):
 
 	base_dataset_name = "PNAS"
 	thresholds = [100]
-	resolutions = [512, 1024]
+	resolutions = [512, 1024, 1536, 2048]
 	path_schema = "{family}_{genus}_{species}_{catalog_number}"
 
 	print(
@@ -409,7 +416,7 @@ def make_extant_minus_pnas(args):
 
 	base_names = {"A": "Extant_Leaves", "B": "PNAS"}
 	thresholds = [{"A": 100, "B": 100}, {"A": 10, "B": 100}]
-	resolutions = [512, 1024]
+	resolutions = [512, 1024, 1536, 2048]
 	class_type = "family"
 
 	for threshold in thresholds:
@@ -444,7 +451,7 @@ def make_pnas_minus_extant(args):
 
 	base_names = {"A": "PNAS", "B": "Extant_Leaves"}
 	thresholds = [{"A": 100, "B": 100}, {"A": 100, "B": 10}]
-	resolutions = [512, 1024]
+	resolutions = [512, 1024, 1536, 2048]
 	class_type = "family"
 
 	for threshold in thresholds:
@@ -479,7 +486,7 @@ def make_extant_w_pnas(args):
 
 	base_names = {"A": "Extant_Leaves", "B": "PNAS"}
 	thresholds = [{"A": 100, "B": 100}, {"A": 10, "B": 100}]
-	resolutions = [512, 1024]
+	resolutions = [512, 1024, 1536, 2048]
 	class_type = "family"
 
 	for threshold in thresholds:
@@ -542,8 +549,14 @@ def cmdline_args():
 		action="store_true",
 		help=(
 			"If user provides this flag, produce all currently in-production datasets in the most"
-			" recent version (currently == 'v1_0')."
+			" recent version (currently == 'v1_1')."
 		),
+	)
+	p.add_argument(
+		"--seed", default=14, type=int, help="Random seed."
+	)
+	p.add_argument(
+		"--info", action="store_true", help="Flag to print execution variables then quit without execution."
 	)
 	p.add_argument(
 		"-v",
@@ -639,7 +652,18 @@ def cmdline_args():
 		),
 	)
 	#					help="If user provides this flag, produce all currently in-production datasets in the most recent version (currently == 'v1_0').")
-	return p.parse_args()
+	
+	args = p.parse_args()
+	
+	if args.info:
+		print("<---------[INFO]--------->")
+		print("User passed --info, displaying execution args then exiting")
+		pp(vars(args))
+		sys.exit(0)
+	
+	assert os.path.isdir(args.output_dir)
+	
+	return args
 
 
 # make_all_original

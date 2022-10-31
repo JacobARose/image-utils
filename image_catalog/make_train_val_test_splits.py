@@ -7,11 +7,13 @@ Load a csv file into a dataframe containing Leavesdb metadata, split it into tra
 Created by: Jacob A Rose  
 Created on: Wednesday April 6th, 2022
 Updated On: Monday October 17th, 2022  
+Updated On: Monday October 24th, 2022  
+
 
 
 
 python "/media/data_cifs/projects/prj_fossils/users/jacob/github/image-utils/image_catalog/make_train_val_test_splits.py" \
---root_dir "/media/data_cifs/projects/prj_fossils/users/jacob/data/leavesdb-v1_1" \
+--root_dir "/media/data_cifs/projects/prj_fossils/data/processed_data/leavesdb-v1_1/catalogs" \
 --label_col "family" \
 --splits "0.5,0.2,0.3" \
 --seed 14 \
@@ -21,6 +23,7 @@ python "/media/data_cifs/projects/prj_fossils/users/jacob/github/image-utils/ima
 """
 
 import argparse
+import copy
 import warnings
 warnings.simplefilter(action='ignore', category=FutureWarning)
 
@@ -469,18 +472,24 @@ def main(source_dir: str, #=DATA_DIR,
 
 CATALOG_ROOT_DIR = "/media/data_cifs/projects/prj_fossils/users/jacob/data/leavesdb-v1_1"
 available_catalogs = [
-	# 'Extant_Leaves_1024',
-	# 'Extant_Leaves_512',
+	'Extant_Leaves_family_100_2048',
+	'Extant_Leaves_family_100_1536',
 	'Extant_Leaves_family_100_1024',
 	'Extant_Leaves_family_100_512',
+	'Extant_Leaves_family_10_2048',
+	'Extant_Leaves_family_10_1536',
 	'Extant_Leaves_family_10_1024',
 	'Extant_Leaves_family_10_512',
+	'Extant_Leaves_family_3_2048',
+	'Extant_Leaves_family_3_1536',
 	'Extant_Leaves_family_3_1024',
 	'Extant_Leaves_family_3_512',
-	# 'Fossil_1024',
-	# 'Fossil_512',
+	'Fossil_family_3_2048',
+	'Fossil_family_3_1536',
 	'Fossil_family_3_1024',
 	'Fossil_family_3_512',
+	'PNAS_family_100_2048',
+	'PNAS_family_100_1536',
 	'PNAS_family_100_1024',
 	'PNAS_family_100_512'
 ]
@@ -549,12 +558,13 @@ def parse_args() -> argparse.Namespace:
 
 if __name__ == "__main__":
 	
-	args = parse_args()
+	run_args = parse_args()
 
 			
-	if args.run_all:
+	if run_args.run_all:
 		print(f"--run_all was passed, generating train-val-test splits for {len(available_catalogs)} datasets.")
 		for sub_dir in tqdm(available_catalogs):
+			args = copy.deepcopy(run_args)
 			source_dir = os.path.join(args.root_dir, sub_dir)
 
 			args.splits_dir = find_data_splits_dir(source_dir=source_dir,
@@ -570,7 +580,7 @@ if __name__ == "__main__":
 
 
 	else:
-		
+		args = copy.deepcopy(run_args)
 		source_dir = os.path.join(args.root_dir, args.sub_dir)
 		
 		if args.splits_dir is None:

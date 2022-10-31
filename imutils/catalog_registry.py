@@ -179,9 +179,13 @@ Examples:
 """
 
 
-
+from imutils.ml.utils.template_utils import get_logger
 from image_catalog.catalog_registry import *
 
+import logging
+log = get_logger(name=__name__, level=logging.WARNING)
+
+log.warning(f"[DEPRECATION WARNING] -- User attempted to import `catalog_registry.py` from `imutils`. Going forward, replace this with `from image_catalog import catalog_registry`.")
 
 
 # import argparse

@@ -28,9 +28,6 @@ from sklearn import preprocessing
 
 
 from imutils.ml.utils.toolbox.nn import functional as BF
-from imutils.ml.utils.toolbox.nn.loss import LabelSmoothingLoss
-
-
 from imutils.ml.utils import template_utils
 logging = template_utils.get_logger(__name__)
 
@@ -261,8 +258,34 @@ class LabelEncoder(object):
 
 
 
+##################
+
+def sequence2np(seq: Sequence) -> np.ndarray:
+	"""
+	Converts any sequence to np.ndarray, throws an error if unable.
+	"""
+	if not isinstance(seq, np.ndarray):
+		if isinstance(seq, (list, tuple)):
+			seq = np.array(seq)
+		elif torch.is_tensor(seq):
+			seq = seq.numpy()
+		elif isinstance(seq, pd.Series):
+			seq = seq.values.to_numpy()
+		else:
+			raise NotImplementedError(
+				f'Type of seq should be {(list, tuple)}, {np.ndarray} or {torch.Tensor} but got {type(seq)}')
+	return seq
 
 
+def class_counts(y: Sequence) -> Tuple[np.ndarray]:
+	"""
+	Returns a Tuple of np.ndarrays, the first has unique classes, the second has class counts.
+	
+	"""
+	y = sequence2np(seq=y)
+	classes, class_counts = np.unique(y, return_counts=True)
+	
+	return classes, class_counts
 
 
 

@@ -119,6 +119,65 @@ class DatasetFilePathParser:
         }
 
 
+# extant_list = Extract.locate_files(EXTANT_ROOT)
+# general_list = Extract.locate_files(GENERAL_ROOT)
+# florissant_list = Extract.locate_files(FLORISSANT_ROOT)
+# print(
+#     f"extant_list: {len(extant_list['all'])}",
+#     f"general_list: {len(general_list['all'])}",
+#     f"florissant_list: {len(florissant_list['all'])}"
+# )
+
+# extant_df = pd.DataFrame({"path":extant_list['all']})
+# general_df = pd.DataFrame({"path":general_list['all']})
+# florissant_df = pd.DataFrame({"path":florissant_list['all']})
+
+# extant_df = parse_filenames(data=extant_df)
+# general_df = parse_filenames(data=general_df)
+# florissant_df = parse_filenames(data=florissant_df)
+	
+	
+	
+	
+	
+	
+
+# def parse_filenames(data: pd.DataFrame):
+#     """
+#     Extract attributes stored as "_"-delimited sections of each sample's filename in `data` DataFrame.
+    
+    
+#     Arguments:
+#         data:
+#             Must have at least 1 column with name "path" containing absolute file paths.
+            
+#     Return:
+#         data: pd.DataFrame
+#             Contains all original columns, as well as with new columns for each attribute, names specifed in `filename_fields` list.
+    
+#     """
+#     # Named sections of structured filenames, for extracting known sample attributes
+#     filename_fields = ["Family","Genus","species","collection","catalog_number"]
+#     data = data.assign(filename = data.path.apply(lambda x: Path(x).stem),
+#                        path = data.path.apply(str)).convert_dtypes()
+#     data[filename_fields] = (
+#         data
+#         .filename.str.split("_", n=4, expand=True)
+#         .rename(columns={0:"Family",
+#                          1:"Genus",
+#                          2:"species",
+#                          3:"collection",
+#                          4:"catalog_number"})
+#     )
+#     data = data.assign(Species = data.apply(lambda x: " ".join([x.Genus, x.species]), axis=1))
+#     return data
+
+
+
+
+
+
+
 def parse_df_catalog_from_image_directory(
     root_dir: str, dataset_name: str = "Extant_Leaves"
 ) -> pd.DataFrame:

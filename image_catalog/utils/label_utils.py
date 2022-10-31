@@ -28,7 +28,9 @@ from sklearn import preprocessing
 
 
 # from imutils.ml.utils.toolbox.nn import functional as BF
-from image_utils.utils import template_utils
+
+from image_catalog.utils import template_utils
+# log = template_utils.get_logger(__file__)
 logging = template_utils.get_logger(__name__)
 
 

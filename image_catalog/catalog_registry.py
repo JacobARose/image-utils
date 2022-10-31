@@ -191,6 +191,11 @@ import rich
 from rich import print as pp
 import yaml
 
+from imutils.ml.utils.template_utils import get_logger
+import logging
+log = get_logger(name=__name__, level=logging.INFO)
+
+
 # __all__ = [
 # 	"leavesdb_catalogv0_3",
 # 	"leavesdb_catalogv1_0",
@@ -922,7 +927,11 @@ class AvailableDatasets:
 		y_col: str = "family",
 		resolution: Optional[Tuple[str, int]] = "original",
 	) -> str:
-		""" """
+		"""
+		Helper function
+		Converts multiple kwargs into a single formatted str tag. Use tags to query specific datasets and their data/metadata.
+
+		"""
 		tag = dataset_name
 		if int(threshold) > 0:
 			tag += f"_{y_col}_{threshold}"
@@ -946,11 +955,21 @@ class AvailableDatasets:
 
 		"""
 		if "PNAS" in tag:
-			return cls.get(tag, version="v0_3")
+			try:
+				out = cls.get(tag, version="v1_1")
+				version = "v1_1"
+			except KeyError:
+				out = cls.get(tag, version="v0_3")
+				version="v0_3"
 		elif "Herbarium" in tag:
-			return cls.get(tag, version="third_party")
+			out = cls.get(tag, version="third_party")
+			version = "third_party"
 		else:
-			return cls.get(tag, version="v1_1")
+			out = cls.get(tag, version="v1_1")
+			version = "v1_1"
+		
+		log.info(f"Found latest version of {tag=} in {version=}")
+		return out
 
 	@classmethod
 	def get(cls, tag: str, version: Optional[str] = "v1_1") -> Union[str, List[str]]:

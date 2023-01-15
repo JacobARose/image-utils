@@ -22,9 +22,21 @@ fi
 
 LD_LIBRARY_PATH="/media/data/conda/jrose3/envs/$ENV_NAME/lib:/media/data/anaconda/lib"
 
-conda create -y -n $ENV_NAME python=3.8 pkg-config numba compilers libjpeg-turbo nodejs cudatoolkit=10.1 cupy opencv libgcc-ng libgcc llvmdev -c fastchan -c pytorch -c conda-forge
+# conda create -y -n $ENV_NAME python=3.8 pkg-config numba compilers libjpeg-turbo nodejs cudatoolkit=10.1 cupy opencv libgcc-ng libgcc llvmdev -c fastchan -c pytorch -c conda-forge
+# conda activate $ENV_NAME
+
+export ENV_NAME="imutils"
+conda create -y -n $ENV_NAME python=3.8 mamba
+conda deactivate
+source ~/.bash_profile
 
 conda activate $ENV_NAME
+mamba install pkg-config numba compilers libjpeg-turbo nodejs cudatoolkit=10.1 cupy opencv libgcc-ng libgcc llvmdev -c fastchan -c pytorch -c conda-forge
+pip install ffcv torch==1.8.1+cu101 torchvision==0.9.1+cu101 -f https://download.pytorch.org/whl/torch_stable.html
+
+pip install -r ./requirements/requirements-dev.txt
+pip install -e .
+
 
 if [ ${CONDA_PREFIX} = ${ENV_DIR} ]; then
     echo "Created conda env $ENV_NAME from environment.yml file and succesfully activated new environment. Now proceeding to perform pip install on the requirements.txt file"

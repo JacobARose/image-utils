@@ -1,0 +1,44 @@
+# @package model_cfg
+
+defaults:
+    - _self_
+    - loss: base
+    # - loss@loss: class-balanced-ce-loss
+    # - loss@loss: base
+
+# model_cfg:
+_target_: imutils.ml.models.pl.classifier.LitClassifier
+backbone:
+    model_repo: timm
+    name: resnetv2_50
+    pretrained: true
+    freeze_backbone: ${hp.freeze_backbone}
+head:
+    num_classes: ${hp.num_classes}
+    # pool_size: 1
+    # pool_type: 'avg'
+    head_type: 'linear'
+    hidden_size: 512
+    dropout_p: 0.3
+
+global_pool:
+    pool_size: 1
+    pool_type: 'avg'
+    # pool_type: 'avgdrop'
+    # pool_type: 'avgmax'
+    pool_type: 'avg'
+
+
+name: ${.backbone.name}
+sync_dist: false
+log_images_freq: 1000
+# loss:
+  #   _target_: torch.nn.CrossEntropyLoss
+    # Note: label_smoothing isnt an option in CELoss until some time after pytorch version 1.8.1
+    # label_smoothing: 0.0
+resolution: ${int:${hp.resolution}}
+num_channels: ${int:${hp.num_channels}}
+input_shape: 
+    - ${int:${hp.num_channels}}
+    - ${int:${hp.resolution}}
+    - ${int:${hp.resolution}}

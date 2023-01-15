@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
 <title>imutils.ml.utils.metric_utils API documentation</title>
-<meta name="description" content="lightning_hydra_classifiers/utils/metric_utils.py …" />
+<meta name="description" content="image-utils/imutils/ml/utils/metric_utils.py …" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -22,18 +22,22 @@
 <h1 class="title">Module <code>imutils.ml.utils.metric_utils</code></h1>
 </header>
 <section id="section-intro">
-<p>lightning_hydra_classifiers/utils/metric_utils.py</p>
+<p>image-utils/imutils/ml/utils/metric_utils.py</p>
+<p>[TODO] - refactor metric configuration to be more general &amp; use Hydra config-style configuration.</p>
 <p>Author: Jacob A Rose
-Created: Thursday Junee 11th, 2021</p>
+Created: Thursday June 11th, 2021</p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">&#34;&#34;&#34;
-lightning_hydra_classifiers/utils/metric_utils.py
+image-utils/imutils/ml/utils/metric_utils.py
+
+[TODO] - refactor metric configuration to be more general &amp; use Hydra config-style configuration.
+
 
 Author: Jacob A Rose
-Created: Thursday Junee 11th, 2021
+Created: Thursday June 11th, 2021
 
 &#34;&#34;&#34;
 
@@ -48,16 +52,18 @@ __all__ = [&#34;get_scalar_metrics&#34;, &#34;get_per_class_metrics&#34;]
 
 def get_scalar_metrics(num_classes: int,
                        average: str=&#39;macro&#39;, 
-                       prefix: str=&#39;&#39;
+                       prefix: str=&#39;&#39;,
+                                           delimiter: str=&#34;_&#34;
                       ) -&gt; metrics.MetricCollection:
-    default = {&#39;acc_top1&#39;: metrics.Accuracy(top_k=1, num_classes=num_classes, average=average),
-               &#39;acc_top3&#39;: metrics.Accuracy(top_k=3, num_classes=num_classes, average=average),
-               &#39;F1_top1&#39;:  metrics.F1(top_k=1, num_classes=num_classes, average=average),
-               &#39;precision_top1&#39;: metrics.Precision(top_k=1, num_classes=num_classes, average=average),
-               &#39;recall_top1&#39;: metrics.Recall(top_k=1, num_classes=num_classes, average=average)}
+    default = {f&#39;{average}_acc&#39;: metrics.Accuracy(top_k=1, num_classes=num_classes, average=average),
+               f&#39;{average}_acc_top3&#39;: metrics.Accuracy(top_k=3, num_classes=num_classes, average=average),
+               f&#39;{average}_F1&#39;:  metrics.F1(top_k=1, num_classes=num_classes, average=average),
+               f&#39;{average}_F1_top3&#39;:  metrics.F1(top_k=3, num_classes=num_classes, average=average),
+               f&#39;{average}_precision&#39;: metrics.Precision(top_k=1, num_classes=num_classes, average=average),
+               f&#39;{average}_recall&#39;: metrics.Recall(top_k=1, num_classes=num_classes, average=average)}
     if len(prefix)&gt;0:
         for k in list(default.keys()):
-            default[prefix + r&#39;/&#39; + k] = default[k]
+            default[prefix + delimiter + k] = default[k]
             del default[k]
     
     return metrics.MetricCollection(default)
@@ -165,7 +171,7 @@ None or 'none': no normalization (default)
 </details>
 </dd>
 <dt id="imutils.ml.utils.metric_utils.get_scalar_metrics"><code class="name flex">
-<span>def <span class="ident">get_scalar_metrics</span></span>(<span>num_classes: int, average: str = 'macro', prefix: str = '') ‑> torchmetrics.collections.MetricCollection</span>
+<span>def <span class="ident">get_scalar_metrics</span></span>(<span>num_classes: int, average: str = 'macro', prefix: str = '', delimiter: str = '_') ‑> torchmetrics.collections.MetricCollection</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -175,16 +181,18 @@ None or 'none': no normalization (default)
 </summary>
 <pre><code class="python">def get_scalar_metrics(num_classes: int,
                        average: str=&#39;macro&#39;, 
-                       prefix: str=&#39;&#39;
+                       prefix: str=&#39;&#39;,
+                                           delimiter: str=&#34;_&#34;
                       ) -&gt; metrics.MetricCollection:
-    default = {&#39;acc_top1&#39;: metrics.Accuracy(top_k=1, num_classes=num_classes, average=average),
-               &#39;acc_top3&#39;: metrics.Accuracy(top_k=3, num_classes=num_classes, average=average),
-               &#39;F1_top1&#39;:  metrics.F1(top_k=1, num_classes=num_classes, average=average),
-               &#39;precision_top1&#39;: metrics.Precision(top_k=1, num_classes=num_classes, average=average),
-               &#39;recall_top1&#39;: metrics.Recall(top_k=1, num_classes=num_classes, average=average)}
+    default = {f&#39;{average}_acc&#39;: metrics.Accuracy(top_k=1, num_classes=num_classes, average=average),
+               f&#39;{average}_acc_top3&#39;: metrics.Accuracy(top_k=3, num_classes=num_classes, average=average),
+               f&#39;{average}_F1&#39;:  metrics.F1(top_k=1, num_classes=num_classes, average=average),
+               f&#39;{average}_F1_top3&#39;:  metrics.F1(top_k=3, num_classes=num_classes, average=average),
+               f&#39;{average}_precision&#39;: metrics.Precision(top_k=1, num_classes=num_classes, average=average),
+               f&#39;{average}_recall&#39;: metrics.Recall(top_k=1, num_classes=num_classes, average=average)}
     if len(prefix)&gt;0:
         for k in list(default.keys()):
-            default[prefix + r&#39;/&#39; + k] = default[k]
+            default[prefix + delimiter + k] = default[k]
             del default[k]
     
     return metrics.MetricCollection(default)</code></pre>

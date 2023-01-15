@@ -1,0 +1,7 @@
+# @package optim.optimizer
+
+defaults:
+    - _self_
+    - Adam
+
+eps: 1e-08

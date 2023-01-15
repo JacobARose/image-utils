@@ -131,7 +131,7 @@ def print_config(
 		"callbacks",
 		"logging",
 		"hp",
-		"seed",
+		"seed"
 	),
 	resolve: bool = True,
 	file: str = None
@@ -278,6 +278,7 @@ def write_ckpts_info2yaml(cfg: DictConfig,
 		)
 		cb = find_ckpt_callback(callbacks)
 		if isinstance(cb, pl.callbacks.ModelCheckpoint):
+			os.makedirs(os.path.dirname(ckpts_info_path), exist_ok=True)
 			cb.to_yaml(filepath=ckpts_info_path)
 		if os.path.isfile(ckpts_info_path):
 			print(f"Find a listing of the path(s) best ckpt(s) located at: {ckpts_info_path} ")

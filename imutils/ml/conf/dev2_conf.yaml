@@ -1,0 +1,134 @@
+
+defaults:
+    - _self_
+    - pretrain@pretrain.lr_tuner: lr_tuner
+    - data/datamodule@data: base_datamodule
+    # - callbacks@train.callbacks: default #base_callbacks #
+    - aug@data.datamodule.transform_cfg: default_image_aug_conf
+    - model_cfg@model_cfg: base
+    - train: base
+    - train/pl_trainer/strategy@train.pl_trainer: ddp # dp
+    # - override train/callbacks: default
+
+# metadata specialised for each experiment
+core:
+    name: "${data.datamodule.name}__${model_cfg.name}"
+    version: 0.0.1
+    experiments_root_dir: "/media/data_cifs/projects/prj_fossils/users/jacob/experiments/2022/herbarium2022"
+    tags:
+        - herbarium2022
+        - kaggle
+
+execution_list:
+    auto_lr_tune: true
+    model_fit: true
+
+
+hp:
+    num_classes: 15501
+    batch_size: 128
+    preprocess_size: 256
+    resolution: 224
+    num_channels: 3
+    warmup_epochs: 3
+    max_epochs: 30
+    lr: 1e-3    # 0.001
+    freeze_backbone: false
+    freeze_backbone_up_to: -1
+
+seed: 42
+run_output_dir: ${hydra:run.dir}
+checkpoint_dir: "${run_output_dir}/ckpts"
+# defaults:
+#    - override hydra/launcher: joblib
+
+
+# model_cfg:
+#     _target_: imutils.ml.models.pl.classifier.LitClassifier
+#     backbone:
+#         model_repo: timm
+#         name: resnetv2_50
+#         pretrained: true
+#         freeze_backbone: ${hp.freeze_backbone}
+#     head:
+#         num_classes: 15501
+#         pool_size: 1
+#         pool_type: 'avg'
+#         head_type: 'linear'
+#         hidden_size: 512
+#         dropout_p: 0.3
+
+#     name: ${.backbone.name}
+#     loss:
+#         _target_: torch.nn.CrossEntropyLoss
+#         # Note: label_smoothing isnt an option in CELoss until some time after pytorch version 1.8.1
+#         # label_smoothing: 0.0
+#     resolution: ${int:${hp.resolution}}
+#     num_channels: ${int:${hp.num_channels}}
+#     input_shape: 
+#         - ${int:${hp.num_channels}}
+#         - ${int:${hp.resolution}}
+#         - ${int:${hp.resolution}}
+
+    # callbacks:
+    #     class_counts_stats: null
+    #     image_stats_accumulator: null
+    #     log_per_class_metrics_to_wandb: null
+
+
+optim:
+    optimizer:
+        _target_: torch.optim.Adam
+        lr: ${hp.lr} #1e-3    # 0.001
+        betas: [ 0.9, 0.999 ]
+        eps: 1e-08
+        weight_decay: 0.0
+    exclude_bn_bias: True
+
+    use_lr_scheduler: True
+    lr_scheduler:
+        _target_: pl_bolts.optimizers.lr_scheduler.LinearWarmupCosineAnnealingLR
+        warmup_epochs: ${hp.warmup_epochs}
+        max_epochs: ${hp.max_epochs}
+        warmup_start_lr: 1e-04 #overridden if execution_list.auto_lr_tune=True
+        eta_min: 1e-06
+        last_epoch: -1
+
+
+logging:
+
+    log_model_summary: true
+    log_dataset_summary: true
+    n_elements_to_log: 32
+    normalize_visualization: True
+
+    val_check_interval: 1.0
+    progress_bar_refresh_rate: 20
+
+    wandb:
+        project: herbarium2022
+        entity: jrose
+        name: "${core.name}"
+        log_model: true
+        tags: ${core.tags}
+
+
+hydra:
+    run:
+        dir: ${core.experiments_root_dir}/hydra_experiments/${now:%Y-%m-%d}/${now:%H-%M-%S}
+
+    sweep:
+        dir: ${core.experiments_root_dir}/hydra_experiments/multirun/${now:%Y-%m-%d}/${now:%H-%M-%S}/
+        subdir: ${hydra.job.override_dirname}/seed=${seed} #${hydra.job.num}_${hydra.job.id}
+
+    job:
+        config:
+          override_dirname:
+            exclude_keys:
+              - seed
+        env_set:
+            WANDB_START_METHOD: thread
+
+    # launcher:
+    #     n_jobs: 4
+    #     batch_size: auto

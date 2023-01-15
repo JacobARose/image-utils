@@ -51,6 +51,7 @@ from typing import *
 from torchvision import transforms as T
 from albumentations.augmentations import transforms as AT
 
+
 DEFAULT_CFG_PATH = os.path.join(os.path.dirname(__file__), &#34;default_image_transform_config.yaml&#34;)
 DEFAULT_CFG = OmegaConf.load(DEFAULT_CFG_PATH)
 
@@ -62,16 +63,18 @@ __all__ = [&#34;Preprocess&#34;, &#34;BatchTransform&#34;, &#34;get_default_tran
 
 class Preprocess(nn.Module):
 
-        def __init__(self, mode=&#34;train&#34;, resize=None):
+        def __init__(self, mode=&#34;train&#34;, resize=None, to_tensor: bool=True):
                 super().__init__()
                 self.mode = mode
-                self.resize = resize            
+                self.resize = resize
+                self.to_tensor = to_tensor
                 self.resize_func = T.Resize(self.resize)
         
         @torch.no_grad()  # disable gradients for effiency
         def forward(self, x) -&gt; torch.Tensor:
                 # x_tmp: np.ndarray = np.array(x)  # HxWxC
-                # x_out: Tensor = to_tensor(x_tmp, keepdim=True)  # CxHxW
+                if self.to_tensor:
+                        x: Tensor = to_tensor(x)  # CxHxW
                 if self.resize:
                         x = self.resize_func(x)
 
@@ -88,10 +91,12 @@ class BatchTransform(nn.Module):
                                  random_resize_crop=None,
                                  center_crop=None,
                                  apply_color_jitter: bool = False,
+                                 random_flips: bool=True,
                                  normalize = (
                                          [0,0,0],
                                          [1,1,1]
-                                 )
+                                 ),
+                                 skip_augmentations: bool=False
                                 ) -&gt; None:
                 super().__init__()
                 self.mode = mode
@@ -99,21 +104,27 @@ class BatchTransform(nn.Module):
                 self.center_crop = center_crop
                 self._apply_color_jitter = apply_color_jitter
                 self.normalize = normalize
-                
+                self.random_flips = random_flips
+                self.skip_augmentations = skip_augmentations
                 self.build_transforms(mode=mode)
 
                 
         def add_train_transforms(self, transforms=None):
                 
                 transforms = transforms or []
-                # if mode == &#34;train&#34;:
-                transforms.append(T.RandomPerspective())
-                if type(self.random_resize_crop) == int:
-                        transforms.append(T.RandomResizedCrop(self.random_resize_crop))
-                transforms.extend([
-                        T.RandomHorizontalFlip(),
-                        T.RandomVerticalFlip()
-                ])
+                
+                if self.skip_augmentations:
+                        if self.random_resize_crop:
+                                transforms.append(T.CenterCrop(self.random_resize_crop))
+                else:
+                        transforms.append(T.RandomPerspective())
+                        if type(self.random_resize_crop) == int:
+                                transforms.append(T.RandomResizedCrop(self.random_resize_crop))
+                        if self.random_flips:
+                                transforms.extend([
+                                        T.RandomHorizontalFlip(),
+                                        T.RandomVerticalFlip()
+                                ])
                 return transforms
 
         def add_test_transforms(self, transforms=None):
@@ -131,6 +142,8 @@ class BatchTransform(nn.Module):
                         transforms = self.add_train_transforms(transforms=transforms)
                 elif mode in [&#34;val&#34;, &#34;test&#34;]:
                         transforms = self.add_test_transforms(transforms=transforms)
+                        
+                print(f&#34;self.normalize: {self.normalize}&#34;)
 
                 transforms.extend([
                         # T.ToTensor(),
@@ -149,40 +162,71 @@ class BatchTransform(nn.Module):
         def forward(self, x: torch.Tensor) -&gt; torch.Tensor:
                 x_out = self.transforms(x)  # BxCxHxW
                 if self._apply_color_jitter:
-                        x_out = self.jitter(x_out)
+                        x_out = self.jitter(image=x_out)
                 return x_out
         
 
 
 def get_default_transforms(
                 mode: str=&#34;train&#34;,
+                compose: bool=True,
                 config = dict(
                         preprocess={
                                 &#39;train&#39;: {&#39;resize&#39;: 512},
-                                &#39;val&#39;: {&#39;resize&#39;: 256}},
+                                &#39;val&#39;: {&#39;resize&#39;: 256},
+                                &#39;test&#39;: {&#39;resize&#39;: 256}},
 
                         batch_transform={
                                 &#39;train&#39;: {&#39;random_resize_crop&#39;: 224}, 
-                                &#39;val&#39;: {&#39;center_crop&#39;: 224}},
+                                &#39;val&#39;: {&#39;center_crop&#39;: 224},
+                                &#39;test&#39;: {&#39;center_crop&#39;: 224}},
                         normalize=(
                                 [0.485, 0.456, 0.406],
                                 [0.229, 0.224, 0.225]
-                        )
+                        ),
+                        apply_color_transform=False,
+                        random_flips=True,
+                        skip_augmentations=False
                 )
         ) -&gt; Tuple[Callable]:
         
         config = OmegaConf.merge(DEFAULT_CFG, config)
         
-        preprocess_transforms = Preprocess(mode=mode, 
-                                                                           resize=config[&#34;preprocess&#34;][mode][&#34;resize&#34;])
+        if config[&#34;preprocess&#34;][mode].get(&#34;resize&#34;, None):
+                preprocess_transforms = Preprocess(mode=mode, 
+                                                                                   resize=config[&#34;preprocess&#34;][mode][&#34;resize&#34;])
+        else:
+                preprocess_transforms = T.ToTensor()
+        
+        if mode == &#34;train&#34;:
+                random_resize_crop = config[&#34;batch_transform&#34;][&#34;train&#34;][&#34;random_resize_crop&#34;]
+                center_crop = None
+        else:
+                random_resize_crop = None
+                center_crop = config[&#34;batch_transform&#34;][mode][&#34;center_crop&#34;]
+        apply_color_jitter = config.get(&#34;apply_color_transform&#34;, False)
+        random_flips = config.get(&#34;random_flips&#34;, True)
+        skip_augmentations = config.get(&#34;skip_augmentations&#34;, False)
+        normalize = config.get(&#34;normalize&#34;, 
+                                                   (
+                [0,0,0],
+                [1,1,1]
+        )
+                                                  )
         
         batch_transforms = BatchTransform(mode=mode,
-                                                                           random_resize_crop=None, #config[&#34;batch_transform&#34;][&#34;val&#34;][&#34;random_resize_crop&#34;],
-                                                                           center_crop=None, #config[&#34;batch_transform&#34;][&#34;val&#34;][&#34;center_crop&#34;],
-                                                                           apply_color_jitter = False,
-                                                                           normalize = normalize)
+                                                                           random_resize_crop=random_resize_crop,
+                                                                           center_crop=center_crop,
+                                                                           apply_color_jitter = apply_color_jitter,
+                                                                           random_flips = random_flips,
+                                                                           normalize = normalize,
+                                                                           skip_augmentations=skip_augmentations)
         
-        return preprocess_transforms, batch_transforms
+        transforms = (preprocess_transforms, 
+                                  batch_transforms)
+        if compose:
+                transforms = T.Compose(transforms)
+        return transforms
 
 
 
@@ -205,7 +249,7 @@ if __name__==&#34;__main_&#34;:
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
 <dt id="imutils.ml.aug.image.images.get_default_transforms"><code class="name flex">
-<span>def <span class="ident">get_default_transforms</span></span>(<span>mode: str = 'train', config={'preprocess': {'train': {'resize': 512}, 'val': {'resize': 256}}, 'batch_transform': {'train': {'random_resize_crop': 224}, 'val': {'center_crop': 224}}, 'normalize': ([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])}) ‑> Tuple[Callable]</span>
+<span>def <span class="ident">get_default_transforms</span></span>(<span>mode: str = 'train', compose: bool = True, config={'preprocess': {'train': {'resize': 512}, 'val': {'resize': 256}, 'test': {'resize': 256}}, 'batch_transform': {'train': {'random_resize_crop': 224}, 'val': {'center_crop': 224}, 'test': {'center_crop': 224}}, 'normalize': ([0.485, 0.456, 0.406], [0.229, 0.224, 0.225]), 'apply_color_transform': False, 'random_flips': True, 'skip_augmentations': False}) ‑> Tuple[Callable]</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -215,33 +259,64 @@ if __name__==&#34;__main_&#34;:
 </summary>
 <pre><code class="python">def get_default_transforms(
                 mode: str=&#34;train&#34;,
+                compose: bool=True,
                 config = dict(
                         preprocess={
                                 &#39;train&#39;: {&#39;resize&#39;: 512},
-                                &#39;val&#39;: {&#39;resize&#39;: 256}},
+                                &#39;val&#39;: {&#39;resize&#39;: 256},
+                                &#39;test&#39;: {&#39;resize&#39;: 256}},
 
                         batch_transform={
                                 &#39;train&#39;: {&#39;random_resize_crop&#39;: 224}, 
-                                &#39;val&#39;: {&#39;center_crop&#39;: 224}},
+                                &#39;val&#39;: {&#39;center_crop&#39;: 224},
+                                &#39;test&#39;: {&#39;center_crop&#39;: 224}},
                         normalize=(
                                 [0.485, 0.456, 0.406],
                                 [0.229, 0.224, 0.225]
-                        )
+                        ),
+                        apply_color_transform=False,
+                        random_flips=True,
+                        skip_augmentations=False
                 )
         ) -&gt; Tuple[Callable]:
         
         config = OmegaConf.merge(DEFAULT_CFG, config)
         
-        preprocess_transforms = Preprocess(mode=mode, 
-                                                                           resize=config[&#34;preprocess&#34;][mode][&#34;resize&#34;])
+        if config[&#34;preprocess&#34;][mode].get(&#34;resize&#34;, None):
+                preprocess_transforms = Preprocess(mode=mode, 
+                                                                                   resize=config[&#34;preprocess&#34;][mode][&#34;resize&#34;])
+        else:
+                preprocess_transforms = T.ToTensor()
+        
+        if mode == &#34;train&#34;:
+                random_resize_crop = config[&#34;batch_transform&#34;][&#34;train&#34;][&#34;random_resize_crop&#34;]
+                center_crop = None
+        else:
+                random_resize_crop = None
+                center_crop = config[&#34;batch_transform&#34;][mode][&#34;center_crop&#34;]
+        apply_color_jitter = config.get(&#34;apply_color_transform&#34;, False)
+        random_flips = config.get(&#34;random_flips&#34;, True)
+        skip_augmentations = config.get(&#34;skip_augmentations&#34;, False)
+        normalize = config.get(&#34;normalize&#34;, 
+                                                   (
+                [0,0,0],
+                [1,1,1]
+        )
+                                                  )
         
         batch_transforms = BatchTransform(mode=mode,
-                                                                           random_resize_crop=None, #config[&#34;batch_transform&#34;][&#34;val&#34;][&#34;random_resize_crop&#34;],
-                                                                           center_crop=None, #config[&#34;batch_transform&#34;][&#34;val&#34;][&#34;center_crop&#34;],
-                                                                           apply_color_jitter = False,
-                                                                           normalize = normalize)
+                                                                           random_resize_crop=random_resize_crop,
+                                                                           center_crop=center_crop,
+                                                                           apply_color_jitter = apply_color_jitter,
+                                                                           random_flips = random_flips,
+                                                                           normalize = normalize,
+                                                                           skip_augmentations=skip_augmentations)
         
-        return preprocess_transforms, batch_transforms</code></pre>
+        transforms = (preprocess_transforms, 
+                                  batch_transforms)
+        if compose:
+                transforms = T.Compose(transforms)
+        return transforms</code></pre>
 </details>
 </dd>
 </dl>
@@ -251,7 +326,7 @@ if __name__==&#34;__main_&#34;:
 <dl>
 <dt id="imutils.ml.aug.image.images.BatchTransform"><code class="flex name class">
 <span>class <span class="ident">BatchTransform</span></span>
-<span>(</span><span>mode: str = 'train', random_resize_crop=None, center_crop=None, apply_color_jitter: bool = False, normalize=([0, 0, 0], [1, 1, 1]))</span>
+<span>(</span><span>mode: str = 'train', random_resize_crop=None, center_crop=None, apply_color_jitter: bool = False, random_flips: bool = True, normalize=([0, 0, 0], [1, 1, 1]), skip_augmentations: bool = False)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Module to perform data augmentation using Kornia on torch tensors.</p>
@@ -268,10 +343,12 @@ if __name__==&#34;__main_&#34;:
                                  random_resize_crop=None,
                                  center_crop=None,
                                  apply_color_jitter: bool = False,
+                                 random_flips: bool=True,
                                  normalize = (
                                          [0,0,0],
                                          [1,1,1]
-                                 )
+                                 ),
+                                 skip_augmentations: bool=False
                                 ) -&gt; None:
                 super().__init__()
                 self.mode = mode
@@ -279,21 +356,27 @@ if __name__==&#34;__main_&#34;:
                 self.center_crop = center_crop
                 self._apply_color_jitter = apply_color_jitter
                 self.normalize = normalize
-                
+                self.random_flips = random_flips
+                self.skip_augmentations = skip_augmentations
                 self.build_transforms(mode=mode)
 
                 
         def add_train_transforms(self, transforms=None):
                 
                 transforms = transforms or []
-                # if mode == &#34;train&#34;:
-                transforms.append(T.RandomPerspective())
-                if type(self.random_resize_crop) == int:
-                        transforms.append(T.RandomResizedCrop(self.random_resize_crop))
-                transforms.extend([
-                        T.RandomHorizontalFlip(),
-                        T.RandomVerticalFlip()
-                ])
+                
+                if self.skip_augmentations:
+                        if self.random_resize_crop:
+                                transforms.append(T.CenterCrop(self.random_resize_crop))
+                else:
+                        transforms.append(T.RandomPerspective())
+                        if type(self.random_resize_crop) == int:
+                                transforms.append(T.RandomResizedCrop(self.random_resize_crop))
+                        if self.random_flips:
+                                transforms.extend([
+                                        T.RandomHorizontalFlip(),
+                                        T.RandomVerticalFlip()
+                                ])
                 return transforms
 
         def add_test_transforms(self, transforms=None):
@@ -311,6 +394,8 @@ if __name__==&#34;__main_&#34;:
                         transforms = self.add_train_transforms(transforms=transforms)
                 elif mode in [&#34;val&#34;, &#34;test&#34;]:
                         transforms = self.add_test_transforms(transforms=transforms)
+                        
+                print(f&#34;self.normalize: {self.normalize}&#34;)
 
                 transforms.extend([
                         # T.ToTensor(),
@@ -329,7 +414,7 @@ if __name__==&#34;__main_&#34;:
         def forward(self, x: torch.Tensor) -&gt; torch.Tensor:
                 x_out = self.transforms(x)  # BxCxHxW
                 if self._apply_color_jitter:
-                        x_out = self.jitter(x_out)
+                        x_out = self.jitter(image=x_out)
                 return x_out</code></pre>
 </details>
 <h3>Ancestors</h3>
@@ -378,14 +463,19 @@ if __name__==&#34;__main_&#34;:
 <pre><code class="python">def add_train_transforms(self, transforms=None):
         
         transforms = transforms or []
-        # if mode == &#34;train&#34;:
-        transforms.append(T.RandomPerspective())
-        if type(self.random_resize_crop) == int:
-                transforms.append(T.RandomResizedCrop(self.random_resize_crop))
-        transforms.extend([
-                T.RandomHorizontalFlip(),
-                T.RandomVerticalFlip()
-        ])
+        
+        if self.skip_augmentations:
+                if self.random_resize_crop:
+                        transforms.append(T.CenterCrop(self.random_resize_crop))
+        else:
+                transforms.append(T.RandomPerspective())
+                if type(self.random_resize_crop) == int:
+                        transforms.append(T.RandomResizedCrop(self.random_resize_crop))
+                if self.random_flips:
+                        transforms.extend([
+                                T.RandomHorizontalFlip(),
+                                T.RandomVerticalFlip()
+                        ])
         return transforms</code></pre>
 </details>
 </dd>
@@ -405,6 +495,8 @@ if __name__==&#34;__main_&#34;:
                 transforms = self.add_train_transforms(transforms=transforms)
         elif mode in [&#34;val&#34;, &#34;test&#34;]:
                 transforms = self.add_test_transforms(transforms=transforms)
+                
+        print(f&#34;self.normalize: {self.normalize}&#34;)
 
         transforms.extend([
                 # T.ToTensor(),
@@ -433,7 +525,7 @@ if __name__==&#34;__main_&#34;:
 def forward(self, x: torch.Tensor) -&gt; torch.Tensor:
         x_out = self.transforms(x)  # BxCxHxW
         if self._apply_color_jitter:
-                x_out = self.jitter(x_out)
+                x_out = self.jitter(image=x_out)
         return x_out</code></pre>
 </details>
 </dd>
@@ -441,7 +533,7 @@ def forward(self, x: torch.Tensor) -&gt; torch.Tensor:
 </dd>
 <dt id="imutils.ml.aug.image.images.Preprocess"><code class="flex name class">
 <span>class <span class="ident">Preprocess</span></span>
-<span>(</span><span>mode='train', resize=None)</span>
+<span>(</span><span>mode='train', resize=None, to_tensor: bool = True)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Base class for all neural network modules.</p>
@@ -473,16 +565,18 @@ evaluation mode.
 </summary>
 <pre><code class="python">class Preprocess(nn.Module):
 
-        def __init__(self, mode=&#34;train&#34;, resize=None):
+        def __init__(self, mode=&#34;train&#34;, resize=None, to_tensor: bool=True):
                 super().__init__()
                 self.mode = mode
-                self.resize = resize            
+                self.resize = resize
+                self.to_tensor = to_tensor
                 self.resize_func = T.Resize(self.resize)
         
         @torch.no_grad()  # disable gradients for effiency
         def forward(self, x) -&gt; torch.Tensor:
                 # x_tmp: np.ndarray = np.array(x)  # HxWxC
-                # x_out: Tensor = to_tensor(x_tmp, keepdim=True)  # CxHxW
+                if self.to_tensor:
+                        x: Tensor = to_tensor(x)  # CxHxW
                 if self.resize:
                         x = self.resize_func(x)
 
@@ -517,7 +611,8 @@ evaluation mode.
 <pre><code class="python">@torch.no_grad()  # disable gradients for effiency
 def forward(self, x) -&gt; torch.Tensor:
         # x_tmp: np.ndarray = np.array(x)  # HxWxC
-        # x_out: Tensor = to_tensor(x_tmp, keepdim=True)  # CxHxW
+        if self.to_tensor:
+                x: Tensor = to_tensor(x)  # CxHxW
         if self.resize:
                 x = self.resize_func(x)
 

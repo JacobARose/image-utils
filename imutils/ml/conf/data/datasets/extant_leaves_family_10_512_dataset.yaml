@@ -1,0 +1,12 @@
+# @package data
+
+## conf/data/datasets/extant_leaves_family_10_512_dataset.yaml
+
+defaults:
+    - base_extant_leaves_dataset
+    - _self_
+
+
+name: "extant_leaves_family_10_512"
+catalog_dir: "/media/data_cifs/projects/prj_fossils/users/jacob/data/leavesdb-v1_1/Extant_Leaves_family_10_512/splits/splits=(0.5,0.2,0.3)"
+num_classes: 94

@@ -28,13 +28,32 @@
 watch_model_with_wandb:
     _target_: imutils.ml.callbacks.wandb_callbacks.WatchModelWithWandb
     log: "gradients"
-    log_freq: 100
+    log_freq: 1000
 
 
 uploadcheckpointsasartifact:
     _target_: imutils.ml.callbacks.wandb_callbacks.UploadCheckpointsToWandbAsArtifact
     ckpt_dir: '${checkpoint_dir}'
-    upload_best_only: true
+    log_every_n_epochs: 2
+    upload_best_only: false
+    artifact_name: "${model_cfg.name}-weights"
+    artifact_type: "checkpoints"
 
-module_data_monitor:
-    _target_: pl_bolts.callbacks.ModuleDataMonitor
+taxonomy_logger_callback:
+    _target_: imutils.ml.utils.taxonomy_utils.TaxonomyLoggerCallback
+    name: "taxonomy_table/${data.datamodule.name}"
+
+
+
+# module_data_monitor:
+#     _target_: imutils.ml.callbacks.wandb_callbacks.ModuleDataMonitor
+#     log_every_n_steps: 1000
+#     submodules:
+#         - "net.backbone.conv1"
+#         - "net.backbone.bn1"
+#         - "net.backbone.act1"
+#         - "net.backbone.layer4.2.act3"
+#         - "net.head"
+
+
+

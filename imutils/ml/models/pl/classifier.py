@@ -38,6 +38,7 @@ from imutils.ml.utils.experiment_utils import resolve_config
 # from imutils.ml.utils.model_utils import log_model_summary
 
 from imutils.ml.utils.toolbox.nn.loss import LabelSmoothingLoss
+from pytorch_lightning.utilities import rank_zero_only
 
 # from imutils.ml import losses
 # nn = losses.nn
@@ -52,14 +53,36 @@ class LitClassifier(BaseLightningModule): #pl.LightningModule):
 				 model_cfg: DictConfig=None, 
 				 name: str=None,
 				 num_classes: int=None, 
-				 loss: Union[Callable, str]=None,
+				 loss_func: Union[Callable, str]=None,
+				 sync_dist: bool=False,
+				 log_images_freq: Optional[int]=None,
 				 # pretrain : bool = True,
 				 # self_supervised=False,
 				 *args, **kwargs) -> None:
 		super().__init__(*args, **kwargs)
-		# import pdb; pdb.set_trace()
+		self.save_hyperparameters(cfg, ignore=['loss_func'])
+		self._setup(cfg=cfg,
+				   model_cfg=model_cfg,
+				   name=name,
+				   num_classes=num_classes,
+				   loss_func=loss_func,
+				   sync_dist=sync_dist,
+				   log_images_freq=log_images_freq,
+				   *args, **kwargs)
+		
+	def _setup(self,
+			  cfg: DictConfig=None,
+			  model_cfg: DictConfig=None, 
+			  name: str=None,
+			  num_classes: int=None,
+			  loss_func: Union[Callable, str]=None,
+			  setup_backbone: bool=True,
+			  setup_head: bool=True,
+			  sync_dist: bool=False,
+			  log_images_freq: Optional[int]=None,
+			  *args, **kwargs) -> None:
+
 		cfg = resolve_config(cfg)
-		self.save_hyperparameters(cfg) #OmegaConf.to_container(cfg, resolve=True))
 		self.cfg = cfg
 		model_cfg = cfg.get("model_cfg", {})
 		self.model_cfg = model_cfg or {}
@@ -67,12 +90,17 @@ class LitClassifier(BaseLightningModule): #pl.LightningModule):
 		self.batch_size = cfg.hp.batch_size
 		self.num_classes = num_classes or self.model_cfg.head.get("num_classes")
 		self.name = name or self.model_cfg.get("name")
+		self.log_images_freq = log_images_freq
 		
-		self.setup_loss()
+		self.sync_dist = sync_dist
+		self.setup_loss(loss_func)
 		self.setup_metrics()
+		backbone = getattr(getattr(self, "net", None), "backbone", None)
 		self.net = build_model(backbone_cfg=self.model_cfg.backbone,
-							   head_cfg=self.model_cfg.head)
-
+							   head_cfg=self.model_cfg.head,
+							   setup_backbone=setup_backbone,
+							   setup_head=setup_head,
+							   backbone=backbone)
 		if self.cfg.train.freeze_backbone:
 			self.freeze_up_to(layer=self.cfg.train.get("freeze_backbone_up_to"),
 							  submodule="backbone",
@@ -82,130 +110,108 @@ class LitClassifier(BaseLightningModule): #pl.LightningModule):
 		if self.cfg.logging.log_model_summary:
 			self.summarize_model(f"{self.name}/init")
 
-# 	def on_fit_start(self):
+
+	@classmethod
+	def load_from_checkpoint(cls, 
+							 checkpoint_path,
+							 map_location=None,
+							 cfg=None,
+							 *args, **kwargs):
+		model = super().load_from_checkpoint(checkpoint_path=checkpoint_path,
+											 map_location=map_location)
+											 # *args, **kwargs)
 		
-		# if self.cfg.logging.log_model_summary:
-		# 	self.summarize_model()
+		model.source_cfg = model.cfg
+		model.source_model_cfg = model.model_cfg
+		if cfg is not None:
+			model._setup(setup_backbone=False,
+						cfg=cfg,
+						*args, **kwargs)
+		return model
 
-	def setup_loss(self):
-		self.loss = hydra.utils.instantiate(self.model_cfg.loss)
-
-	# def summarize_model(self):
-	# 	cfg = self.cfg
-	# 	input_size = (1, *OmegaConf.to_container(cfg.model_cfg.input_shape, resolve=True))
-	# 	model_summary = log_model_summary(model=self.net,
-	# 					input_size=input_size,
-	# 					full_summary=True,
-	# 					working_dir=cfg.checkpoint_dir,
-	# 					model_name = cfg.model_cfg.name,
-	# 					verbose=1)
-
-
-	def setup_metrics(self):
-		
-		self.train_metric = get_scalar_metrics(num_classes=self.num_classes,
-											   average="macro",
-											   prefix="train")
-		self.val_metric = get_scalar_metrics(num_classes=self.num_classes,
-											   average="macro",
-											   prefix="val")
-		self.test_metric = get_scalar_metrics(num_classes=self.num_classes,
-											   average="macro",
-											   prefix="test")
-		
 
 	def forward(self, x: torch.Tensor) -> torch.Tensor:
 		return self.net(x)
 
-	def step(self, x, y) -> Dict[str, torch.Tensor]:
+	def step(self, batch, batch_idx: int=None) -> Dict[str, torch.Tensor]:
 		"""
 		TODO: remove the "x" from common method self.step() outputs & benchmark reduction in GPU memory leaks
-		"""
-		# if self.self_supervised:
-		# 	z1, z2 = self.shared_step(x)
-		# 	loss = self.loss(z1, z2)
-		# else:
+		"""		
+		if len(batch)>=3:
+			x, y, metadata = batch[:3]
+			image_idx = metadata.get("image_id")
+		else:
+			x, y = batch[:2]
+			image_idx = torch.arange(0, len(x)) + batch_idx*self.batch_size
+
+
 		logits = self(x)
 		loss = self.loss(logits, y)
-		return {"logits": logits, "loss": loss, "y": y, "x": x}
+		return {"logits": logits, "loss": loss, "y": y, "x": x, "image_id": image_idx, "batch_idx": batch_idx}
 
 	def training_step(self, batch: Any, batch_idx: int) -> torch.Tensor:
 
-		x, y = batch[:2]
-		# import pdb; pdb.set_trace()
-		out = self.step(x, y)
-		
-		# print("self.training_step: ", f"device:{torch.cuda.current_device()}, y.shape:{out['y'].shape}, logits.shape:{out['logits'].shape}, loss.shape:{out['loss'].shape}")
-		return {k: out[k] for k in ["logits", "loss", "y"]}
+		out = self.step(batch, batch_idx=batch_idx)
+		return out #{k: out[k] for k in ["logits", "loss", "y", "batch_idx"]}
 
 	def training_step_end(self, out):
-		# print("self.training_step_end: ", f"device:{torch.cuda.current_device()}, y.shape:{out['y'].shape}, logits.shape:{out['logits'].shape}, loss.shape:{out['loss'].shape}")
-		self.train_metric(out["logits"], out["y"])
 		
 		batch_size=self.batch_size #len(out["y"])
 		loss = out["loss"].mean()
+		
+		self.train_metric.update(out["logits"], out["y"])
+		
+		self.log("train_loss", loss,
+				 on_step=True, on_epoch=True,
+				 prog_bar=True, batch_size=batch_size,
+				 sync_dist=self.sync_dist
+				)
+
 		log_dict = {
-			"train_loss": loss,
 			**self.train_metric
 		}
 		self.log_dict(
 			log_dict,
-			on_step=True,
-			on_epoch=True,
-			prog_bar=True,
-			batch_size=batch_size
+			on_step=False, on_epoch=True,
+			prog_bar=True, batch_size=batch_size
 		)
+		if isinstance(self.log_images_freq, int):
+			if out["batch_idx"] % self.log_images_freq:
+				self.render_image_predictions(
+					outputs=out,
+					batch_size=batch_size,
+					n_elements_to_log=batch_size,
+					log_name="train image predictions",
+					logger=self.logger,
+					global_step=self.trainer.global_step)
+
 		return loss
 
 	def validation_step(self, batch: Any, batch_idx: int) -> Dict[str, torch.Tensor]:
-		x, y = batch[:2]
-		out = self.step(x, y)
-		# self.
-		# print("self.validation_step: ", f"device:{torch.cuda.current_device()}, y.shape:{out['y'].shape}, logits.shape:{out['logits'].shape}, loss.shape:{out['loss'].shape}")
-		return {k: out[k] for k in ["logits", "loss", "y"]}
+		out = self.step(batch, batch_idx=batch_idx)
+		return out #{k: out[k] for k in ["logits", "loss", "y", "batch_idx"]}
 	
 	def validation_step_end(self, out):
-		# self.
-		# print("self.validation_step_end: ", f"device:{torch.cuda.current_device()}, y.shape:{out['y'].shape}, logits.shape:{out['logits'].shape}, loss.shape:{out['loss'].shape}")
-		self.val_metric(out["logits"], out["y"])
 		batch_size=self.batch_size #len(out["y"])
 		loss = out["loss"].mean()
 		
+		batch_idx = out.pop("batch_idx")
+
+		self.val_metric.update(out["logits"], out["y"])
 		log_dict = {
 			"val_loss": loss,
 			**self.val_metric
 		}
-		# if "val/F1_top1" in self.val_metric.keys():
-		# 	log_dict["val_F1"] = self.val_metric["val/F1_top1"]
-		# 	log_dict.update({k:v for k,v in self.val_metric.items() if k != "val/F1_top1"})
-		# elif "val_macro_F1" in self.val_metric.keys():
-		# 	log_dict["val_F1"] = self.val_metric["val_macro_F1"]
-		# 	log_dict.update({k:v for k,v in self.val_metric.items() if k != "val_macro_F1"})
-		# else:
-		# log_dict.update(self.val_metric)
-		# self.log("val_macro_F1", self.val_metric["val_macro_F1"])
+
 		self.log_dict(log_dict,
-					  on_step=False, #True,
+					  on_step=False,
 					  on_epoch=True,
 					  prog_bar=True,
 					  batch_size=batch_size)
 
-		# self.log_dict(self.val_metric,
-		# 			  on_step=True,
-		# 			  on_epoch=True,
-		# 			  # prog_bar=True,
-		# 			  batch_size=batch_size)
-		
-		# return {
-		# 	# "image": out["x"],
-		# 	"y_true": out["y"],
-		# 	"logits": out["logits"],
-		# 	"val_loss": loss,
-		# }
 
 	def test_step(self, batch: Any, batch_idx: int) -> Dict[str, torch.Tensor]:
-		x, y = batch[:2]
-		out = self.step(x, y)
+		out = self.step(batch)
 		return {k: out[k] for k in ["logits", "loss", "y"]}
 
 	def test_step_end(self, out):
@@ -219,7 +225,6 @@ class LitClassifier(BaseLightningModule): #pl.LightningModule):
 			batch_size=batch_size
 		)
 		return {
-			# "image": out["x"],
 			"y_true": out["y"],
 			"logits": out["logits"],
 			"val_loss": out["loss"].mean(),
@@ -236,113 +241,6 @@ class LitClassifier(BaseLightningModule): #pl.LightningModule):
 		y_logit = self(x)
 		return {"image_id":image_idx,
 				"y_logit":y_logit}
-
-	def training_epoch_end(self, outputs: List[Any]) -> None:
-		"""
-		
-		"""
-		info = {k: v.shape for k,v in outputs[0].items()}
-		print("self.training_epoch_end: ", f"device:{torch.cuda.current_device()}, len(outputs)={len(outputs)}, info: {info}")
-
-		# losses = []
-		# for o in outputs:
-		# 	losses.append(o["loss"])
-		# losses = torch.stack(losses)
-		losses = torch.stack([o["loss"] for o in outputs])
-		print(f"self.validation_epoch_end (torch.stack the losses): losses.shape = {losses.shape}")
-		
-
-
-	def validation_epoch_end(self, outputs: List[Any]) -> None:
-		"""
-		
-		"""
-		info = {k: v.shape for k,v in outputs[0].items()}
-		print("self.validation_epoch_end: ", f"device:{torch.cuda.current_device()}, len(outputs)={len(outputs)}, info: {info}")
-		
-		# losses = torch.stack([o["loss"] for o in outputs])
-		losses = []
-		y = []
-		logits = []
-		for o in outputs:
-			losses.append(o["loss"])
-			y.append(o["y"])
-			logits = [o["logits"]]
-		losses = torch.stack(losses)
-		y = torch.cat(y)
-		logits = torch.cat(logits)
-		print(f"self.validation_epoch_end (torch.stack the losses): losses.shape = {losses.shape}, y.shape = {y.shape}, logits.shape = {logits.shape}")
-		
-		if "image" not in outputs:
-			# print(f"Skipping val render_image_predictions due to missing 'image' key in epoch outputs.")
-			return
-		self.render_image_predictions(
-			outputs=outputs,
-			batch_size=self.cfg.data.datamodule.batch_size,
-			n_elements_to_log=self.cfg.logging.n_elements_to_log,
-			log_name="val_image_predictions",
-			normalize_visualization=self.cfg.logging.normalize_visualization,
-			logger=self.logger,
-			global_step=self.global_step,
-			commit=False)
-
-
-	def test_epoch_end(self, outputs: List[Any]) -> None:
-		if "image" not in outputs:
-			# print(f"Skipping test render_image_predictions due to missing 'image' key in epoch outputs.")
-			return
-		
-		self.render_image_predictions(
-			outputs=outputs,
-			batch_size=self.cfg.data.datamodule.batch_size,
-			n_elements_to_log=self.cfg.logging.n_elements_to_log,
-			log_name="test_image_predictions",
-			normalize_visualization=self.cfg.logging.normalize_visualization,
-			logger=self.logger,
-			global_step=self.global_step,
-			commit=False)
-
-
-	@staticmethod
-	def render_image_predictions(
-		outputs: List[Any],
-		batch_size: int,
-		n_elements_to_log: int,
-		log_name: str="image predictions",
-		normalize_visualization: bool=True,
-		logger=None,
-		global_step: int=0,
-		commit: bool=False
-	) -> None:
-		
-		# images_feat_viz = []
-		# integrated_gradients = IntegratedGradients(self.forward)
-		# noise_tunnel = NoiseTunnel(integrated_gradients)
-		
-		images = []
-		for output_element in iterate_elements_in_batches(
-			outputs, batch_size, n_elements_to_log
-		):  
-			rendered_image = render_images(
-				output_element["image"],
-				autoshow=False,
-				normalize=normalize_visualization)
-			caption = f"y_pred: {output_element['logits'].argmax()}  [gt: {output_element['y_true']}]"  # noqa	
-			# attributions_ig_nt = noise_tunnel.attribute(output_element["image"].unsqueeze(0), nt_samples=50,
-														# nt_type='smoothgrad_sq', target=output_element["y_true"],
-														# internal_batch_size=50)
-			images.append(
-				wandb.Image(
-					rendered_image,
-					caption=caption,
-				)
-			)
-		if logger is not None:
-			logger.experiment.log(
-				{log_name: images,
-				 "global_step":global_step},
-				commit=commit
-			)
 
 
 	def configure_optimizers(
@@ -364,98 +262,161 @@ class LitClassifier(BaseLightningModule): #pl.LightningModule):
 		# if hasattr(self.cfg.optim, "exclude_bn_bias") and \
 				# self.cfg.optim.get("exclude_bn_bias", False):
 		if self.cfg.optim.get("exclude_bn_bias", False):
-			params = self.exclude_from_wt_decay(self.named_parameters(), weight_decay=self.cfg.optim.optimizer.weight_decay)
+			params = self.exclude_from_wt_decay(self.net,
+												weight_decay=self.cfg.optim.optimizer.weight_decay)
 		else:
 			params = self.parameters()
 
-		# pp(OmegaConf.to_container(self.cfg.optim.optimizer))
-		pp(OmegaConf.to_container(self.cfg.optim.optimizer, resolve=True))
+		# pp(OmegaConf.to_container(self.cfg.optim.optimizer, resolve=True))
 		opt = hydra.utils.instantiate(
 			OmegaConf.to_container(self.cfg.optim.optimizer),
 			params=params,
 			weight_decay=self.cfg.optim.optimizer.weight_decay,
 			_convert_="partial"
 		)
-
 		out = opt
+
 		if self.cfg.optim.use_lr_scheduler:
 			lr_scheduler = self.cfg.optim.lr_scheduler
-			scheduler = hydra.utils.instantiate(lr_scheduler, optimizer=opt)
+			# pp(OmegaConf.to_container(lr_scheduler, resolve=True))
+			scheduler = {"scheduler":hydra.utils.instantiate(lr_scheduler, optimizer=opt),
+						 "name": "learning_rate",
+						 "interval": "epoch",
+						 "frequency":1}
 			out = ([opt], [scheduler])
 		return out
 
-	@staticmethod
-	def exclude_from_wt_decay(named_params: List[Tuple[str, torch.Tensor]],
-							  weight_decay: float,
-							  skip_list: Tuple[str]=("bias", "bn")
-							 ) -> List[Dict[str, Any]]:
-		"""
-		Sort named_params into 2 groups: included & excluded from weight decay.
-		Includes any params with a name that doesn't match any pattern in `skip_list`.
+##############################
+##############################
+
+	# @staticmethod
+	# @rank_zero_only
+	def render_image_predictions(
+		self,
+		outputs: List[Any],
+		batch_size: int,
+		n_elements_to_log: int,
+		log_name: str="image predictions",
+		normalize_visualization: bool=True,
+		logger=None,
+		global_step: int=0,
+		commit: bool=False
+	) -> None:
 		
-		Arguments:
-			named_params: List[Tuple[str, torch.Tensor]]
-			weight_decay: float,
-			skip_list: Tuple[str]=("bias", "bn")):		
-		"""
-		params = []
-		excluded_params = []
+		# images_feat_viz = []
+		# integrated_gradients = IntegratedGradients(self.forward)
+		# noise_tunnel = NoiseTunnel(integrated_gradients)
+		
+		classes = self.trainer.datamodule.train_dataset.classes
+		
+		
+		images = []
+		for output_element in iterate_elements_in_batches(
+			outputs, batch_size, n_elements_to_log
+		):  
+			rendered_image = render_images(
+				output_element["x"],
+				autoshow=False,
+				normalize=normalize_visualization)
+			y_pred = classes[output_element['logits'].argmax()]
+			y_true = classes[int(output_element['y'])]
+			caption = f"y_pred: {y_pred}  [gt: {y_true}]"  # noqa	
+			# attributions_ig_nt = noise_tunnel.attribute(output_element["image"].unsqueeze(0), nt_samples=50,
+														# nt_type='smoothgrad_sq', target=output_element["y_true"],
+														# internal_batch_size=50)
+			images.append(
+				wandb.Image(
+					rendered_image,
+					caption=caption,
+				)
+			)
+		if logger is not None:
+			logger.experiment.log(
+				{log_name: images,
+				 "global_step":global_step},
+				commit=commit
+			)
 
-		for name, param in named_params:
-			if not param.requires_grad:
-				continue
-			elif any(layer_name in name for layer_name in skip_list):
-				excluded_params.append(param)
+
+	# @rank_zero_only
+	def render_image_predictions_table(
+		self,
+		outputs: List[Any],
+		batch_size: int,
+		n_elements_to_log: int,
+		log_name: str="image_predictions",
+		log_type: str="predictions_table",
+		normalize_visualization: bool=True,
+		logger=None,
+		log_as_artifact: bool=False,
+		global_step: int=0,
+		commit: bool=False
+	) -> None:
+		
+		if logger is None:
+			return
+		
+		columns = ["image_id", "image", "y_pred", "y_true"]
+		table = self._get_table(log_name=log_name, log_type=log_type, columns=columns)
+
+		
+		for output_element in iterate_elements_in_batches(
+			outputs, batch_size, n_elements_to_log
+		):  
+			rendered_image = render_images(
+				output_element["x"],
+				autoshow=False,
+				normalize=normalize_visualization)
+			y_pred = output_element['logits'].argmax()
+			y_true = output_element['y']
+			image_id = output_element['image_id']
+			img = wandb.Image(rendered_image)
+			row = [image_id, img, y_pred, y_true]
+			table.add_data(*row)
+		
+		if logger is not None:
+			if log_as_artifact:
+				artifact = self._get_artifact(log_name, log_type)
+				if artifact is not None:
+					artifact.add(table, "predictions")
+				rank_zero_only(logger.experiment.log_artifact)(artifact)
+				if log_name in self.artifacts.get(log_type, {}):
+					self.artifacts[log_type][log_name] = None
 			else:
-				params.append(param)
+				logger.experiment.log(
+					{log_name: table,
+					 "global_step":global_step},
+					commit=commit
+				)
 
-		return [
-			{"params": params, "weight_decay": weight_decay},
-			{
-				"params": excluded_params,
-				"weight_decay": 0.0,
-			},
-		]
+	def _get_table(self, log_name, log_type, columns=None):
+		
+		table=None
+		if log_type not in self.tables:
+			self.tables[log_type] = {}
+		if log_name in self.tables[log_type]:
+			table = self.tables[log_type][log_name]
+		if table is None:
+			table = wandb.Table(columns=columns)
+			self.tables[log_type][log_name] = table
+		return table
+
+	@rank_zero_only
+	def _get_artifact(self, log_name, log_type):
+		artifact=None
+		if log_type not in self.artifacts:
+			self.artifacts[log_type] = {}
+		if log_name in self.artifacts[log_type]:
+			artifact = self.artifacts[log_type][log_name]
+		if artifact is None:
+			artifact = wandb.Artifact(log_name, type=log_type)
+			self.artifacts[log_type][log_name] = artifact
+		return artifact
+
+
+###########################
 	
 # [TODO] Uncomment & benchmark this
 # source: https://pytorch-lightning.readthedocs.io/en/stable/guides/speed.html#set-grads-to-none
 	# def optimizer_zero_grad(self, epoch, batch_idx, optimizer, optimizer_idx):
 	#	 optimizer.zero_grad(set_to_none=True)
-	
-	
-
-# 	def init_metrics(self,
-# 					 stage: str='train',
-# 					 tag: Optional[str]=None):
-# 		tag = tag or ""
-# 		if not hasattr(self, "all_metrics"):
-# 			self.all_metrics = {}
-		
-# 		if not hasattr(self,"num_classes") and hasattr(self.hparams, "num_classes"):
-# 			self.num_classes = self.hparams.num_classes
-		
-# 		print(f"self.num_classes={self.num_classes}")
-# 		if stage in ['train', 'all']:
-# 			prefix=f'{tag}_train'.strip("_")
-# 			self.metrics_train = get_scalar_metrics(num_classes=self.num_classes, average='macro', prefix=prefix)
-# 			self.metrics_train_per_class = get_per_class_metrics(num_classes=self.num_classes, prefix='train')
-# 			self.all_metrics['train'] = {"scalar":self.metrics_train,
-# 										 "per_class":self.metrics_train_per_class}
-			
-# 		if stage in ['val', 'all']:
-# 			prefix=f'{tag}_val'.strip("_")
-# 			self.metrics_val = get_scalar_metrics(num_classes=self.num_classes, average='macro', prefix=prefix)
-# 			self.metrics_val_per_class = get_per_class_metrics(num_classes=self.num_classes, prefix='val')
-# 			self.all_metrics['val'] = {"scalar":self.metrics_val,
-# 									   "per_class":self.metrics_val_per_class}
-			
-# 		if stage in ['test', 'all']:
-# 			if isinstance(tag, str):
-# 				prefix=tag
-# 			else:
-# 				prefix = "test"
-# #			 prefix=f'{tag}_test'.strip("_")
-# 			self.metrics_test = get_scalar_metrics(num_classes=self.num_classes, average='macro', prefix=prefix)
-# 			self.metrics_test_per_class = get_per_class_metrics(num_classes=self.num_classes, prefix=prefix)
-# 			self.all_metrics['test'] = {"scalar":self.metrics_test,
-# 										"per_class":self.metrics_test_per_class}

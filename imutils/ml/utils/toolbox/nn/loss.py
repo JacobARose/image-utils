@@ -89,7 +89,10 @@ class CBCrossEntropyLoss(nn.Module):
 		self.beta = beta
 		self.reduction = reduction
 		
-		self.calculate_class_weights(targets=targets, beta=beta)
+		self.weights = torch.nn.Parameter(
+			self.calculate_class_weights(targets=targets, beta=beta),
+			requires_grad=False
+		)
 		
 	def calculate_class_weights(self, targets: Sequence[int], beta: float=0.0) -> torch.Tensor:
 		"""
@@ -98,15 +101,31 @@ class CBCrossEntropyLoss(nn.Module):
 		[TBD] -- Add in some kind of masking to allow calculating weights for sequences that have at least 1 class absent.
 		"""
 		self.classes, self.class_counts = BF.class_counts(targets)
-		self.weights = BF.class_balanced_weight(beta=beta, samples_per_class=self.class_counts)
-		return self.weights
-
-	def forward(self, y_logits: torch.Tensor, target: torch.Tensor) -> torch.Tensor:
+		weights = BF.class_balanced_weight(beta=beta, samples_per_class=self.class_counts)
+		# self.weights = torch.from_numpy(weights)
+		# import pdb; pdb.set_trace()
 		
-		return BF.class_balanced_cross_entropy_loss(y_logits,
+		# with open("class_weights.csv", "w") as f:
+		# 	f
+		
+		return weights
+
+	def forward(self, y_logits: torch.Tensor, targets: torch.Tensor) -> torch.Tensor:
+		
+# 		print(f"y_logits.device: {y_logits.device}",
+# 			  f"targets.device: {targets.device}",
+# 			  f"self.weights.device: {self.weights.device}")
+		
+# 		import pdb; pdb.set_trace()
+		
+		loss = BF.class_balanced_cross_entropy_loss(y_logits,
 													y_true=targets,
 													weights=self.weights,
 													reduction=self.reduction)
+		
+		
+		
+		return loss
 
 
 

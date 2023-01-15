@@ -1,0 +1,36 @@
+# default_image_aug_conf.yaml
+# preprocess:
+#     train:
+#         resize: 512
+#     val:
+#         resize: 256
+#     test:
+#         resize: 256
+
+defaults:
+    - light_image_aug
+    - _self_
+
+
+preprocess_size: 256
+resolution: 224
+# preprocess:
+#     train:
+#         resize: ${...preprocess_size}
+#     val:
+#         resize: ${...preprocess_size}
+#     test:
+#         resize: ${...preprocess_size}
+
+# batch_transform:
+#     random_flips: False #true
+#     train:
+#         random_resize_crop: ${...resolution}
+#     val:
+#         center_crop: ${...resolution}
+#     test:
+#         center_crop: ${...resolution}
+# normalize:
+#    - [0.485, 0.456, 0.406]
+#    - [0.229, 0.224, 0.225]
+# skip_augmentations: false

@@ -31,12 +31,29 @@
 
 imutils/big/__init__.py
 
-&#34;&#34;&#34;</code></pre>
+&#34;&#34;&#34;
+
+# from ..ml.utils.common import load_envs
+# load_envs()
+
+import dotenv
+import os
+dotenv.load_dotenv(dotenv_path=os.path.join(
+        os.path.dirname(__file__), &#34;.env&#34;),
+                                   override=True)</code></pre>
 </details>
 </section>
 <section>
 <h2 class="section-title" id="header-submodules">Sub-modules</h2>
 <dl>
+<dt><code class="name"><a title="imutils.big.common_catalog_utils" href="common_catalog_utils.html">imutils.big.common_catalog_utils</a></code></dt>
+<dd>
+<div class="desc"><p>imutils/big/common_catalog_utils.py …</p></div>
+</dd>
+<dt><code class="name"><a title="imutils.big.make_LeavesDb_2022_catalog_df" href="make_LeavesDb_2022_catalog_df.html">imutils.big.make_LeavesDb_2022_catalog_df</a></code></dt>
+<dd>
+<div class="desc"><p>imutils/big/make_LeavesDb_2022_catalog_df.py …</p></div>
+</dd>
 <dt><code class="name"><a title="imutils.big.make_herbarium_2022_catalog_df" href="make_herbarium_2022_catalog_df.html">imutils.big.make_herbarium_2022_catalog_df</a></code></dt>
 <dd>
 <div class="desc"><p>make_herbarium_2022_catalog_df.py</p></div>
@@ -48,6 +65,10 @@ imutils/big/__init__.py
 <dt><code class="name"><a title="imutils.big.make_train_val_splits" href="make_train_val_splits.html">imutils.big.make_train_val_splits</a></code></dt>
 <dd>
 <div class="desc"><p>make_train_val_splits.py …</p></div>
+</dd>
+<dt><code class="name"><a title="imutils.big.make_train_val_test_splits" href="make_train_val_test_splits.html">imutils.big.make_train_val_test_splits</a></code></dt>
+<dd>
+<div class="desc"><p>make_train_val_test_splits.py …</p></div>
 </dd>
 </dl>
 </section>
@@ -71,9 +92,12 @@ imutils/big/__init__.py
 </li>
 <li><h3><a href="#header-submodules">Sub-modules</a></h3>
 <ul>
+<li><code><a title="imutils.big.common_catalog_utils" href="common_catalog_utils.html">imutils.big.common_catalog_utils</a></code></li>
+<li><code><a title="imutils.big.make_LeavesDb_2022_catalog_df" href="make_LeavesDb_2022_catalog_df.html">imutils.big.make_LeavesDb_2022_catalog_df</a></code></li>
 <li><code><a title="imutils.big.make_herbarium_2022_catalog_df" href="make_herbarium_2022_catalog_df.html">imutils.big.make_herbarium_2022_catalog_df</a></code></li>
 <li><code><a title="imutils.big.make_shards" href="make_shards.html">imutils.big.make_shards</a></code></li>
 <li><code><a title="imutils.big.make_train_val_splits" href="make_train_val_splits.html">imutils.big.make_train_val_splits</a></code></li>
+<li><code><a title="imutils.big.make_train_val_test_splits" href="make_train_val_test_splits.html">imutils.big.make_train_val_test_splits</a></code></li>
 </ul>
 </li>
 </ul>

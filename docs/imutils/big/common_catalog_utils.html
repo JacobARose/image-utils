@@ -1,0 +1,1399 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.10.0" />
+<title>imutils.big.common_catalog_utils API documentation</title>
+<meta name="description" content="imutils/big/common_catalog_utils.py …" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>imutils.big.common_catalog_utils</code></h1>
+</header>
+<section id="section-intro">
+<p>imutils/big/common_catalog_utils.py</p>
+<p>Created On: Tuesday April 5th, 2022<br>
+Created By: Jacob A Rose</p>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">&#34;&#34;&#34;
+
+imutils/big/common_catalog_utils.py
+
+Created On: Tuesday April 5th, 2022  
+Created By: Jacob A Rose
+
+
+&#34;&#34;&#34;
+
+from functools import cached_property
+from omegaconf import DictConfig
+import os
+import pandas as pd
+from pathlib import Path
+from typing import *
+from dataclasses import dataclass, asdict
+from imutils.ml.utils.etl_utils import ETL
+
+import torchvision
+from imutils.ml.utils import template_utils
+from imutils.ml.utils.label_utils import LabelEncoder
+
+from imutils import catalog_registry
+
+log = template_utils.get_logger(__name__)
+
+__all__ = [&#39;PathSchema&#39;, &#39;SampleSchema&#39;, &#39;Batch&#39;, &#39;CSVDatasetConfig&#39;, &#39;CSVDataset&#39;, &#34;DataETL&#34;]
+
+# __all__ += [&#34;DataSplitter&#34;]
+
+
+@dataclass 
+class PathSchema:
+    path_schema: str = Path(&#34;{family}_{genus}_{species}_{collection}_{catalog_number}&#34;)
+        
+    def __init__(self,
+                 path_schema,
+                 sep: str=&#34;_&#34;):
+
+        self.sep = sep
+        self.schema_parts: List[str] = path_schema.split(sep)
+        self.maxsplit: int = len(self.schema_parts) - 2
+    
+    def parse(self, path: Union[Path, str], sep: str=&#34;_&#34;):
+    
+        parts = Path(path).stem.split(sep, maxsplit=self.maxsplit)
+        if len(parts) == 5:
+            family, genus, species, collection, catalog_number = parts
+        elif len(parts) == 4:
+            family, genus, species, catalog_number = parts
+            collection = catalog_number.split(&#34;_&#34;)[0]
+        else:
+            print(f&#39;len(parts)={len(parts)}, parts={parts}, path={path}&#39;)
+
+        return family, genus, species, collection, catalog_number
+    
+    def split(self, sep):
+        return self.schema_parts
+
+
+@dataclass
+class SampleSchema:
+    path : Union[str, Path] = None
+    family : str = None
+    genus : str = None
+    species : str = None
+    collection : str = None
+    catalog_number : str = None
+
+    @classmethod
+    def keys(cls):
+        return list(cls.__dataclass_fields__.keys())
+        
+    def __getitem__(self, index: int):
+        return getattr(self, self.keys()[index])
+
+
+
+# Batch = namedtuple(&#34;Batch&#34;, (&#34;image&#34;, &#34;target&#34;, &#34;path&#34;, &#34;catalog_number&#34;))
+totensor: Callable = torchvision.transforms.ToTensor()
+toPIL: Callable = torchvision.transforms.ToPILImage(&#34;RGB&#34;)
+
+
+
+class DataETL(ETL):
+    
+    @classmethod
+    def export_dataset_state(cls,
+                             output_dir: Union[str, Path],
+                             df: pd.DataFrame=None,
+                             encoder: LabelEncoder=None,
+                             dataset_name: Optional[str]=&#34;dataset&#34;,
+                             config: &#34;CSVDatasetConfig&#34;=None
+                             ) -&gt; None:
+        
+        paths = {ftype: str(output_dir / str(dataset_name + ext)) for ftype, ext in cls.data_file_ext_maps.items()}
+        
+        output_dir = Path(output_dir)
+        if isinstance(df, pd.DataFrame):
+            cls.df2csv(df = df,
+                       path = paths[&#34;df&#34;])
+            if config:
+                config.data_path = paths[&#34;df&#34;]
+        if isinstance(encoder, LabelEncoder):
+            cls.labels2json(encoder=encoder,
+                            path = paths[&#34;encoder&#34;])
+            if config:
+                config.label_encoder_path = paths[&#34;encoder&#34;]
+        if isinstance(config, CSVDatasetConfig):
+            config.save(path = paths[&#34;config&#34;])
+#             cls.config2yaml(config=config,
+#                             path = paths[&#34;config&#34;])
+            
+            
+    @classmethod
+    def import_dataset_state(cls,
+                             data_dir: Optional[Union[str, Path]]=None,
+                             config_path: Optional[Union[Path, str]]=None,
+                            ) -&gt; Tuple[&#34;CSVDataset&#34;, &#34;CSVDatasetConfig&#34;]:
+        if (not os.path.exists(str(data_dir))) and (not os.path.exists(config_path)):
+            raise ValueError(&#34;Either data_dir or config_path must be existing paths&#34;)
+        
+        if os.path.isdir(str(data_dir)):
+            data_dir = Path(data_dir)
+        paths = {}
+        
+        # import config yaml file
+        if os.path.isfile(str(config_path)):
+            paths[&#39;config&#39;] = config_path
+#             config = cls.config_from_yaml(path = paths[&#34;config&#34;])
+            config = CSVDatasetConfig.load(path = paths[&#34;config&#34;])
+            if hasattr(config, &#34;data_path&#34;):
+                paths[&#34;df&#34;] = str(config.data_path)
+            if hasattr(config, &#34;label_encoder_path&#34;):
+                paths[&#34;encoder&#34;] = str(config.label_encoder_path)
+            data_dir = Path(os.path.dirname(config_path))
+            
+        for ftype, ext in cls.data_file_ext_maps.items():
+            if ftype not in paths:
+                paths[ftype] = str(list(data_dir.glob(&#34;*&#34; + ext))[0])
+                
+                
+        config.data_path = str(paths[&#34;df&#34;])
+        config.label_encoder_path = str(paths[&#34;encoder&#34;])
+        if os.path.isfile(paths[&#34;encoder&#34;]):
+            # import label encodings json file if it exists
+            label_encoder = cls.labels_from_json(path = paths[&#34;encoder&#34;])
+            
+        # import dataset samples from a csv file as a CustomDataset/CSVDataset object
+        dataset = CSVDataset.from_config(config,
+                                         eager_encode_targets=False) # True)
+        dataset.setup(samples_df=dataset.samples_df,
+                      label_encoder=label_encoder,
+                      fit_targets=True)
+        
+        return dataset, config
+
+
+
+
+
+
+@dataclass
+class BaseConfig:
+
+        def save(self,
+                         path: Union[str, Path]) -&gt; None:
+                &#34;&#34;&#34;
+                Save current config object&#39;s info into a yaml file.
+                &#34;&#34;&#34;
+                
+                cfg = asdict(self)
+#                cfg = DictConfig({k: getattr(self,k) for k in self.keys()})
+                ETL.config2yaml(cfg, path)
+        
+        @classmethod
+        def load(cls,
+                         path: Union[str, Path]) -&gt; &#34;DatasetConfig&#34;:
+                &#34;&#34;&#34;
+                Load current config object&#39;s info from a yaml file.
+                &#34;&#34;&#34;
+                cfg = ETL.config_from_yaml(path)
+
+#                keys = cls.__dataclass_fields__.keys()
+                cfg = cls(**{k: cfg[k] for k in cls.keys()})
+                return cfg
+        
+        @classmethod
+        def keys(cls):
+                &#34;&#34;&#34;
+                Return the default dataclass fields of this type of config as strings.
+                &#34;&#34;&#34;
+                return cls.__dataclass_fields__.keys()
+        
+        def __repr__(self):
+                out = f&#34;{type(self)}&#34; + &#34;\n&#34;
+                out += &#34;\n&#34;.join([f&#34;{k}: {getattr(self, k)}&#34; for k in self.keys()])
+#                out += f&#34;\nroot_dir: {self.root_dir}&#34;
+#                out += &#34;\nsubset_dirs: \n\t&#34; + &#39;\n\t&#39;.join(self.subset_dirs)
+                return out
+
+        
+@dataclass
+class DatasetConfig(BaseConfig):
+        base_dataset_name: str = &#34;&#34; # &#34;Extant_Leaves&#34;
+        class_type: str = &#34;family&#34;
+        threshold: Optional[int] = 10
+        resolution: int = 512
+        version: str = &#34;v1_0&#34;
+        path_schema: str = &#34;{family}_{genus}_{species}_{collection}_{catalog_number}&#34;
+        
+        def __post_init__(self):
+                assert self.version in self.available_versions
+        
+        @property
+        def available_versions(self) -&gt; List[str]:
+                return list(catalog_registry.available_datasets.versions.keys())
+
+        @property
+        def full_name(self) -&gt; str:
+                name = []
+                if len(self.base_dataset_name):
+                        name.append(self.base_dataset_name)
+                if self.threshold:
+                        name.extend([str(self.class_type), str(self.threshold)])
+                name.append(str(self.resolution))
+                return &#34;_&#34;.join(name)
+#                name  = self.base_dataset_name
+#                if self.threshold:
+#                        name += f&#34;_{self.class_type}_{self.threshold}&#34;
+#                name += f&#34;_{self.resolution}&#34;
+#                return name
+
+        
+class ImageFileDatasetConfig(DatasetConfig):    
+        @property
+        def root_dir(self):
+                return catalog_registry.available_datasets.get(self.full_name, version=self.version)
+        
+        def is_valid_subset(self, subset: str):
+                for s in (&#34;train&#34;, &#34;val&#34;, &#34;test&#34;, &#34;train_images&#34;, &#34;test_images:&#34;):
+                        if s in subset:
+                                return True
+                return False
+        
+        @property
+        def subsets(self):
+                if isinstance(self.root_dir, list):
+                        return []
+                return [s for s in os.listdir(self.root_dir) if self.is_valid_subset(s)]
+        
+        @property
+        def subset_dirs(self):
+                return [os.path.join(self.root_dir, subset) for subset in self.subsets]
+
+        def locate_files(self) -&gt; Dict[str, List[Path]]:
+                return ETL.locate_files(self.root_dir)
+
+        @cached_property
+        def num_samples(self):
+#                subset_dirs = {Path(subset_dir).stem: Path(subset_dir) for subset_dir in self.subset_dirs}
+                files = {subset: f for subset, f in self.locate_files().items() if self.is_valid_subset(subset)}
+                return {subset: len(list(f)) for subset, f in files.items()}
+        
+        def __repr__(self):
+                out = super().__repr__()
+                out += f&#34;\nroot_dir: {self.root_dir}&#34;
+                out += &#34;\nsubsets: &#34;
+                for i, subset in enumerate(self.subsets):
+                        out += &#39;\n\t&#39; + f&#34;{subset}:&#34;
+                        out += &#39;\n\t\t&#39; + f&#34;subdir: {self.subset_dirs[i]}&#34;
+                        out += &#39;\n\t\t&#39; + f&#34;subset_num_samples: {self.num_samples[subset]}&#34;
+                return out
+
+@dataclass
+class CSVDatasetConfig(BaseConfig):
+    &#34;&#34;&#34;
+    Represents a single data subset, or the set of &#34;all&#34; data.
+    
+    &#34;&#34;&#34;
+    full_name: str = None
+    data_path: str = None
+    label_encoder_path: Optional[str] = None
+    subset_key: str = &#34;all&#34;
+    
+    def update(self, **kwargs) -&gt; None:
+        if &#34;subset_key&#34; in kwargs:
+            self.subset_key = kwargs[&#34;subset_key&#34;]
+        if &#34;num_samples&#34; in kwargs:
+            self.num_samples = {self.subset_key: kwargs[&#34;num_samples&#34;]}
+    
+    @cached_property
+    def num_samples(self) -&gt; Dict[str,int]:
+        return {self.subset_key: len(self.locate_files())}
+
+    def __repr__(self):
+        out = super().__repr__()
+        out += &#39;\n&#39; + f&#34;num_samples: {self.num_samples[self.subset_key]}&#34;
+        return out
+
+    def locate_files(self) -&gt; pd.DataFrame:
+        return ETL.df_from_csv(self.data_path)
+    
+    def load_label_encoder(self) -&gt; Union[None, LabelEncoder]:
+        if os.path.exists(str(self.label_encoder_path)):
+            return ETL.labels_from_json(str(self.label_encoder_path))
+        return
+
+    @classmethod
+    def export_dataset_state(cls,
+                             df: pd.DataFrame,
+                             output_dir: Union[str, Path],
+                             config: DictConfig=None,
+                             encoder: LabelEncoder=None,
+                             dataset_name: Optional[str]=&#34;dataset&#34;
+                             ) -&gt; None:
+        ETL.export_dataset_state(output_dir=output_dir,
+                                     df=df,
+                                     config=config,
+                                     encoder=encoder,
+                                     dataset_name=dataset_name)
+            
+    @classmethod
+    def import_dataset_state(cls,
+                             data_dir: Optional[Union[str, Path]]=None,
+                             config_path: Optional[Union[Path, str]]=None,
+                            ) -&gt; Tuple[&#34;CSVDataset&#34;, &#34;CSVDatasetConfig&#34;]:
+
+        return ETL.import_dataset_state(data_dir=data_dir,
+                                            config_path=config_path)
+
+
+
+
+
+
+def export_dataset_catalog_configuration(
+        output_dir: str = &#34;/media/data_cifs/projects/prj_fossils/users/jacob/experiments/July2021-Nov2021/csv_datasets/leavesdb-v1_0&#34;,
+        base_dataset_name=&#34;Extant_Leaves&#34;,
+        threshold=100,
+        resolution=512,
+        version: str = &#34;v1_0&#34;,
+        path_schema: str = &#34;{family}_{genus}_{species}_{collection}_{catalog_number}&#34;,
+):
+        &#34;&#34;&#34;
+        Produces an output csv catalog containing all available metadata about an on-disk image dataset.
+        
+        
+        Refactored on (2022-04-05)
+        
+        &#34;&#34;&#34;
+
+        image_file_config = ImageFileDatasetConfig(
+                base_dataset_name=base_dataset_name,
+                class_type=&#34;family&#34;,
+                threshold=threshold,
+                resolution=resolution,
+                version=version,
+                path_schema=path_schema,
+        )
+
+        out_dir = os.path.join(output_dir, image_file_config.full_name)
+        os.makedirs(out_dir, exist_ok=True)
+
+        csv_out_path = os.path.join(out_dir, f&#34;{image_file_config.full_name}-full_dataset.csv&#34;)
+        image_file_config_out_path = os.path.join(out_dir, &#34;ImageFileDataset-config.yaml&#34;)
+        csv_config_out_path = os.path.join(out_dir, &#34;CSVDataset-config.yaml&#34;)
+
+        dataset = ImageFileDataset.from_config(image_file_config, subset_keys=[&#34;all&#34;])
+        ETL.df2csv(dataset.samples_df, path=csv_out_path)
+        image_file_config.save(image_file_config_out_path)
+
+        csv_config = CSVDatasetConfig(
+                full_name=image_file_config.full_name, data_path=csv_out_path, subset_key=&#34;all&#34;
+        )
+
+        csv_config.save(csv_config_out_path)
+
+        print(f&#34;[FINISHED] DATASET FULL NAME: {csv_config.full_name}&#34;)
+        print(f&#34;Newly created dataset assets located at:  {out_dir}&#34;)
+
+        return dataset, image_file_config, csv_config</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="imutils.big.common_catalog_utils.CSVDatasetConfig"><code class="flex name class">
+<span>class <span class="ident">CSVDatasetConfig</span></span>
+<span>(</span><span>full_name: str = None, data_path: str = None, label_encoder_path: Optional[str] = None, subset_key: str = 'all')</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Represents a single data subset, or the set of "all" data.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class CSVDatasetConfig(BaseConfig):
+    &#34;&#34;&#34;
+    Represents a single data subset, or the set of &#34;all&#34; data.
+    
+    &#34;&#34;&#34;
+    full_name: str = None
+    data_path: str = None
+    label_encoder_path: Optional[str] = None
+    subset_key: str = &#34;all&#34;
+    
+    def update(self, **kwargs) -&gt; None:
+        if &#34;subset_key&#34; in kwargs:
+            self.subset_key = kwargs[&#34;subset_key&#34;]
+        if &#34;num_samples&#34; in kwargs:
+            self.num_samples = {self.subset_key: kwargs[&#34;num_samples&#34;]}
+    
+    @cached_property
+    def num_samples(self) -&gt; Dict[str,int]:
+        return {self.subset_key: len(self.locate_files())}
+
+    def __repr__(self):
+        out = super().__repr__()
+        out += &#39;\n&#39; + f&#34;num_samples: {self.num_samples[self.subset_key]}&#34;
+        return out
+
+    def locate_files(self) -&gt; pd.DataFrame:
+        return ETL.df_from_csv(self.data_path)
+    
+    def load_label_encoder(self) -&gt; Union[None, LabelEncoder]:
+        if os.path.exists(str(self.label_encoder_path)):
+            return ETL.labels_from_json(str(self.label_encoder_path))
+        return
+
+    @classmethod
+    def export_dataset_state(cls,
+                             df: pd.DataFrame,
+                             output_dir: Union[str, Path],
+                             config: DictConfig=None,
+                             encoder: LabelEncoder=None,
+                             dataset_name: Optional[str]=&#34;dataset&#34;
+                             ) -&gt; None:
+        ETL.export_dataset_state(output_dir=output_dir,
+                                     df=df,
+                                     config=config,
+                                     encoder=encoder,
+                                     dataset_name=dataset_name)
+            
+    @classmethod
+    def import_dataset_state(cls,
+                             data_dir: Optional[Union[str, Path]]=None,
+                             config_path: Optional[Union[Path, str]]=None,
+                            ) -&gt; Tuple[&#34;CSVDataset&#34;, &#34;CSVDatasetConfig&#34;]:
+
+        return ETL.import_dataset_state(data_dir=data_dir,
+                                            config_path=config_path)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>imutils.big.common_catalog_utils.BaseConfig</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="imutils.big.common_catalog_utils.CSVDatasetConfig.data_path"><code class="name">var <span class="ident">data_path</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="imutils.big.common_catalog_utils.CSVDatasetConfig.full_name"><code class="name">var <span class="ident">full_name</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="imutils.big.common_catalog_utils.CSVDatasetConfig.label_encoder_path"><code class="name">var <span class="ident">label_encoder_path</span> : Optional[str]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="imutils.big.common_catalog_utils.CSVDatasetConfig.subset_key"><code class="name">var <span class="ident">subset_key</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Static methods</h3>
+<dl>
+<dt id="imutils.big.common_catalog_utils.CSVDatasetConfig.export_dataset_state"><code class="name flex">
+<span>def <span class="ident">export_dataset_state</span></span>(<span>df: pandas.core.frame.DataFrame, output_dir: Union[str, pathlib.Path], config: omegaconf.dictconfig.DictConfig = None, encoder: <a title="imutils.ml.utils.label_utils.LabelEncoder" href="../ml/utils/label_utils.html#imutils.ml.utils.label_utils.LabelEncoder">LabelEncoder</a> = None, dataset_name: Optional[str] = 'dataset') ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@classmethod
+def export_dataset_state(cls,
+                         df: pd.DataFrame,
+                         output_dir: Union[str, Path],
+                         config: DictConfig=None,
+                         encoder: LabelEncoder=None,
+                         dataset_name: Optional[str]=&#34;dataset&#34;
+                         ) -&gt; None:
+    ETL.export_dataset_state(output_dir=output_dir,
+                                 df=df,
+                                 config=config,
+                                 encoder=encoder,
+                                 dataset_name=dataset_name)</code></pre>
+</details>
+</dd>
+<dt id="imutils.big.common_catalog_utils.CSVDatasetConfig.import_dataset_state"><code class="name flex">
+<span>def <span class="ident">import_dataset_state</span></span>(<span>data_dir: Union[str, pathlib.Path, None] = None, config_path: Union[str, pathlib.Path, None] = None) ‑> Tuple[<a title="imutils.big.common_catalog_utils.CSVDatasetConfig" href="#imutils.big.common_catalog_utils.CSVDatasetConfig">CSVDatasetConfig</a>, <a title="imutils.big.common_catalog_utils.CSVDatasetConfig" href="#imutils.big.common_catalog_utils.CSVDatasetConfig">CSVDatasetConfig</a>]</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@classmethod
+def import_dataset_state(cls,
+                         data_dir: Optional[Union[str, Path]]=None,
+                         config_path: Optional[Union[Path, str]]=None,
+                        ) -&gt; Tuple[&#34;CSVDataset&#34;, &#34;CSVDatasetConfig&#34;]:
+
+    return ETL.import_dataset_state(data_dir=data_dir,
+                                        config_path=config_path)</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Instance variables</h3>
+<dl>
+<dt id="imutils.big.common_catalog_utils.CSVDatasetConfig.num_samples"><code class="name">var <span class="ident">num_samples</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner=None):
+    if instance is None:
+        return self
+    if self.attrname is None:
+        raise TypeError(
+            &#34;Cannot use cached_property instance without calling __set_name__ on it.&#34;)
+    try:
+        cache = instance.__dict__
+    except AttributeError:  # not all objects have __dict__ (e.g. class defines slots)
+        msg = (
+            f&#34;No &#39;__dict__&#39; attribute on {type(instance).__name__!r} &#34;
+            f&#34;instance to cache {self.attrname!r} property.&#34;
+        )
+        raise TypeError(msg) from None
+    val = cache.get(self.attrname, _NOT_FOUND)
+    if val is _NOT_FOUND:
+        with self.lock:
+            # check if another thread filled cache while we awaited lock
+            val = cache.get(self.attrname, _NOT_FOUND)
+            if val is _NOT_FOUND:
+                val = self.func(instance)
+                try:
+                    cache[self.attrname] = val
+                except TypeError:
+                    msg = (
+                        f&#34;The &#39;__dict__&#39; attribute on {type(instance).__name__!r} instance &#34;
+                        f&#34;does not support item assignment for caching {self.attrname!r} property.&#34;
+                    )
+                    raise TypeError(msg) from None
+    return val</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="imutils.big.common_catalog_utils.CSVDatasetConfig.load_label_encoder"><code class="name flex">
+<span>def <span class="ident">load_label_encoder</span></span>(<span>self) ‑> Optional[None]</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def load_label_encoder(self) -&gt; Union[None, LabelEncoder]:
+    if os.path.exists(str(self.label_encoder_path)):
+        return ETL.labels_from_json(str(self.label_encoder_path))
+    return</code></pre>
+</details>
+</dd>
+<dt id="imutils.big.common_catalog_utils.CSVDatasetConfig.locate_files"><code class="name flex">
+<span>def <span class="ident">locate_files</span></span>(<span>self) ‑> pandas.core.frame.DataFrame</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def locate_files(self) -&gt; pd.DataFrame:
+    return ETL.df_from_csv(self.data_path)</code></pre>
+</details>
+</dd>
+<dt id="imutils.big.common_catalog_utils.CSVDatasetConfig.update"><code class="name flex">
+<span>def <span class="ident">update</span></span>(<span>self, **kwargs) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def update(self, **kwargs) -&gt; None:
+    if &#34;subset_key&#34; in kwargs:
+        self.subset_key = kwargs[&#34;subset_key&#34;]
+    if &#34;num_samples&#34; in kwargs:
+        self.num_samples = {self.subset_key: kwargs[&#34;num_samples&#34;]}</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="imutils.big.common_catalog_utils.CSVDatasetConfig"><code class="flex name class">
+<span>class <span class="ident">CSVDataset</span></span>
+<span>(</span><span>full_name: str = None, data_path: str = None, label_encoder_path: Optional[str] = None, subset_key: str = 'all')</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Represents a single data subset, or the set of "all" data.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class CSVDatasetConfig(BaseConfig):
+    &#34;&#34;&#34;
+    Represents a single data subset, or the set of &#34;all&#34; data.
+    
+    &#34;&#34;&#34;
+    full_name: str = None
+    data_path: str = None
+    label_encoder_path: Optional[str] = None
+    subset_key: str = &#34;all&#34;
+    
+    def update(self, **kwargs) -&gt; None:
+        if &#34;subset_key&#34; in kwargs:
+            self.subset_key = kwargs[&#34;subset_key&#34;]
+        if &#34;num_samples&#34; in kwargs:
+            self.num_samples = {self.subset_key: kwargs[&#34;num_samples&#34;]}
+    
+    @cached_property
+    def num_samples(self) -&gt; Dict[str,int]:
+        return {self.subset_key: len(self.locate_files())}
+
+    def __repr__(self):
+        out = super().__repr__()
+        out += &#39;\n&#39; + f&#34;num_samples: {self.num_samples[self.subset_key]}&#34;
+        return out
+
+    def locate_files(self) -&gt; pd.DataFrame:
+        return ETL.df_from_csv(self.data_path)
+    
+    def load_label_encoder(self) -&gt; Union[None, LabelEncoder]:
+        if os.path.exists(str(self.label_encoder_path)):
+            return ETL.labels_from_json(str(self.label_encoder_path))
+        return
+
+    @classmethod
+    def export_dataset_state(cls,
+                             df: pd.DataFrame,
+                             output_dir: Union[str, Path],
+                             config: DictConfig=None,
+                             encoder: LabelEncoder=None,
+                             dataset_name: Optional[str]=&#34;dataset&#34;
+                             ) -&gt; None:
+        ETL.export_dataset_state(output_dir=output_dir,
+                                     df=df,
+                                     config=config,
+                                     encoder=encoder,
+                                     dataset_name=dataset_name)
+            
+    @classmethod
+    def import_dataset_state(cls,
+                             data_dir: Optional[Union[str, Path]]=None,
+                             config_path: Optional[Union[Path, str]]=None,
+                            ) -&gt; Tuple[&#34;CSVDataset&#34;, &#34;CSVDatasetConfig&#34;]:
+
+        return ETL.import_dataset_state(data_dir=data_dir,
+                                            config_path=config_path)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>imutils.big.common_catalog_utils.BaseConfig</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="imutils.big.common_catalog_utils.CSVDatasetConfig.data_path"><code class="name">var <span class="ident">data_path</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="imutils.big.common_catalog_utils.CSVDatasetConfig.full_name"><code class="name">var <span class="ident">full_name</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="imutils.big.common_catalog_utils.CSVDatasetConfig.label_encoder_path"><code class="name">var <span class="ident">label_encoder_path</span> : Optional[str]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="imutils.big.common_catalog_utils.CSVDatasetConfig.subset_key"><code class="name">var <span class="ident">subset_key</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Static methods</h3>
+<dl>
+<dt id="imutils.big.common_catalog_utils.CSVDatasetConfig.export_dataset_state"><code class="name flex">
+<span>def <span class="ident">export_dataset_state</span></span>(<span>df: pandas.core.frame.DataFrame, output_dir: Union[str, pathlib.Path], config: omegaconf.dictconfig.DictConfig = None, encoder: <a title="imutils.ml.utils.label_utils.LabelEncoder" href="../ml/utils/label_utils.html#imutils.ml.utils.label_utils.LabelEncoder">LabelEncoder</a> = None, dataset_name: Optional[str] = 'dataset') ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@classmethod
+def export_dataset_state(cls,
+                         df: pd.DataFrame,
+                         output_dir: Union[str, Path],
+                         config: DictConfig=None,
+                         encoder: LabelEncoder=None,
+                         dataset_name: Optional[str]=&#34;dataset&#34;
+                         ) -&gt; None:
+    ETL.export_dataset_state(output_dir=output_dir,
+                                 df=df,
+                                 config=config,
+                                 encoder=encoder,
+                                 dataset_name=dataset_name)</code></pre>
+</details>
+</dd>
+<dt id="imutils.big.common_catalog_utils.CSVDatasetConfig.import_dataset_state"><code class="name flex">
+<span>def <span class="ident">import_dataset_state</span></span>(<span>data_dir: Union[str, pathlib.Path, None] = None, config_path: Union[str, pathlib.Path, None] = None) ‑> Tuple[<a title="imutils.big.common_catalog_utils.CSVDatasetConfig" href="#imutils.big.common_catalog_utils.CSVDatasetConfig">CSVDatasetConfig</a>, <a title="imutils.big.common_catalog_utils.CSVDatasetConfig" href="#imutils.big.common_catalog_utils.CSVDatasetConfig">CSVDatasetConfig</a>]</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@classmethod
+def import_dataset_state(cls,
+                         data_dir: Optional[Union[str, Path]]=None,
+                         config_path: Optional[Union[Path, str]]=None,
+                        ) -&gt; Tuple[&#34;CSVDataset&#34;, &#34;CSVDatasetConfig&#34;]:
+
+    return ETL.import_dataset_state(data_dir=data_dir,
+                                        config_path=config_path)</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Instance variables</h3>
+<dl>
+<dt id="imutils.big.common_catalog_utils.CSVDatasetConfig.num_samples"><code class="name">var <span class="ident">num_samples</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner=None):
+    if instance is None:
+        return self
+    if self.attrname is None:
+        raise TypeError(
+            &#34;Cannot use cached_property instance without calling __set_name__ on it.&#34;)
+    try:
+        cache = instance.__dict__
+    except AttributeError:  # not all objects have __dict__ (e.g. class defines slots)
+        msg = (
+            f&#34;No &#39;__dict__&#39; attribute on {type(instance).__name__!r} &#34;
+            f&#34;instance to cache {self.attrname!r} property.&#34;
+        )
+        raise TypeError(msg) from None
+    val = cache.get(self.attrname, _NOT_FOUND)
+    if val is _NOT_FOUND:
+        with self.lock:
+            # check if another thread filled cache while we awaited lock
+            val = cache.get(self.attrname, _NOT_FOUND)
+            if val is _NOT_FOUND:
+                val = self.func(instance)
+                try:
+                    cache[self.attrname] = val
+                except TypeError:
+                    msg = (
+                        f&#34;The &#39;__dict__&#39; attribute on {type(instance).__name__!r} instance &#34;
+                        f&#34;does not support item assignment for caching {self.attrname!r} property.&#34;
+                    )
+                    raise TypeError(msg) from None
+    return val</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="imutils.big.common_catalog_utils.CSVDatasetConfig.load_label_encoder"><code class="name flex">
+<span>def <span class="ident">load_label_encoder</span></span>(<span>self) ‑> Optional[None]</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def load_label_encoder(self) -&gt; Union[None, LabelEncoder]:
+    if os.path.exists(str(self.label_encoder_path)):
+        return ETL.labels_from_json(str(self.label_encoder_path))
+    return</code></pre>
+</details>
+</dd>
+<dt id="imutils.big.common_catalog_utils.CSVDatasetConfig.locate_files"><code class="name flex">
+<span>def <span class="ident">locate_files</span></span>(<span>self) ‑> pandas.core.frame.DataFrame</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def locate_files(self) -&gt; pd.DataFrame:
+    return ETL.df_from_csv(self.data_path)</code></pre>
+</details>
+</dd>
+<dt id="imutils.big.common_catalog_utils.CSVDatasetConfig.update"><code class="name flex">
+<span>def <span class="ident">update</span></span>(<span>self, **kwargs) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def update(self, **kwargs) -&gt; None:
+    if &#34;subset_key&#34; in kwargs:
+        self.subset_key = kwargs[&#34;subset_key&#34;]
+    if &#34;num_samples&#34; in kwargs:
+        self.num_samples = {self.subset_key: kwargs[&#34;num_samples&#34;]}</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="imutils.big.common_catalog_utils.DataETL"><code class="flex name class">
+<span>class <span class="ident">DataETL</span></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Collection of class methods related to saving/reading common experiment related objects to/from disk.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class DataETL(ETL):
+    
+    @classmethod
+    def export_dataset_state(cls,
+                             output_dir: Union[str, Path],
+                             df: pd.DataFrame=None,
+                             encoder: LabelEncoder=None,
+                             dataset_name: Optional[str]=&#34;dataset&#34;,
+                             config: &#34;CSVDatasetConfig&#34;=None
+                             ) -&gt; None:
+        
+        paths = {ftype: str(output_dir / str(dataset_name + ext)) for ftype, ext in cls.data_file_ext_maps.items()}
+        
+        output_dir = Path(output_dir)
+        if isinstance(df, pd.DataFrame):
+            cls.df2csv(df = df,
+                       path = paths[&#34;df&#34;])
+            if config:
+                config.data_path = paths[&#34;df&#34;]
+        if isinstance(encoder, LabelEncoder):
+            cls.labels2json(encoder=encoder,
+                            path = paths[&#34;encoder&#34;])
+            if config:
+                config.label_encoder_path = paths[&#34;encoder&#34;]
+        if isinstance(config, CSVDatasetConfig):
+            config.save(path = paths[&#34;config&#34;])
+#             cls.config2yaml(config=config,
+#                             path = paths[&#34;config&#34;])
+            
+            
+    @classmethod
+    def import_dataset_state(cls,
+                             data_dir: Optional[Union[str, Path]]=None,
+                             config_path: Optional[Union[Path, str]]=None,
+                            ) -&gt; Tuple[&#34;CSVDataset&#34;, &#34;CSVDatasetConfig&#34;]:
+        if (not os.path.exists(str(data_dir))) and (not os.path.exists(config_path)):
+            raise ValueError(&#34;Either data_dir or config_path must be existing paths&#34;)
+        
+        if os.path.isdir(str(data_dir)):
+            data_dir = Path(data_dir)
+        paths = {}
+        
+        # import config yaml file
+        if os.path.isfile(str(config_path)):
+            paths[&#39;config&#39;] = config_path
+#             config = cls.config_from_yaml(path = paths[&#34;config&#34;])
+            config = CSVDatasetConfig.load(path = paths[&#34;config&#34;])
+            if hasattr(config, &#34;data_path&#34;):
+                paths[&#34;df&#34;] = str(config.data_path)
+            if hasattr(config, &#34;label_encoder_path&#34;):
+                paths[&#34;encoder&#34;] = str(config.label_encoder_path)
+            data_dir = Path(os.path.dirname(config_path))
+            
+        for ftype, ext in cls.data_file_ext_maps.items():
+            if ftype not in paths:
+                paths[ftype] = str(list(data_dir.glob(&#34;*&#34; + ext))[0])
+                
+                
+        config.data_path = str(paths[&#34;df&#34;])
+        config.label_encoder_path = str(paths[&#34;encoder&#34;])
+        if os.path.isfile(paths[&#34;encoder&#34;]):
+            # import label encodings json file if it exists
+            label_encoder = cls.labels_from_json(path = paths[&#34;encoder&#34;])
+            
+        # import dataset samples from a csv file as a CustomDataset/CSVDataset object
+        dataset = CSVDataset.from_config(config,
+                                         eager_encode_targets=False) # True)
+        dataset.setup(samples_df=dataset.samples_df,
+                      label_encoder=label_encoder,
+                      fit_targets=True)
+        
+        return dataset, config</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="imutils.ml.utils.etl_utils.ETL" href="../ml/utils/etl_utils.html#imutils.ml.utils.etl_utils.ETL">ETL</a></li>
+<li><a title="imutils.ml.utils.etl_utils.Load" href="../ml/utils/etl_utils.html#imutils.ml.utils.etl_utils.Load">Load</a></li>
+<li><a title="imutils.ml.utils.etl_utils.Transform" href="../ml/utils/etl_utils.html#imutils.ml.utils.etl_utils.Transform">Transform</a></li>
+<li><a title="imutils.ml.utils.etl_utils.Extract" href="../ml/utils/etl_utils.html#imutils.ml.utils.etl_utils.Extract">Extract</a></li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="imutils.big.common_catalog_utils.DataETL.valid_splits"><code class="name">var <span class="ident">valid_splits</span> : Tuple[str]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Static methods</h3>
+<dl>
+<dt id="imutils.big.common_catalog_utils.DataETL.export_dataset_state"><code class="name flex">
+<span>def <span class="ident">export_dataset_state</span></span>(<span>output_dir: Union[str, pathlib.Path], df: pandas.core.frame.DataFrame = None, encoder: <a title="imutils.ml.utils.label_utils.LabelEncoder" href="../ml/utils/label_utils.html#imutils.ml.utils.label_utils.LabelEncoder">LabelEncoder</a> = None, dataset_name: Optional[str] = 'dataset', config: <a title="imutils.big.common_catalog_utils.CSVDatasetConfig" href="#imutils.big.common_catalog_utils.CSVDatasetConfig">CSVDatasetConfig</a> = None) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@classmethod
+def export_dataset_state(cls,
+                         output_dir: Union[str, Path],
+                         df: pd.DataFrame=None,
+                         encoder: LabelEncoder=None,
+                         dataset_name: Optional[str]=&#34;dataset&#34;,
+                         config: &#34;CSVDatasetConfig&#34;=None
+                         ) -&gt; None:
+    
+    paths = {ftype: str(output_dir / str(dataset_name + ext)) for ftype, ext in cls.data_file_ext_maps.items()}
+    
+    output_dir = Path(output_dir)
+    if isinstance(df, pd.DataFrame):
+        cls.df2csv(df = df,
+                   path = paths[&#34;df&#34;])
+        if config:
+            config.data_path = paths[&#34;df&#34;]
+    if isinstance(encoder, LabelEncoder):
+        cls.labels2json(encoder=encoder,
+                        path = paths[&#34;encoder&#34;])
+        if config:
+            config.label_encoder_path = paths[&#34;encoder&#34;]
+    if isinstance(config, CSVDatasetConfig):
+        config.save(path = paths[&#34;config&#34;])</code></pre>
+</details>
+</dd>
+<dt id="imutils.big.common_catalog_utils.DataETL.import_dataset_state"><code class="name flex">
+<span>def <span class="ident">import_dataset_state</span></span>(<span>data_dir: Union[str, pathlib.Path, None] = None, config_path: Union[str, pathlib.Path, None] = None) ‑> Tuple[<a title="imutils.big.common_catalog_utils.CSVDatasetConfig" href="#imutils.big.common_catalog_utils.CSVDatasetConfig">CSVDatasetConfig</a>, <a title="imutils.big.common_catalog_utils.CSVDatasetConfig" href="#imutils.big.common_catalog_utils.CSVDatasetConfig">CSVDatasetConfig</a>]</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">    @classmethod
+    def import_dataset_state(cls,
+                             data_dir: Optional[Union[str, Path]]=None,
+                             config_path: Optional[Union[Path, str]]=None,
+                            ) -&gt; Tuple[&#34;CSVDataset&#34;, &#34;CSVDatasetConfig&#34;]:
+        if (not os.path.exists(str(data_dir))) and (not os.path.exists(config_path)):
+            raise ValueError(&#34;Either data_dir or config_path must be existing paths&#34;)
+        
+        if os.path.isdir(str(data_dir)):
+            data_dir = Path(data_dir)
+        paths = {}
+        
+        # import config yaml file
+        if os.path.isfile(str(config_path)):
+            paths[&#39;config&#39;] = config_path
+#             config = cls.config_from_yaml(path = paths[&#34;config&#34;])
+            config = CSVDatasetConfig.load(path = paths[&#34;config&#34;])
+            if hasattr(config, &#34;data_path&#34;):
+                paths[&#34;df&#34;] = str(config.data_path)
+            if hasattr(config, &#34;label_encoder_path&#34;):
+                paths[&#34;encoder&#34;] = str(config.label_encoder_path)
+            data_dir = Path(os.path.dirname(config_path))
+            
+        for ftype, ext in cls.data_file_ext_maps.items():
+            if ftype not in paths:
+                paths[ftype] = str(list(data_dir.glob(&#34;*&#34; + ext))[0])
+                
+                
+        config.data_path = str(paths[&#34;df&#34;])
+        config.label_encoder_path = str(paths[&#34;encoder&#34;])
+        if os.path.isfile(paths[&#34;encoder&#34;]):
+            # import label encodings json file if it exists
+            label_encoder = cls.labels_from_json(path = paths[&#34;encoder&#34;])
+            
+        # import dataset samples from a csv file as a CustomDataset/CSVDataset object
+        dataset = CSVDataset.from_config(config,
+                                         eager_encode_targets=False) # True)
+        dataset.setup(samples_df=dataset.samples_df,
+                      label_encoder=label_encoder,
+                      fit_targets=True)
+        
+        return dataset, config</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="imutils.ml.utils.etl_utils.ETL" href="../ml/utils/etl_utils.html#imutils.ml.utils.etl_utils.ETL">ETL</a></b></code>:
+<ul class="hlist">
+<li><code><a title="imutils.ml.utils.etl_utils.ETL.config2dataclass" href="../ml/utils/etl_utils.html#imutils.ml.utils.etl_utils.Transform.config2dataclass">config2dataclass</a></code></li>
+<li><code><a title="imutils.ml.utils.etl_utils.ETL.config2yaml" href="../ml/utils/etl_utils.html#imutils.ml.utils.etl_utils.Extract.config2yaml">config2yaml</a></code></li>
+<li><code><a title="imutils.ml.utils.etl_utils.ETL.config_from_yaml" href="../ml/utils/etl_utils.html#imutils.ml.utils.etl_utils.Extract.config_from_yaml">config_from_yaml</a></code></li>
+<li><code><a title="imutils.ml.utils.etl_utils.ETL.df2csv" href="../ml/utils/etl_utils.html#imutils.ml.utils.etl_utils.Extract.df2csv">df2csv</a></code></li>
+<li><code><a title="imutils.ml.utils.etl_utils.ETL.df_from_csv" href="../ml/utils/etl_utils.html#imutils.ml.utils.etl_utils.Extract.df_from_csv">df_from_csv</a></code></li>
+<li><code><a title="imutils.ml.utils.etl_utils.ETL.df_from_dir" href="../ml/utils/etl_utils.html#imutils.ml.utils.etl_utils.Extract.df_from_dir">df_from_dir</a></code></li>
+<li><code><a title="imutils.ml.utils.etl_utils.ETL.init_structured_config" href="../ml/utils/etl_utils.html#imutils.ml.utils.etl_utils.ETL.init_structured_config">init_structured_config</a></code></li>
+<li><code><a title="imutils.ml.utils.etl_utils.ETL.load_hydra_config" href="../ml/utils/etl_utils.html#imutils.ml.utils.etl_utils.Load.load_hydra_config">load_hydra_config</a></code></li>
+<li><code><a title="imutils.ml.utils.etl_utils.ETL.locate_files" href="../ml/utils/etl_utils.html#imutils.ml.utils.etl_utils.Extract.locate_files">locate_files</a></code></li>
+</ul>
+</li>
+</ul>
+</dd>
+<dt id="imutils.big.common_catalog_utils.PathSchema"><code class="flex name class">
+<span>class <span class="ident">PathSchema</span></span>
+<span>(</span><span>path_schema, sep: str = '_')</span>
+</code></dt>
+<dd>
+<div class="desc"><p>PathSchema(path_schema, sep: str = '_')</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class PathSchema:
+    path_schema: str = Path(&#34;{family}_{genus}_{species}_{collection}_{catalog_number}&#34;)
+        
+    def __init__(self,
+                 path_schema,
+                 sep: str=&#34;_&#34;):
+
+        self.sep = sep
+        self.schema_parts: List[str] = path_schema.split(sep)
+        self.maxsplit: int = len(self.schema_parts) - 2
+    
+    def parse(self, path: Union[Path, str], sep: str=&#34;_&#34;):
+    
+        parts = Path(path).stem.split(sep, maxsplit=self.maxsplit)
+        if len(parts) == 5:
+            family, genus, species, collection, catalog_number = parts
+        elif len(parts) == 4:
+            family, genus, species, catalog_number = parts
+            collection = catalog_number.split(&#34;_&#34;)[0]
+        else:
+            print(f&#39;len(parts)={len(parts)}, parts={parts}, path={path}&#39;)
+
+        return family, genus, species, collection, catalog_number
+    
+    def split(self, sep):
+        return self.schema_parts</code></pre>
+</details>
+<h3>Class variables</h3>
+<dl>
+<dt id="imutils.big.common_catalog_utils.PathSchema.path_schema"><code class="name">var <span class="ident">path_schema</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="imutils.big.common_catalog_utils.PathSchema.parse"><code class="name flex">
+<span>def <span class="ident">parse</span></span>(<span>self, path: Union[str, pathlib.Path], sep: str = '_')</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def parse(self, path: Union[Path, str], sep: str=&#34;_&#34;):
+
+    parts = Path(path).stem.split(sep, maxsplit=self.maxsplit)
+    if len(parts) == 5:
+        family, genus, species, collection, catalog_number = parts
+    elif len(parts) == 4:
+        family, genus, species, catalog_number = parts
+        collection = catalog_number.split(&#34;_&#34;)[0]
+    else:
+        print(f&#39;len(parts)={len(parts)}, parts={parts}, path={path}&#39;)
+
+    return family, genus, species, collection, catalog_number</code></pre>
+</details>
+</dd>
+<dt id="imutils.big.common_catalog_utils.PathSchema.split"><code class="name flex">
+<span>def <span class="ident">split</span></span>(<span>self, sep)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def split(self, sep):
+    return self.schema_parts</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="imutils.big.common_catalog_utils.SampleSchema"><code class="flex name class">
+<span>class <span class="ident">SampleSchema</span></span>
+<span>(</span><span>path: Union[str, pathlib.Path] = None, family: str = None, genus: str = None, species: str = None, collection: str = None, catalog_number: str = None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>SampleSchema(path: Union[str, pathlib.Path] = None, family: str = None, genus: str = None, species: str = None, collection: str = None, catalog_number: str = None)</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class SampleSchema:
+    path : Union[str, Path] = None
+    family : str = None
+    genus : str = None
+    species : str = None
+    collection : str = None
+    catalog_number : str = None
+
+    @classmethod
+    def keys(cls):
+        return list(cls.__dataclass_fields__.keys())
+        
+    def __getitem__(self, index: int):
+        return getattr(self, self.keys()[index])</code></pre>
+</details>
+<h3>Class variables</h3>
+<dl>
+<dt id="imutils.big.common_catalog_utils.SampleSchema.catalog_number"><code class="name">var <span class="ident">catalog_number</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="imutils.big.common_catalog_utils.SampleSchema.collection"><code class="name">var <span class="ident">collection</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="imutils.big.common_catalog_utils.SampleSchema.family"><code class="name">var <span class="ident">family</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="imutils.big.common_catalog_utils.SampleSchema.genus"><code class="name">var <span class="ident">genus</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="imutils.big.common_catalog_utils.SampleSchema.path"><code class="name">var <span class="ident">path</span> : Union[str, pathlib.Path]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="imutils.big.common_catalog_utils.SampleSchema.species"><code class="name">var <span class="ident">species</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Static methods</h3>
+<dl>
+<dt id="imutils.big.common_catalog_utils.SampleSchema.keys"><code class="name flex">
+<span>def <span class="ident">keys</span></span>(<span>)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@classmethod
+def keys(cls):
+    return list(cls.__dataclass_fields__.keys())</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="imutils.big.common_catalog_utils.SampleSchema"><code class="flex name class">
+<span>class <span class="ident">Batch</span></span>
+<span>(</span><span>path: Union[str, pathlib.Path] = None, family: str = None, genus: str = None, species: str = None, collection: str = None, catalog_number: str = None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>SampleSchema(path: Union[str, pathlib.Path] = None, family: str = None, genus: str = None, species: str = None, collection: str = None, catalog_number: str = None)</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class SampleSchema:
+    path : Union[str, Path] = None
+    family : str = None
+    genus : str = None
+    species : str = None
+    collection : str = None
+    catalog_number : str = None
+
+    @classmethod
+    def keys(cls):
+        return list(cls.__dataclass_fields__.keys())
+        
+    def __getitem__(self, index: int):
+        return getattr(self, self.keys()[index])</code></pre>
+</details>
+<h3>Class variables</h3>
+<dl>
+<dt id="imutils.big.common_catalog_utils.SampleSchema.catalog_number"><code class="name">var <span class="ident">catalog_number</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="imutils.big.common_catalog_utils.SampleSchema.collection"><code class="name">var <span class="ident">collection</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="imutils.big.common_catalog_utils.SampleSchema.family"><code class="name">var <span class="ident">family</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="imutils.big.common_catalog_utils.SampleSchema.genus"><code class="name">var <span class="ident">genus</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="imutils.big.common_catalog_utils.SampleSchema.path"><code class="name">var <span class="ident">path</span> : Union[str, pathlib.Path]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="imutils.big.common_catalog_utils.SampleSchema.species"><code class="name">var <span class="ident">species</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Static methods</h3>
+<dl>
+<dt id="imutils.big.common_catalog_utils.SampleSchema.keys"><code class="name flex">
+<span>def <span class="ident">keys</span></span>(<span>)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@classmethod
+def keys(cls):
+    return list(cls.__dataclass_fields__.keys())</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="imutils.big" href="index.html">imutils.big</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="imutils.big.common_catalog_utils.CSVDatasetConfig" href="#imutils.big.common_catalog_utils.CSVDatasetConfig">CSVDatasetConfig</a></code></h4>
+<ul class="">
+<li><code><a title="imutils.big.common_catalog_utils.CSVDatasetConfig.data_path" href="#imutils.big.common_catalog_utils.CSVDatasetConfig.data_path">data_path</a></code></li>
+<li><code><a title="imutils.big.common_catalog_utils.CSVDatasetConfig.export_dataset_state" href="#imutils.big.common_catalog_utils.CSVDatasetConfig.export_dataset_state">export_dataset_state</a></code></li>
+<li><code><a title="imutils.big.common_catalog_utils.CSVDatasetConfig.full_name" href="#imutils.big.common_catalog_utils.CSVDatasetConfig.full_name">full_name</a></code></li>
+<li><code><a title="imutils.big.common_catalog_utils.CSVDatasetConfig.import_dataset_state" href="#imutils.big.common_catalog_utils.CSVDatasetConfig.import_dataset_state">import_dataset_state</a></code></li>
+<li><code><a title="imutils.big.common_catalog_utils.CSVDatasetConfig.label_encoder_path" href="#imutils.big.common_catalog_utils.CSVDatasetConfig.label_encoder_path">label_encoder_path</a></code></li>
+<li><code><a title="imutils.big.common_catalog_utils.CSVDatasetConfig.load_label_encoder" href="#imutils.big.common_catalog_utils.CSVDatasetConfig.load_label_encoder">load_label_encoder</a></code></li>
+<li><code><a title="imutils.big.common_catalog_utils.CSVDatasetConfig.locate_files" href="#imutils.big.common_catalog_utils.CSVDatasetConfig.locate_files">locate_files</a></code></li>
+<li><code><a title="imutils.big.common_catalog_utils.CSVDatasetConfig.num_samples" href="#imutils.big.common_catalog_utils.CSVDatasetConfig.num_samples">num_samples</a></code></li>
+<li><code><a title="imutils.big.common_catalog_utils.CSVDatasetConfig.subset_key" href="#imutils.big.common_catalog_utils.CSVDatasetConfig.subset_key">subset_key</a></code></li>
+<li><code><a title="imutils.big.common_catalog_utils.CSVDatasetConfig.update" href="#imutils.big.common_catalog_utils.CSVDatasetConfig.update">update</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="imutils.big.common_catalog_utils.CSVDatasetConfig" href="#imutils.big.common_catalog_utils.CSVDatasetConfig">CSVDatasetConfig</a></code></h4>
+<ul class="">
+<li><code><a title="imutils.big.common_catalog_utils.CSVDatasetConfig.data_path" href="#imutils.big.common_catalog_utils.CSVDatasetConfig.data_path">data_path</a></code></li>
+<li><code><a title="imutils.big.common_catalog_utils.CSVDatasetConfig.export_dataset_state" href="#imutils.big.common_catalog_utils.CSVDatasetConfig.export_dataset_state">export_dataset_state</a></code></li>
+<li><code><a title="imutils.big.common_catalog_utils.CSVDatasetConfig.full_name" href="#imutils.big.common_catalog_utils.CSVDatasetConfig.full_name">full_name</a></code></li>
+<li><code><a title="imutils.big.common_catalog_utils.CSVDatasetConfig.import_dataset_state" href="#imutils.big.common_catalog_utils.CSVDatasetConfig.import_dataset_state">import_dataset_state</a></code></li>
+<li><code><a title="imutils.big.common_catalog_utils.CSVDatasetConfig.label_encoder_path" href="#imutils.big.common_catalog_utils.CSVDatasetConfig.label_encoder_path">label_encoder_path</a></code></li>
+<li><code><a title="imutils.big.common_catalog_utils.CSVDatasetConfig.load_label_encoder" href="#imutils.big.common_catalog_utils.CSVDatasetConfig.load_label_encoder">load_label_encoder</a></code></li>
+<li><code><a title="imutils.big.common_catalog_utils.CSVDatasetConfig.locate_files" href="#imutils.big.common_catalog_utils.CSVDatasetConfig.locate_files">locate_files</a></code></li>
+<li><code><a title="imutils.big.common_catalog_utils.CSVDatasetConfig.num_samples" href="#imutils.big.common_catalog_utils.CSVDatasetConfig.num_samples">num_samples</a></code></li>
+<li><code><a title="imutils.big.common_catalog_utils.CSVDatasetConfig.subset_key" href="#imutils.big.common_catalog_utils.CSVDatasetConfig.subset_key">subset_key</a></code></li>
+<li><code><a title="imutils.big.common_catalog_utils.CSVDatasetConfig.update" href="#imutils.big.common_catalog_utils.CSVDatasetConfig.update">update</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="imutils.big.common_catalog_utils.DataETL" href="#imutils.big.common_catalog_utils.DataETL">DataETL</a></code></h4>
+<ul class="">
+<li><code><a title="imutils.big.common_catalog_utils.DataETL.export_dataset_state" href="#imutils.big.common_catalog_utils.DataETL.export_dataset_state">export_dataset_state</a></code></li>
+<li><code><a title="imutils.big.common_catalog_utils.DataETL.import_dataset_state" href="#imutils.big.common_catalog_utils.DataETL.import_dataset_state">import_dataset_state</a></code></li>
+<li><code><a title="imutils.big.common_catalog_utils.DataETL.valid_splits" href="#imutils.big.common_catalog_utils.DataETL.valid_splits">valid_splits</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="imutils.big.common_catalog_utils.PathSchema" href="#imutils.big.common_catalog_utils.PathSchema">PathSchema</a></code></h4>
+<ul class="">
+<li><code><a title="imutils.big.common_catalog_utils.PathSchema.parse" href="#imutils.big.common_catalog_utils.PathSchema.parse">parse</a></code></li>
+<li><code><a title="imutils.big.common_catalog_utils.PathSchema.path_schema" href="#imutils.big.common_catalog_utils.PathSchema.path_schema">path_schema</a></code></li>
+<li><code><a title="imutils.big.common_catalog_utils.PathSchema.split" href="#imutils.big.common_catalog_utils.PathSchema.split">split</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="imutils.big.common_catalog_utils.SampleSchema" href="#imutils.big.common_catalog_utils.SampleSchema">SampleSchema</a></code></h4>
+<ul class="two-column">
+<li><code><a title="imutils.big.common_catalog_utils.SampleSchema.catalog_number" href="#imutils.big.common_catalog_utils.SampleSchema.catalog_number">catalog_number</a></code></li>
+<li><code><a title="imutils.big.common_catalog_utils.SampleSchema.collection" href="#imutils.big.common_catalog_utils.SampleSchema.collection">collection</a></code></li>
+<li><code><a title="imutils.big.common_catalog_utils.SampleSchema.family" href="#imutils.big.common_catalog_utils.SampleSchema.family">family</a></code></li>
+<li><code><a title="imutils.big.common_catalog_utils.SampleSchema.genus" href="#imutils.big.common_catalog_utils.SampleSchema.genus">genus</a></code></li>
+<li><code><a title="imutils.big.common_catalog_utils.SampleSchema.keys" href="#imutils.big.common_catalog_utils.SampleSchema.keys">keys</a></code></li>
+<li><code><a title="imutils.big.common_catalog_utils.SampleSchema.path" href="#imutils.big.common_catalog_utils.SampleSchema.path">path</a></code></li>
+<li><code><a title="imutils.big.common_catalog_utils.SampleSchema.species" href="#imutils.big.common_catalog_utils.SampleSchema.species">species</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="imutils.big.common_catalog_utils.SampleSchema" href="#imutils.big.common_catalog_utils.SampleSchema">SampleSchema</a></code></h4>
+<ul class="two-column">
+<li><code><a title="imutils.big.common_catalog_utils.SampleSchema.catalog_number" href="#imutils.big.common_catalog_utils.SampleSchema.catalog_number">catalog_number</a></code></li>
+<li><code><a title="imutils.big.common_catalog_utils.SampleSchema.collection" href="#imutils.big.common_catalog_utils.SampleSchema.collection">collection</a></code></li>
+<li><code><a title="imutils.big.common_catalog_utils.SampleSchema.family" href="#imutils.big.common_catalog_utils.SampleSchema.family">family</a></code></li>
+<li><code><a title="imutils.big.common_catalog_utils.SampleSchema.genus" href="#imutils.big.common_catalog_utils.SampleSchema.genus">genus</a></code></li>
+<li><code><a title="imutils.big.common_catalog_utils.SampleSchema.keys" href="#imutils.big.common_catalog_utils.SampleSchema.keys">keys</a></code></li>
+<li><code><a title="imutils.big.common_catalog_utils.SampleSchema.path" href="#imutils.big.common_catalog_utils.SampleSchema.path">path</a></code></li>
+<li><code><a title="imutils.big.common_catalog_utils.SampleSchema.species" href="#imutils.big.common_catalog_utils.SampleSchema.species">species</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+</footer>
+</body>
+</html>

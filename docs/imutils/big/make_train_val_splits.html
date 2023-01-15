@@ -73,7 +73,6 @@ def train_val_split(df: pd.DataFrame,
                                         ) -&gt; Tuple[pd.DataFrame]:
 
         num_samples = df.shape[0]
-        # label_col = &#34;category_id&#34;
         x = np.arange(num_samples)
         y = df[label_col].values
 
@@ -85,6 +84,99 @@ def train_val_split(df: pd.DataFrame,
         val_data = df.iloc[x_val,:]
 
         return train_data, val_data
+
+####################################################
+
+def trainvaltest_split(df: pd.DataFrame,
+                                           label_col = &#34;family&#34;,
+                                           splits: List[float]=(0.5, 0.2, 0.3),
+                                           seed = 14,
+                                           stratify: bool=True
+                                           ) -&gt; Dict[str,pd.DataFrame]:
+        &#34;&#34;&#34;
+        Wrapper function to split data into 3 stratified subsets specified by `splits`.
+        
+        User specifies absolute fraction of total requested for each subset (e.g. splits=[0.5, 0.2, 0.3])
+        
+        Function calculates adjusted fractions necessary in order to use sklearn&#39;s builtin train_test_split function over a sequence of 2 steps.
+        
+        Step 1: Separate test set from the rest of the data (constituting the union of train + val)
+        
+        Step 2: Separate the train and val sets from the remainder produced by step 1.
+
+        Output:
+                Dict: {&#39;train&#39;:(x_train, y_train),
+                                &#39;val&#39;:(x_val_y_val),
+                                &#39;test&#39;:(x_test, y_test)}
+                                
+        Example:
+                &gt;&gt; data = torch.data.Dataset(...)
+                &gt;&gt; y = data.targets
+                &gt;&gt; data_splits = trainvaltest_split(x=None,
+                                                                                        y=y,
+                                                                                        splits=(0.5, 0.2, 0.3),
+                                                                                        random_state=0,
+                                                                                        stratify=True)
+        
+        &#34;&#34;&#34;
+        
+        
+        assert len(splits) == 3, &#34;Must provide eactly 3 float values for `splits`&#34;
+        assert np.isclose(np.sum(splits), 1.0), f&#34;Sum of all splits values {splits} = {np.sum(splits)} must be 1.0&#34;
+        
+        train_split, val_split, test_split = splits
+        val_relative_split = val_split/(train_split + val_split)
+        train_relative_split = train_split/(train_split + val_split)
+        
+        if stratify and (y is None):
+                raise ValueError(&#34;If y is not provided, stratify must be set to False.&#34;)
+        
+        num_samples = df.shape[0]
+        x = np.arange(num_samples)
+        y = df[label_col].values
+        
+        # y = np.array(y)
+        # if x is None:
+        #        x = np.arange(len(y))
+        # else:
+        #        x = np.array(x)
+
+        stratify_y = y if stratify else None    
+        x_train_val, x_test, y_train_val, y_test = train_test_split(x, y,
+                                                                                                                test_size=test_split, 
+                                                                                                                random_state=random_state,
+                                                                                                                stratify=y)
+        
+        stratify_y_train = y_train_val if stratify else None
+        x_train, x_val, y_train, y_val = train_test_split(x_train_val, y_train_val,
+                                                                                                          test_size=val_relative_split,
+                                                                                                          random_state=random_state, 
+                                                                                                          stratify=y_train_val)
+        
+        x = np.concatenate((x_train, x_val, x_test)).tolist()
+        assert len(set(x)) == len(x), f&#34;[Warning] Check for possible data leakage. len(set(x))={len(set(x))} != len(x)={len(x)}&#34;
+
+        train_data = df.iloc[x_train,:]
+        val_data = df.iloc[x_val,:]
+        test_data = df.iloc[x_test,:]
+
+
+        log.debug(f&#34;x_train.shape={x_train.shape}, y_train.shape={y_train.shape}&#34;)
+        log.debug(f&#34;x_val.shape={x_val.shape}, y_val.shape={y_val.shape}&#34;)
+        log.debug(f&#34;x_test.shape={x_test.shape}, y_test.shape={y_test.shape}&#34;)
+        log.debug(f&#39;Absolute splits: {[train_split, val_split, test_split]}&#39;)
+        log.debug(f&#39;Relative splits: [{train_relative_split:.2f}, {val_relative_split:.2f}, {test_split}]&#39;)
+        
+
+        return {&#34;train&#34;:train_data,
+                        &#34;val&#34;:val_data,
+                        &#34;test&#34;:test_data}
+
+
+
+
+
+
 
 
 def fit_and_encode_labels(train_data,
@@ -130,44 +222,9 @@ def format_output_cols(df: pd.DataFrame):
                                  &#39;genus_id&#39;, &#39;institution_id&#39;, &#39;image_id&#39;, &#39;file_name&#39;,
                                  &#39;license&#39;, &#39;scientificName&#39;, &#39;family&#39;, &#39;genus&#39;, &#39;species&#39;, &#39;authors&#39;,
                                  &#39;collectionCode&#39;]
+        
+        col_order = [col for col in col_order if col in df.columns]
         return df[col_order]
-
-
-# def make_splits_and_write2disk(root_dir: str, output_dir: str=None) -&gt; Tuple[Path]:
-#        &#34;&#34;&#34;
-#        Reads json metadata files from `root_dir`, parses into train &amp; test dataframes, then writes to disk as csv files.
-#        &#34;&#34;&#34;
-        
-#        assert os.path.isdir(output_dir)
-        
-#        # df_train, df_test = extract_train_test_metadata(root_dir = root_dir)
-#        train_path = Path(output_dir, &#34;train_metadata.csv&#34;)
-#        test_path = Path(output_dir, &#34;test_metadata.csv&#34;)
-        
-#        # try:
-#        if os.path.exists(train_path):
-#                print(train_path, &#34;already exists, skipping write process.&#34;,
-#                          &#34;Delete the existing file if intention is to refresh dataset.&#34;)
-#                print(f&#34;Reading train data from: {train_path}&#34;)
-#                df_train = read_train_df_from_csv(train_path)
-#        else:
-#                df_train = herbarium_train_metadata2df(root_dir)
-#                df_train.to_csv(train_path)
-
-#        if os.path.exists(test_path):
-#                print(test_path, &#34;already exists, skipping write process.&#34;,
-#                          &#34;Delete the existing file if intention is to refresh dataset.&#34;)
-#                print(f&#34;Reading test data from: {test_path}&#34;)
-#                df_test = read_test_df_from_csv(test_path)
-#        else:
-#                df_test = herbarium_test_metadata2df(root_dir)
-#                df_test.to_csv(test_path)
-
-#        return train_path, test_path
-
-
-
-
 
 
         
@@ -199,6 +256,7 @@ def make_encode_save_splits(source_dir: str, #DATA_DIR,
                                                         train_size=0.7,
                                                         seed = 14):
         save_dir = Path(save_dir)
+        os.makedirs(save_dir, exist_ok=True)
         
         df_train, df_test = read_all_from_csv(root_dir=source_dir)
         
@@ -257,8 +315,11 @@ def find_data_splits_dir(source_dir: str,
         &#34;&#34;&#34;
         Given a base path of `source_dir`, construct the correct data split dir path using chosen train_size.
         &#34;&#34;&#34;
-        out_dir = Path(source_dir)
         
+        if f&#34;train_size={train_size:.1f}&#34; in str(source_dir):
+                return source_dir
+
+        out_dir = Path(source_dir)
         if &#34;splits&#34; in os.listdir(str(out_dir)):
                 out_dir = out_dir / &#34;splits&#34;
                 
@@ -287,7 +348,7 @@ def check_already_built(splits_dir: str) -&gt; bool:
 
 def read_encoded_splits(source_dir: str,
                                                 label_encoder_path: str=None,
-                                            include=[&#34;train&#34;,&#34;val&#34;,&#34;test&#34;]):
+                                                include=[&#34;train&#34;,&#34;val&#34;,&#34;test&#34;]):
         
         source_dir = Path(source_dir)
         
@@ -296,7 +357,7 @@ def read_encoded_splits(source_dir: str,
         
         encoder = read_label_encoder(label_encoder_path=label_encoder_path)
         data = {&#34;label_encoder&#34;:encoder,
-                    &#34;subsets&#34;:{}}
+                        &#34;subsets&#34;:{}}
         
         if &#34;train&#34; in include:
                 data[&#34;subsets&#34;][&#34;train&#34;] = read_train_df_from_csv(source_dir / &#34;train_metadata.csv&#34;)
@@ -327,10 +388,14 @@ def main(source_dir: str, #=DATA_DIR,
         # if splits_dir is None:
         #        splits_dir = Path(source_dir, &#34;splits&#34;, f&#34;train_size-{train_size}&#34;)
         #        os.makedirs(splits_dir, exist_ok=True)
+        # import pdb; pdb.set_trace()
 
-        if not check_already_built(splits_dir):
+        if True: #not check_already_built(splits_dir):
                 print(f&#34;Making &amp; saving train-val-test splits in the following directory:&#34;,
                           &#39;\n&#39; + str(splits_dir))
+                if not os.path.exists(splits_dir):
+                        print(f&#34;Creating directory structure&#34;)
+                        os.makedirs(splits_dir, exist_ok=True)
         
                 data = make_encode_save_splits(source_dir=source_dir,
                                                                            save_dir=splits_dir,
@@ -355,23 +420,31 @@ def main(source_dir: str, #=DATA_DIR,
 
 
 
-HERBARIUM_ROOT = &#34;/media/data_cifs/projects/prj_fossils/data/raw_data/herbarium-2022-fgvc9_resize&#34;
+# HERBARIUM_ROOT = &#34;/media/data_cifs/projects/prj_fossils/data/raw_data/herbarium-2022-fgvc9_resize&#34;
 # WORKING_DIR = &#34;/media/data/jacob/GitHub/image-utils/notebooks/herbarium_2022/&#34;
 # OUTPUT_DIR = os.path.join(WORKING_DIR, &#34;outputs&#34;)
 # DATA_DIR = os.path.join(WORKING_DIR, &#34;data&#34;)
 
 
+from dotenv import load_dotenv
+load_dotenv()
+
+HERBARIUM_ROOT_DEFAULT = os.environ.get(&#34;HERBARIUM_ROOT_DEFAULT&#34;)
+CATALOG_DIR = os.environ.get(&#34;CATALOG_DIR&#34;)
+SPLITS_DIR = os.environ.get(&#34;SPLITS_DIR&#34;)
+
+
         
 def parse_args() -&gt; argparse.Namespace:
         
-        parser = argparse.ArgumentParser(&#34;&#34;&#34;Generate sharded dataset from supervised image dataset.&#34;&#34;&#34;)
+        parser = argparse.ArgumentParser(&#34;&#34;&#34;Generate train-val splits dataset from Herbarium 2022 train dataset.&#34;&#34;&#34;)
         parser.add_argument(
-                &#34;--source_dir&#34;, default=&#34;./data&#34;, help=&#34;directory where catalog csv files are read, followed by splitting&#34;
+                &#34;--source_dir&#34;, default=CATALOG_DIR, help=&#34;directory where catalog csv files are read, followed by splitting&#34;
         )
         parser.add_argument(
                 &#34;--splits_dir&#34;,
-                default=None,
-                help=&#34;Target directory in which to save the csv files for each split.&#34;,
+                default=None, #SPLITS_DIR,
+                help=&#34;Target directory in which to save the csv files for each split. &#34;,
         )
         parser.add_argument(
                 &#34;--train_size&#34;,
@@ -391,9 +464,17 @@ def parse_args() -&gt; argparse.Namespace:
         
         assert os.path.isdir(args.source_dir)
         
+        train_size_str = f&#34;train_size-{args.train_size:.1f}&#34;
+        
         if args.splits_dir is None:
-                args.splits_dir = Path(args.source_dir, &#34;splits&#34;)
-                args.splits_dir = args.splits_dir / f&#34;train_size-{args.train_size:.1f}&#34;
+                if SPLITS_DIR is None:
+                        args.splits_dir = SPLITS_DIR
+                else:
+                        args.splits_dir = Path(args.source_dir, &#34;splits&#34;)
+                        args.splits_dir = args.splits_dir / train_size_str
+        # elif train_size_str not in args.splits_dir:
+                
+        print(f&#34;Using args.splits_dir: {args.splits_dir}&#34;)
         os.makedirs(args.splits_dir, exist_ok=True)
         
         return args
@@ -458,8 +539,11 @@ if __name__ == &#34;__main__&#34;:
         &#34;&#34;&#34;
         Given a base path of `source_dir`, construct the correct data split dir path using chosen train_size.
         &#34;&#34;&#34;
-        out_dir = Path(source_dir)
         
+        if f&#34;train_size={train_size:.1f}&#34; in str(source_dir):
+                return source_dir
+
+        out_dir = Path(source_dir)
         if &#34;splits&#34; in os.listdir(str(out_dir)):
                 out_dir = out_dir / &#34;splits&#34;
                 
@@ -528,6 +612,8 @@ if __name__ == &#34;__main__&#34;:
                                  &#39;genus_id&#39;, &#39;institution_id&#39;, &#39;image_id&#39;, &#39;file_name&#39;,
                                  &#39;license&#39;, &#39;scientificName&#39;, &#39;family&#39;, &#39;genus&#39;, &#39;species&#39;, &#39;authors&#39;,
                                  &#39;collectionCode&#39;]
+        
+        col_order = [col for col in col_order if col in df.columns]
         return df[col_order]</code></pre>
 </details>
 </dd>
@@ -562,10 +648,14 @@ If they dont, read original herbarium train metadata, apply train val split, and
         # if splits_dir is None:
         #        splits_dir = Path(source_dir, &#34;splits&#34;, f&#34;train_size-{train_size}&#34;)
         #        os.makedirs(splits_dir, exist_ok=True)
+        # import pdb; pdb.set_trace()
 
-        if not check_already_built(splits_dir):
+        if True: #not check_already_built(splits_dir):
                 print(f&#34;Making &amp; saving train-val-test splits in the following directory:&#34;,
                           &#39;\n&#39; + str(splits_dir))
+                if not os.path.exists(splits_dir):
+                        print(f&#34;Creating directory structure&#34;)
+                        os.makedirs(splits_dir, exist_ok=True)
         
                 data = make_encode_save_splits(source_dir=source_dir,
                                                                            save_dir=splits_dir,
@@ -604,6 +694,7 @@ If they dont, read original herbarium train metadata, apply train val split, and
                                                         train_size=0.7,
                                                         seed = 14):
         save_dir = Path(save_dir)
+        os.makedirs(save_dir, exist_ok=True)
         
         df_train, df_test = read_all_from_csv(root_dir=source_dir)
         
@@ -670,14 +761,14 @@ If they dont, read original herbarium train metadata, apply train val split, and
 </summary>
 <pre><code class="python">def parse_args() -&gt; argparse.Namespace:
         
-        parser = argparse.ArgumentParser(&#34;&#34;&#34;Generate sharded dataset from supervised image dataset.&#34;&#34;&#34;)
+        parser = argparse.ArgumentParser(&#34;&#34;&#34;Generate train-val splits dataset from Herbarium 2022 train dataset.&#34;&#34;&#34;)
         parser.add_argument(
-                &#34;--source_dir&#34;, default=&#34;./data&#34;, help=&#34;directory where catalog csv files are read, followed by splitting&#34;
+                &#34;--source_dir&#34;, default=CATALOG_DIR, help=&#34;directory where catalog csv files are read, followed by splitting&#34;
         )
         parser.add_argument(
                 &#34;--splits_dir&#34;,
-                default=None,
-                help=&#34;Target directory in which to save the csv files for each split.&#34;,
+                default=None, #SPLITS_DIR,
+                help=&#34;Target directory in which to save the csv files for each split. &#34;,
         )
         parser.add_argument(
                 &#34;--train_size&#34;,
@@ -697,9 +788,17 @@ If they dont, read original herbarium train metadata, apply train val split, and
         
         assert os.path.isdir(args.source_dir)
         
+        train_size_str = f&#34;train_size-{args.train_size:.1f}&#34;
+        
         if args.splits_dir is None:
-                args.splits_dir = Path(args.source_dir, &#34;splits&#34;)
-                args.splits_dir = args.splits_dir / f&#34;train_size-{args.train_size:.1f}&#34;
+                if SPLITS_DIR is None:
+                        args.splits_dir = SPLITS_DIR
+                else:
+                        args.splits_dir = Path(args.source_dir, &#34;splits&#34;)
+                        args.splits_dir = args.splits_dir / train_size_str
+        # elif train_size_str not in args.splits_dir:
+                
+        print(f&#34;Using args.splits_dir: {args.splits_dir}&#34;)
         os.makedirs(args.splits_dir, exist_ok=True)
         
         return args</code></pre>
@@ -716,7 +815,7 @@ If they dont, read original herbarium train metadata, apply train val split, and
 </summary>
 <pre><code class="python">def read_encoded_splits(source_dir: str,
                                                 label_encoder_path: str=None,
-                                            include=[&#34;train&#34;,&#34;val&#34;,&#34;test&#34;]):
+                                                include=[&#34;train&#34;,&#34;val&#34;,&#34;test&#34;]):
         
         source_dir = Path(source_dir)
         
@@ -725,7 +824,7 @@ If they dont, read original herbarium train metadata, apply train val split, and
         
         encoder = read_label_encoder(label_encoder_path=label_encoder_path)
         data = {&#34;label_encoder&#34;:encoder,
-                    &#34;subsets&#34;:{}}
+                        &#34;subsets&#34;:{}}
         
         if &#34;train&#34; in include:
                 data[&#34;subsets&#34;][&#34;train&#34;] = read_train_df_from_csv(source_dir / &#34;train_metadata.csv&#34;)
@@ -791,7 +890,6 @@ If they dont, read original herbarium train metadata, apply train val split, and
                                         ) -&gt; Tuple[pd.DataFrame]:
 
         num_samples = df.shape[0]
-        # label_col = &#34;category_id&#34;
         x = np.arange(num_samples)
         y = df[label_col].values
 
@@ -803,6 +901,121 @@ If they dont, read original herbarium train metadata, apply train val split, and
         val_data = df.iloc[x_val,:]
 
         return train_data, val_data</code></pre>
+</details>
+</dd>
+<dt id="imutils.big.make_train_val_splits.trainvaltest_split"><code class="name flex">
+<span>def <span class="ident">trainvaltest_split</span></span>(<span>df: pandas.core.frame.DataFrame, label_col='family', splits: List[float] = (0.5, 0.2, 0.3), seed=14, stratify: bool = True) ‑> Dict[str, pandas.core.frame.DataFrame]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Wrapper function to split data into 3 stratified subsets specified by <code>splits</code>.</p>
+<p>User specifies absolute fraction of total requested for each subset (e.g. splits=[0.5, 0.2, 0.3])</p>
+<p>Function calculates adjusted fractions necessary in order to use sklearn's builtin train_test_split function over a sequence of 2 steps.</p>
+<p>Step 1: Separate test set from the rest of the data (constituting the union of train + val)</p>
+<p>Step 2: Separate the train and val sets from the remainder produced by step 1.</p>
+<h2 id="output">Output</h2>
+<p>Dict: {'train':(x_train, y_train),
+'val':(x_val_y_val),
+'test':(x_test, y_test)}</p>
+<h2 id="example">Example</h2>
+<blockquote>
+<blockquote>
+<p>data = torch.data.Dataset(&hellip;)
+y = data.targets
+data_splits = trainvaltest_split(x=None,
+y=y,
+splits=(0.5, 0.2, 0.3),
+random_state=0,
+stratify=True)</p>
+</blockquote>
+</blockquote></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def trainvaltest_split(df: pd.DataFrame,
+                                           label_col = &#34;family&#34;,
+                                           splits: List[float]=(0.5, 0.2, 0.3),
+                                           seed = 14,
+                                           stratify: bool=True
+                                           ) -&gt; Dict[str,pd.DataFrame]:
+        &#34;&#34;&#34;
+        Wrapper function to split data into 3 stratified subsets specified by `splits`.
+        
+        User specifies absolute fraction of total requested for each subset (e.g. splits=[0.5, 0.2, 0.3])
+        
+        Function calculates adjusted fractions necessary in order to use sklearn&#39;s builtin train_test_split function over a sequence of 2 steps.
+        
+        Step 1: Separate test set from the rest of the data (constituting the union of train + val)
+        
+        Step 2: Separate the train and val sets from the remainder produced by step 1.
+
+        Output:
+                Dict: {&#39;train&#39;:(x_train, y_train),
+                                &#39;val&#39;:(x_val_y_val),
+                                &#39;test&#39;:(x_test, y_test)}
+                                
+        Example:
+                &gt;&gt; data = torch.data.Dataset(...)
+                &gt;&gt; y = data.targets
+                &gt;&gt; data_splits = trainvaltest_split(x=None,
+                                                                                        y=y,
+                                                                                        splits=(0.5, 0.2, 0.3),
+                                                                                        random_state=0,
+                                                                                        stratify=True)
+        
+        &#34;&#34;&#34;
+        
+        
+        assert len(splits) == 3, &#34;Must provide eactly 3 float values for `splits`&#34;
+        assert np.isclose(np.sum(splits), 1.0), f&#34;Sum of all splits values {splits} = {np.sum(splits)} must be 1.0&#34;
+        
+        train_split, val_split, test_split = splits
+        val_relative_split = val_split/(train_split + val_split)
+        train_relative_split = train_split/(train_split + val_split)
+        
+        if stratify and (y is None):
+                raise ValueError(&#34;If y is not provided, stratify must be set to False.&#34;)
+        
+        num_samples = df.shape[0]
+        x = np.arange(num_samples)
+        y = df[label_col].values
+        
+        # y = np.array(y)
+        # if x is None:
+        #        x = np.arange(len(y))
+        # else:
+        #        x = np.array(x)
+
+        stratify_y = y if stratify else None    
+        x_train_val, x_test, y_train_val, y_test = train_test_split(x, y,
+                                                                                                                test_size=test_split, 
+                                                                                                                random_state=random_state,
+                                                                                                                stratify=y)
+        
+        stratify_y_train = y_train_val if stratify else None
+        x_train, x_val, y_train, y_val = train_test_split(x_train_val, y_train_val,
+                                                                                                          test_size=val_relative_split,
+                                                                                                          random_state=random_state, 
+                                                                                                          stratify=y_train_val)
+        
+        x = np.concatenate((x_train, x_val, x_test)).tolist()
+        assert len(set(x)) == len(x), f&#34;[Warning] Check for possible data leakage. len(set(x))={len(set(x))} != len(x)={len(x)}&#34;
+
+        train_data = df.iloc[x_train,:]
+        val_data = df.iloc[x_val,:]
+        test_data = df.iloc[x_test,:]
+
+
+        log.debug(f&#34;x_train.shape={x_train.shape}, y_train.shape={y_train.shape}&#34;)
+        log.debug(f&#34;x_val.shape={x_val.shape}, y_val.shape={y_val.shape}&#34;)
+        log.debug(f&#34;x_test.shape={x_test.shape}, y_test.shape={y_test.shape}&#34;)
+        log.debug(f&#39;Absolute splits: {[train_split, val_split, test_split]}&#39;)
+        log.debug(f&#39;Relative splits: [{train_relative_split:.2f}, {val_relative_split:.2f}, {test_split}]&#39;)
+        
+
+        return {&#34;train&#34;:train_data,
+                        &#34;val&#34;:val_data,
+                        &#34;test&#34;:test_data}</code></pre>
 </details>
 </dd>
 </dl>
@@ -836,6 +1049,7 @@ If they dont, read original herbarium train metadata, apply train val split, and
 <li><code><a title="imutils.big.make_train_val_splits.read_label_encoder" href="#imutils.big.make_train_val_splits.read_label_encoder">read_label_encoder</a></code></li>
 <li><code><a title="imutils.big.make_train_val_splits.save_label_encoder" href="#imutils.big.make_train_val_splits.save_label_encoder">save_label_encoder</a></code></li>
 <li><code><a title="imutils.big.make_train_val_splits.train_val_split" href="#imutils.big.make_train_val_splits.train_val_split">train_val_split</a></code></li>
+<li><code><a title="imutils.big.make_train_val_splits.trainvaltest_split" href="#imutils.big.make_train_val_splits.trainvaltest_split">trainvaltest_split</a></code></li>
 </ul>
 </li>
 </ul>

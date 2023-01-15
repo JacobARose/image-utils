@@ -1,0 +1,4 @@
+# normalization/base.yaml
+
+mean: [0.0, 0.0, 0.0]
+std: [1.0, 1.0, 1.0]

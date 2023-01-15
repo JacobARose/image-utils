@@ -1,0 +1,354 @@
+[01;34m/media/data_cifs/projects/prj_fossils/users/jacob/data/leavesdb-v1_1[00m
+├── [01;34mExtant_Leaves_1024[00m
+│   ├── [01;32mCSVDataset-config.yaml[00m
+│   ├── [01;32mExtant_Leaves_1024-full_dataset.csv[00m
+│   └── [01;32mImageFileDataset-config.yaml[00m
+├── [01;34mExtant_Leaves_512[00m
+│   ├── [01;32mCSVDataset-config.yaml[00m
+│   ├── [01;32mExtant_Leaves_512-full_dataset.csv[00m
+│   └── [01;32mImageFileDataset-config.yaml[00m
+├── [01;34mExtant_Leaves_family_100_1024[00m
+│   ├── [01;32mCSVDataset-config.yaml[00m
+│   ├── [01;32mExtant_Leaves_family_100_1024-full_dataset.csv[00m
+│   ├── [01;32mImageFileDataset-config.yaml[00m
+│   └── [01;34msplits[00m
+│       └── [01;34msplits=(0.5,0.2,0.3)[00m
+│           ├── [01;32mfamily-encoder.pkl[00m
+│           ├── [01;32mtest_metadata.csv[00m
+│           ├── [01;32mtrain_metadata.csv[00m
+│           └── [01;32mval_metadata.csv[00m
+├── [01;34mExtant_Leaves_family_100_1024_minus_PNAS_family_100_1024[00m
+│   ├── [01;32mA_in_B-CSVDataset-config.yaml[00m
+│   ├── [01;32mB_in_A-CSVDataset-config.yaml[00m
+│   ├── [01;32mCSVDataset-config.yaml[00m
+│   ├── [01;32mExtant_Leaves_family_100_1024_in_PNAS_family_100_1024.csv[00m
+│   ├── [01;32mExtant_Leaves_family_100_1024_minus_PNAS_family_100_1024-full_dataset.csv[00m
+│   ├── [01;34minputs[00m
+│   │   ├── [01;34mA[00m
+│   │   │   └── [01;32mCSVDataset-config.yaml[00m
+│   │   └── [01;34mB[00m
+│   │       └── [01;32mCSVDataset-config.yaml[00m
+│   └── [01;32mPNAS_family_100_1024_in_Extant_Leaves_family_100_1024.csv[00m
+├── [01;34mExtant_Leaves_family_100_1024_w_PNAS_family_100_1024[00m
+│   ├── [01;32mA_in_B-CSVDataset-config.yaml[00m
+│   ├── [01;32mB_in_A-CSVDataset-config.yaml[00m
+│   ├── [01;32mCSVDataset-config.yaml[00m
+│   ├── [01;32mExtant_Leaves_family_100_1024_in_PNAS_family_100_1024.csv[00m
+│   ├── [01;32mExtant_Leaves_family_100_1024_w_PNAS_family_100_1024-full_dataset.csv[00m
+│   ├── [01;34minputs[00m
+│   │   ├── [01;34mA[00m
+│   │   │   └── [01;32mCSVDataset-config.yaml[00m
+│   │   └── [01;34mB[00m
+│   │       └── [01;32mCSVDataset-config.yaml[00m
+│   └── [01;32mPNAS_family_100_1024_in_Extant_Leaves_family_100_1024.csv[00m
+├── [01;34mExtant_Leaves_family_100_512[00m
+│   ├── [01;32mCSVDataset-config.yaml[00m
+│   ├── [01;32mExtant_Leaves_family_100_512-full_dataset.csv[00m
+│   ├── [01;32mImageFileDataset-config.yaml[00m
+│   └── [01;34msplits[00m
+│       └── [01;34msplits=(0.5,0.2,0.3)[00m
+│           ├── [01;32mfamily-encoder.pkl[00m
+│           ├── [01;32mtest_metadata.csv[00m
+│           ├── [01;32mtrain_metadata.csv[00m
+│           └── [01;32mval_metadata.csv[00m
+├── [01;34mExtant_Leaves_family_100_512_minus_PNAS_family_100_512[00m
+│   ├── [01;32mA_in_B-CSVDataset-config.yaml[00m
+│   ├── [01;32mB_in_A-CSVDataset-config.yaml[00m
+│   ├── [01;32mCSVDataset-config.yaml[00m
+│   ├── [01;32mExtant_Leaves_family_100_512_in_PNAS_family_100_512.csv[00m
+│   ├── [01;32mExtant_Leaves_family_100_512_minus_PNAS_family_100_512-full_dataset.csv[00m
+│   ├── [01;34minputs[00m
+│   │   ├── [01;34mA[00m
+│   │   │   └── [01;32mCSVDataset-config.yaml[00m
+│   │   └── [01;34mB[00m
+│   │       └── [01;32mCSVDataset-config.yaml[00m
+│   └── [01;32mPNAS_family_100_512_in_Extant_Leaves_family_100_512.csv[00m
+├── [01;34mExtant_Leaves_family_100_512_w_PNAS_family_100_512[00m
+│   ├── [01;32mA_in_B-CSVDataset-config.yaml[00m
+│   ├── [01;32mB_in_A-CSVDataset-config.yaml[00m
+│   ├── [01;32mCSVDataset-config.yaml[00m
+│   ├── [01;32mExtant_Leaves_family_100_512_in_PNAS_family_100_512.csv[00m
+│   ├── [01;32mExtant_Leaves_family_100_512_w_PNAS_family_100_512-full_dataset.csv[00m
+│   ├── [01;34minputs[00m
+│   │   ├── [01;34mA[00m
+│   │   │   └── [01;32mCSVDataset-config.yaml[00m
+│   │   └── [01;34mB[00m
+│   │       └── [01;32mCSVDataset-config.yaml[00m
+│   └── [01;32mPNAS_family_100_512_in_Extant_Leaves_family_100_512.csv[00m
+├── [01;34mExtant_Leaves_family_10_1024[00m
+│   ├── [01;32mCSVDataset-config.yaml[00m
+│   ├── [01;32mExtant_Leaves_family_10_1024-full_dataset.csv[00m
+│   ├── [01;32mImageFileDataset-config.yaml[00m
+│   └── [01;34msplits[00m
+│       └── [01;34msplits=(0.5,0.2,0.3)[00m
+│           ├── [01;32mfamily-encoder.pkl[00m
+│           ├── [01;32mtest_metadata.csv[00m
+│           ├── [01;32mtrain_metadata.csv[00m
+│           └── [01;32mval_metadata.csv[00m
+├── [01;34mExtant_Leaves_family_10_1024_minus_PNAS_family_100_1024[00m
+│   ├── [01;32mA_in_B-CSVDataset-config.yaml[00m
+│   ├── [01;32mB_in_A-CSVDataset-config.yaml[00m
+│   ├── [01;32mCSVDataset-config.yaml[00m
+│   ├── [01;32mExtant_Leaves_family_10_1024_in_PNAS_family_100_1024.csv[00m
+│   ├── [01;32mExtant_Leaves_family_10_1024_minus_PNAS_family_100_1024-full_dataset.csv[00m
+│   ├── [01;34minputs[00m
+│   │   ├── [01;34mA[00m
+│   │   │   └── [01;32mCSVDataset-config.yaml[00m
+│   │   └── [01;34mB[00m
+│   │       └── [01;32mCSVDataset-config.yaml[00m
+│   └── [01;32mPNAS_family_100_1024_in_Extant_Leaves_family_10_1024.csv[00m
+├── [01;34mExtant_Leaves_family_10_1024_w_PNAS_family_100_1024[00m
+│   ├── [01;32mA_in_B-CSVDataset-config.yaml[00m
+│   ├── [01;32mB_in_A-CSVDataset-config.yaml[00m
+│   ├── [01;32mCSVDataset-config.yaml[00m
+│   ├── [01;32mExtant_Leaves_family_10_1024_in_PNAS_family_100_1024.csv[00m
+│   ├── [01;32mExtant_Leaves_family_10_1024_w_PNAS_family_100_1024-full_dataset.csv[00m
+│   ├── [01;34minputs[00m
+│   │   ├── [01;34mA[00m
+│   │   │   └── [01;32mCSVDataset-config.yaml[00m
+│   │   └── [01;34mB[00m
+│   │       └── [01;32mCSVDataset-config.yaml[00m
+│   └── [01;32mPNAS_family_100_1024_in_Extant_Leaves_family_10_1024.csv[00m
+├── [01;34mExtant_Leaves_family_10_512[00m
+│   ├── [01;32mCSVDataset-config.yaml[00m
+│   ├── [01;32mExtant_Leaves_family_10_512-full_dataset.csv[00m
+│   ├── [01;32mImageFileDataset-config.yaml[00m
+│   └── [01;34msplits[00m
+│       └── [01;34msplits=(0.5,0.2,0.3)[00m
+│           ├── [01;32mfamily-encoder.pkl[00m
+│           ├── [01;34mlmdb_data[00m
+│           │   ├── [01;32mtest.lmdb[00m
+│           │   ├── [01;32mtest.lmdb-lock[00m
+│           │   ├── [01;32mtrain.lmdb[00m
+│           │   ├── [01;32mtrain.lmdb-lock[00m
+│           │   ├── [01;32mval.lmdb[00m
+│           │   └── [01;32mval.lmdb-lock[00m
+│           ├── [01;32mtest_metadata.csv[00m
+│           ├── [01;32mtrain_metadata.csv[00m
+│           └── [01;32mval_metadata.csv[00m
+├── [01;34mExtant_Leaves_family_10_512_minus_PNAS_family_100_512[00m
+│   ├── [01;32mA_in_B-CSVDataset-config.yaml[00m
+│   ├── [01;32mB_in_A-CSVDataset-config.yaml[00m
+│   ├── [01;32mCSVDataset-config.yaml[00m
+│   ├── [01;32mExtant_Leaves_family_10_512_in_PNAS_family_100_512.csv[00m
+│   ├── [01;32mExtant_Leaves_family_10_512_minus_PNAS_family_100_512-full_dataset.csv[00m
+│   ├── [01;34minputs[00m
+│   │   ├── [01;34mA[00m
+│   │   │   └── [01;32mCSVDataset-config.yaml[00m
+│   │   └── [01;34mB[00m
+│   │       └── [01;32mCSVDataset-config.yaml[00m
+│   └── [01;32mPNAS_family_100_512_in_Extant_Leaves_family_10_512.csv[00m
+├── [01;34mExtant_Leaves_family_10_512_w_PNAS_family_100_512[00m
+│   ├── [01;32mA_in_B-CSVDataset-config.yaml[00m
+│   ├── [01;32mB_in_A-CSVDataset-config.yaml[00m
+│   ├── [01;32mCSVDataset-config.yaml[00m
+│   ├── [01;32mExtant_Leaves_family_10_512_in_PNAS_family_100_512.csv[00m
+│   ├── [01;32mExtant_Leaves_family_10_512_w_PNAS_family_100_512-full_dataset.csv[00m
+│   ├── [01;34minputs[00m
+│   │   ├── [01;34mA[00m
+│   │   │   └── [01;32mCSVDataset-config.yaml[00m
+│   │   └── [01;34mB[00m
+│   │       └── [01;32mCSVDataset-config.yaml[00m
+│   └── [01;32mPNAS_family_100_512_in_Extant_Leaves_family_10_512.csv[00m
+├── [01;34mExtant_Leaves_family_3_1024[00m
+│   ├── [01;32mCSVDataset-config.yaml[00m
+│   ├── [01;32mExtant_Leaves_family_3_1024-full_dataset.csv[00m
+│   ├── [01;32mImageFileDataset-config.yaml[00m
+│   └── [01;34msplits[00m
+│       └── [01;34msplits=(0.5,0.2,0.3)[00m
+│           ├── [01;32mfamily-encoder.pkl[00m
+│           ├── [01;32mtest_metadata.csv[00m
+│           ├── [01;32mtrain_metadata.csv[00m
+│           └── [01;32mval_metadata.csv[00m
+├── [01;34mExtant_Leaves_family_3_512[00m
+│   ├── [01;32mCSVDataset-config.yaml[00m
+│   ├── [01;32mExtant_Leaves_family_3_512-full_dataset.csv[00m
+│   ├── [01;32mImageFileDataset-config.yaml[00m
+│   └── [01;34msplits[00m
+│       └── [01;34msplits=(0.5,0.2,0.3)[00m
+│           ├── [01;32mfamily-encoder.pkl[00m
+│           ├── [01;32mtest_metadata.csv[00m
+│           ├── [01;32mtrain_metadata.csv[00m
+│           └── [01;32mval_metadata.csv[00m
+├── [01;34mFlorissant_Fossil_1024[00m
+│   ├── [01;32mCSVDataset-config.yaml[00m
+│   ├── [01;32mFlorissant_Fossil_1024-full_dataset.csv[00m
+│   └── [01;32mImageFileDataset-config.yaml[00m
+├── [01;34mFlorissant_Fossil_512[00m
+│   ├── [01;32mCSVDataset-config.yaml[00m
+│   ├── [01;32mFlorissant_Fossil_512-full_dataset.csv[00m
+│   └── [01;32mImageFileDataset-config.yaml[00m
+├── [01;34mFlorissant_Fossil_family_10_1024[00m
+│   ├── [01;32mCSVDataset-config.yaml[00m
+│   ├── [01;32mFlorissant_Fossil_family_10_1024-full_dataset.csv[00m
+│   └── [01;32mImageFileDataset-config.yaml[00m
+├── [01;34mFlorissant_Fossil_family_10_512[00m
+│   ├── [01;32mCSVDataset-config.yaml[00m
+│   ├── [01;32mFlorissant_Fossil_family_10_512-full_dataset.csv[00m
+│   └── [01;32mImageFileDataset-config.yaml[00m
+├── [01;34mFlorissant_Fossil_family_20_1024[00m
+│   ├── [01;32mCSVDataset-config.yaml[00m
+│   ├── [01;32mFlorissant_Fossil_family_20_1024-full_dataset.csv[00m
+│   └── [01;32mImageFileDataset-config.yaml[00m
+├── [01;34mFlorissant_Fossil_family_20_512[00m
+│   ├── [01;32mCSVDataset-config.yaml[00m
+│   ├── [01;32mFlorissant_Fossil_family_20_512-full_dataset.csv[00m
+│   └── [01;32mImageFileDataset-config.yaml[00m
+├── [01;34mFlorissant_Fossil_family_3_1024[00m
+│   ├── [01;32mCSVDataset-config.yaml[00m
+│   ├── [01;32mFlorissant_Fossil_family_3_1024-full_dataset.csv[00m
+│   └── [01;32mImageFileDataset-config.yaml[00m
+├── [01;34mFlorissant_Fossil_family_3_512[00m
+│   ├── [01;32mCSVDataset-config.yaml[00m
+│   ├── [01;32mFlorissant_Fossil_family_3_512-full_dataset.csv[00m
+│   └── [01;32mImageFileDataset-config.yaml[00m
+├── [01;34mFlorissant_Fossil_family_50_1024[00m
+│   ├── [01;32mCSVDataset-config.yaml[00m
+│   ├── [01;32mFlorissant_Fossil_family_50_1024-full_dataset.csv[00m
+│   └── [01;32mImageFileDataset-config.yaml[00m
+├── [01;34mFlorissant_Fossil_family_50_512[00m
+│   ├── [01;32mCSVDataset-config.yaml[00m
+│   ├── [01;32mFlorissant_Fossil_family_50_512-full_dataset.csv[00m
+│   └── [01;32mImageFileDataset-config.yaml[00m
+├── [01;34mFossil_1024[00m
+│   ├── [01;32mCSVDataset-config.yaml[00m
+│   ├── [01;32mFossil_1024-full_dataset.csv[00m
+│   └── [01;32mImageFileDataset-config.yaml[00m
+├── [01;34mFossil_512[00m
+│   ├── [01;32mCSVDataset-config.yaml[00m
+│   ├── [01;32mFossil_512-full_dataset.csv[00m
+│   └── [01;32mImageFileDataset-config.yaml[00m
+├── [01;34mFossil_family_3_1024[00m
+│   ├── [01;32mCSVDataset-config.yaml[00m
+│   ├── [01;32mFossil_family_3_1024-full_dataset.csv[00m
+│   ├── [01;32mImageFileDataset-config.yaml[00m
+│   └── [01;34msplits[00m
+│       └── [01;34msplits=(0.5,0.2,0.3)[00m
+│           ├── [01;32mfamily-encoder.pkl[00m
+│           ├── [01;32mtest_metadata.csv[00m
+│           ├── [01;32mtrain_metadata.csv[00m
+│           └── [01;32mval_metadata.csv[00m
+├── [01;34mFossil_family_3_512[00m
+│   ├── [01;32mCSVDataset-config.yaml[00m
+│   ├── [01;32mFossil_family_3_512-full_dataset.csv[00m
+│   ├── [01;32mImageFileDataset-config.yaml[00m
+│   └── [01;34msplits[00m
+│       └── [01;34msplits=(0.5,0.2,0.3)[00m
+│           ├── [01;32mfamily-encoder.pkl[00m
+│           ├── [01;32mtest_metadata.csv[00m
+│           ├── [01;32mtrain_metadata.csv[00m
+│           └── [01;32mval_metadata.csv[00m
+├── [01;34mGeneral_Fossil_1024[00m
+│   ├── [01;32mCSVDataset-config.yaml[00m
+│   ├── [01;32mGeneral_Fossil_1024-full_dataset.csv[00m
+│   └── [01;32mImageFileDataset-config.yaml[00m
+├── [01;34mGeneral_Fossil_512[00m
+│   ├── [01;32mCSVDataset-config.yaml[00m
+│   ├── [01;32mGeneral_Fossil_512-full_dataset.csv[00m
+│   └── [01;32mImageFileDataset-config.yaml[00m
+├── [01;34mGeneral_Fossil_family_10_1024[00m
+│   ├── [01;32mCSVDataset-config.yaml[00m
+│   ├── [01;32mGeneral_Fossil_family_10_1024-full_dataset.csv[00m
+│   └── [01;32mImageFileDataset-config.yaml[00m
+├── [01;34mGeneral_Fossil_family_10_512[00m
+│   ├── [01;32mCSVDataset-config.yaml[00m
+│   ├── [01;32mGeneral_Fossil_family_10_512-full_dataset.csv[00m
+│   └── [01;32mImageFileDataset-config.yaml[00m
+├── [01;34mGeneral_Fossil_family_20_1024[00m
+│   ├── [01;32mCSVDataset-config.yaml[00m
+│   ├── [01;32mGeneral_Fossil_family_20_1024-full_dataset.csv[00m
+│   └── [01;32mImageFileDataset-config.yaml[00m
+├── [01;34mGeneral_Fossil_family_20_512[00m
+│   ├── [01;32mCSVDataset-config.yaml[00m
+│   ├── [01;32mGeneral_Fossil_family_20_512-full_dataset.csv[00m
+│   └── [01;32mImageFileDataset-config.yaml[00m
+├── [01;34mGeneral_Fossil_family_3_1024[00m
+│   ├── [01;32mCSVDataset-config.yaml[00m
+│   ├── [01;32mGeneral_Fossil_family_3_1024-full_dataset.csv[00m
+│   └── [01;32mImageFileDataset-config.yaml[00m
+├── [01;34mGeneral_Fossil_family_3_512[00m
+│   ├── [01;32mCSVDataset-config.yaml[00m
+│   ├── [01;32mGeneral_Fossil_family_3_512-full_dataset.csv[00m
+│   └── [01;32mImageFileDataset-config.yaml[00m
+├── [01;34mGeneral_Fossil_family_50_1024[00m
+│   ├── [01;32mCSVDataset-config.yaml[00m
+│   ├── [01;32mGeneral_Fossil_family_50_1024-full_dataset.csv[00m
+│   └── [01;32mImageFileDataset-config.yaml[00m
+├── [01;34mGeneral_Fossil_family_50_512[00m
+│   ├── [01;32mCSVDataset-config.yaml[00m
+│   ├── [01;32mGeneral_Fossil_family_50_512-full_dataset.csv[00m
+│   └── [01;32mImageFileDataset-config.yaml[00m
+├── [01;34moriginal[00m
+│   ├── [01;32mCSVDataset-config.yaml[00m
+│   ├── [01;32mImageFileDataset-config.yaml[00m
+│   └── [01;32moriginal-full_dataset.csv[00m
+├── [01;34mPNAS_family_100_1024[00m
+│   ├── [01;32mCSVDataset-config.yaml[00m
+│   ├── [01;32mImageFileDataset-config.yaml[00m
+│   ├── [01;32mPNAS_family_100_1024-full_dataset.csv[00m
+│   └── [01;34msplits[00m
+│       └── [01;34msplits=(0.5,0.2,0.3)[00m
+│           ├── [01;32mfamily-encoder.pkl[00m
+│           ├── [01;32mtest_metadata.csv[00m
+│           ├── [01;32mtrain_metadata.csv[00m
+│           └── [01;32mval_metadata.csv[00m
+├── [01;34mPNAS_family_100_1024_minus_Extant_Leaves_family_100_1024[00m
+│   ├── [01;32mA_in_B-CSVDataset-config.yaml[00m
+│   ├── [01;32mB_in_A-CSVDataset-config.yaml[00m
+│   ├── [01;32mCSVDataset-config.yaml[00m
+│   ├── [01;32mExtant_Leaves_family_100_1024_in_PNAS_family_100_1024.csv[00m
+│   ├── [01;34minputs[00m
+│   │   ├── [01;34mA[00m
+│   │   │   └── [01;32mCSVDataset-config.yaml[00m
+│   │   └── [01;34mB[00m
+│   │       └── [01;32mCSVDataset-config.yaml[00m
+│   ├── [01;32mPNAS_family_100_1024_in_Extant_Leaves_family_100_1024.csv[00m
+│   └── [01;32mPNAS_family_100_1024_minus_Extant_Leaves_family_100_1024-full_dataset.csv[00m
+├── [01;34mPNAS_family_100_1024_minus_Extant_Leaves_family_10_1024[00m
+│   ├── [01;32mA_in_B-CSVDataset-config.yaml[00m
+│   ├── [01;32mB_in_A-CSVDataset-config.yaml[00m
+│   ├── [01;32mCSVDataset-config.yaml[00m
+│   ├── [01;32mExtant_Leaves_family_10_1024_in_PNAS_family_100_1024.csv[00m
+│   ├── [01;34minputs[00m
+│   │   ├── [01;34mA[00m
+│   │   │   └── [01;32mCSVDataset-config.yaml[00m
+│   │   └── [01;34mB[00m
+│   │       └── [01;32mCSVDataset-config.yaml[00m
+│   ├── [01;32mPNAS_family_100_1024_in_Extant_Leaves_family_10_1024.csv[00m
+│   └── [01;32mPNAS_family_100_1024_minus_Extant_Leaves_family_10_1024-full_dataset.csv[00m
+├── [01;34mPNAS_family_100_512[00m
+│   ├── [01;32mCSVDataset-config.yaml[00m
+│   ├── [01;32mImageFileDataset-config.yaml[00m
+│   ├── [01;32mPNAS_family_100_512-full_dataset.csv[00m
+│   └── [01;34msplits[00m
+│       └── [01;34msplits=(0.5,0.2,0.3)[00m
+│           ├── [01;32mfamily-encoder.pkl[00m
+│           ├── [01;32mtest_metadata.csv[00m
+│           ├── [01;32mtrain_metadata.csv[00m
+│           └── [01;32mval_metadata.csv[00m
+├── [01;34mPNAS_family_100_512_minus_Extant_Leaves_family_100_512[00m
+│   ├── [01;32mA_in_B-CSVDataset-config.yaml[00m
+│   ├── [01;32mB_in_A-CSVDataset-config.yaml[00m
+│   ├── [01;32mCSVDataset-config.yaml[00m
+│   ├── [01;32mExtant_Leaves_family_100_512_in_PNAS_family_100_512.csv[00m
+│   ├── [01;34minputs[00m
+│   │   ├── [01;34mA[00m
+│   │   │   └── [01;32mCSVDataset-config.yaml[00m
+│   │   └── [01;34mB[00m
+│   │       └── [01;32mCSVDataset-config.yaml[00m
+│   ├── [01;32mPNAS_family_100_512_in_Extant_Leaves_family_100_512.csv[00m
+│   └── [01;32mPNAS_family_100_512_minus_Extant_Leaves_family_100_512-full_dataset.csv[00m
+└── [01;34mPNAS_family_100_512_minus_Extant_Leaves_family_10_512[00m
+    ├── [01;32mA_in_B-CSVDataset-config.yaml[00m
+    ├── [01;32mB_in_A-CSVDataset-config.yaml[00m
+    ├── [01;32mCSVDataset-config.yaml[00m
+    ├── [01;32mExtant_Leaves_family_10_512_in_PNAS_family_100_512.csv[00m
+    ├── [01;34minputs[00m
+    │   ├── [01;34mA[00m
+    │   │   └── [01;32mCSVDataset-config.yaml[00m
+    │   └── [01;34mB[00m
+    │       └── [01;32mCSVDataset-config.yaml[00m
+    ├── [01;32mPNAS_family_100_512_in_Extant_Leaves_family_10_512.csv[00m
+    └── [01;32mPNAS_family_100_512_minus_Extant_Leaves_family_10_512-full_dataset.csv[00m
+
+104 directories, 247 files

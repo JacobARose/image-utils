@@ -1,0 +1,1432 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.10.0" />
+<title>imutils.ml.models.base API documentation</title>
+<meta name="description" content="imutils/ml/models/base.py …" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>imutils.ml.models.base</code></h1>
+</header>
+<section id="section-intro">
+<p>imutils/ml/models/base.py</p>
+<p>Author: Jacob A Rose
+Created: Saturday May 29th, 2021</p>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">&#34;&#34;&#34;
+imutils/ml/models/base.py
+
+
+
+Author: Jacob A Rose
+Created: Saturday May 29th, 2021
+
+&#34;&#34;&#34;
+from icecream import ic
+from typing import *
+import torch
+from torch import nn
+from omegaconf import DictConfig, OmegaConf
+
+import torchmetrics as metrics
+# from torchsummary import summary
+from pathlib import Path
+import numpy as np
+# from typing import Any, List, Optional, Dict, Tuple
+import pytorch_lightning as pl
+import os
+
+# from lightning_hydra_classifiers.utils.metric_utils import get_per_class_metrics, get_scalar_metrics
+# from lightning_hydra_classifiers.utils.logging_utils import get_wandb_logger
+import wandb
+from imutils.ml.utils.model_utils import log_model_summary, count_parameters
+
+__all__ = [&#34;BaseModule&#34;, &#34;BaseLightningModule&#34;]
+
+
+class BaseModule(nn.Module):
+        &#34;&#34;&#34;
+        Models should subclass this in place of nn.Module. This is a custom base class to implement standard interfaces &amp; implementations across all custom pytorch modules in this library.
+        
+        Instance methods:
+        
+        * def forward(self, x):
+        * def get_trainable_parameters(self):
+        * def get_frozen_parameters(self):
+
+        Class methods:
+
+        * def freeze(cls, model: nn.Module):
+        * def unfreeze(cls, model: nn.Module):
+        * def initialize_weights(cls, modules):
+        * def pack_checkpoint(
+                                                cls,
+                                                model=None,
+                                                criterion=None,
+                                                optimizer=None,
+                                                scheduler=None,
+                                                **kwargs
+                                                ):
+        * def unpack_checkpoint(
+                                                  cls,
+                                                  checkpoint,
+                                                  model=None,
+                                                  criterion=None,
+                                                  optimizer=None,
+                                                  scheduler=None,
+                                                  **kwargs,
+                                                  ):
+        * def save_checkpoint(self, checkpoint, path):
+        * def load_checkpoint(self, path):
+        
+        
+        
+        &#34;&#34;&#34;
+        
+        def forward(self, x):
+                &#34;&#34;&#34;
+                Identity function by default. Subclasses should redefine this method.
+                &#34;&#34;&#34;
+                return x
+        
+        def get_trainable_parameters(self):
+                return (p for p in self.parameters() if p.requires_grad)
+
+        def get_frozen_parameters(self):
+                return (p for p in self.parameters() if not p.requires_grad)
+
+
+        @classmethod
+        def freeze(cls, model: nn.Module, up_to_layer: Optional[str]=None):
+                for name, param in model.named_parameters():
+                        if name == up_to_layer:
+                                break
+                        param.requires_grad = False
+                        
+        @classmethod
+        def unfreeze(cls, model: nn.Module):
+                for param in model.parameters():
+                        param.requires_grad = True
+
+        @classmethod
+        def initialize_weights(cls, modules):
+                for m in modules:
+                        if isinstance(m, nn.Conv2d):
+                                nn.init.kaiming_uniform_(m.weight)
+                                if m.bias is not None:
+                                        nn.init.constant_(m.bias, 0)
+
+                        elif isinstance(m, nn.BatchNorm2d):
+                                nn.init.constant_(m.weight, 1)
+                                nn.init.constant_(m.bias, 0)
+
+                        elif isinstance(m, nn.Linear):
+                                nn.init.kaiming_uniform_(m.weight)
+                                nn.init.constant_(m.bias, 0)
+
+        @classmethod
+        def pack_checkpoint(
+                                                cls,
+                                                model=None,
+                                                criterion=None,
+                                                optimizer=None,
+                                                scheduler=None,
+                                                **kwargs
+                                                ):
+                content = {}
+                if model is not None:
+                        content[&#34;model_state_dict&#34;] = model.state_dict()
+                if criterion is not None:
+                        content[&#34;criterion_state_dict&#34;] = criterion.state_dict()
+                if optimizer is not None:
+                        content[&#34;optimizer_state_dict&#34;] = optimizer.state_dict()
+                if scheduler is not None:
+                        content[&#34;scheduler_state_dict&#34;] = scheduler.state_dict()
+                return content
+
+        @classmethod
+        def unpack_checkpoint(
+                                                  cls,
+                                                  checkpoint,
+                                                  model=None,
+                                                  criterion=None,
+                                                  optimizer=None,
+                                                  scheduler=None,
+                                                  **kwargs,
+                                                  ):
+                state_dicts = {&#34;model&#34;:model,
+                                           &#34;criterion&#34;:criterion,
+                                           &#34;optimizer&#34;:optimizer,
+                                           &#34;scheduler&#34;:scheduler}
+                
+                for state_dict, part in state_dicts.items():
+                        if f&#34;{state_dict}_state_dict&#34; in checkpoint and part is not None:
+                                part.load_state_dict(checkpoint[f&#34;{state_dict}_state_dict&#34;])
+
+        @staticmethod
+        def save_checkpoint(checkpoint, path):
+                torch.save(checkpoint, path)
+
+        @staticmethod
+        def load_checkpoint(path):
+                checkpoint = torch.load(path, map_location=lambda storage, loc: storage)
+                return checkpoint
+        
+        
+#        def save_model(self, path:str):
+#                path = str(path)
+#                if not Path(path).suffix==&#39;.ckpt&#39;:
+#                        path = path + &#34;.ckpt&#34;
+#                torch.save(self.state_dict(), path)
+                
+                
+#        def load_model(self, path:str):
+#                path = str(path)
+#                if not Path(path).suffix==&#39;.ckpt&#39;:
+#                        path = path + &#34;.ckpt&#34;
+#                self.load_state_dict(torch.load(path))
+                
+
+        
+##################################
+##################################
+
+##################################
+##################################
+
+
+
+
+class BaseLightningModule(pl.LightningModule):
+        
+        &#34;&#34;&#34;
+        Implements some more custom boiler plate for custom lightning modules
+        
+        &#34;&#34;&#34;
+        # def on_fit_start(self) -&gt; None:
+        #        import pdb; pdb.set_trace()
+        def on_train_epoch_start(self) -&gt; None:
+                # print(&#34;on_train_start&#34;)
+                if self.cfg.train.freeze_backbone:
+                        layer = self.cfg.train.get(&#34;freeze_backbone_up_to&#34;, -1)
+                        ic(layer)
+                        self.freeze_up_to(layer,
+                                                          submodule=&#34;backbone&#34;,
+                                                          verbose=False)        # def on_fit_start(self):
+                        count_parameters(self.net, verbose=True)
+                if self._initial_logging and self.cfg.logging.get(&#34;log_dataset_summary&#34;, False):
+                        if not hasattr(self, &#34;datamodule&#34;):
+                                return
+                        self._initial_logging = False
+                        for subset in [&#34;train&#34;, &#34;val&#34;, &#34;test&#34;]:
+                                self.datamodule.get_dataset_size(subset, verbose=True)
+
+        def on_train_start(self) -&gt; None:
+                self._initial_logging = True
+                if self.cfg.logging.log_model_summary:
+                        self.summarize_model(f&#34;{self.name}/init&#34;)
+
+        
+        def freeze_up_to(self, 
+                                         layer: Union[int, str]=None,
+                                         submodule: Optional[Union[str, int]]=None,
+                                         verbose: bool=True):
+                # print(f&#34;Freezing up to layer={layer} in submodule={submodule}&#34;)
+                
+                net = self.net
+                if isinstance(submodule, int):
+                        net = self.net[submodule]
+                elif isinstance(submodule, str):
+                        net = getattr(self.net, submodule)
+                
+                if isinstance(layer, int):
+                        num_layers = len(list(net.parameters()))
+                        if layer &lt; 0:
+                                layer = num_layers + layer
+                                print(f&#34;Freezing up to {layer} out of {num_layers} layers in submodule={submodule}&#34;)
+                        
+                net.requires_grad_(True)
+                num_layers = len(list(net.state_dict()))
+                num_frozen=0
+                for i, (name, param) in enumerate(net.named_parameters()):
+                        if isinstance(layer, int) and (layer == i):
+                                print(f&#39;breaking: {layer}={i}&#39;)
+                                break
+                        elif isinstance(layer, str) and (layer == name):
+                                print(f&#39;breaking: {layer}={name}&#39;)
+                                break
+                        param.requires_grad_(False)
+                        num_frozen += 1
+                        if verbose==1:
+                                print(f&#39;Setting {name}.requires_grad={param.requires_grad}&#39;)
+
+                        if verbose==2:
+                                if isinstance(submodule, str):
+                                        name = &#34;.&#34;.join([submodule, name])
+                                print(f&#34;Setting layer:({name}) requires_grad={param.requires_grad}.&#34;)
+                ic(submodule)
+                print(f&#34;Total frozen layers: {num_frozen}, Total unfrozen layers: {num_layers-num_frozen}&#34;)
+        
+        def summarize_model(self,
+                                                model_name: str=None):
+                cfg = self.cfg
+                input_size = (1, *OmegaConf.to_container(cfg.model_cfg.input_shape, resolve=True))
+                print(f&#34;input_size: {input_size}&#34;)
+                model_summary = log_model_summary(model=self.net,
+                                                input_size=input_size,
+                                                full_summary=True,
+                                                working_dir=os.path.abspath(cfg.run_output_dir),
+                                                model_name = model_name or cfg.model_cfg.name,
+                                                verbose=1)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#################
+#################
+
+
+
+
+# class BaseLightningModule(pl.LightningModule):
+        
+#        &#34;&#34;&#34;
+#        Implements some more custom boiler plate for custom lightning modules
+        
+#        &#34;&#34;&#34;
+
+# #      def _init_metrics(self, stage: str=&#39;train&#39;):
+                
+# #              if stage in [&#39;train&#39;, &#39;all&#39;]:
+# #                      self.metrics_train = get_scalar_metrics(num_classes=self.num_classes, average=&#39;macro&#39;, prefix=&#39;train&#39;)
+# #                      self.metrics_train_per_class = get_per_class_metrics(num_classes=self.num_classes, prefix=&#39;train&#39;)
+                        
+# #              if stage in [&#39;val&#39;, &#39;all&#39;]:
+# #                      self.metrics_val = get_scalar_metrics(num_classes=self.num_classes, average=&#39;macro&#39;, prefix=&#39;val&#39;)
+# #                      self.metrics_val_per_class = get_per_class_metrics(num_classes=self.num_classes, prefix=&#39;val&#39;)
+                        
+# #              if stage in [&#39;test&#39;, &#39;all&#39;]:
+# #                      self.metrics_test = get_scalar_metrics(num_classes=self.num_classes, average=&#39;macro&#39;, prefix=&#39;test&#39;)
+# #                      self.metrics_test_per_class = get_per_class_metrics(num_classes=self.num_classes, prefix=&#39;test&#39;)
+        
+#        def freeze_up_to(self, layer: Union[int, str]=None):
+                
+#                if isinstance(layer, int):
+#                        if layer &lt; 0:
+#                                layer = len(list(self.model.parameters())) + layer
+                        
+#                self.model.requires_grad = True
+#                for i, (name, param) in enumerate(self.model.named_parameters()):
+#                        if isinstance(layer, int):
+#                                if layer == i:
+#                                        break
+#                        elif isinstance(layer, str):
+#                                if layer == name:
+#                                        break
+#                        else:
+#                                param.requires_grad = False
+                
+        
+        
+
+#        def training_step(self, batch, batch_idx):
+#                # 1. Forward pass:
+#                x, y = batch[:2]
+#                y_hat = self(x)
+#                loss = self.loss(y_hat, y)
+                
+# #              y_prob = self.probs(y_hat)
+# #              y_pred = torch.max(y_prob, dim=1)[1]
+                
+#                return {&#39;loss&#39;:loss,
+#                                &#39;log&#39;:{
+#                                               &#39;train/loss&#39;:loss,
+#                                                &#39;y_hat&#39;:y_hat,
+# #                                             &#39;y_prob&#39;:y_prob,
+# #                                             &#39;y_pred&#39;:y_pred,
+#                                               &#39;y_true&#39;:y,
+#                                               &#39;batch_idx&#39;:batch_idx
+#                                               }
+#                               }
+                
+#        def training_step_end(self, outputs):
+#                logs = outputs[&#39;log&#39;]
+#                loss = outputs[&#39;loss&#39;]
+#                idx = logs[&#39;batch_idx&#39;]
+# #              y_prob, y_pred, y = logs[&#39;y_prob&#39;], logs[&#39;y_pred&#39;], logs[&#39;y_true&#39;]
+#                y_hat, y = logs[&#39;y_hat&#39;], logs[&#39;y_true&#39;]
+                
+#                y_prob = self.probs(y_hat.float())
+#                y_pred = torch.max(y_prob, dim=1)[1]
+                
+#                batch_metrics = self.metrics_train(y_prob, y)
+                
+#                for k in self.metrics_train.keys():
+#                        if &#39;acc_top1&#39; in k: continue
+#                        self.log(k,
+#                                         self.metrics_train[k],
+#                                         on_step=True,
+#                                         on_epoch=True,
+#                                         logger=True,
+#                                         prog_bar=False)
+                
+#                self.log(&#39;train/acc&#39;,
+#                                 self.metrics_train[&#39;train/acc_top1&#39;], 
+#                                 on_step=True,
+#                                 on_epoch=True,
+#                                 logger=True, 
+#                                 prog_bar=True)
+#                self.log(&#39;train/loss&#39;, loss,
+#                                 on_step=True,# on_epoch=True)#,
+#                                 logger=True, 
+#                                 prog_bar=True
+#                                )
+                
+#                return outputs
+                
+#        def validation_step(self, batch, batch_idx):
+#                x, y = batch[:2]
+#                y_hat = self(x)
+#                loss = self.loss(y_hat, y)
+#                y_prob = self.probs(y_hat)
+#                y_pred = torch.max(y_prob, dim=1)[1]
+#                return {&#39;loss&#39;:loss,
+#                                &#39;log&#39;:{
+#                                               &#39;val/loss&#39;:loss,
+#                                               &#39;y_hat&#39;:y_hat,
+# #                                             &#39;y_prob&#39;:y_prob,
+#                                               &#39;y_pred&#39;:y_pred,
+#                                               &#39;y_true&#39;:y,
+#                                               &#39;batch_idx&#39;:batch_idx
+#                                               }
+#                               }
+
+#        def validation_step_end(self, outputs):
+                
+#                logs = outputs[&#39;log&#39;]
+#                loss = logs[&#39;val/loss&#39;]
+# #              y_prob, y_pred, y = logs[&#39;y_prob&#39;], logs[&#39;y_pred&#39;], logs[&#39;y_true&#39;]
+# #              y_hat = logs[&#39;y_hat&#39;]          
+#                y_hat, y = logs[&#39;y_hat&#39;], logs[&#39;y_true&#39;]
+# #              print(&#34;y_hat.dtype=&#34;, y_hat.dtype)
+#                y_prob = self.probs(y_hat.float())
+#                y_pred = torch.max(y_prob, dim=1)[1]
+
+
+# #              print(&#34;y_prob.dtype, y_prob_end.dtype)=&#34;, y_prob.dtype, y_prob_end.dtype)
+# #              print(&#34;y_prob.half().dtype, y_prob_end.half().dtype=&#34;, y_prob.half().dtype, y_prob_end.half().dtype)
+# #              print(&#34;y_prob.float().dtype, y_prob_end.float().dtype=&#34;, y_prob.float().dtype, y_prob_end.float().dtype)
+# #              print(f&#39;y_prob.is_floating_point() = {y_prob.is_floating_point()}&#39;)
+# #              print(&#34;torch.isclose(y_prob.sum(dim=1), torch.ones_like(y_prob.sum(dim=1))).all()=&#34;)
+# #              print(torch.isclose(y_prob.sum(dim=1), torch.ones_like(y_prob.sum(dim=1))).all())
+                                
+#                self.metrics_val(y_prob, y)
+# #              self.metrics_val_per_class(y_prob, y)
+# #              batch_metrics = self.metrics_val(y_pred, y)
+# #              breakpoint()
+#                for k in self.metrics_val.keys():
+#                        prog_bar = bool(&#39;acc&#39; in k)
+#                        self.log(k,
+#                                         self.metrics_val[k],
+#                                         on_step=False,
+#                                         on_epoch=True,
+#                                         logger=True,
+#                                         prog_bar=prog_bar)
+
+#                self.log(&#39;val/loss&#39;,loss,
+#                                 on_step=False, on_epoch=True,
+#                                 logger=True, prog_bar=True)#,
+# #                               sync_dist=True)
+
+#                outputs[&#39;y_prob&#39;] = y_prob #.cpu().numpy()
+#                outputs[&#39;y_true&#39;] = y #.cpu().numpy()
+                
+#                return outputs
+
+
+#        def test_step(self, batch, batch_idx):
+#                x, y = batch[:2]
+#                y_hat = self(x)
+#                loss = self.loss(y_hat, y)
+# #              y_prob = self.probs(y_hat)
+# #              y_pred = torch.max(y_prob, dim=1)[1]
+#                return {&#39;loss&#39;:loss,
+#                                &#39;log&#39;:{
+#                                               &#39;test/loss&#39;:loss,
+#                                               &#39;y_hat&#39;:y_hat,
+# #                                             &#39;y_prob&#39;:y_prob,
+# #                                             &#39;y_pred&#39;:y_pred,
+#                                               &#39;y_true&#39;:y,
+#                                               &#39;batch_idx&#39;:batch_idx
+#                                               }
+#                               }
+
+#        def test_step_end(self, outputs):
+                
+#                logs = outputs[&#39;log&#39;]
+#                loss = logs[&#39;test/loss&#39;]
+# #              y_prob, y_pred, y = logs[&#39;y_prob&#39;], logs[&#39;y_pred&#39;], logs[&#39;y_true&#39;]
+# #              y_hat = logs[&#39;y_hat&#39;]          
+#                y_hat, y = logs[&#39;y_hat&#39;], logs[&#39;y_true&#39;]
+# #              print(&#34;y_hat.dtype=&#34;, y_hat.dtype)
+#                y_prob = self.probs(y_hat.float())
+#                y_pred = torch.max(y_prob, dim=1)[1]
+                
+#                self.metrics_test(y_prob, y)
+#                self.metrics_test_per_class(y_prob, y)
+# #              batch_metrics = self.metrics_val(y_pred, y)
+# #              breakpoint()
+#                for k in self.metrics_test.keys():
+#                        prog_bar = bool(&#39;acc&#39; in k)
+#                        self.log(k,
+#                                         self.metrics_test[k],
+#                                         on_step=False,
+#                                         on_epoch=True,
+#                                         logger=True,
+#                                         prog_bar=prog_bar)
+
+#                self.log(&#39;test/loss&#39;,loss,
+#                                 on_step=False, on_epoch=True,
+#                                 logger=True, prog_bar=True)#,
+
+                
+                
+                
+# #              outputs[&#39;y_prob&#39;] = y_prob.cpu().numpy()
+# #              outputs[&#39;y_true&#39;] = y.cpu().numpy()
+                
+#                return outputs
+
+###############################
+#                plt.figure(figsize=(14, 8))
+#                sns.set(font_scale=1.4)
+#                sns.heatmap(cm.numpy(), annot=True, annot_kws={&#34;size&#34;: 8}, fmt=&#34;g&#34;)            
+                
+#                experiment.log({f&#34;confusion_matrix/{experiment.name}&#34;: wandb.Image(plt)}, commit=False)
+
+                
+#                print(f&#34;type(f1) = {type(f1)}&#34;)
+#                print(f&#34;type(cm) = {type(cm)}&#34;)
+                
+#                if hasattr(f1, &#34;shape&#34;):
+#                        print(f1.shape)
+
+#                if hasattr(cm, &#34;shape&#34;):
+#                        print(cm.shape)
+#                if hasattr(f1, &#34;__len__&#34;):
+#                        print(len(f1))
+
+#                if hasattr(cm, &#34;__len__&#34;):
+#                        print(len(cm))
+#        wandb.log({&#34;conf_mat&#34; : wandb.plot.confusion_matrix(probs=None,
+#                                                        preds=top_pred_ids, y_true=ground_truth_class_ids,
+#                                                        class_names=self.flat_class_names)})
+                        
+                        
+#                self.metrics_val_per_class.reset()
+#                for k, v in validation_step_outputs[0].items():
+#                print(type(validation_step_outputs), len(validation_step_outputs), type(validation_step_outputs[0]))
+#                for k, v in validation_step_outputs[0].items():
+#                        print(k, type(v))
+#                        if hasattr(v, &#34;shape&#34;):
+#                                print(v.shape)
+#                        elif isinstance(v, dict):
+#                                for kk, vv in v.items():
+#                                        print(k, kk, type(vv))
+#                                        if hasattr(vv, &#34;shape&#34;):
+#                                                print(vv.shape)
+                                        
+#                for pred in validation_step_outputs:
+
+
+
+
+
+
+
+
+#        def _init_metrics(self, stage: str=&#39;train&#39;):
+                
+#                if stage in [&#39;train&#39;, &#39;all&#39;]:
+#                        self.metrics_train_avg = get_scalar_metrics(num_classes=self.num_classes, average=&#39;macro&#39;, prefix=&#39;train&#39;)
+#                        self.metrics_train_per_class = get_per_class_metrics(num_classes=self.num_classes, prefix=&#39;train&#39;)
+                        
+#                if stage in [&#39;val&#39;, &#39;all&#39;]:
+#                        self.metrics_val_avg = get_scalar_metrics(num_classes=self.num_classes, average=&#39;macro&#39;, prefix=&#39;val&#39;)
+#                        self.metrics_val_per_class = get_per_class_metrics(num_classes=self.num_classes, prefix=&#39;val&#39;)
+                        
+#                if stage in [&#39;test&#39;, &#39;all&#39;]:
+#                        self.metrics_test_avg = get_scalar_metrics(num_classes=self.num_classes, average=&#39;macro&#39;, prefix=&#39;test&#39;)
+#                        self.metrics_test_per_class = get_per_class_metrics(num_classes=self.num_classes, prefix=&#39;test&#39;)
+
+
+
+
+
+
+        
+# class LitCassava(pl.LightningModule):
+#        def __init__(self, model):
+#                super(LitCassava, self).__init__()
+#                self.model = model
+#                self.metric = pl.metrics.F1(num_classes=CFG.num_classes, average=&#39;macro&#39;)
+#                self.criterion = nn.CrossEntropyLoss()
+#                self.lr = CFG.lr
+
+#        def forward(self, x, *args, **kwargs):
+#                return self.model(x)
+
+#        def configure_optimizers(self):
+#                self.optimizer = torch.optim.Adam(self.model.parameters(), lr=self.lr)
+#                self.scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(self.optimizer, T_max=CFG.t_max, eta_min=CFG.min_lr)
+
+#                return {&#39;optimizer&#39;: self.optimizer, &#39;lr_scheduler&#39;: self.scheduler}
+
+#        def training_step(self, batch, batch_idx):
+#                image = batch[&#39;image&#39;]
+#                target = batch[&#39;target&#39;]
+#                output = self.model(image)
+#                loss = self.criterion(output, target)
+#                score = self.metric(output.argmax(1), target)
+#                logs = {&#39;train_loss&#39;: loss, &#39;train_f1&#39;: score, &#39;lr&#39;: self.optimizer.param_groups[0][&#39;lr&#39;]}
+#                self.log_dict(
+#                        logs,
+#                        on_step=False, on_epoch=True, prog_bar=True, logger=True
+#                )
+#                return loss
+
+#        def validation_step(self, batch, batch_idx):
+#                image = batch[&#39;image&#39;]
+#                target = batch[&#39;target&#39;]
+#                output = self.model(image)
+#                loss = self.criterion(output, target)
+#                score = self.metric(output.argmax(1), target)
+#                logs = {&#39;valid_loss&#39;: loss, &#39;valid_f1&#39;: score}
+#                self.log_dict(
+#                        logs,
+#                        on_step=False, on_epoch=True, prog_bar=True, logger=True
+#                )
+#                return loss
+
+
+        
+        
+        
+        
+        
+class Registry(dict):
+        &#39;&#39;&#39;
+        A helper class for managing registering modules, it extends a dictionary
+        and provides register functions.
+        Access of module is just like using a dictionary, eg:
+                f = some_registry[&#34;foo_module&#34;]
+                
+                
+        [code source] https://julienbeaulieu.github.io/2020/03/16/building-a-flexible-configuration-system-for-deep-learning-models/
+        &#39;&#39;&#39;
+        
+        # Instanciated objects will be empyty dictionaries
+        def __init__(self, *args, **kwargs):
+                super(Registry, self).__init__(*args, **kwargs)
+
+        # Decorator factory. Here self is a Registry dict
+        def register(self, module_name, module=None):
+                
+                # Inner function used as function call
+                if module is not None:
+                        _register_generic(self, module_name, module)
+                        return
+
+                # Inner function used as decorator -&gt; takes a function as argument
+                def register_fn(fn):
+                        _register_generic(self, module_name, fn)
+                        return fn
+
+                return register_fn # decorator factory returns a decorator function
+        
+
+def _register_generic(module_dict, module_name, module):
+        assert module_name not in module_dict
+        module_dict[module_name] = module</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="imutils.ml.models.base.BaseLightningModule"><code class="flex name class">
+<span>class <span class="ident">BaseLightningModule</span></span>
+<span>(</span><span>*args: Any, **kwargs: Any)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Implements some more custom boiler plate for custom lightning modules</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class BaseLightningModule(pl.LightningModule):
+        
+        &#34;&#34;&#34;
+        Implements some more custom boiler plate for custom lightning modules
+        
+        &#34;&#34;&#34;
+        # def on_fit_start(self) -&gt; None:
+        #        import pdb; pdb.set_trace()
+        def on_train_epoch_start(self) -&gt; None:
+                # print(&#34;on_train_start&#34;)
+                if self.cfg.train.freeze_backbone:
+                        layer = self.cfg.train.get(&#34;freeze_backbone_up_to&#34;, -1)
+                        ic(layer)
+                        self.freeze_up_to(layer,
+                                                          submodule=&#34;backbone&#34;,
+                                                          verbose=False)        # def on_fit_start(self):
+                        count_parameters(self.net, verbose=True)
+                if self._initial_logging and self.cfg.logging.get(&#34;log_dataset_summary&#34;, False):
+                        if not hasattr(self, &#34;datamodule&#34;):
+                                return
+                        self._initial_logging = False
+                        for subset in [&#34;train&#34;, &#34;val&#34;, &#34;test&#34;]:
+                                self.datamodule.get_dataset_size(subset, verbose=True)
+
+        def on_train_start(self) -&gt; None:
+                self._initial_logging = True
+                if self.cfg.logging.log_model_summary:
+                        self.summarize_model(f&#34;{self.name}/init&#34;)
+
+        
+        def freeze_up_to(self, 
+                                         layer: Union[int, str]=None,
+                                         submodule: Optional[Union[str, int]]=None,
+                                         verbose: bool=True):
+                # print(f&#34;Freezing up to layer={layer} in submodule={submodule}&#34;)
+                
+                net = self.net
+                if isinstance(submodule, int):
+                        net = self.net[submodule]
+                elif isinstance(submodule, str):
+                        net = getattr(self.net, submodule)
+                
+                if isinstance(layer, int):
+                        num_layers = len(list(net.parameters()))
+                        if layer &lt; 0:
+                                layer = num_layers + layer
+                                print(f&#34;Freezing up to {layer} out of {num_layers} layers in submodule={submodule}&#34;)
+                        
+                net.requires_grad_(True)
+                num_layers = len(list(net.state_dict()))
+                num_frozen=0
+                for i, (name, param) in enumerate(net.named_parameters()):
+                        if isinstance(layer, int) and (layer == i):
+                                print(f&#39;breaking: {layer}={i}&#39;)
+                                break
+                        elif isinstance(layer, str) and (layer == name):
+                                print(f&#39;breaking: {layer}={name}&#39;)
+                                break
+                        param.requires_grad_(False)
+                        num_frozen += 1
+                        if verbose==1:
+                                print(f&#39;Setting {name}.requires_grad={param.requires_grad}&#39;)
+
+                        if verbose==2:
+                                if isinstance(submodule, str):
+                                        name = &#34;.&#34;.join([submodule, name])
+                                print(f&#34;Setting layer:({name}) requires_grad={param.requires_grad}.&#34;)
+                ic(submodule)
+                print(f&#34;Total frozen layers: {num_frozen}, Total unfrozen layers: {num_layers-num_frozen}&#34;)
+        
+        def summarize_model(self,
+                                                model_name: str=None):
+                cfg = self.cfg
+                input_size = (1, *OmegaConf.to_container(cfg.model_cfg.input_shape, resolve=True))
+                print(f&#34;input_size: {input_size}&#34;)
+                model_summary = log_model_summary(model=self.net,
+                                                input_size=input_size,
+                                                full_summary=True,
+                                                working_dir=os.path.abspath(cfg.run_output_dir),
+                                                model_name = model_name or cfg.model_cfg.name,
+                                                verbose=1)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>pytorch_lightning.core.lightning.LightningModule</li>
+<li>pytorch_lightning.core.mixins.device_dtype_mixin.DeviceDtypeModuleMixin</li>
+<li>pytorch_lightning.core.mixins.hparams_mixin.HyperparametersMixin</li>
+<li>pytorch_lightning.core.saving.ModelIO</li>
+<li>pytorch_lightning.core.hooks.ModelHooks</li>
+<li>pytorch_lightning.core.hooks.DataHooks</li>
+<li>pytorch_lightning.core.hooks.CheckpointHooks</li>
+<li>torch.nn.modules.module.Module</li>
+</ul>
+<h3>Subclasses</h3>
+<ul class="hlist">
+<li><a title="imutils.ml.models.pl.classifier.LitClassifier" href="pl/classifier.html#imutils.ml.models.pl.classifier.LitClassifier">LitClassifier</a></li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="imutils.ml.models.base.BaseLightningModule.dump_patches"><code class="name">var <span class="ident">dump_patches</span> : bool</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="imutils.ml.models.base.BaseLightningModule.training"><code class="name">var <span class="ident">training</span> : bool</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="imutils.ml.models.base.BaseLightningModule.forward"><code class="name flex">
+<span>def <span class="ident">forward</span></span>(<span>self, *args, **kwargs) ‑> Any</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Same as :meth:<code>torch.nn.Module.forward()</code>.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>*args</code></strong></dt>
+<dd>Whatever you decide to pass into the forward method.</dd>
+<dt><strong><code>**kwargs</code></strong></dt>
+<dd>Keyword arguments are also possible.</dd>
+</dl>
+<h2 id="return">Return</h2>
+<p>Your model's output</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def forward(self, *args, **kwargs) -&gt; Any:
+    r&#34;&#34;&#34;
+    Same as :meth:`torch.nn.Module.forward()`.
+
+    Args:
+        *args: Whatever you decide to pass into the forward method.
+        **kwargs: Keyword arguments are also possible.
+
+    Return:
+        Your model&#39;s output
+    &#34;&#34;&#34;
+    return super().forward(*args, **kwargs)</code></pre>
+</details>
+</dd>
+<dt id="imutils.ml.models.base.BaseLightningModule.freeze_up_to"><code class="name flex">
+<span>def <span class="ident">freeze_up_to</span></span>(<span>self, layer: Union[int, str] = None, submodule: Union[str, int, None] = None, verbose: bool = True)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def freeze_up_to(self, 
+                                 layer: Union[int, str]=None,
+                                 submodule: Optional[Union[str, int]]=None,
+                                 verbose: bool=True):
+        # print(f&#34;Freezing up to layer={layer} in submodule={submodule}&#34;)
+        
+        net = self.net
+        if isinstance(submodule, int):
+                net = self.net[submodule]
+        elif isinstance(submodule, str):
+                net = getattr(self.net, submodule)
+        
+        if isinstance(layer, int):
+                num_layers = len(list(net.parameters()))
+                if layer &lt; 0:
+                        layer = num_layers + layer
+                        print(f&#34;Freezing up to {layer} out of {num_layers} layers in submodule={submodule}&#34;)
+                
+        net.requires_grad_(True)
+        num_layers = len(list(net.state_dict()))
+        num_frozen=0
+        for i, (name, param) in enumerate(net.named_parameters()):
+                if isinstance(layer, int) and (layer == i):
+                        print(f&#39;breaking: {layer}={i}&#39;)
+                        break
+                elif isinstance(layer, str) and (layer == name):
+                        print(f&#39;breaking: {layer}={name}&#39;)
+                        break
+                param.requires_grad_(False)
+                num_frozen += 1
+                if verbose==1:
+                        print(f&#39;Setting {name}.requires_grad={param.requires_grad}&#39;)
+
+                if verbose==2:
+                        if isinstance(submodule, str):
+                                name = &#34;.&#34;.join([submodule, name])
+                        print(f&#34;Setting layer:({name}) requires_grad={param.requires_grad}.&#34;)
+        ic(submodule)
+        print(f&#34;Total frozen layers: {num_frozen}, Total unfrozen layers: {num_layers-num_frozen}&#34;)</code></pre>
+</details>
+</dd>
+<dt id="imutils.ml.models.base.BaseLightningModule.on_train_epoch_start"><code class="name flex">
+<span>def <span class="ident">on_train_epoch_start</span></span>(<span>self) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Called in the training loop at the very beginning of the epoch.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def on_train_epoch_start(self) -&gt; None:
+        # print(&#34;on_train_start&#34;)
+        if self.cfg.train.freeze_backbone:
+                layer = self.cfg.train.get(&#34;freeze_backbone_up_to&#34;, -1)
+                ic(layer)
+                self.freeze_up_to(layer,
+                                                  submodule=&#34;backbone&#34;,
+                                                  verbose=False)        # def on_fit_start(self):
+                count_parameters(self.net, verbose=True)
+        if self._initial_logging and self.cfg.logging.get(&#34;log_dataset_summary&#34;, False):
+                if not hasattr(self, &#34;datamodule&#34;):
+                        return
+                self._initial_logging = False
+                for subset in [&#34;train&#34;, &#34;val&#34;, &#34;test&#34;]:
+                        self.datamodule.get_dataset_size(subset, verbose=True)</code></pre>
+</details>
+</dd>
+<dt id="imutils.ml.models.base.BaseLightningModule.on_train_start"><code class="name flex">
+<span>def <span class="ident">on_train_start</span></span>(<span>self) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Called at the beginning of training after sanity check.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def on_train_start(self) -&gt; None:
+        self._initial_logging = True
+        if self.cfg.logging.log_model_summary:
+                self.summarize_model(f&#34;{self.name}/init&#34;)</code></pre>
+</details>
+</dd>
+<dt id="imutils.ml.models.base.BaseLightningModule.summarize_model"><code class="name flex">
+<span>def <span class="ident">summarize_model</span></span>(<span>self, model_name: str = None)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def summarize_model(self,
+                                        model_name: str=None):
+        cfg = self.cfg
+        input_size = (1, *OmegaConf.to_container(cfg.model_cfg.input_shape, resolve=True))
+        print(f&#34;input_size: {input_size}&#34;)
+        model_summary = log_model_summary(model=self.net,
+                                        input_size=input_size,
+                                        full_summary=True,
+                                        working_dir=os.path.abspath(cfg.run_output_dir),
+                                        model_name = model_name or cfg.model_cfg.name,
+                                        verbose=1)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="imutils.ml.models.base.BaseModule"><code class="flex name class">
+<span>class <span class="ident">BaseModule</span></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Models should subclass this in place of nn.Module. This is a custom base class to implement standard interfaces &amp; implementations across all custom pytorch modules in this library.</p>
+<p>Instance methods:</p>
+<ul>
+<li>def forward(self, x):</li>
+<li>def get_trainable_parameters(self):</li>
+<li>def get_frozen_parameters(self):</li>
+</ul>
+<p>Class methods:</p>
+<ul>
+<li>def freeze(cls, model: nn.Module):</li>
+<li>def unfreeze(cls, model: nn.Module):</li>
+<li>def initialize_weights(cls, modules):</li>
+<li>def pack_checkpoint(
+cls,
+model=None,
+criterion=None,
+optimizer=None,
+scheduler=None,
+**kwargs
+):</li>
+<li>def unpack_checkpoint(
+cls,
+checkpoint,
+model=None,
+criterion=None,
+optimizer=None,
+scheduler=None,
+**kwargs,
+):</li>
+<li>def save_checkpoint(self, checkpoint, path):</li>
+<li>def load_checkpoint(self, path):</li>
+</ul>
+<p>Initializes internal Module state, shared by both nn.Module and ScriptModule.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class BaseModule(nn.Module):
+        &#34;&#34;&#34;
+        Models should subclass this in place of nn.Module. This is a custom base class to implement standard interfaces &amp; implementations across all custom pytorch modules in this library.
+        
+        Instance methods:
+        
+        * def forward(self, x):
+        * def get_trainable_parameters(self):
+        * def get_frozen_parameters(self):
+
+        Class methods:
+
+        * def freeze(cls, model: nn.Module):
+        * def unfreeze(cls, model: nn.Module):
+        * def initialize_weights(cls, modules):
+        * def pack_checkpoint(
+                                                cls,
+                                                model=None,
+                                                criterion=None,
+                                                optimizer=None,
+                                                scheduler=None,
+                                                **kwargs
+                                                ):
+        * def unpack_checkpoint(
+                                                  cls,
+                                                  checkpoint,
+                                                  model=None,
+                                                  criterion=None,
+                                                  optimizer=None,
+                                                  scheduler=None,
+                                                  **kwargs,
+                                                  ):
+        * def save_checkpoint(self, checkpoint, path):
+        * def load_checkpoint(self, path):
+        
+        
+        
+        &#34;&#34;&#34;
+        
+        def forward(self, x):
+                &#34;&#34;&#34;
+                Identity function by default. Subclasses should redefine this method.
+                &#34;&#34;&#34;
+                return x
+        
+        def get_trainable_parameters(self):
+                return (p for p in self.parameters() if p.requires_grad)
+
+        def get_frozen_parameters(self):
+                return (p for p in self.parameters() if not p.requires_grad)
+
+
+        @classmethod
+        def freeze(cls, model: nn.Module, up_to_layer: Optional[str]=None):
+                for name, param in model.named_parameters():
+                        if name == up_to_layer:
+                                break
+                        param.requires_grad = False
+                        
+        @classmethod
+        def unfreeze(cls, model: nn.Module):
+                for param in model.parameters():
+                        param.requires_grad = True
+
+        @classmethod
+        def initialize_weights(cls, modules):
+                for m in modules:
+                        if isinstance(m, nn.Conv2d):
+                                nn.init.kaiming_uniform_(m.weight)
+                                if m.bias is not None:
+                                        nn.init.constant_(m.bias, 0)
+
+                        elif isinstance(m, nn.BatchNorm2d):
+                                nn.init.constant_(m.weight, 1)
+                                nn.init.constant_(m.bias, 0)
+
+                        elif isinstance(m, nn.Linear):
+                                nn.init.kaiming_uniform_(m.weight)
+                                nn.init.constant_(m.bias, 0)
+
+        @classmethod
+        def pack_checkpoint(
+                                                cls,
+                                                model=None,
+                                                criterion=None,
+                                                optimizer=None,
+                                                scheduler=None,
+                                                **kwargs
+                                                ):
+                content = {}
+                if model is not None:
+                        content[&#34;model_state_dict&#34;] = model.state_dict()
+                if criterion is not None:
+                        content[&#34;criterion_state_dict&#34;] = criterion.state_dict()
+                if optimizer is not None:
+                        content[&#34;optimizer_state_dict&#34;] = optimizer.state_dict()
+                if scheduler is not None:
+                        content[&#34;scheduler_state_dict&#34;] = scheduler.state_dict()
+                return content
+
+        @classmethod
+        def unpack_checkpoint(
+                                                  cls,
+                                                  checkpoint,
+                                                  model=None,
+                                                  criterion=None,
+                                                  optimizer=None,
+                                                  scheduler=None,
+                                                  **kwargs,
+                                                  ):
+                state_dicts = {&#34;model&#34;:model,
+                                           &#34;criterion&#34;:criterion,
+                                           &#34;optimizer&#34;:optimizer,
+                                           &#34;scheduler&#34;:scheduler}
+                
+                for state_dict, part in state_dicts.items():
+                        if f&#34;{state_dict}_state_dict&#34; in checkpoint and part is not None:
+                                part.load_state_dict(checkpoint[f&#34;{state_dict}_state_dict&#34;])
+
+        @staticmethod
+        def save_checkpoint(checkpoint, path):
+                torch.save(checkpoint, path)
+
+        @staticmethod
+        def load_checkpoint(path):
+                checkpoint = torch.load(path, map_location=lambda storage, loc: storage)
+                return checkpoint</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>torch.nn.modules.module.Module</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="imutils.ml.models.base.BaseModule.dump_patches"><code class="name">var <span class="ident">dump_patches</span> : bool</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="imutils.ml.models.base.BaseModule.training"><code class="name">var <span class="ident">training</span> : bool</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Static methods</h3>
+<dl>
+<dt id="imutils.ml.models.base.BaseModule.freeze"><code class="name flex">
+<span>def <span class="ident">freeze</span></span>(<span>model: torch.nn.modules.module.Module, up_to_layer: Optional[str] = None)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@classmethod
+def freeze(cls, model: nn.Module, up_to_layer: Optional[str]=None):
+        for name, param in model.named_parameters():
+                if name == up_to_layer:
+                        break
+                param.requires_grad = False</code></pre>
+</details>
+</dd>
+<dt id="imutils.ml.models.base.BaseModule.initialize_weights"><code class="name flex">
+<span>def <span class="ident">initialize_weights</span></span>(<span>modules)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@classmethod
+def initialize_weights(cls, modules):
+        for m in modules:
+                if isinstance(m, nn.Conv2d):
+                        nn.init.kaiming_uniform_(m.weight)
+                        if m.bias is not None:
+                                nn.init.constant_(m.bias, 0)
+
+                elif isinstance(m, nn.BatchNorm2d):
+                        nn.init.constant_(m.weight, 1)
+                        nn.init.constant_(m.bias, 0)
+
+                elif isinstance(m, nn.Linear):
+                        nn.init.kaiming_uniform_(m.weight)
+                        nn.init.constant_(m.bias, 0)</code></pre>
+</details>
+</dd>
+<dt id="imutils.ml.models.base.BaseModule.load_checkpoint"><code class="name flex">
+<span>def <span class="ident">load_checkpoint</span></span>(<span>path)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def load_checkpoint(path):
+        checkpoint = torch.load(path, map_location=lambda storage, loc: storage)
+        return checkpoint</code></pre>
+</details>
+</dd>
+<dt id="imutils.ml.models.base.BaseModule.pack_checkpoint"><code class="name flex">
+<span>def <span class="ident">pack_checkpoint</span></span>(<span>model=None, criterion=None, optimizer=None, scheduler=None, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@classmethod
+def pack_checkpoint(
+                                        cls,
+                                        model=None,
+                                        criterion=None,
+                                        optimizer=None,
+                                        scheduler=None,
+                                        **kwargs
+                                        ):
+        content = {}
+        if model is not None:
+                content[&#34;model_state_dict&#34;] = model.state_dict()
+        if criterion is not None:
+                content[&#34;criterion_state_dict&#34;] = criterion.state_dict()
+        if optimizer is not None:
+                content[&#34;optimizer_state_dict&#34;] = optimizer.state_dict()
+        if scheduler is not None:
+                content[&#34;scheduler_state_dict&#34;] = scheduler.state_dict()
+        return content</code></pre>
+</details>
+</dd>
+<dt id="imutils.ml.models.base.BaseModule.save_checkpoint"><code class="name flex">
+<span>def <span class="ident">save_checkpoint</span></span>(<span>checkpoint, path)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def save_checkpoint(checkpoint, path):
+        torch.save(checkpoint, path)</code></pre>
+</details>
+</dd>
+<dt id="imutils.ml.models.base.BaseModule.unfreeze"><code class="name flex">
+<span>def <span class="ident">unfreeze</span></span>(<span>model: torch.nn.modules.module.Module)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@classmethod
+def unfreeze(cls, model: nn.Module):
+        for param in model.parameters():
+                param.requires_grad = True</code></pre>
+</details>
+</dd>
+<dt id="imutils.ml.models.base.BaseModule.unpack_checkpoint"><code class="name flex">
+<span>def <span class="ident">unpack_checkpoint</span></span>(<span>checkpoint, model=None, criterion=None, optimizer=None, scheduler=None, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@classmethod
+def unpack_checkpoint(
+                                          cls,
+                                          checkpoint,
+                                          model=None,
+                                          criterion=None,
+                                          optimizer=None,
+                                          scheduler=None,
+                                          **kwargs,
+                                          ):
+        state_dicts = {&#34;model&#34;:model,
+                                   &#34;criterion&#34;:criterion,
+                                   &#34;optimizer&#34;:optimizer,
+                                   &#34;scheduler&#34;:scheduler}
+        
+        for state_dict, part in state_dicts.items():
+                if f&#34;{state_dict}_state_dict&#34; in checkpoint and part is not None:
+                        part.load_state_dict(checkpoint[f&#34;{state_dict}_state_dict&#34;])</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="imutils.ml.models.base.BaseModule.forward"><code class="name flex">
+<span>def <span class="ident">forward</span></span>(<span>self, x) ‑> Callable[..., Any]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Identity function by default. Subclasses should redefine this method.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def forward(self, x):
+        &#34;&#34;&#34;
+        Identity function by default. Subclasses should redefine this method.
+        &#34;&#34;&#34;
+        return x</code></pre>
+</details>
+</dd>
+<dt id="imutils.ml.models.base.BaseModule.get_frozen_parameters"><code class="name flex">
+<span>def <span class="ident">get_frozen_parameters</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_frozen_parameters(self):
+        return (p for p in self.parameters() if not p.requires_grad)</code></pre>
+</details>
+</dd>
+<dt id="imutils.ml.models.base.BaseModule.get_trainable_parameters"><code class="name flex">
+<span>def <span class="ident">get_trainable_parameters</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_trainable_parameters(self):
+        return (p for p in self.parameters() if p.requires_grad)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="imutils.ml.models" href="index.html">imutils.ml.models</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="imutils.ml.models.base.BaseLightningModule" href="#imutils.ml.models.base.BaseLightningModule">BaseLightningModule</a></code></h4>
+<ul class="">
+<li><code><a title="imutils.ml.models.base.BaseLightningModule.dump_patches" href="#imutils.ml.models.base.BaseLightningModule.dump_patches">dump_patches</a></code></li>
+<li><code><a title="imutils.ml.models.base.BaseLightningModule.forward" href="#imutils.ml.models.base.BaseLightningModule.forward">forward</a></code></li>
+<li><code><a title="imutils.ml.models.base.BaseLightningModule.freeze_up_to" href="#imutils.ml.models.base.BaseLightningModule.freeze_up_to">freeze_up_to</a></code></li>
+<li><code><a title="imutils.ml.models.base.BaseLightningModule.on_train_epoch_start" href="#imutils.ml.models.base.BaseLightningModule.on_train_epoch_start">on_train_epoch_start</a></code></li>
+<li><code><a title="imutils.ml.models.base.BaseLightningModule.on_train_start" href="#imutils.ml.models.base.BaseLightningModule.on_train_start">on_train_start</a></code></li>
+<li><code><a title="imutils.ml.models.base.BaseLightningModule.summarize_model" href="#imutils.ml.models.base.BaseLightningModule.summarize_model">summarize_model</a></code></li>
+<li><code><a title="imutils.ml.models.base.BaseLightningModule.training" href="#imutils.ml.models.base.BaseLightningModule.training">training</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="imutils.ml.models.base.BaseModule" href="#imutils.ml.models.base.BaseModule">BaseModule</a></code></h4>
+<ul class="">
+<li><code><a title="imutils.ml.models.base.BaseModule.dump_patches" href="#imutils.ml.models.base.BaseModule.dump_patches">dump_patches</a></code></li>
+<li><code><a title="imutils.ml.models.base.BaseModule.forward" href="#imutils.ml.models.base.BaseModule.forward">forward</a></code></li>
+<li><code><a title="imutils.ml.models.base.BaseModule.freeze" href="#imutils.ml.models.base.BaseModule.freeze">freeze</a></code></li>
+<li><code><a title="imutils.ml.models.base.BaseModule.get_frozen_parameters" href="#imutils.ml.models.base.BaseModule.get_frozen_parameters">get_frozen_parameters</a></code></li>
+<li><code><a title="imutils.ml.models.base.BaseModule.get_trainable_parameters" href="#imutils.ml.models.base.BaseModule.get_trainable_parameters">get_trainable_parameters</a></code></li>
+<li><code><a title="imutils.ml.models.base.BaseModule.initialize_weights" href="#imutils.ml.models.base.BaseModule.initialize_weights">initialize_weights</a></code></li>
+<li><code><a title="imutils.ml.models.base.BaseModule.load_checkpoint" href="#imutils.ml.models.base.BaseModule.load_checkpoint">load_checkpoint</a></code></li>
+<li><code><a title="imutils.ml.models.base.BaseModule.pack_checkpoint" href="#imutils.ml.models.base.BaseModule.pack_checkpoint">pack_checkpoint</a></code></li>
+<li><code><a title="imutils.ml.models.base.BaseModule.save_checkpoint" href="#imutils.ml.models.base.BaseModule.save_checkpoint">save_checkpoint</a></code></li>
+<li><code><a title="imutils.ml.models.base.BaseModule.training" href="#imutils.ml.models.base.BaseModule.training">training</a></code></li>
+<li><code><a title="imutils.ml.models.base.BaseModule.unfreeze" href="#imutils.ml.models.base.BaseModule.unfreeze">unfreeze</a></code></li>
+<li><code><a title="imutils.ml.models.base.BaseModule.unpack_checkpoint" href="#imutils.ml.models.base.BaseModule.unpack_checkpoint">unpack_checkpoint</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+</footer>
+</body>
+</html>

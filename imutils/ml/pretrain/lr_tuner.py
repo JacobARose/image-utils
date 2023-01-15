@@ -65,6 +65,11 @@ def run(cfg: DictConfig,
 	ToDO: Consider how to override the optimizer scheduler temporarily.
 	
 	"""
+	# from imutils.ml.utils.experiment_utils import (,
+	# 											   configure_callbacks,
+	# 											   configure_loggers,
+	# 											   configure_trainer,
+	# 											   configure_loss_func)
 	import pytorch_lightning as pl
 	import imutils
 	import imutils.ml.models.pl.classifier
@@ -95,11 +100,17 @@ def run(cfg: DictConfig,
 		)
 		datamodule.setup()
 
+	from imutils.ml.utils.experiment_utils import (configure_model,
+												   configure_loss_func)
+
+	loss_func = configure_loss_func(cfg, targets=datamodule.train_dataset.df.y)
+
 	if model is None:
 		hydra.utils.log.info(f"Instantiating <{cfg.model_cfg._target_}> prior to pretrain.lr_tuner")
 		# model: pl.LightningModule = hydra.utils.instantiate(cfg.model, cfg=cfg, _recursive_=False)
-		model = imutils.ml.models.pl.classifier.LitClassifier(cfg=cfg, #model_cfg=cfg.model_cfg,
-															  loss=cfg.model_cfg.loss)
+		model = configure_model(cfg=cfg,
+								loss_func=loss_func)
+
 
 	hydra.utils.log.info("INITIATING STAGE: pretrain.lr_finder using cfg settings:")
 	template_utils.print_config(cfg, fields=["pretrain", "model_cfg", "optim"])

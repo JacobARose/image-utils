@@ -21,3 +21,4 @@ pl_trainer:
     benchmark: true
     auto_select_gpus: true
     auto_lr_find: true
+    max_epochs: 100

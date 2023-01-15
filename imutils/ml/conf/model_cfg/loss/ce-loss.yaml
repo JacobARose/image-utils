@@ -1,0 +1,8 @@
+# @package model_cfg
+
+## conf/model_cfg/loss/ce-loss.yaml
+
+loss:
+    _target_: torch.nn.CrossEntropyLoss
+# Note: label_smoothing isnt an option in CELoss until some time after pytorch version 1.8.1
+# label_smoothing: 0.0

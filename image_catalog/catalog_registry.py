@@ -873,6 +873,12 @@ class AvailableDatasets:
 	
 	@classmethod
 	def add_dataset(cls, tag: str, root_dir: str) -> None:
+		"""
+		Helper function
+		
+		Dynamically adds an image dataset to the latest version of the collection accessible by tag `tag`. Continues without error if tag already exists.
+		"""
+		
 		try:
 			if tag in cls.extras:
 				root_dir = cls.extras[tag]

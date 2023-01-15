@@ -1,0 +1,415 @@
+_column_order:
+- thumbnail
+- thumb_path
+- path
+- r
+- g
+- b
+- h
+- s
+- v
+- height
+- width
+- aspect_ratio
+- kingdom
+- phylum
+- class
+- order
+- family
+- genus
+- specificEpithet
+- taxonRank
+- vernacularName
+- continent
+- country
+- stateProvince
+- county
+- municipality
+- locality
+- higherGeography
+- formation
+- scientificName
+- higherClassification
+- earliestPeriodOrLowestSystem
+- earliestEpochOrLowestSeries
+- earliestAgeOrLowestStage
+- bibliographicCitation
+- references
+- decimalLatitude
+- decimalLongitude
+- coordinateUncertaintyInMeters
+- occurrenceID
+- catalogNumber
+- occurrenceRemarks
+- recordedBy
+- identifier
+- id
+- modified
+- previousIdentifications
+- georeferencedBy
+- georeferencedDate
+- georeferenceSources
+- dynamicProperties
+- error
+columns:
+  aspect_ratio:
+    block:
+      block_dir: blocks/139652352339920
+      block_index: aspect_ratio
+      mmap: false
+    dtype: &id001 !!python/name:meerkat.columns.pandas_column.PandasSeriesColumn ''
+    len: 16444
+  b:
+    block:
+      block_dir: blocks/139652352339920
+      block_index: b
+      mmap: false
+    dtype: *id001
+    len: 16444
+  bibliographicCitation:
+    block:
+      block_dir: blocks/139652352339920
+      block_index: bibliographicCitation
+      mmap: false
+    dtype: *id001
+    len: 16444
+  catalogNumber:
+    block:
+      block_dir: blocks/139652352339920
+      block_index: catalogNumber
+      mmap: false
+    dtype: *id001
+    len: 16444
+  class:
+    block:
+      block_dir: blocks/139652352339920
+      block_index: class
+      mmap: false
+    dtype: *id001
+    len: 16444
+  continent:
+    block:
+      block_dir: blocks/139652352339920
+      block_index: continent
+      mmap: false
+    dtype: *id001
+    len: 16444
+  coordinateUncertaintyInMeters:
+    block:
+      block_dir: blocks/139652352339920
+      block_index: coordinateUncertaintyInMeters
+      mmap: false
+    dtype: *id001
+    len: 16444
+  country:
+    block:
+      block_dir: blocks/139652352339920
+      block_index: country
+      mmap: false
+    dtype: *id001
+    len: 16444
+  county:
+    block:
+      block_dir: blocks/139652352339920
+      block_index: county
+      mmap: false
+    dtype: *id001
+    len: 16444
+  decimalLatitude:
+    block:
+      block_dir: blocks/139652352339920
+      block_index: decimalLatitude
+      mmap: false
+    dtype: *id001
+    len: 16444
+  decimalLongitude:
+    block:
+      block_dir: blocks/139652352339920
+      block_index: decimalLongitude
+      mmap: false
+    dtype: *id001
+    len: 16444
+  dynamicProperties:
+    block:
+      block_dir: blocks/139652352339920
+      block_index: dynamicProperties
+      mmap: false
+    dtype: *id001
+    len: 16444
+  earliestAgeOrLowestStage:
+    block:
+      block_dir: blocks/139652352339920
+      block_index: earliestAgeOrLowestStage
+      mmap: false
+    dtype: *id001
+    len: 16444
+  earliestEpochOrLowestSeries:
+    block:
+      block_dir: blocks/139652352339920
+      block_index: earliestEpochOrLowestSeries
+      mmap: false
+    dtype: *id001
+    len: 16444
+  earliestPeriodOrLowestSystem:
+    block:
+      block_dir: blocks/139652352339920
+      block_index: earliestPeriodOrLowestSystem
+      mmap: false
+    dtype: *id001
+    len: 16444
+  error:
+    block:
+      block_dir: blocks/139652352339920
+      block_index: error
+      mmap: false
+    dtype: *id001
+    len: 16444
+  family:
+    block:
+      block_dir: blocks/139652352339920
+      block_index: family
+      mmap: false
+    dtype: *id001
+    len: 16444
+  formation:
+    block:
+      block_dir: blocks/139652352339920
+      block_index: formation
+      mmap: false
+    dtype: *id001
+    len: 16444
+  g:
+    block:
+      block_dir: blocks/139652352339920
+      block_index: g
+      mmap: false
+    dtype: *id001
+    len: 16444
+  genus:
+    block:
+      block_dir: blocks/139652352339920
+      block_index: genus
+      mmap: false
+    dtype: *id001
+    len: 16444
+  georeferenceSources:
+    block:
+      block_dir: blocks/139652352339920
+      block_index: georeferenceSources
+      mmap: false
+    dtype: *id001
+    len: 16444
+  georeferencedBy:
+    block:
+      block_dir: blocks/139652352339920
+      block_index: georeferencedBy
+      mmap: false
+    dtype: *id001
+    len: 16444
+  georeferencedDate:
+    block:
+      block_dir: blocks/139652352339920
+      block_index: georeferencedDate
+      mmap: false
+    dtype: *id001
+    len: 16444
+  h:
+    block:
+      block_dir: blocks/139652352339920
+      block_index: h
+      mmap: false
+    dtype: *id001
+    len: 16444
+  height:
+    block:
+      block_dir: blocks/139652352339920
+      block_index: height
+      mmap: false
+    dtype: *id001
+    len: 16444
+  higherClassification:
+    block:
+      block_dir: blocks/139652352339920
+      block_index: higherClassification
+      mmap: false
+    dtype: *id001
+    len: 16444
+  higherGeography:
+    block:
+      block_dir: blocks/139652352339920
+      block_index: higherGeography
+      mmap: false
+    dtype: *id001
+    len: 16444
+  id:
+    block:
+      block_dir: blocks/139652352339920
+      block_index: id
+      mmap: false
+    dtype: *id001
+    len: 16444
+  identifier:
+    block:
+      block_dir: blocks/139652352339920
+      block_index: identifier
+      mmap: false
+    dtype: *id001
+    len: 16444
+  kingdom:
+    block:
+      block_dir: blocks/139652352339920
+      block_index: kingdom
+      mmap: false
+    dtype: *id001
+    len: 16444
+  locality:
+    block:
+      block_dir: blocks/139652352339920
+      block_index: locality
+      mmap: false
+    dtype: *id001
+    len: 16444
+  modified:
+    block:
+      block_dir: blocks/139652352339920
+      block_index: modified
+      mmap: false
+    dtype: *id001
+    len: 16444
+  municipality:
+    block:
+      block_dir: blocks/139652352339920
+      block_index: municipality
+      mmap: false
+    dtype: *id001
+    len: 16444
+  occurrenceID:
+    block:
+      block_dir: blocks/139652352339920
+      block_index: occurrenceID
+      mmap: false
+    dtype: *id001
+    len: 16444
+  occurrenceRemarks:
+    block:
+      block_dir: blocks/139652352339920
+      block_index: occurrenceRemarks
+      mmap: false
+    dtype: *id001
+    len: 16444
+  order:
+    block:
+      block_dir: blocks/139652352339920
+      block_index: order
+      mmap: false
+    dtype: *id001
+    len: 16444
+  path:
+    block:
+      block_dir: blocks/139652352339920
+      block_index: path
+      mmap: false
+    dtype: *id001
+    len: 16444
+  phylum:
+    block:
+      block_dir: blocks/139652352339920
+      block_index: phylum
+      mmap: false
+    dtype: *id001
+    len: 16444
+  previousIdentifications:
+    block:
+      block_dir: blocks/139652352339920
+      block_index: previousIdentifications
+      mmap: false
+    dtype: *id001
+    len: 16444
+  r:
+    block:
+      block_dir: blocks/139652352339920
+      block_index: r
+      mmap: false
+    dtype: *id001
+    len: 16444
+  recordedBy:
+    block:
+      block_dir: blocks/139652352339920
+      block_index: recordedBy
+      mmap: false
+    dtype: *id001
+    len: 16444
+  references:
+    block:
+      block_dir: blocks/139652352339920
+      block_index: references
+      mmap: false
+    dtype: *id001
+    len: 16444
+  s:
+    block:
+      block_dir: blocks/139652352339920
+      block_index: s
+      mmap: false
+    dtype: *id001
+    len: 16444
+  scientificName:
+    block:
+      block_dir: blocks/139652352339920
+      block_index: scientificName
+      mmap: false
+    dtype: *id001
+    len: 16444
+  specificEpithet:
+    block:
+      block_dir: blocks/139652352339920
+      block_index: specificEpithet
+      mmap: false
+    dtype: *id001
+    len: 16444
+  stateProvince:
+    block:
+      block_dir: blocks/139652352339920
+      block_index: stateProvince
+      mmap: false
+    dtype: *id001
+    len: 16444
+  taxonRank:
+    block:
+      block_dir: blocks/139652352339920
+      block_index: taxonRank
+      mmap: false
+    dtype: *id001
+    len: 16444
+  thumb_path:
+    block:
+      block_dir: blocks/139652352339920
+      block_index: thumb_path
+      mmap: false
+    dtype: *id001
+    len: 16444
+  thumbnail:
+    dtype: !!python/name:meerkat.columns.image_column.ImageColumn ''
+    len: 16444
+  v:
+    block:
+      block_dir: blocks/139652352339920
+      block_index: v
+      mmap: false
+    dtype: *id001
+    len: 16444
+  vernacularName:
+    block:
+      block_dir: blocks/139652352339920
+      block_index: vernacularName
+      mmap: false
+    dtype: *id001
+    len: 16444
+  width:
+    block:
+      block_dir: blocks/139652352339920
+      block_index: width
+      mmap: false
+    dtype: *id001
+    len: 16444
+dtype: !!python/name:meerkat.block.manager.BlockManager ''

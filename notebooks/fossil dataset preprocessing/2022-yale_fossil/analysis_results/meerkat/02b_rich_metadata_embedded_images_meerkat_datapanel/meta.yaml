@@ -1,0 +1,55 @@
+column_dtypes:
+  aspect_ratio: &id001 !!python/name:meerkat.columns.pandas_column.PandasSeriesColumn ''
+  b: *id001
+  bibliographicCitation: *id001
+  catalogNumber: *id001
+  class: *id001
+  continent: *id001
+  coordinateUncertaintyInMeters: *id001
+  country: *id001
+  county: *id001
+  decimalLatitude: *id001
+  decimalLongitude: *id001
+  dynamicProperties: *id001
+  earliestAgeOrLowestStage: *id001
+  earliestEpochOrLowestSeries: *id001
+  earliestPeriodOrLowestSystem: *id001
+  error: *id001
+  family: *id001
+  formation: *id001
+  g: *id001
+  genus: *id001
+  georeferenceSources: *id001
+  georeferencedBy: *id001
+  georeferencedDate: *id001
+  h: *id001
+  height: *id001
+  higherClassification: *id001
+  higherGeography: *id001
+  id: *id001
+  identifier: *id001
+  kingdom: *id001
+  locality: *id001
+  modified: *id001
+  municipality: *id001
+  occurrenceID: *id001
+  occurrenceRemarks: *id001
+  order: *id001
+  path: *id001
+  phylum: *id001
+  previousIdentifications: *id001
+  r: *id001
+  recordedBy: *id001
+  references: *id001
+  s: *id001
+  scientificName: *id001
+  specificEpithet: *id001
+  stateProvince: *id001
+  taxonRank: *id001
+  thumb_path: *id001
+  thumbnail: !!python/name:meerkat.columns.image_column.ImageColumn ''
+  v: *id001
+  vernacularName: *id001
+  width: *id001
+dtype: !!python/name:meerkat.datapanel.DataPanel ''
+len: 16444

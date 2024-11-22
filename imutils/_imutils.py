@@ -15,13 +15,18 @@ def imutils() -> str:
 
 
 from pathlib import Path
+import warnings
 
-ASSETS_DIR = Path(__file__).parent.parent / "assets"
-SAMPLE_IMAGE_PATHS = [
-    img_path
-    for img_path in ASSETS_DIR.iterdir()
-    if not str(img_path).endswith(".ipynb_checkpoints")
-]
+
+try:
+    ASSETS_DIR = Path(__file__).parent.parent / "assets"
+    SAMPLE_IMAGE_PATHS = [
+        img_path
+        for img_path in ASSETS_DIR.iterdir()
+        if not str(img_path).endswith(".ipynb_checkpoints")
+    ]
+except:
+    warnings.warn("Warning: image-utils assets directory not installed correctly.")    
 
 print(f"Importing imutils")
 # print(f"ASSETS_DIR: {ASSETS_DIR}")

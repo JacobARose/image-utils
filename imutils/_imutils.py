@@ -17,6 +17,8 @@ def imutils() -> str:
 from pathlib import Path
 import warnings
 
+ASSETS_DIR = Path()
+SAMPLE_IMAGE_PATHS = []
 
 try:
     ASSETS_DIR = Path(__file__).parent.parent / "assets"
